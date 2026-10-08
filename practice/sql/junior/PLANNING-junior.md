@@ -23,7 +23,12 @@ already written when it had been deleted). The 2026-10-08 run restamped the fing
 by Step 10 when `sql-plan-audit` ran on 2026-10-07, which may not restamp a digest itself. Its cold route
 review moved four Step 0 bullets that need a join or an error message to be drilled into Steps 1 and 12,
 replaced the done conditions of Steps 10 and 11 with scored ones, and narrowed five `**Focus:**` and
-`**Concepts:**` lines that reached scope a later step teaches.
+`**Concepts:**` lines that reached scope a later step teaches. A second 2026-10-08 run, after that
+day's `sql-plan-audit`, found the fingerprint unchanged and spent itself on the cold route review again:
+Step 2 grew to 20 (route 216) so the screening's aggregation core is no longer one exercise per
+concept, five `**Focus:**` values that began `none —` while naming half a section became the concrete
+lists the generator reads, and six `**Why here:**`/`**Reinforces:**` lines gained the earlier step they
+actually lean on.
 
 ---
 
@@ -72,7 +77,7 @@ in `02-execution-order-set-ops.sql` — a step's target is the sum of its files'
 | `01-basics.sql` | 0 | 40 *(20 review)* | 40 | **20** *(+20 review, uncounted)* | 20 | **closed** — all 40 answers graded correct on 2026-07-22 (40/40), of which the 20 first-pass ones are what the Scored column counts. Legacy schema (v1); no more exercises are added here |
 | `02-execution-order-set-ops.sql` | 0 | 10 | 0 | 0 | 10 | written, not answered — regenerated 2026-10-02 after the 2026-08-04 deletion; nothing to grade until its 10 statements are answered (Moment 3) |
 | `03-joins.sql` | 1 | 0 | 0 | 0 | 22 | deleted 2026-07-22 — to regenerate |
-| `04-aggregates.sql` | 2 | 0 | 0 | 0 | 14 | to create |
+| `04-aggregates.sql` | 2 | 0 | 0 | 0 | 20 | to create |
 | `05-join-pitfalls.sql` | 3 | 0 | 0 | 0 | 12 | to create |
 | `06-nulls.sql` | 4 | 0 | 0 | 0 | 12 | to create |
 | `07-subqueries-ctes.sql` | 5 | 0 | 0 | 0 | 16 | to create |
@@ -98,10 +103,10 @@ in `02-execution-order-set-ops.sql` — a step's target is the sum of its files'
 > why the file numbers no longer match the step numbers — the mapping is this table, and the prompt's
 > path table was updated to match.
 
-**First-pass total when the track is done: 210 exercises across 15 files.** Review batches add on top
+**First-pass total when the track is done: 216 exercises across 15 files.** Review batches add on top
 and are deliberately not budgeted. Track-wide today: **50 written** — 40 in `01-basics.sql` and 10 in
 `02-execution-order-set-ops.sql` — and 40 answered and graded, all of them in `01-basics.sql`, of which
-only its 20 first-pass exercises count: the route stands at **20 first-pass scored of 210**, and the
+only its 20 first-pass exercises count: the route stands at **20 first-pass scored of 216**, and the
 other 20 are that file's review batch. Every file from `03-` on is still to generate.
 
 **Two header formats exist, and that is deliberate.** The prompt handles both — do not "fix" either
@@ -195,7 +200,7 @@ other, and front-loads what a screening asks first.
 **Step sizing:** a step is a handful of 12:30 sessions, never weeks. **No single generation run asks
 for more than 12 exercises, and no step targets more than 22** — that ceiling is why schema design is
 split across Steps 9 and 10 instead of being one 32-exercise block. Any step targeting more than 12 is
-split into runs of 12 or fewer — Steps 1 (11 + 11), 2 (9 + 5), 5 (8 + 8), 6 (8 + 8), 9 (10 + 5) and
+split into runs of 12 or fewer — Steps 1 (11 + 11), 2 (11 + 9), 5 (8 + 8), 6 (8 + 8), 9 (10 + 5) and
 10 (12 + 5) — which also keeps each batch's difficulty split meaningful. In four of them the cut is not
 an arbitrary halfway point either: Steps 6 and 10 each claim two coverage sections, so their runs fall
 on the section boundary, and Steps 5 and 9 each claim a single section with a seam of its own
@@ -227,8 +232,9 @@ halves of 9 + 5, 10 + 5 and 12 + 5 bullets — Step 10's `data-types` run asked 
 and its done condition tests only the other run — so Steps 2, 9 and 10 were re-cut to their halves'
 sizes, every run within the 12 ceiling and no step's target moved.
 
-**The screening floor, if the clock runs out** (added 2026-08-28). 190 first-pass exercises remain
-while the August–September 2026 applications window is already open, so the route states which part of itself is
+**The screening floor, if the clock runs out** (added 2026-08-28). 196 first-pass exercises remain
+while applications are already under way — the August–September 2026 window has passed and
+`ROADMAP.md`'s unfinished employment gates now run until hiring — so the route states which part of itself is
 not optional: **Steps 0–6** — the five topics `ROADMAP.md`'s Stage-1 → Stage-2 switch gate names
 verbatim (joins · aggregation · subqueries/CTEs · NULL handling · DML basics), now consecutive.
 Everything after that is post-gate: `ROADMAP.md` says in as many words that window functions, indexes
@@ -412,17 +418,17 @@ Nada más que añadir a la pegada: el archivo ya no existe, así que el run 1 es
 
 ---
 
-### Step 2 — Aggregates and grouping (0 scored / 14 target)
+### Step 2 — Aggregates and grouping (0 scored / 20 target)
 
 **Why here:** it needs the join from Step 1, because the surface a screening asks you to aggregate is
 almost never a single table — and with joins + aggregation you can already answer the second question
 of a technical test.
-**Exercises:** `practice/sql/junior/04-aggregates.sql` — 14 (runs of 9 and 5)
+**Exercises:** `practice/sql/junior/04-aggregates.sql` — 20 (runs of 11 and 9)
 **Coverage:** `Aggregates and grouping` (the pure-aggregation half — the three bullets that only exist because a join came first are Step 3)
 **Reinforces:** Step 1 — a join is the surface `GROUP BY` almost always sits on top of
-**Moment 2 config:** run 1 — `TOPIC = group-by`, `COUNT = 9` — **rango `#01–#09`**
-**Focus:** `COUNT(*)` vs `COUNT(column)`, `SUM`/`AVG`/`MIN`/`MAX` ignoring `NULL`, aggregates on empty input (`COUNT` → `0`, the others → `NULL`; recognise the `NULL` — `COALESCE` is Step 4's), the `GROUP BY` rule, grouping by an id rather than a display name, `GROUP BY` with `NULL`, `GROUP BY` vs `SELECT DISTINCT`
-**Moment 2 config:** run 2 — `TOPIC = group-by`, `COUNT = 5` *(append al mismo archivo)* — **rango `#10–#14`**
+**Moment 2 config:** run 1 — `TOPIC = group-by`, `COUNT = 11` — **rango `#01–#11`**
+**Focus:** `COUNT(*)` vs `COUNT(column)`, `SUM`/`AVG`/`MIN`/`MAX` ignoring `NULL`, aggregates on empty input (`COUNT` → `0`, the others → `NULL`; recognise the `NULL` — `COALESCE` is Step 4's), the `GROUP BY` rule, grouping by an id rather than a display name, `GROUP BY` with `NULL`, `GROUP BY` vs `SELECT DISTINCT` — aggregated over one table or an `INNER JOIN`; a `LEFT JOIN` under `GROUP BY` (zero-match groups, `COUNT(*)` after it) is Step 3's
+**Moment 2 config:** run 2 — `TOPIC = group-by`, `COUNT = 9` *(append al mismo archivo)* — **rango `#12–#20`**
 **Focus:** `HAVING` vs `WHERE`, conditional aggregation with `CASE WHEN` and `FILTER (WHERE ...)`, `STRING_AGG`
 
 **Concepts:** `COUNT(*)` vs `COUNT(column)`, `SUM`/`AVG`/`MIN`/`MAX` ignoring `NULL`, `SUM`
@@ -462,10 +468,10 @@ which is the follow-up question after a join answer lands.
 **Coverage:** `JOINs` (`ON` vs `WHERE` with an outer join) and `Aggregates and grouping` (the three bullets that only exist because a join came first)
 **Reinforces:** Steps 1 + 2 — every pitfall here is an **aggregate over a broken join**
 **Moment 2 config:** `TOPIC = join-pitfalls`, `COUNT = 12`
-**Focus:** none — the whole topic
+**Focus:** `ON` vs `WHERE` with an outer join, `COUNT(*)` vs `COUNT(column)` after a `LEFT JOIN`, `COUNT(DISTINCT)` as the repair for a legitimate multiplication, `GROUP BY` with `LEFT JOIN` and zero-match groups, fan-out inflating a `SUM` — recognised and explained, never repaired: aggregating in a derived table before the join is Step 5's
 
 **Concepts:** condition in `ON` vs in `WHERE`, the `WHERE` filter that silently turns a `LEFT JOIN` into an
-`INNER JOIN`, fan-out inflating `SUM`, `COUNT(*)` returning 1 instead of 0 after a `LEFT JOIN`,
+`INNER JOIN`, fan-out inflating `SUM` (recognised here; repaired by pre-aggregation in Step 5), `COUNT(*)` returning 1 instead of 0 after a `LEFT JOIN`,
 `COUNT(DISTINCT)` as the repair for a legitimate multiplication, `GROUP BY` after a `LEFT JOIN`,
 accidental cross joins, deliberate `CROSS JOIN`.
 
@@ -504,7 +510,7 @@ describing one he has not met — and `NOT IN` with a `NULL` is a standard scree
 
 **Concepts:** `NULL = NULL`, `IS NULL` vs `= NULL`, `AND`/`OR` truth tables, a predicate and its own
 negation both dropping the same row, `NOT IN` with a `NULL` in a literal list (the subquery form waits for Step 5), `COALESCE`, `NULLIF` and
-division by zero.
+division by zero (over a `NUMERIC` numerator — integer division and the cast that fixes it are Step 10's).
 
 > **`NOT EXISTS` is named here but not drilled here** (2026-08-28). The `NOT IN` with `NULL` bullet is
 > this step's — it is a three-valued-logic trap, not a subquery topic — and its own text prescribes
@@ -546,9 +552,9 @@ NULL handling · subqueries/CTEs), so from here on a timed test can ask a whole 
 **Coverage:** `Subqueries, CTEs, and views`
 **Reinforces:** Step 3 — aggregating in a derived table before the join is the real repair for the fan-out `COUNT(DISTINCT)` only patched; Step 2 — a subquery in `FROM` is how you filter on an aggregate `WHERE` cannot see; Step 4 — `NOT EXISTS` is the repair for the `NOT IN`-with-`NULL` trap that step could only recognise
 **Moment 2 config:** run 1 — `TOPIC = subqueries`, `COUNT = 8`
-**Focus:** none — the whole subquery half of the section
+**Focus:** subquery in `WHERE`, derived table in `FROM`, scalar subquery in `SELECT`, `IN` vs `EXISTS`, correlated subqueries, subquery vs `JOIN`
 **Moment 2 config:** run 2 — `TOPIC = ctes`, `COUNT = 8` *(append al mismo archivo)*
-**Focus:** none — the whole CTE and view half of the section
+**Focus:** `WITH`, multiple chained CTEs, `CREATE VIEW`
 
 **Concepts:** subquery in `WHERE` / `FROM` / `SELECT`, `IN` vs `EXISTS`, subquery vs `JOIN`, correlated subqueries
 and when to rewrite one as `EXISTS`, a join or pre-aggregation, `WITH` and chained CTEs, `CREATE VIEW`.
@@ -587,16 +593,16 @@ interviewer will actually ask about.
 **Coverage:** `DML — modifying data`, `Transactions`
 **Reinforces:** Step 2 — `GROUP BY ... HAVING COUNT(*) > 1` is the duplicate-finding query; Step 5 — `DELETE ... WHERE id NOT IN (SELECT MIN(id) ... GROUP BY ...)` is how you delete duplicates keeping one
 **Moment 2 config:** run 1 — `TOPIC = dml`, `COUNT = 8`
-**Focus:** none — the whole `DML — modifying data` section
+**Focus:** `INSERT` single and multi-row, `INSERT ... SELECT`, `RETURNING`, `UPDATE`/`DELETE` with `WHERE`, `DELETE` vs `TRUNCATE`, `ON CONFLICT`
 **Moment 2 config:** run 2 — `TOPIC = transactions`, `COUNT = 8` *(append al mismo archivo)*
-**Focus:** none — the whole `Transactions` section
+**Focus:** `BEGIN`/`COMMIT`/`ROLLBACK`, autocommit, ACID, `SAVEPOINT`, the aborted-transaction state, isolation and `READ COMMITTED`
 
 **Concepts:** `INSERT` (single, multi-row, `INSERT ... SELECT`, `RETURNING`), insert order with foreign keys,
 `UPDATE`/`DELETE` and the missing-`WHERE` catastrophe, `DELETE` vs `TRUNCATE`, `ON CONFLICT`
 upsert, finding duplicates and deleting them keeping one with a subquery
 (`DELETE ... WHERE id NOT IN (SELECT MIN(id) ... GROUP BY ...)`). Then `BEGIN`/`COMMIT`/`ROLLBACK`,
-autocommit, ACID, `SAVEPOINT`, the aborted-transaction state, isolation levels, and the link to
-`@Transactional` in Spring Boot.
+autocommit, ACID, `SAVEPOINT`, the aborted-transaction state, isolation levels, and a multi-statement
+change written as the one transaction a `@Transactional` service method would open.
 
 One step because in practice you learn transactions by wrapping a destructive `UPDATE` in one.
 
@@ -642,9 +648,9 @@ the post-gate half ahead of window functions and the capstone because a live exe
 `TIMESTAMP` long before it stalls on `ROW_NUMBER`.
 **Exercises:** `practice/sql/junior/09-dates-strings.sql` — 12
 **Coverage:** `PostgreSQL specifics`, `Common string functions`
-**Reinforces:** Step 2 — `GROUP BY DATE_TRUNC('month', ...)` is `GROUP BY` on an expression instead of a column
+**Reinforces:** Step 2 — `GROUP BY DATE_TRUNC('month', ...)` is `GROUP BY` on an expression instead of a column; Step 6 — `NOW()` and `CURRENT_DATE` stay fixed inside a `BEGIN` … `COMMIT`
 **Moment 2 config:** `TOPIC = dates-strings`, `COUNT = 12`
-**Focus:** `DATE_TRUNC` and grouping by month, `EXTRACT`, `INTERVAL` arithmetic, `NOW()` vs `CURRENT_DATE`, `::` casting a `TIMESTAMP` in `WHERE` and `JOIN` conditions, standard SQL vs vendor extensions — the string functions ride along as the Intro half of the batch
+**Focus:** `DATE_TRUNC` and grouping by month, `EXTRACT`, `INTERVAL` arithmetic, `NOW()` vs `CURRENT_DATE`, `::` casting a `TIMESTAMP` in `WHERE` and `JOIN` conditions, standard SQL vs vendor extensions, and one exercise each for `||` with `NULL` propagation, `LOWER`/`UPPER`, `TRIM`, `LENGTH`, `SUBSTRING` and `REPLACE` as the Intro half of the batch — the index caveats inside the `EXTRACT` and `LOWER`/`UPPER` bullets are Step 11's sargability and are not drilled here
 
 **Concepts:** `DATE_TRUNC` and grouping by month, `EXTRACT`, `INTERVAL` and date arithmetic,
 `NOW()` vs `CURRENT_DATE`, `::` casting a `TIMESTAMP` to a `DATE`, standard SQL vs vendor extensions,
@@ -680,11 +686,13 @@ the post-gate half ahead of window functions and the capstone because a live exe
 ### Step 8 — Window functions (0 scored / 12 target)
 
 **Why here:** a window is only explainable against what `GROUP BY` collapses (Step 2) and against
-execution order (Step 0) — and it is asked *after* the core in a screening, as the "and can you also…"
-question, never as the opener, which is why it sits behind the whole gate (Steps 1–6).
+execution order (Step 0), and its signature use — keeping the `rn = 1` row per group — is filtered in
+an outer derived table or CTE because a window cannot sit in `WHERE`, which is Step 5's syntax; it is
+asked *after* the core in a screening, as the "and can you also…" question, never as the opener, which
+is why it sits behind the whole gate (Steps 1–6).
 **Exercises:** `practice/sql/junior/10-window-functions.sql` — 12
 **Coverage:** `Window functions`
-**Reinforces:** Step 2 — a window keeps the rows `GROUP BY` collapses; Step 0 — execution order explains why a window cannot sit in `WHERE`, and `DISTINCT ON` is the PostgreSQL form `ROW_NUMBER() = 1` is set against; Step 6 — `ROW_NUMBER()` is the window form of deleting duplicates keeping one, rewriting that step's `NOT IN (SELECT MIN(id) ...)`
+**Reinforces:** Step 2 — a window keeps the rows `GROUP BY` collapses; Step 0 — execution order explains why a window cannot sit in `WHERE`, and `DISTINCT ON` is the PostgreSQL form `ROW_NUMBER() = 1` is set against; Step 5 — the `rn = 1` and top-N filters are a derived table or CTE over the windowed query; Step 6 — `ROW_NUMBER()` is the window form of deleting duplicates keeping one, rewriting that step's `NOT IN (SELECT MIN(id) ...)`
 **Moment 2 config:** `TOPIC = window-functions`, `COUNT = 12`
 **Focus:** none — the whole topic
 
@@ -729,7 +737,7 @@ and met the `NULL` it treats specially (Step 4) — and it is late because a scr
 
 **Concepts:** primary and foreign keys, primary key vs `UNIQUE`, which side of a 1:N carries the FK,
 composite keys on a junction table, `ON DELETE` and `ON UPDATE` behaviour, `NOT NULL` / `UNIQUE` /
-`CHECK`, why a database constraint is not made redundant by Bean Validation, natural vs surrogate keys,
+`CHECK`, a concurrent duplicate that passes an application-side check and is rejected by the constraint, natural vs surrogate keys,
 reading a schema's grain, and storing each fact once so an update cannot leave two copies disagreeing.
 
 > **Formal normal forms are deliberately not drilled here.** The `Normalization and data anomalies`
@@ -773,9 +781,9 @@ same run teaches.
 **Coverage:** `Data types`, `Schema operations`
 **Reinforces:** Step 9 — every constraint from that step is now written by hand in `CREATE TABLE`; Step 6 — its `INSERT` leaves the generated `id` out, and sequence drift is what supplying it anyway leaves behind
 **Moment 2 config:** run 1 — `TOPIC = data-types`, `COUNT = 12`
-**Focus:** none — the whole `Data types` section
+**Focus:** `VARCHAR` vs `TEXT`, `CHAR(n)` padding, identity vs `SERIAL`, sequence drift and `setval`, `NUMERIC` vs `FLOAT`, integer division and casts, `ROUND` on `NUMERIC`, scale of an expression's result, `DATE` vs `TIMESTAMP`/`TIMESTAMPTZ`, `TIMESTAMP` vs `TIMESTAMPTZ`, `BOOLEAN`, `JSONB` recognition
 **Moment 2 config:** run 2 — `TOPIC = ddl`, `COUNT = 5` *(append al mismo archivo)*
-**Focus:** none — the whole `Schema operations` section
+**Focus:** `CREATE TABLE` with defaults and constraints, `ALTER TABLE`, adding a constraint to a populated table in two ordered statements, `DROP` vs deleting rows, `DEFAULT`
 
 **Concepts:** `NUMERIC` vs `FLOAT`, `TIMESTAMP` vs `TIMESTAMPTZ`, `DATE` for a business day, `VARCHAR` vs `TEXT`,
 `CHAR(n)` padding, `SERIAL` vs `IDENTITY`, a sequence left behind by explicit-id inserts and its
@@ -825,9 +833,10 @@ Written, not queried: the deliverable is a schema you can produce from a blank e
 
 ### Step 11 — Indexes and query plans (0 scored / 12 target)
 
-**Why here:** you cannot read a plan for a query shape you cannot yet write, so it comes after joins,
-aggregation and windows; and it needs Step 10's `CREATE TABLE` because `UNIQUE` and `PRIMARY KEY` are
-where a junior's first indexes actually come from.
+**Why here:** you cannot read a plan for a query shape you cannot yet write, and its sargability half
+is Step 7's functions (`LOWER`, `EXTRACT`, `::`) and Step 0's leading-`%` `LIKE` wrapped around an
+indexed column; it needs Step 10's DDL because `CREATE INDEX` is written beside the `UNIQUE` and
+`PRIMARY KEY` that already create one.
 **Exercises:** `practice/sql/junior/13-indexes.sql` — 12
 **Coverage:** `Performance basics`
 **Reinforces:** Step 10 — `UNIQUE` and `PRIMARY KEY` create their index automatically; Step 1 — the join column is the one that needs one
@@ -868,8 +877,8 @@ column, when not to index, non-sargable predicates, leading-wildcard `LIKE`, rea
 
 **Why here:** its error half is Step 9's constraints firing — `23505`, `23503`, `23502` and `23514` are
 that step's `UNIQUE`, foreign key, `NOT NULL` and `CHECK` returning a verdict, so those must already be
-understood — and it sits immediately before the capstone on purpose, because the capstone hands you a
-requirement against a schema and this is the step that teaches you to read one you did not write.
+understood — and it is the last topic step because only the capstone builds on it: reading a schema's
+tables, keys and nullability before writing a query is the first move of every capstone requirement.
 **Exercises:** `practice/sql/junior/14-live-database.sql` — 12
 **Coverage:** `Working with an existing database`, plus `Querying basics` (`SQL string literals vs quoted identifiers` — the case-folding rule behind `relation "Users" does not exist`)
 **Reinforces:** Step 9 — every error message here is a constraint from that step firing
@@ -925,17 +934,18 @@ under time pressure, which is the one thing drilling topic by topic never produc
 **Coverage:** `Query workflow and SQL review`
 **Reinforces:** Steps 1, 2 and 5 above all — a report query is a join whose grain is chosen first, a `GROUP BY` over it, and a CTE or derived table when the aggregate has to be computed before it is filtered; this is the integration step and it composes every earlier one
 **Moment 2 config:** `TOPIC = report-queries`, `COUNT = 8`
-**Focus:** report queries from prose (grain first, join path, zero-row groups, control-query check), plus finding and fixing the defect in a given statement — a missing join condition, `= NULL`, a date range losing its boundary rows, an unbounded `UPDATE`/`DELETE`, an `OFFSET` page with no tie-breaker, a value concatenated where a placeholder belongs
-
-The prompt's `report-queries` topic already builds its own TimeTrack setup block (`users`, `projects`,
-`time_entries`) instead of the bookstore, marks every exercise Challenge, and states a 10-minute
-target per exercise — nothing extra to add to the config.
+**Focus:** report queries from prose (grain first, join path, zero-row groups, control-query check), plus finding and fixing the defect in a given statement — a missing join condition, `= NULL`, a date range losing its boundary rows, an unbounded `UPDATE`/`DELETE`, an `OFFSET` page with no tie-breaker, a value concatenated into the SQL string where a placeholder belongs — identified and its fix named as a bound placeholder, not executed through `PREPARE`/`EXECUTE`, which no step teaches
 
 **Concepts:** no new syntax. Timed exercises that hand you a requirement in prose and expect the whole
 query: deciding the result grain first, mapping the requirement onto the clause skeleton, choosing the
 driving table so zero-row groups survive, `COALESCE(SUM(...), 0)`, bound parameters instead of
 interpolated values, verifying a report total against a simpler control query, and reviewing the result
 for the four classic failures — join, predicate, mutation and pagination.
+
+The prompt's `report-queries` topic already builds its own TimeTrack setup block (`users`, `projects`,
+`time_entries`) instead of the bookstore, marks every exercise Challenge, and states a 10-minute
+target per exercise — nothing extra to add to the config. (Moved below `**Concepts:**` on 2026-10-08,
+out of the field block Section C keeps contiguous.)
 
 **Coverage bullets:**
 
@@ -968,7 +978,7 @@ without raising the count, and a row that reads `closed ✅` is never set back (
 |------|-------|----------------|-----------------|--------|-----------------------------------|
 | 0 | Querying basics | `01-basics.sql` + `02-execution-order-set-ops.sql` | 20 / 30 *(01: 20/20 closed, 40/40 correct 2026-07-22 incl. 20 repaso; 02: 0/10)* | in progress ⏳ | `SELECT`/`WHERE`/`ORDER BY`, orden de ejecución, operaciones de conjuntos |
 | 1 | JOINs | `03-joins.sql` | 0 / 22 | not started | JOINs de todo tipo |
-| 2 | Aggregates and grouping | `04-aggregates.sql` | 0 / 14 | not started | `GROUP BY` / `HAVING` / agregados |
+| 2 | Aggregates and grouping | `04-aggregates.sql` | 0 / 20 | not started | `GROUP BY` / `HAVING` / agregados |
 | 3 | JOIN pitfalls | `05-join-pitfalls.sql` | 0 / 12 | not started | Diagnóstico de fan-out y multiplicación de filas |
 | 4 | NULL and three-valued logic | `06-nulls.sql` | 0 / 12 | not started | Manejo de `NULL`, `NOT IN` con nulos |
 | 5 | Subqueries, CTEs, views | `07-subqueries-ctes.sql` | 0 / 16 | not started | Subconsultas, CTEs, vistas |
@@ -981,7 +991,7 @@ without raising the count, and a row that reads `closed ✅` is never set back (
 | 12 | Live database and errors | `14-live-database.sql` | 0 / 12 | not started | — |
 | 13 | Report queries (capstone) | `15-report-queries.sql` | 0 / 8 | not started | — |
 
-**20 of 210 first-pass exercises scored** (Step 0's `#01–#20`, all correct), plus a
+**20 of 216 first-pass exercises scored** (Step 0's `#01–#20`, all correct), plus a
 20-exercise review batch that does not count. This table is the record of each step's status — the
 one the readiness line below and the simulation track read — and `PROGRESS.md` → `### Exercise route`
 is its projection (doctrine invariant 15). Both are updated by the doctrine §4 ritual, in the same
