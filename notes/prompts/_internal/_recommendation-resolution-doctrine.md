@@ -159,6 +159,10 @@ search the pre-image's wording too before calling a clause false from birth.
 bank's five tests needed window functions, so the licence is retired with the reason; and where the copy that must go sits in a pipeline-owned file, the removal rule is written into the section the
 specialist editing that file is dispatched to read (invariant 16, not the preamble or A2) — a rule true in a section no editor reads is applied by nobody.
 **Also `REC-264`: a justification of the form *X never reads Y*, written about a pipeline of several roles, is measured per role and re-founded per role** — `review-audit`'s orchestrator reads the ledger its slice reviewers never open, so the clause was false of one and true of the other — **and the sentence that re-founds it is checked against every definer describing that role, not only its procedure**: three sibling prompts said the orchestrator held the whole plan while its steps name sections, so the repair states neither (`REC-304`).
+**Also `REC-304`: a justification claiming a read nothing executes may be covering for a read the step
+genuinely needs, so measure past runs' reports before ruling which side moves** — `review-audit`'s
+orchestrator never read the whole plan, yet two runs graded on a plan section no step named; the fix
+names that read, bounded, and re-founds the reason on it rather than only deleting the claim.
 
 **A clause about an artefact's *state* is not a clause about the *verdict* that reads it, and a
 runnable that cedes the computation cannot be the site of a partition defect.** From `REC-130`,
