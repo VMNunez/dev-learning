@@ -7,17 +7,14 @@ the level's route file (§1) — says *in what order*,
 *what to update when a step closes*, and *when the whole track is finished*.
 
 **Database:** PostgreSQL (local, pgAdmin). **Schema:** the canonical bookstore schema defined in
-`notes/prompts/practice/sql/sql-exercises-prompt.md` (`authors`, `publishers`, `genres`, `books`,
-`customers`, `orders`, `order_items`, `reviews`) — that prompt is the single source of truth for it.
-A route may put some of its files on a different model instead. Which files those are, and why,
-is the route's to say in its §1, not this file's: no list of
+`notes/prompts/practice/sql/sql-exercises-prompt.md` — that prompt is the single source of truth for
+it, so its tables are not listed here. A route may put some of its files on a different model instead.
+Which files those are, and why, is the route's to say in its §1, not this file's: no list of
 them is kept here, because a copy here is what a route change would leave false.
 
-> ⚠️ **`01-basics.sql` carries an older, thinner schema** (`order_books` with no `quantity` or
-> `unit_price`, `authors.nationality`, `books.year`) and is **closed** because of it — resolved
-> 2026-07-22 by leaving it alone and starting `02-execution-order-set-ops.sql` with the canonical
-> schema. From `02-` on every file carries exactly one schema of its own — which one is the route §1's
-> to say, and how the file sets it up is the exercise prompt's: one file, one schema (invariant 11).
+> ⚠️ **A file whose schema predates the canonical one is closed, not extended** — one file, one schema
+> (invariant 11). Which files are in that state is the route §1's to say, and how a file sets up its
+> schema is the exercise prompt's; neither is restated here.
 
 ### Local practice databases — the registry
 
@@ -51,17 +48,19 @@ report queries TimeTrack needs without looking anything up.
 session; `sql-plan-audit` reconciles them against the route (invariants 5 and 6) and corrects them, and
 `sql-block-open` reports a stale §0 without repairing it. **`Current branch` and `Blocked on` have no
 dedicated writer in the machinery** (standard A1): their corrections by a session or an audit are
-manual reconciliation, not an automatic refresh on every close.
+manual reconciliation, not an automatic refresh on every close. **No row states a file's disk state** —
+whether it exists, how many statements it holds, how many are answered: those are read off the file
+(invariant 3), and neither generating a batch nor answering one writes §0.
 
 | | |
 |---|---|
 | **Current level** | junior — route file `practice/sql/junior/PLANNING-junior.md` (the six rows below refer to it) |
-| **Current step** | Step 0 — Querying basics (`01-basics.sql` cerrado con 20 first-pass; `02-execution-order-set-ops.sql` escrito el 2026-10-02 con 10 enunciados sin responder; target 30) |
+| **Current step** | Step 0 — Querying basics (20/30 first-pass scored: `01-basics.sql` cerrado; los 10 restantes son de `02-execution-order-set-ops.sql`) |
 | **Current branch** | the active feature branch (study materials follow it — see §7) |
 | **Done condition** | `Review: sql-grade scores ≥ 80% on 02-execution-order-set-ops.sql` |
 | **Next revision point** | R1 (route §1) — fires when Step 1 closes, i.e. when its `Review:` done condition passes on `03-joins.sql` |
-| **Blocked on** | nothing. `02-execution-order-set-ops.sql` ya está en disco (generado el 2026-10-02, 10 enunciados, ninguno respondido): el bloque empieza en Moment 3 — responderlos en pgAdmin, en su base `practice_junior_02_execution_order_set_ops` — y pasa a Moment 4 (`sql-grade`) cuando los diez tengan respuesta. No hay que relanzar Moment 2. |
-| **Last updated** | 2026-10-07 |
+| **Blocked on** | nothing — qué Moment toca se lee del archivo (`sql-block-open`), no de esta fila |
+| **Last updated** | 2026-10-08 |
 
 ---
 
@@ -78,7 +77,7 @@ manual reconciliation, not an automatic refresh on every close.
 
 | File | Role here |
 |------|-----------|
-| `PROGRESS.md` → `## Practice completed` → `### Exercise route` | **How much** of the route is done — never a concept list, which lives in the coverage file. Authoritative figures; the level's route §3 is the at-a-glance copy. |
+| `PROGRESS.md` → `## Practice completed` → `### Exercise route` | **How much** of the route is done — never a concept list, which lives in the coverage file. It is the route's **projection** (invariant 15): the level's route §3 is the record of which steps are closed, and the two must agree (invariant 3) — a disagreement is drift for its owner to repair, never settled by treating one as authoritative. |
 | **This plan** (this doctrine + the level's route) | **In what order**, with which files, how many exercises, which prompt, and what "done" means. |
 
 **The plan is two files, and the split is by level-neutrality.** *This* file is the **doctrine**: the
@@ -314,7 +313,8 @@ points now read it (`## Fricción`) when a span has no graded failures left.
 
 `sql-grade` does not re-implement grading: it runs
 `notes/prompts/practice/sql/_internal/_sql-exercises-review.md` **in a cold subagent**, which is where
-that prompt's Steps 4a–4e — the automated writes listed below — actually happen. That isolation is not decoration — the prompt was written for a fresh
+that prompt's Steps 4b–4e and 5 — the automated writes listed below — actually happen (its 4a was
+deleted on 2026-08-03). That isolation is not decoration — the prompt was written for a fresh
 chat, and a skill runs inside the session where the concept may have just been explained to you. A
 grader that remembers teaching you the answer is not a grader.
 
@@ -411,8 +411,9 @@ on whatever feature branch the morning project block is on.
 **Moved 2026-08-03 → `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` §3** (junior's was the route migrated
 that day). Status is per level, and **only grading moves it**: a step's row closes when its done
 condition (§3) passes — never on the written or the answered count, and not on the *scored* count alone
-(invariant 3). `PROGRESS.md` → `## Practice completed` → `### Exercise route`
-holds the authoritative figures; each level's route §3 is its at-a-glance copy.
+(invariant 3). Each level's route §3 is the record of which steps are closed; `PROGRESS.md` →
+`## Practice completed` → `### Exercise route` is the route's projection (invariant 15), and the two
+must agree (invariant 3).
 
 ---
 
@@ -555,10 +556,19 @@ Cross-checks between sections. Verify these whenever this plan is edited:
    the ≥ 80% review score is a done-condition threshold, never an exercise-count filter. Only grading
    moves a status; reaching the scored target alone does not close a step. A re-grade can satisfy the
    done condition without increasing a count, and a closed step stays closed (invariant 14).
+   A plan reporting answered work as scored claims progress that never happened. **Written and
+   answered — and whether a file exists at all — are facts about the file on disk**, and every reader
+   that decides from one counts the file: generating a batch moves *written* and Victor moves
+   *answered* in pgAdmin, and neither act writes the route or this doctrine. So the route's `Written`
+   and `Answered` cells, and any route §1 cell or sentence stating whether a file exists, are a
+   **snapshot**, refreshed from disk by `sql-plan-prompt` (its Guard 2 inventory) and `sql-plan-audit`
+   (its Phase 1 snapshot); a snapshot behind disk between those runs is not drift, and no reader
+   reports it as a disagreement or decides from it. *Scored* is not a snapshot: grading writes it.
    Every step in route §2 states a count; per-step counts for a shared file sum to its first-pass
-   target in route §1. Route §3 totals match §1, the exercise files on disk and that level's
-   `PROGRESS.md` → `## Practice completed` → `### Exercise route` figures. Review batches are extra
-   (Moment 2b), so a written count above the first-pass target is expected.
+   target in route §1. Route §3 totals match §1, the exercise files on disk and `PROGRESS.md` →
+   `## Practice completed` → `### Exercise route` (that level's roll-up row and its own detail table —
+   never another level's). Review batches are extra (Moment 2b), so a written count above the
+   first-pass target is expected.
 4. **Step sizing** — no generation run asks for more than 12 exercises and no step targets more than
    22; anything above 12 is split into runs (a file's total may be higher when several steps
    write into it). Any preserved legacy exception is documented in its level's route §2 and never
@@ -643,7 +653,8 @@ Cross-checks between sections. Verify these whenever this plan is edited:
     `### Exercise route` carries one roll-up row per level plus one detail table per level, and that
     table holds **a row for every file the route declares**, including files not written yet, seeded by
     `sql-plan-prompt` with `Corrected = —`, `First-pass / target = 0/{route §1 target}`,
-    `Status = not created`. Pending files are never collapsed into a "12 files remaining" row: seeing
+    `Status = not started` — the word a status holds until grading moves it, true whether or not the
+    file has been generated yet; a status never says whether a file exists (invariant 3). Pending files are never collapsed into a "12 files remaining" row: seeing
     what is left is the whole point. Both tables end in a derived `Total` row, recomputed from the rows
     above by whoever last edited a cell — **except its `Corrected` cell, which stays `—`**, a correction
     backlog having no meaningful aggregate. A replan updates the projection in the same run, and

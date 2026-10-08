@@ -288,7 +288,8 @@ explained against.
 `ILIKE`/`NOT LIKE`/`BETWEEN`/`NOT BETWEEN`/`IS NOT NULL`), `ORDER BY` (single, multiple, by alias),
 `LIMIT`/`OFFSET`/`FETCH`, `DISTINCT`, `DISTINCT ON`, expressions and aliases, concatenation, `LENGTH()`.
 Those last two appeared incidentally in `01-basics.sql` as expression practice; their coverage bullets
-(`||` string concatenation, `LENGTH`) belong to Step 7 and are checked there, not here.
+(`||` string concatenation, `LENGTH`) belong to Step 7 and are checked there, not here. `IS NOT NULL`
+is the same case: it appeared as a `WHERE` operator, but its bullet (`IS NULL` vs `= NULL`) is Step 4's.
 
 Still missing before this step closes — the ten remaining exercises target exactly these:
 - SQL execution order (`FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT`) and where an
@@ -346,8 +347,8 @@ before aggregation, not after.
 **Exercises:** `practice/sql/junior/03-joins.sql` — 22, generated from scratch in **two runs of 11**. The
 original ten hand-written statements were deleted on 2026-07-22: they were never answered, and they
 carried the old thin schema, so regenerating gets the canonical one and the current exercise format
-(`-- Your answer:` + `-- ✅ Corregido` markers) instead of perpetuating the legacy format into a
-second file.
+(the `-- Your answer:` line, with grading's verdict recorded on the header line — §1) instead of
+perpetuating the legacy format into a second file.
 **Coverage:** `JOINs` (every bullet except `ON` vs `WHERE` with an outer join, which is Step 3), plus `Querying basics` (`Qualified column references`, `SELECT *` vs named columns) and `Set operations` (`UNION` vs `JOIN`) — the three Step 0 bullets that need a join to be drilled
 **Reinforces:** Step 0 — execution order (`FROM + JOIN` runs first, which is why the join happens before `WHERE`)
 **Moment 2 config:** run 1 — *(archivo nuevo: genera el setup block canónico)* — **rango `#01–#11`**: `TOPIC = joins`, `COUNT = 11`
@@ -417,7 +418,7 @@ Nada más que añadir a la pegada: el archivo ya no existe, así que el run 1 es
 almost never a single table — and with joins + aggregation you can already answer the second question
 of a technical test.
 **Exercises:** `practice/sql/junior/04-aggregates.sql` — 14 (runs of 9 and 5)
-**Coverage:** `Aggregates and grouping` (the pure-aggregation half — the three bullets about aggregating over a `LEFT JOIN` are Step 3)
+**Coverage:** `Aggregates and grouping` (the pure-aggregation half — the three bullets that only exist because a join came first are Step 3)
 **Reinforces:** Step 1 — a join is the surface `GROUP BY` almost always sits on top of
 **Moment 2 config:** run 1 — `TOPIC = group-by`, `COUNT = 9` — **rango `#01–#09`**
 **Focus:** `COUNT(*)` vs `COUNT(column)`, `SUM`/`AVG`/`MIN`/`MAX` ignoring `NULL`, aggregates on empty input (`COUNT` → `0`, the others → `NULL`; recognise the `NULL` — `COALESCE` is Step 4's), the `GROUP BY` rule, grouping by an id rather than a display name, `GROUP BY` with `NULL`, `GROUP BY` vs `SELECT DISTINCT`
@@ -869,13 +870,6 @@ column, when not to index, non-sargable predicates, leading-wildcard `LIKE`, rea
 that step's `UNIQUE`, foreign key, `NOT NULL` and `CHECK` returning a verdict, so those must already be
 understood — and it sits immediately before the capstone on purpose, because the capstone hands you a
 requirement against a schema and this is the step that teaches you to read one you did not write.
-
-> **Its inspection half could genuinely have been drilled earlier** (B3, noted 2026-08-28) —
-> `information_schema`, `search_path`, `\dt` and `GRANT`/trigger recognition need nothing past Step 0.
-> The position is bought by the error half and by the capstone adjacency, not by them, and this file
-> used to claim otherwise ("needs a query vocabulary wide enough to know what to look for"), which was
-> a label rather than a dependency.
-
 **Exercises:** `practice/sql/junior/14-live-database.sql` — 12
 **Coverage:** `Working with an existing database`, plus `Querying basics` (`SQL string literals vs quoted identifiers` — the case-folding rule behind `relation "Users" does not exist`)
 **Reinforces:** Step 9 — every error message here is a constraint from that step firing
@@ -887,6 +881,13 @@ requirement against a schema and this is the step that teaches you to read one y
 database, quoted identifiers and case folding. Then the error text and SQLSTATE of each class the two
 error bullets name (`23505`, `23503`, `23502`, `23514`, failed casts, missing or ambiguous names), and
 PostgreSQL refusing implicit casts.
+
+> **Its inspection half could genuinely have been drilled earlier** (B3, noted 2026-08-28) —
+> `information_schema`, `search_path`, `\dt` and `GRANT`/trigger recognition need nothing past Step 0.
+> The position is bought by the error half and by the capstone adjacency, not by them, and this file
+> used to claim otherwise ("needs a query vocabulary wide enough to know what to look for"), which was
+> a label rather than a dependency. (Moved below `**Concepts:**` on 2026-10-08, out of the field block
+> Section C keeps contiguous — the same move Step 5's gate caveat got on 2026-10-07.)
 
 **Coverage bullets:**
 
@@ -965,7 +966,7 @@ without raising the count, and a row that reads `closed ✅` is never set back (
 
 | Step | Topic | Exercises file | Scored / target | Status | Técnicas que desbloquea al cerrar |
 |------|-------|----------------|-----------------|--------|-----------------------------------|
-| 0 | Querying basics | `01-basics.sql` + `02-execution-order-set-ops.sql` | 20 / 30 *(01: 20/20 closed, 40/40 correct 2026-07-22 incl. 20 repaso; 02: 0/10, escrito el 2026-10-02 y sin responder)* | in progress ⏳ | `SELECT`/`WHERE`/`ORDER BY`, orden de ejecución, operaciones de conjuntos |
+| 0 | Querying basics | `01-basics.sql` + `02-execution-order-set-ops.sql` | 20 / 30 *(01: 20/20 closed, 40/40 correct 2026-07-22 incl. 20 repaso; 02: 0/10)* | in progress ⏳ | `SELECT`/`WHERE`/`ORDER BY`, orden de ejecución, operaciones de conjuntos |
 | 1 | JOINs | `03-joins.sql` | 0 / 22 | not started | JOINs de todo tipo |
 | 2 | Aggregates and grouping | `04-aggregates.sql` | 0 / 14 | not started | `GROUP BY` / `HAVING` / agregados |
 | 3 | JOIN pitfalls | `05-join-pitfalls.sql` | 0 / 12 | not started | Diagnóstico de fan-out y multiplicación de filas |
@@ -981,9 +982,10 @@ without raising the count, and a row that reads `closed ✅` is never set back (
 | 13 | Report queries (capstone) | `15-report-queries.sql` | 0 / 8 | not started | — |
 
 **20 of 210 first-pass exercises scored** (Step 0's `#01–#20`, all correct), plus a
-20-exercise review batch that does not count. `PROGRESS.md` holds the
-authoritative status; this table is the at-a-glance copy. Both are updated by the doctrine §4 ritual, in
-the same commit. Review batches never change a row here.
+20-exercise review batch that does not count. This table is the record of each step's status — the
+one the readiness line below and the simulation track read — and `PROGRESS.md` → `### Exercise route`
+is its projection (doctrine invariant 15). Both are updated by the doctrine §4 ritual, in the same
+commit. Review batches never change a row here.
 
 ### Readiness de simulaciones — qué se puede pedir hoy
 
