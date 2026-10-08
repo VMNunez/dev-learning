@@ -112,7 +112,7 @@ Read the subagent's verdict and take exactly one branch. **Print which branch yo
 | First line `BLOCKED — segunda pasada no despachable` | **Stop.** Nothing was graded and nothing was written — confirm it: `{FILE}` holds no `✅ Corregido` or `❌ Revisado` dated today, and none of the four doc files §4 lists has changed since a `git status` you take just before the §2 dispatch. Say the file is still ungraded and why, and open the `FRIC-NNNN` row the durable-friction close-out owes a dispatch that failed, its evidence naming the runtime and whether that runtime offers nested dispatch at all — where it does not, the defect is this skill's design, not a transient failure. §4 then writes the tracker cell and nothing else: **no `.sql` command for Victor**, since nothing was graded. The shell's `MODE = review` in a new conversation still grades the same file, because its second pass is a first-level dispatch there; «cierra el step N» then closes a step it finishes. Never grade it yourself instead. |
 | Score **< 80%** | **Stop.** Name the failed concepts and the exercises they came from, straight from the `MISTAKES.md` rows this run opened or incremented. Tell him to rewrite those answers in the file and say "corrige el 02" again. Offer the narrowed batch: `/sql-exercises` with `MODE = reinforce` and `FILE = {FILE}`. No close. |
 | **≥ 80%**, and the step's `{PLAN}` §3 row is still open after the subagent's 4c — another of its files, or another run of this one, is still owed | File done for now, step open. Name what is owed next — the next file, or the next run of this one — and stop. No close. |
-| **≥ 80%**, and the subagent's 4c set the step's `{PLAN}` §3 row to `closed ✅` in this run | **Invoke the `sql-step-close` skill**, passing `{LEVEL}`, the step number, and every file of the step. Do not reproduce its work here. |
+| **≥ 80%**, and the subagent's 4c set the step's `{PLAN}` §3 row to `closed ✅` in this run | The step closed. **Run §4's commits first, then invoke the `sql-step-close` skill** — §4's last paragraph says why that order is fixed — passing `{LEVEL}`, the step number, and every file of the step. Do not reproduce its work here. |
 
 **A step already `closed ✅` before this run** (the status §0 noted) takes neither ≥ 80% branch,
 whatever the score: a closed step is never reopened and never closed twice (doctrine invariant 14), and
@@ -182,7 +182,13 @@ then `git commit` block), one command per block:
 - the exercise file. His answers *and* the correction markers live in it, and the file is his: the
   markers are an annotation on his work, not authorship of it. `docs(sql): grade {FILE} — N/M`
 
-If `sql-step-close` ran, it reports its own commits; do not stage its files here.
+**On the branch that closed the step, invoke `sql-step-close` now — after your own commits above, never
+before.** It edits three files this run also wrote: `{PLAN}`, whose readiness status line it rewrites on
+every close, and `practice/sql/PLANNING.md` or `PROGRESS.md` where its step 2 or 3 fixed something.
+Handed a tree that still held the grading run's writes, it could not commit its own edit without taking
+yours along — and a file it committed whole would then be listed by the subagent and absent from
+`git status`, which the check above would log as a deviation of a branch step that did nothing wrong.
+It makes and reports its own commits; stage none of its files here.
 
 ---
 

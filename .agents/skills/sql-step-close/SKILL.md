@@ -216,8 +216,17 @@ Run `git status` right before each `git add` and each `git commit`.
 
 - `notes/sql/coverage/{LEVEL}.md` + `notes/coverage/{LEVEL}.md` — one commit, both mirrors together;
   splitting them is how a mirror drifts. `docs(coverage): mark N SQL junior bullets drilled by {FILE}`
-- `practice/sql/PLANNING.md` and `PROGRESS.md`, if step 2 or 3 fixed anything.
-- Commit message for the close itself: `docs: close SQL step N — <topic>`.
+- **The close itself** — one commit, `docs: close SQL step N — <topic>`: `{PLAN}`, whose readiness
+  status line step 5 rewrote, plus `practice/sql/PLANNING.md` and `PROGRESS.md` if step 2 or 3 fixed
+  anything.
+
+**Those three are files the grading run also writes, and its writes are committed before you start, on
+either door**: `sql-grade` commits them and only then hands you the step (its §4), and the legacy
+`MODE = review` door commits them in its own run (`_sql-exercises-review.md` Step 6). So your edit
+should be each file's whole diff — read `git diff HEAD -- <file>` before staging it. A file whose diff holds
+anything you did not write carries another run's unfinished work: leave it unstaged, commit the rest,
+and name it in the report. Committing it whole would publish that run's writes under the close's
+message.
 
 **Victor commits nothing here.** His `.sql` file was already handed to him by `sql-grade`; do not hand
 him a second command for it.
@@ -239,3 +248,4 @@ him a second command for it.
 | Gate | ninguno (o: Step 13 cerrado → **G3 toca ya** — `/progress-update MODE = active`, cierra con drift report vacío; luego G4 `/roadmap-review`) |
 | Desbloqueado (ruta §3) | SELECT/WHERE/ORDER BY + set ops. Ninguna simulación todavía: el gate del primer test (Step 2) sigue abierto, arrastrado tal cual (o: `la ruta no trae gate del primer test — no se inventa; /sql-plan-audit junior`) |
 | Nivel | junior sigue abierto — 13 steps por delante |
+| Commits | coverage: topic + mirror en un commit · cierre: `PLANNING-junior.md` (línea de readiness) + doctrina (`Last updated` de §0); `PROGRESS.md` sin cambios (o: `PROGRESS.md` sin stagear — su diff trae cambios que no son de este cierre) |
