@@ -272,7 +272,7 @@ its goals are already complete.
 
 ## Step 4 — Check the study block tables
 
-Update the three study-block sections to match the canonical values in `_roadmap-standard.md`
+Update the study-block sections to match the canonical values in `_roadmap-standard.md`
 ("Canonical study-block references"):
 
 **12:30 block — SQL then practice:** reconcile the SQL topic table against the SQL topic list that
@@ -285,6 +285,12 @@ places only: `grep -nE '^### Step [0-9]+|^\*\*Coverage:\*\*|^## §3'` — a step
 then read §3's step table with `offset`. **Not `PROGRESS.md`** — its exercise table is keyed by
 *file*, so it cannot answer a topic row on its own, and syncing against it is how this table drifted in
 both directions at once.
+
+**12:30 block — simulation stage:** hold `Stage 2 — Technical test simulation` to the standard's
+simulation-stage bullet — its heading unchanged, its strategy kept, its gate left under the SQL table, and
+any passage that restates the simulation track's procedure (which specs exist, a time limit, attempt
+rules, how to get a review) or sends Victor to a spec file or to a review outside `simulation-grade` cut
+to the pointer the standard names.
 
 **13:30 block — Notes then interview prep:** confirm the notes study order matches the canonical
 string exactly; if the shared session rules differs, the shared session rules wins.
@@ -366,6 +372,11 @@ its checks need). Its instruction:
 > 3. **LeetCode gate topics.** The study-order gate condition lists exactly the high-priority topics
 >    per the standard (angular, spring-boot, java, architecture, security if added in that range) and
 >    does NOT list typescript, sql, javascript, css, or git.
+> 4. **Simulation stage.** `Stage 2 — Technical test simulation` matches the standard's
+>    "Canonical study-block references" simulation-stage bullet: heading unchanged; strategy and pointer
+>    present, the gate left under the SQL table rather than copied in; no passage restating the
+>    simulation track's procedure, and none telling Victor to open a spec file or to have a solution
+>    reviewed outside `simulation-grade`. Cut any such passage to the pointer.
 >
 > Report **only** a short table of `Invariant | Verdict (pass / fixed) | What you changed` — no file
 > excerpts, no reasoning trace. If everything passed with no fixes, say so explicitly.

@@ -76,6 +76,7 @@ stacks) do come from `_shared-context.md` and are checked like any other.
 - Phase table (status markers ✅ / ⏳ / 🔜)
 - Project sequence (which project comes next and why)
 - SQL topic table (12:30 block)
+- Simulation stage (12:30 block) — its gate, its strategy and its pointer to the simulation track
 - Notes study order (13:30 block)
 - Level strategy gates when the target role or demonstrated-level matrix changes
 
@@ -136,6 +137,21 @@ Rules for project sections:
   exercise table is keyed by *file*: it cannot resolve a topic row without the route, and syncing against
   it is how the table drifted in both directions at once — row 1 left at ⏳ with `01-basics.sql` closed
   40/40, JOINs left at ⏳ with `03-joins.sql` deleted and never regenerated.
+
+**12:30 block — simulation stage.** `Stage 2 — Technical test simulation` keeps that heading, which
+`notes/prompts/README.md` (its code-review-practice track) and `_system-map.md` §11 cite as a trigger.
+It carries three things and nothing else: **the gate** that opens it, which stays where it is — the
+switch condition under the SQL table — and is not restated inside the stage; **the strategy** — why timed tests matter for a consultancy application, and the minimum number
+of simulations to complete before applying seriously, with its per-track split, a target that is
+ROADMAP's own; and **a pointer to the simulation track for the procedure** — `/simulation-plan` builds
+the level route that decides which tests are admissible, in what order and with what time limit,
+`simulation-block-open` opens a block (read-only — it never starts the timer) and states the attempt
+conditions, and `simulation-grade` is the only door to a review that records anything. It never restates
+what that track owns: which specs exist or how many are on disk, a test's time limit or attempt rules, or
+how to ask for a review. And it never tells Victor to open a spec file directly or to have a solution
+reviewed outside `simulation-grade` — a spec opened that way skips the route's readiness check, the
+per-spec SQL fence included, and a review requested that way records nothing. A passage that does either
+is cut to the pointer.
 
 **13:30 block — Notes study order.** The order must be exactly:
 `angular → spring-boot → java → architecture → security → typescript → sql → javascript → css → git`
