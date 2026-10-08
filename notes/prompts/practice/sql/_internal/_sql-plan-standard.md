@@ -55,7 +55,7 @@ Its two inputs, and it never invents beyond them:
 
 | § | Section | Must contain |
 |---|---------|--------------|
-| 0 | Session quick reference | Current level · current step · current branch · done condition · next revision point · blocked on · last updated. Seven rows, no prose — it is the first thing read in a session, and the level row is what tells the reader which route file the other six refer to. **Which seven rows exist is the doctrine's; the values of five of them are not** — *current level, current step, done condition, next revision point* and *last updated* are rewritten by the closing ritual, and this file is not their author. Section E carries the split. **`Current branch` and `Blocked on` have no writer anywhere in the machinery**: state that as a finding, and do not invent one for them. |
+| 0 | Session quick reference | Current level · current step · current branch · done condition · next revision point · blocked on · last updated. Seven rows, no prose — it is the first thing read in a session, and the level row is what tells the reader which route file the other six refer to. **Which seven rows exist is the doctrine's; the values of five of them are not** — *current level, current step, done condition, next revision point* and *last updated* are rewritten by the closing ritual, and this file is not their author. Section E carries the split. **`Current branch` and `Blocked on` have no writer anywhere in the machinery**: state that as a finding, and do not invent one for them. **No row states a file's disk state** — whether it exists, how many statements it holds, how many are answered: those are read off the file (invariant 3), and neither generating a batch nor answering one writes §0, so a §0 copy of them is false from the day the file is generated or answered. |
 | 1 | Inputs | The two files above and what each owns, plus the doctrine/route split. |
 | 2 | The step loop | Every moment of a step, with its trigger and the exact config to paste. Exercise prompts only. The grading moment points to `_sql-exercises-review.md` Steps 1 and 2b for marker and re-grade behaviour, under Section E's fence. |
 | 3 | Done-condition format | The closed list of testable formats. |
@@ -221,7 +221,14 @@ checks. Aligned 2026-07-22.
    accepted**: the ≥ 80% review score is a done-condition threshold, not an exercise-count filter.
    Only grading moves a status; reaching the scored target alone does not close a step. A re-grade can
    satisfy the done condition without increasing a count, and a closed step stays closed (invariant 14).
-   A plan reporting answered work as scored claims progress that never happened. Per-step counts for a shared
+   A plan reporting answered work as scored claims progress that never happened. **Written and
+   answered — and whether a file exists at all — are facts about the file on disk**, and every reader
+   that decides from one counts the file: generating a batch moves *written* and Victor moves *answered*
+   in pgAdmin, and neither act writes the route. So the route's `Written` and `Answered` cells, and any
+   §1 cell or sentence stating whether a file exists, are a **snapshot**,
+   refreshed from disk by `sql-plan-prompt` (its Guard 2 inventory) and `sql-plan-audit` (its Phase 1
+   snapshot); a snapshot behind disk between those runs is not drift, and no reader reports it as a
+   disagreement or decides from it. *Scored* is not a snapshot: grading writes it. Per-step counts for a shared
    file sum to that file's target, the route's §3 totals match its §1, and both match the exercise files
    on disk and `PROGRESS.md`'s `## Practice completed` → `### Exercise route` (that level's roll-up row
    and its own detail table — never another level's).
@@ -272,7 +279,8 @@ checks. Aligned 2026-07-22.
     `### Exercise route` carries one roll-up row per level plus one detail table per level, and that
     table holds **a row for every file the route declares** — including files not written yet, seeded by
     `sql-plan-prompt` with `Corrected = —`, `First-pass / target = 0/{route §1 target}`,
-    `Status = not created`.
+    `Status = not started` — the word a status holds until grading moves it, true whether or not the
+    file has been generated yet; a status never says whether a file exists (invariant 3).
     Pending files are never collapsed into a "12 files remaining" row: the whole point is seeing what is
     left. Both tables end in a derived `Total` row, recomputed from the rows above by whoever last
     edited a cell — except its `Corrected` cell, which stays `—`, a correction backlog having no
@@ -299,7 +307,7 @@ format or quality bar — except exactly what a row's third column below license
 |----------|-------|-------------------|
 | Exercise content, difficulty split, file format | `sql-exercises-prompt.md` | how many, which topic, which focus |
 | The route: steps, files, counts, statuses, fingerprint | `sql-plan-prompt.md` (writes) · `sql-plan-audit.md` (audits) | — the route file *is* this |
-| Progress *inside* the route: §1 counts, §3 statuses, §2 `[x]` bullets | `sql-exercises-prompt.md` (review mode) | — the planner writes these fields' *structure*, never their values; it reads them, preserves them, and never reverses one. Only a scored exercise moves them. |
+| Progress *inside* the route: §1 `Scored` counts, §3 statuses, §2 `[x]` bullets | `sql-exercises-prompt.md` (review mode) | — the planner writes these fields' *structure*, never their values; it reads them, preserves them, and never reverses one. Only a scored exercise moves them. §1's `Written` and `Answered` are not in this row: they are disk snapshots the planner and the audit refresh (invariant 3). |
 | The `PROGRESS.md` projection of the route | `sql-plan-prompt.md` (seeds the level's rows and re-syncs them on a replan) · `sql-exercises-prompt.md` (moves the counts: `practice` the written denominator, `review` the graded numerators) · `sql-plan-audit.md` (audits, invariant 15) | — which figures it carries; never its layout, which is PROGRESS.md's own |
 | The doctrine's **rules**: loop, formats, ritual, gates, invariants, closure, fence — and **which seven rows §0 carries** | `sql-plan-audit.md` | — the doctrine file *is* this. `sql-plan-prompt` reads it and reports findings against it; it edits it exactly once, in the one-time route migration. |
 | The **live values** inside doctrine §0: current step, done condition, next revision point, current level, last updated | `_sql-exercises-review.md` step 4d (writes them the moment a step closes; `sql-grade` commits the file) · `sql-step-close` step 2 (verifies and repairs what 4d left wrong) · `sql-plan-audit.md` (reconciles them against the route under invariants 5 and 6) | — which rows exist and what each must hold; never their values, which it may correct but does not author. `sql-block-open` reads §0 and reports a stale one, repairing nothing. |

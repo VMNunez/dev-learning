@@ -42,7 +42,8 @@ line and name the skill that owns the repair — `sql-grade` for counters, `sql-
 ## 0 — Read, in this order
 
 - `practice/sql/PLANNING.md` §0 — the quick reference. This is the claim.
-- `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` §2 and §3 — the current step and its real status. If this
+- `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` §2 and §3 — the current step and its real status; the
+  step's scored/target from its §3 row, never from its §2 heading. If this
   file does not exist, stop and say: "No existe la ruta de {LEVEL}. Corre `/sql-plan {LEVEL}`."
 - the current exercise file itself — the ground truth, and the only thing that cannot be stale.
 - `PROGRESS.md` → `### Exercise route` — only the current file's row in the `{LEVEL}` detail table, for
@@ -53,7 +54,13 @@ line and name the skill that owns the repair — `sql-grade` for counters, `sql-
   for its `Status:` and its `Spanish:` path (step 2). Never the whole file.
 
 **Prefer the file over the plan.** §0 is a copy; the `.sql` file is the fact. When they disagree, report
-the disagreement rather than picking a winner.
+the disagreement rather than picking a winner — **except over what only the file can say**: how many
+statements it holds, how many are answered, and whether it exists at all. The route's `Written` and
+`Answered` cells and any §1 cell or sentence stating whether a file exists are a snapshot of disk
+that only `/sql-plan` and `/sql-plan-audit` refresh (`_sql-plan-standard.md` invariant 3), so a batch
+generated since then leaves them behind with nothing owed; §0 is not meant to carry them at all
+(standard A1), and the next `/sql-plan-audit` removes one that does. Read those three off the file,
+derive the Moment from them, and report no disagreement over them.
 
 Count with these exact commands — both header formats live on disk, and a pattern matching neither
 returns `0`:

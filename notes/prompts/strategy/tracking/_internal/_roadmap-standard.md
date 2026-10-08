@@ -127,8 +127,12 @@ Rules for project sections:
 **12:30 block — SQL topic table.** Kept in sync against the SQL section of `notes/coverage/junior.md`:
 - Add any SQL topic present in coverage-junior.md but missing from the ROADMAP table.
 - Remove any topic that coverage-junior.md marks as out of scope.
-- Status markers (✅ / 🔜) come from the step headings of `practice/sql/junior/PLANNING-junior.md` §2,
-  which carry the topic name together with its scored/target counts. **Not from `PROGRESS.md`**, whose
+- Status markers (✅ / ⏳ / 🔜) come from `practice/sql/junior/PLANNING-junior.md`. A row is a coverage
+  heading, answered by every step whose §2 `**Coverage:**` line names it, and its marker is read off
+  those steps' `Status` in §3: ✅ when all are `closed ✅`, 🔜 when all are `not started`, ⏳ otherwise
+  — and 🔜 for a heading no `**Coverage:**` line names yet. **Never from a scored count** — *scored* is graded at any verdict (`_sql-plan-standard.md`
+  invariant 3), so a fully scored step can still be open — and never from a §2 step heading, whose
+  counts no grading run updates. **Not from `PROGRESS.md`** either, whose
   exercise table is keyed by *file*: it cannot resolve a topic row without the route, and syncing against
   it is how the table drifted in both directions at once — row 1 left at ⏳ with `01-basics.sql` closed
   40/40, JOINs left at ⏳ with `03-joins.sql` deleted and never regenerated.

@@ -98,7 +98,9 @@ Gather the ground truth the specialists check the plan against. Counts, never co
   Both markers always sit **at the end of the exercise's header line**, in both header formats, never on
   a line of their own — a rewritten answer can carry the two on that one line
   (`_sql-exercises-review.md` Step 2b) — so `grep -c` counts each graded exercise once. If scored > written for
-  any file, the count is wrong: stop and report it rather than propagating it.
+  any file, the count is wrong: stop and report it rather than propagating it. Count **answered** too —
+  the headers with at least one non-comment SQL line under them, under `-- Your answer:` in the current
+  format and directly under the description in the legacy one (`_sql-exercises-review.md` Step 1).
 - `grep -n "✅\|⏳\|done\|in progress" practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` → the status baseline for the gate.
 - **The route's own count rows, copied verbatim**: its §1 file table and its §3 progress table. These
   are the numbers the history gate protects — the numbers on disk cannot regress, since this flow
@@ -163,11 +165,15 @@ the level and the exact rows that disagree with the route's §1 — and closes w
 {LEVEL}` to re-sync the projection". This is the one place where the "findings are fixed in place" rule
 yields to the ownership fence, because the fix belongs to a prompt that sees §1 as its own output.
 
-**Inside the route, #3 edits structure, never values.** Section E gives `§1` counts, `§3` statuses and
-`§2` `[x]` bullets to `sql-exercises-prompt` in review mode: **only a scored exercise moves them.** #3
-may add a missing row, a missing column or a missing field, and it may recompute a `Total` from the rows
-above; it may never lower a numerator, reset a `40/40`, or flip a `closed ✅` back. A figure that looks
-wrong is a finding against the grading run, not a cell to correct.
+**Inside the route, #3 edits structure, never values.** Section E gives `§1`'s `Scored` counts, `§3`
+statuses and `§2` `[x]` bullets to `sql-exercises-prompt` in review mode: **only a scored exercise moves
+them.** #3 may add a missing row, a missing column or a missing field, and it may recompute a `Total`
+from the rows above; it may never lower a numerator, reset a `40/40`, or flip a `closed ✅` back. A figure
+that looks wrong is a finding against the grading run, not a cell to correct. **§1's `Written` and
+`Answered` are the exception, because they are not grading values**: they are a snapshot of disk
+(invariant 3), so #3 sets them to the Phase 1 counts — and any §1 cell or sentence stating whether a
+file exists (the file table's `Status`, the revision table's status column — `Estado` at junior —, the prose) is set to what Phase 1
+found, in either direction, in the same pass.
 
 **The route prose that defines the three counts or says what moves a status — §1's definitions and §3's
 lead-in — is structure too, and #3 corrects it.** A sentence reading *scored* as a per-exercise ≥ 80%

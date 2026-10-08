@@ -407,8 +407,9 @@ placeholders, never copy an example number into PROGRESS.md.
 — match on the file, never on a prose cell. Update its `Corrected`, `First-pass / target` and `Status`:
 
 - Status: `closed ✅` if score ≥ 80%; `in progress ⏳` if score < 80% — except that once the file's
-  step reads `closed ✅` in `{PLAN}` §3, its rows keep `closed ✅`; leave `not created` untouched for
-  files that do not exist yet.
+  step reads `closed ✅` in `{PLAN}` §3, its rows keep `closed ✅`. Every other file's row is left as it
+  is — a `not started` one included, which is the seeded status of a file none of whose batches has been
+  graded yet, whether or not it exists on disk (`_sql-plan-standard.md` invariant 15).
 - `Corrected`: graded over written **in this file**, repaso included — each exercise once.
 - `First-pass / target`: this file's first-pass scored count over its §1 first-pass target — each
   exercise once.

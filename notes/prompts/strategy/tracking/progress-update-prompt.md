@@ -185,18 +185,25 @@ the one failure mode:
 > **Count without loading file contents into your context** — two commands per ref:
 > - List the SQL files: `git ls-tree -r --name-only HEAD -- practice/sql/ sql/`, then the same with
 >   `main` (double pathspec: covers the current home `practice/sql/` and the legacy `sql/` until the
->   one-time migration is done). **Guard: if BOTH refs return 0 files, ABORT the SQL step and report
->   it — never report a table of zeros as a finding.**
-> - Count exercise headers per file: `git grep -cE "^-- (Exercise [0-9]+:|#[0-9]+ \|)" HEAD -- practice/sql/ sql/`,
->   then the same with `main` (output is `<ref>:<path>:<count>`). Only `git show` a file if its count
->   looks wrong (e.g. zero for a file that clearly holds exercises) — and then only to recheck the
->   headers, not to study it.
+>   one-time migration is done), and keep only the paths ending in `.sql` — the listing also returns the
+>   doctrine, the level routes and `MISTAKES.md`, which are not exercise files. **Guard: if BOTH refs
+>   return 0 `.sql` files, ABORT the SQL step and report it — never report a table of zeros as a
+>   finding.**
+> - Count exercise headers per file: `git grep -cE "^-- (Exercise [0-9]+ \[|#[0-9]+ \|)" HEAD -- 'practice/sql/*.sql' 'sql/*.sql'`,
+>   then the same with `main` (output is `<ref>:<path>:<count>`). The `*.sql` pathspecs keep the
+>   Markdown files out of the count — a route quoting a header in a code block would otherwise come back
+>   as a topic. `git grep -c` prints **no line** for a file with no match, so a `.sql` file the listing
+>   returned and the count did not holds 0 headers. Only `git show` a file if its count looks wrong
+>   (e.g. zero for a file that clearly holds exercises) — and then only to recheck the headers, not to
+>   study it.
 >
 > Exercise files live one per topic inside their level's directory (`practice/sql/junior/01-basics.sql`).
 > Two legacy shapes may still appear on `main`: a flat `practice/sql/01-basics.sql` or a per-topic
 > subfolder `practice/sql/02-joins/exercises.sql` — report either under its level path.
-> The regex covers the two header patterns in use:
-> - `-- Exercise N:` at line start (sql-exercises-prompt topics: joins, group-by, subqueries…)
+> The regex covers the two header patterns in use, and it is the written-count pattern the track's
+> other counters use (`sql-grade`, `sql-block-open`, `sql-block-close`, `sql-plan`, `sql-plan-audit`):
+> - `-- Exercise N [Label]:` at line start — the current format `sql-exercises` writes, `[Label]` being
+>   the exercise's level (`[Intro]`, `[Standard]`, `[Challenge]`, or `[Repaso]` on an uncounted batch)
 > - `-- #N |` at line start, N one or more digits — `-- #1 |`, `-- #01 |`, `-- #40 |` (the basics file)
 >
 > Return **only** one row per topic: `| Topic | Folder | Exercises (exact count) |`, using the real path in the
@@ -260,9 +267,12 @@ already — it described columns (`Exercises scored`) and a section number (§5)
 had long replaced with `Corrected` / `Route progress` / `Steps closed` and §1.
 
 Compare the file's tables against `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` §1 and the Step B counts,
-and report as drift: a route target that disagrees with §1, a file with no row, a row whose status
-contradicts its score, a `Total` that does not sum its own column. Never downgrade a `closed ✅` and
-never write a corrected figure — name it and let the owner re-run.
+and report as drift: a route target that disagrees with §1, a file with no row, a row whose `Status`
+begins with neither `in progress ⏳` nor `closed ✅` although its `First-pass / target` numerator is above 0, a `Total` that does not
+sum its own column. **A count never decides a status**: *scored* is graded at any verdict, counted once
+(`_sql-plan-standard.md` invariant 3), so a row with its whole target scored and still `in progress ⏳`
+is the `< 80%` loop working, not drift. Never downgrade a `closed ✅` and never write a corrected figure
+— name it and let the owner re-run.
 
 ### D4 — `## Practice completed` → `### Timed simulations` (from the Step C counts)
 

@@ -49,7 +49,9 @@ ritual stops being run.
 Read `{PLAN}` = `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` and confirm, from the files themselves and
 not from what the caller said:
 
-- every file the step owns in `{PLAN}` §1 is scored ≥ 80%;
+- every file the step owns in `{PLAN}` §1 has its `PROGRESS.md` → `### Exercise route` row's
+  `Status` beginning `closed ✅` — the review score's ≥ 80% verdict is recorded there, never in §1's `Scored` count, which counts an
+  exercise graded at any verdict (`_sql-plan-standard.md` invariant 3);
 - the step's §3 row now reads `closed ✅`;
 - the step's done condition (§2) is one of the doctrine §3 formats and it is actually met. A `pgAdmin:`
   or `Terminal:` condition is **not** met by a score — those steps close on the observable result, and

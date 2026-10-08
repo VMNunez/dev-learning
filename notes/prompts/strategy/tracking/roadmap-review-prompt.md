@@ -277,11 +277,14 @@ Update the three study-block sections to match the canonical values in `_roadmap
 
 **12:30 block — SQL then practice:** reconcile the SQL topic table against the SQL topic list that
 subagent 2a returned from coverage-junior.md — add missing topics, remove out-of-scope topics. For the
-✅ / 🔜 markers read `practice/sql/junior/PLANNING-junior.md` §2, whose step headings carry both the topic
-name and its scored/target counts: a step with its first-pass target scored is ✅, a step partly scored is
-⏳, an untouched step is 🔜. **Not `PROGRESS.md`** — its exercise table is keyed by *file*, so it cannot
-answer a topic row on its own, and syncing against it is how this table drifted in both directions at
-once.
+✅ / ⏳ / 🔜 markers, derive each row's marker by `_roadmap-standard.md` → "Canonical study-block
+references", 12:30 bullet — a row is a coverage heading, read off the route's §3 statuses through its
+§2 `**Coverage:**` lines, never off a count. Read `practice/sql/junior/PLANNING-junior.md` at those
+places only: `grep -nE '^### Step [0-9]+|^\*\*Coverage:\*\*|^## §3'` — a step heading supplies each
+`**Coverage:**` line's step number and nothing else, its counts being ones no grading run updates —
+then read §3's step table with `offset`. **Not `PROGRESS.md`** — its exercise table is keyed by
+*file*, so it cannot answer a topic row on its own, and syncing against it is how this table drifted in
+both directions at once.
 
 **13:30 block — Notes then interview prep:** confirm the notes study order matches the canonical
 string exactly; if the shared session rules differs, the shared session rules wins.
@@ -372,7 +375,10 @@ its checks need). Its instruction:
 > You are an independent reviewer. Read `notes/prompts/strategy/tracking/_internal/_roadmap-standard.md` (the
 > ROADMAP contract), then read the freshly edited `ROADMAP.md`, `PROGRESS.md`, `notes/coverage/junior.md`,
 > `notes/prompts/_internal/_shared-context.md` (invariant 1 needs it)
-> and `practice/sql/junior/PLANNING-junior.md` §2 (invariant 4 needs it; nothing else does).
+> and `practice/sql/junior/PLANNING-junior.md` — its §2 `**Coverage:**` lines and its §3 step table
+> only (invariant 4 needs them; nothing else does): `grep -nE '^### Step [0-9]+|^\*\*Coverage:\*\*|^## §3'`
+> — a step heading supplies each `**Coverage:**` line's step number and nothing else — and read §3 with
+> `offset`.
 > Verify each invariant below **from scratch** — do not trust that the edits are correct. For each
 > violation, **fix it directly in ROADMAP.md**, then report what you changed and why.
 >
@@ -395,9 +401,10 @@ its checks need). Its instruction:
 >    state that is true or false regardless of the date. If it is vague or date-based, rewrite it as a
 >    gate.
 > 4. **SQL table.** The SQL topic table matches the SQL section of coverage-junior.md (no missing topic, no
->    out-of-scope topic) and its ✅ / 🔜 markers agree with the step headings of
->    `practice/sql/junior/PLANNING-junior.md` §2 — not with `PROGRESS.md`, whose exercise table is keyed by
->    file rather than by topic and cannot decide a topic row.
+>    out-of-scope topic) and each ✅ / ⏳ / 🔜 marker is the one the standard's "Canonical study-block
+>    references" 12:30 bullet derives from the route's §3 `Status` column through its §2 `**Coverage:**`
+>    lines — never from a scored count or a §2 step heading, and not from `PROGRESS.md`, whose exercise
+>    table is keyed by file rather than by topic and cannot decide a topic row.
 > 5. **Phase-table markers agree with PROGRESS.md.** Each phase row is ✅ only if `## Projects`,
 >    `Practice completed` and the level matrix's `Knowledge consolidation` column show its goals
 >    complete, ⏳ only for the active phase, 🔜 if not started. Fix any marker that disagrees.

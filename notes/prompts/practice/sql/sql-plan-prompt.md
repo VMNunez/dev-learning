@@ -79,7 +79,13 @@ it narrows that list.
    grep -cE '^-- (Exercise [0-9]+ \[|#[0-9]+ \|)' {file}   → written
    grep -cE '^--.*(✅ Corregido|❌ Revisado)' {file}         → scored
    ```
-   If `scored > written` for any file, stop and report it rather than propagating it.
+   *Answered* has no one-line command: it is the headers with at least one non-comment SQL line under
+   them — under `-- Your answer:` in the current format, directly under the description in the legacy
+   one (`_sql-exercises-review.md` Step 1). The written and answered counts are what §1's `Written` and
+   `Answered` cells take on every run, a snapshot of disk (`STANDARD` invariant 3), together with any
+   §1 cell or sentence stating whether a file exists; §1's `Scored` stays the grading run's and is
+   preserved (`STANDARD` Section E). If `scored > written` for any file, stop and report it rather than
+   propagating it.
 3. Stop on `main`.
 4. Stop if `COVERAGE` is missing, or if it differs from the SQL section of `GLOBAL_MIRROR`.
 5. Read `VERIFY` but never stop on it. Its verdict is history: an open `gaps` verdict, a `superseded`
@@ -344,7 +350,8 @@ Nobody else can seed them — the exercise prompts see one file at a time — an
 what exists hides exactly what is left to do. So:
 
 - **`{LEVEL}`'s detail table** — one row per §1 file, in step order: `Step`, `File`,
-  `Corrected` = `—`, `First-pass / target` = `0/{§1 target}`, `Status` = `not created`. Never collapse
+  `Corrected` = `—`, `First-pass / target` = `0/{§1 target}`, `Status` = `not started` — never a word
+  saying whether the file exists, which is read off disk (`STANDARD` invariant 15). Never collapse
   pending files into a summary row.
 - **`{LEVEL}`'s roll-up row** — `Corrected` and `Route progress` at `0/{sum of §1 targets}`,
   `Steps closed` at `0/{§3 step count}`.
@@ -356,7 +363,10 @@ what exists hides exactly what is left to do. So:
   the dash; do not "fix" it by computing a sum.
 
 **Preserve every figure already there.** A replan keeps each existing row's `Corrected`,
-`First-pass / target` numerator and `Status`; it only adds rows for new files, updates targets the
+`First-pass / target` numerator and any `Status` grading set — one beginning `in progress ⏳` or `closed ✅`, its annotation kept; every other
+`Status` — the legacy `not created`, or a `not started` carrying wording about the file being deleted or
+still to create — is rewritten to `not started` (`STANDARD` invariant 15), which loses no graded work
+because grading never moved it. Beyond that it only adds rows for new files, updates targets the
 replan changed, and recomputes the roll-up denominators. A cell that says `40/40` is graded work and is
 never reset — same discipline as the History gate above, which rejects a plan that loses completed work.
 Write only `{LEVEL}`'s rows; another level's tables are not yours to touch.
