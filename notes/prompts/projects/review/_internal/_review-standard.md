@@ -93,9 +93,9 @@ Always report the days since the date. A tier is only "freshly reviewed" once a 
 a `backend` run never refreshes the frontend date, so it never makes the frontend look reviewed.
 
 On an **Angular-only project (01–06)** the same gate applies, but there is only one real tier: gate on
-the `frontend` line, backend stays `n/a — Angular-only`. **Neither signal can fire there today** — 01's
-✅ marks are undated, 02–06 have none, and no 01–06 backlog has a `## Closed` section — so say the stop
-rests on the format, not on the code, and expect FORCE on every one of them.
+the `frontend` line, backend stays `n/a — Angular-only`. **Both signals are read there exactly
+as on any other tier — its older format settles nothing in advance.** A stop there says, per signal,
+whether it found nothing dated after the tier's date or had nothing to read at all.
 
 > A time gate punishes fast building — the more you finish inside the window, the more unreviewed code
 > it hides. (07-timetrack: 2026-07-14, gated at "8 days ago" with Step 6 built inside them, forced, found

@@ -86,8 +86,7 @@ REVIEW_SCOPE = [full | backend | frontend]
 ## PROJECT_PATH = all runs the review on every project in turn — see notes/prompts/_internal/_batch-mode.md.
 ## Order: projects/01-todo-list, 02-weather-app, 03-expense-tracker, 04-meal-finder, 05-task-manager,
 ## 06-hr-portal, 07-timetrack. The project type is derived from the number (01–06 Angular-only, 07+ full-stack).
-## The per-tier unreviewed-code gate applies to every project — on 01–06 that is the `frontend` line. It
-## stops and offers FORCE on every 01–06 project today: neither signal can fire in that older format.
+## The per-tier unreviewed-code gate applies to every project — on 01–06 that is the `frontend` line.
 ##
 ## REVIEW_SCOPE limits the review to one tier so a big project can be split across sessions instead of
 ## one long run. Default = full. `backend` runs Steps 1–2 + 3b; `frontend` runs Step 3 + 3b — Step 3b is
@@ -193,8 +192,9 @@ those three things and nothing else. A spec that is **broken** — it fails to c
 element the template no longer has — and a test **command** that does not work are outside it, and are
 judged on their own evidence."*
 
-This exclusion **cannot** be derived from the ✅ marks: projects 01–06 use the old PLANNING format, which
-has no §0 and no ✅ step marks, so the step-based rule above silently fires on nothing. On the 2026-07-14
+This exclusion **cannot** be derived from the ✅ marks: projects 01–06 are fully complete (the standard's
+scope limit) and use the old PLANNING format, which has no §0 and may carry no ✅ marks at all, so the
+step-based rule above has no unbuilt step to list and silently fires on nothing. On the 2026-07-14
 run of `01-todo-list` both frontend reviewers read the empty scaffold specs as missing coverage and raised
 three High "no tests" tasks — which went into the backlog and Victor had to catch. Every project from 01
 to 06 will reproduce that class of false High unless this line is passed down; on 04, 05 and 06, whose
