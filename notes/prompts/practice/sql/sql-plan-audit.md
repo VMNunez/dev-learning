@@ -133,7 +133,11 @@ For each, launch a fresh `role-appropriate` subagent, `reasoning tier: deep`, `e
 > below — and audit `practice/sql/PLANNING.md` (the doctrine) and `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md`
 > (the route) against them. Fix what falls short **directly in the file your `Edits` column names, and
 > in no other**. Do **NOT** commit. Return a **check-by-check trace**: one line per check you own,
-> `check · verdict · what you changed (or "no change")`. Never paste plan content back. End with any
+> `check · verdict · what you changed (or "no change")`. Never paste plan content back — a
+> hand-over is the one exception. A defect you own that sits in a section your `Edits` column does not
+> name is neither fixed nor dropped: **hand it over** — after the trace, one entry per defect giving
+> the section, the passage (quoted, or bounded by its first and last words when it runs past a few
+> lines) and the exact replacement text (`delete` when nothing replaces it). End with any
 > cross-concern ripple the orchestrator must reconcile.
 >
 > **Read-to-EOF guard:** run `wc -l` on the plan first; if it is near or over 2000 lines, read it in
@@ -148,15 +152,53 @@ For each, launch a fresh `role-appropriate` subagent, `reasoning tier: deep`, `e
 | # | Concern | Owns | Edits | Also reads |
 |---|---------|------|-------|------------|
 | 1 | `learning-design` | **Section B** (all ten) · **Section C** (every step has every field) | route §2 | doctrine §2, §3, §7 · route §2 · `ROADMAP.md` (for B2) |
-| 2 | `coverage-and-steps` | **Invariants 1, 2, 10, 14** · **B10** | route §1, §2, its out-of-scope list | `notes/sql/coverage/{LEVEL}.md` · doctrine §Z · the Phase 1 section list |
+| 2 | `coverage-and-steps` | **Invariants 1, 2, 10, 14** · **B10** | route §1, §2, its out-of-scope list · route §3 — the row of a step it writes, nothing else there | `notes/sql/coverage/{LEVEL}.md` · doctrine §Z · the Phase 1 section list |
 | 3 | `counts-and-truth` | **Invariants 3, 4, 5, 11, 13, 15, 16** · **Section E's grading-markers row, for route prose only** | route §1, §2, §3 · doctrine §0 · **never `PROGRESS.md`** | `PROGRESS.md` · **the Phase 1 snapshot** |
-| 4 | `loop-and-fence` | **Section A1 and A2** — every section present **and satisfying its own "Must contain" column**, row by row, not merely non-empty · **Invariants 6, 7, 8, 9, 12** · **invariant 3's definition, for doctrine prose only** · **Section E** | **the doctrine — any section** · route header (metadata only) | `sql-exercises-prompt.md`, `sql-plan-prompt.md`, `_sql-exercises-review.md` Steps 1 and 2b |
+| 4 | `loop-and-fence` | **Section A1 and A2** — every section present **and satisfying its own "Must contain" column**, row by row, not merely non-empty · **Invariants 6, 7, 8, 9, 12** · **invariant 3's definition, for doctrine prose only** · **Section E** — over both files; inside route §1–§3 it finds and hands over, it does not edit | **the doctrine — any section** · route header (metadata only) | the route, to EOF (Section E) · `sql-exercises-prompt.md`, `sql-plan-prompt.md`, `_sql-exercises-review.md` Steps 1 and 2b |
 
 **The `Edits` column is a fence, not a hint.** Two files are open and four specialists run against them;
 a specialist writing outside its column is how the doctrine acquires a level-specific sentence. #1 and
 #2 never touch the doctrine at all. #4 owns the **whole** doctrine — the other rows' sections are
-exhaustive, its are not — and touches the route only to check its header
-metadata is present and well-formed — it never edits a step.
+exhaustive, its are not — and edits the route only in its header metadata, checking it is present and
+well-formed — it never edits a step.
+
+**A repair that crosses a fence is handed over — never applied across it, and never left in the plan.**
+`Owns` and `Edits` are two columns, and a specialist can own a check over a section it may not write.
+The standing case is #4: Section E is its row and route §1–§3 are not, so a route passage that
+*describes* what another file owns is a finding it can make and cannot repair. Until 2026-10-08 nothing
+in this phase applied one, and two runs committed a route still holding the passages their own
+specialist had written replacements for (`REC-287`).
+
+- **The finder writes nothing there and returns the repair whole**: one hand-over entry per defect,
+  after its trace — the section (`route §1`, `route §3`, `route §2` before its first step, or the
+  step's heading inside §2), the passage quoted or bounded by its first and last words, and the
+  **exact replacement text**. A finding without its replacement is not a hand-over.
+- **The orchestrator routes each one by the `Edits` column and by nothing else** — where more than one
+  column names a section, to one fixed receiver: route §2 to #1, route §1 and §3 to #3, the route's
+  out-of-scope list to #2, the doctrine to #4 — and, once the last specialist of the run has returned,
+  dispatches each receiving concern **once**: a fresh `role-appropriate` subagent, `reasoning tier:
+  deep`, `execution: foreground`, given the standard sections its concern owns, the file its column
+  names, and every hand-over addressed to that column quoted verbatim. Its whole task is to apply them
+  — the replacement as given, nothing else changed, no commit — and to return the read-to-EOF line and
+  one row per hand-over: `applied`, or `refused — <the check it owns that the replacement would break>`.
+  The orchestrator neither rewords a hand-over nor applies one itself.
+- **The receiving concern keeps its own limits.** #3 still moves no grading value, and #1 still leaves
+  every Section C field present and the literal strings the exercise prompt greps for intact — a
+  hand-over may reword inside a field, never remove one; a replacement that would cost either is
+  `refused`, never adapted.
+- **It is a dispatch of its own, held to the acceptance check below** with one row per hand-over in
+  place of one row per check, and it is not a ripple: it spends neither of this phase's two re-dispatch
+  counts. What it changes is then subject to **Ripples** like any other fix, and Phase 3 runs after it.
+- **A hand-over this run cannot land is said, never shipped in silence**: one a concern `refused`, or
+  one addressed to a concern this `SCOPE` does not dispatch (`extend` runs #2 and #1 only), goes in the
+  self-report and on Phase 5's hand-over line.
+
+**A ruling handed to the run is split along the same column.** When Victor launches the run naming a
+ledger ruling whose route or doctrine half is this prompt's to apply, the orchestrator quotes it
+verbatim in the first dispatch of each concern whose column holds one of its sites, naming to each
+only its own; where several columns hold a site, the first of them in dispatch order applies it and
+the later ones audit it like any other fix. No column is widened for a ruling, and no concern is told
+to edit another's section.
 
 **`PROGRESS.md` is read-only for this pipeline.** Invariant 15 is audited here, never repaired here: the
 standard's Section E gives the route's projection to `sql-plan-prompt` (seeds and re-syncs it) and
@@ -228,7 +270,10 @@ graded work is nobody's.
 - The outputs the plan expects must be the outputs that prompt actually writes.
 - Anything scheduling notes, Q&A or simulations **comes out**, collapsed into one §Z line. Anything the
   plan *describes* rather than *points at* (exercise format, note quality, Q&A shape) comes out too —
-  Section E's table decides who owns what.
+  Section E's table decides who owns what. **In the doctrine you take it out yourself; in route §1–§3
+  you hand it over** — passage and replacement, under the fence paragraph above — and you read the
+  route to EOF to find it: a grep of §2 does not discharge Section E. The grading-markers row over
+  route prose stays specialist 3's own.
 - **§8c is the one exception and is not to be deleted.** Simulation *readiness* — that a test may only
   demand techniques of closed steps — is a fact about SQL knowledge and belongs here; simulation
   *content* (format, time limit, bank, tracker, config) does not. Check §8c states the rule but not the
@@ -267,14 +312,17 @@ not re-dispatch on it, and let Phase 4's gate do the rest.
 
 **A specialist that dies mid-run takes the dispatch ladder in `_agent-runtime-standard.md` → "Dispatch
 contract"** — read what it persisted, else resume it, else re-dispatch it cold — and never advance to
-the next specialist without its trace. Two things that ladder cannot say and this prompt must. Its
+the next specialist without its trace. Three things that ladder cannot say and this prompt must. Its
 **first** rung is load-bearing here and the easiest to skip: these specialists write their fixes
 straight into the plan files and never commit, so a dead one has usually already left part of its work
 in the tree — read those files before treating it as lost. And a **resume is free** — where the runtime
 can restore the agent's transcript, tell it what is already on disk and have it write the fixes it had
 already concluded; that spends neither of Phase 2's two re-dispatch counts, the acceptance check's above
 and **Ripples'** below. Only the cold re-dispatch after a failed resume spends **Ripples'**
-one-per-concern-per-run budget.
+one-per-concern-per-run budget. **Whatever a recovery saves that is not itself a fix** — a rescued
+trace, a diff, a copy of a section — **goes to the runtime's scratch path outside the repository**
+(`_agent-runtime-standard.md` → "Authorship and commit boundary"), never into the working tree: Phase 4 stages by name, so a stray file
+would not be committed, but it would stay behind as a write this run never declared.
 
 **Ripples.** If a fix invalidates a concern already reviewed, re-dispatch that one — **at most one
 re-dispatch per concern per run**. Remaining ripples go in the self-report, except a verified factual
@@ -342,6 +390,17 @@ planner had to run again, so a remapped route kept warning it was stale for week
 quietly described a route that no longer existed. The order is `/sql-plan` → `/sql-plan-audit` →
 **`/sql-plan` again when this line fires** → `/sql-exercises`, and it is doctrine §9's `G1c`.
 
+**A hand-over Phase 2 could not land gets a line of its own, printed after whichever closing above
+applied:**
+
+```text
+⚠ N hand-overs unapplied — <section>: refused by #n (<check>) · <section>: #n outside SCOPE = extend
+```
+
+One a concern refused is a disagreement between two specialists, and the self-report carries it as a
+finding; one outside this run's `SCOPE` is applied by a `SCOPE = full` run. With none unapplied, this
+line is not printed.
+
 ## Hard rules
 
 - **Top model for every subagent** (`reasoning tier: deep`). Four cold auditors firing rarely on the file that
@@ -354,9 +413,11 @@ quietly described a route that no longer existed. The order is `/sql-plan` → `
 - **Never recompute the route's `Coverage SHA-256`.** Report the mismatch; the digest is the staleness
   signal, and refreshing it without remapping the bullets destroys it.
 - **Findings are fixed in place, not reported for later.** A report Victor must apply by hand is the
-  failure mode the whole system exists to avoid. **One exception, `PROGRESS.md`** — audited, never
+  failure mode the whole system exists to avoid. **Two exceptions: `PROGRESS.md`** — audited, never
   edited, never staged; the projection belongs to `sql-plan-prompt`, so the finding hands off to
-  `/sql-plan {LEVEL}` instead of being applied here.
+  `/sql-plan {LEVEL}` instead of being applied here. **And a hand-over Phase 2 could not land** —
+  refused, or addressed to a concern this `SCOPE` does not dispatch — which Phase 5 prints rather than
+  anyone applying it across a fence.
 - **Never schedule, run or edit the notes, Q&A or simulation tracks.**
 
 ## Final step — pipeline self-report
