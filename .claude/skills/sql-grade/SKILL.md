@@ -164,8 +164,9 @@ puts them on your side:
 **Before staging, check the returned list against what the score owes** — the one close-out check this
 door keeps. It names `PROGRESS.md` whenever an exercise was graded for the first time or the file's
 status moved, unless `{FILE}` is an `R{n}-repaso.sql`; `{PLAN}` whenever a first-pass exercise was graded
-for the first time or its §3 status moved — a run of re-grades alone that moves neither the file's
-`PROGRESS.md` row nor a §3 status owes neither file; `MISTAKES.md` whenever the summary shows a ⚠️ or ❌; and
+for the first time, its §3 status moved, or 4c-bis changed a coverage checkbox — including a look-back-only
+change. A run of re-grades alone that moves neither the file's `PROGRESS.md` row, a §3 status nor a coverage
+checkbox owes neither file; `MISTAKES.md` whenever the summary shows a ⚠️ or ❌; and
 `practice/sql/PLANNING.md` whenever a §3 row went to `closed ✅`. A file owed and missing from the list,
 or listed and absent from `git status`, is reported, and is a deviation of this run on the branch step
 that owed it (below) — unless the report states that skip under the branch's Step 4, which permits one.

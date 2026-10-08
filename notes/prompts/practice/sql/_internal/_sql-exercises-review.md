@@ -459,9 +459,33 @@ Then refresh the totals line under the table.
 This prompt is the only one that can do this, and `sql-plan` is explicitly forbidden from guessing it:
 only the grading run holds both halves — each scored exercise's text and the step's bullet list — so
 decide from those two which coverage bullet each one tested. In the step's
-`**Coverage bullets:**` list, flip `- [ ]` to `- [x]` for **every bullet a graded exercise of this run
-actually drilled** — the concept was exercised and scored, not merely adjacent to the topic. Leave the
-rest untouched.
+`**Coverage bullets:**` list, flip `- [ ]` to `- [x]` for **every bullet a scored first-pass exercise
+of this step actually drilled** — the concept was exercised and scored, not merely adjacent to the
+topic. Leave the rest untouched.
+
+**The exercises that mark are the step's scored ones, not only this run's.** Mark first from what this
+run graded. Then, **while a bullet of the step is still `[ ]`**, look back at the step's first-pass
+exercises an earlier run scored — the headers already carrying `✅ Corregido` or `❌ Revisado` — and
+mark what they drilled: in `{FILE}` (open it here and read it to EOF if Step 1 used a paste instead of
+disk), and then in every other file `{PLAN}` §1 lists for this step, each opened here and read to EOF.
+Nothing is graded again: this reads an exercise and its answer to say which bullet it drilled, and
+changes no exercise-header marker, counter or status. It is
+what reaches work scored before its bullet could be marked — a file graded before the step had a
+bullet list, a bullet `sql-plan` added to the step after one of its runs — and it is why the rule is
+stated over the step: `01-basics.sql`'s forty existing exercises were graded on 2026-07-22 and are fully
+settled, so Step 1 stops a run over that settled population before Step 4; their first-pass exercises
+could otherwise never mark a bullet of Step 0 (`REC-289`). A step with no `[ ]` left costs nothing.
+
+Two limits on that look-back. **Never on a step whose §3 row already read `closed ✅` before this
+run**: its checkboxes are the evidence for its close, whether `sql-step-close` has already written the
+drill markers or the legacy door's handoff is still pending. Do not change that evidence in a later
+grading run. **And first-pass only**: for `01-basics.sql`, the only legacy-format file, read `{PLAN}` §1
+and Step 0's `**Exercises:**` field here: #01–#20 are first-pass; #21–#40 are its review batch and mark
+nothing, like any `[Repaso]`. Current-format first-pass exercises carry `[Intro]`, `[Standard]` or
+`[Challenge]`.
+
+State the split in one line: "N bullets marcados por ejercicios de este run, M por ejercicios ya
+corregidos de [archivo]."
 
 Three rules, all of them the difference between a progress instrument and a decorative list:
 
@@ -469,8 +493,9 @@ Three rules, all of them the difference between a progress instrument and a deco
   same reason only *scored* moves a status in 4c.
 - **A bullet is never unmarked.** Not by a later batch, not by a re-review of the same file, not by a
   repaso.
-- **A repaso batch marks nothing** (`{TOPIC}` = `R1`–`R5`). It is uncounted by design, and that includes
-  here.
+- **A repaso-only run marks nothing and performs no look-back**, whether it grades an
+  `R{n}-repaso.sql` revision file or only `[Repaso]` exercises appended to a step's file. In a mixed run,
+  only scored first-pass exercises may mark a bullet.
 
 A step reaching `closed ✅` in 4c with `[ ]` bullets left is not an error to paper over: it means the
 route promised coverage the exercises never drilled. Leave the checkboxes honest and report it in the

@@ -89,6 +89,12 @@ Four things it will tell you that matter most here:
 - **Only a checked bullet marks**, never one merely adjacent to the topic, and never a `[Repaso]`
   exercise. A marker is never removed; the first file wins.
 
+**In a step with more than one file, the slug is the file holding the scored first-pass exercise that
+drills the bullet** — the first such file in `{PLAN}` §1 order when several do. The grader may have
+checked a bullet from an exercise an earlier run scored in another file of the step
+(`_sql-exercises-review.md` 4c-bis), so the file that just closed the step is not the answer by
+default: open the step's files and locate the exercise. That is reading, never re-grading.
+
 **Mirror it.** The bullet exists twice — in `notes/sql/coverage/{LEVEL}.md` and in the SQL section of
 `notes/coverage/{LEVEL}.md`. Both carry the same marker, verbatim. Diff the two SQL sections after
 writing and report the count; a marker in one and not the other is drift you introduced.
@@ -223,7 +229,7 @@ him a second command for it.
 | Target | Result |
 |---|---|
 | Step | 0 — Querying basics, 2 archivos, done condition verificada |
-| Drill markers | 8 bullets marcados `✅ sql:02-execution-order-set-ops` en topic + mirror (139 bullets coinciden) |
+| Drill markers | 8 bullets marcados en topic + mirror — 5 `✅ sql:01-basics`, 3 `✅ sql:02-execution-order-set-ops`, cada uno con el archivo que tiene su ejercicio (139 bullets coinciden) |
 | Bullets sin drillar | 1 — `keyset pagination`, sin ejercicio puntuado. Step cerrado igualmente |
 | Conceptos sin bullet | ninguno (o: `NULLS FIRST` no está en el coverage — decide con `/coverage sql junior`) |
 | `/notes-plan` | n/a — un drill marker no cambia el digest |

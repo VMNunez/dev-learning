@@ -229,8 +229,8 @@ done condition, never from a count alone (`STANDARD` invariant 3).
 - Never renumber a closed step.
 
 **The `[x]` checkboxes are read too, and by the same rule.** `sql-exercises` in `review` mode marks a
-bullet the moment a scored exercise has drilled it — it is the only prompt that knows which bullet a
-given exercise tested, because it is the one that generated it. This planner **never sets a `[x]` and
+bullet once a scored first-pass exercise of its step has drilled it, under `_sql-exercises-review.md`
+4c-bis. That grading branch alone may turn exercise evidence into a checked bullet. This planner **never sets a `[x]` and
 never clears one**. It writes `[ ]` on bullets it is adding to a step for the first time, carries every
 existing checkbox across verbatim through any reconciliation — renumbering, rewording, regrouping — and
 lets the history gate below catch a lost one. The Guard 2 counts are per file and can never say which
