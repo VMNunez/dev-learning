@@ -91,17 +91,17 @@ in `02-execution-order-set-ops.sql` — a step's target is the sum of its files'
 | `15-report-queries.sql` | 13 | 0 | 0 | 0 | 8 | to create |
 
 > **One file, one schema (rule adopted 2026-07-22).** `01-basics.sql` keeps the old thin schema and is
-> closed at 40 exercises; everything from `02-` on carries the canonical bookstore schema in its own
-> SETUP block. **Three files legitimately do not** — `12-data-types-ddl.sql`, `14-live-database.sql`
-> and `15-report-queries.sql` work against the **TimeTrack** model (noted 2026-08-28, when the rule and
-> the done conditions of the day were found to contradict each other on paper; since 2026-10-08 no done
-> condition names a TimeTrack table — Steps 10 and 12 close on `Review:`, the capstone on `Timed:`). The reason is the same in all three and is the point of those steps: Step 10's deliverable is
-> a schema written from a blank editor precisely because `ddl-auto` has been generating TimeTrack's for
-> him, Step 12 reads an inherited database rather than a seeded one, and the capstone writes the report
-> queries TimeTrack needs. "One file, one schema" is a rule against *mixing* schemas inside one file,
-> not a rule that every file uses the bookstore. Step 0's 30 first-pass exercises are therefore split 20 + 10 across two files. This is
-> why the file numbers no longer match the step numbers — the mapping is this table, and the prompt's
-> path table was updated to match.
+> closed at 40 exercises; every later file is generated on whatever model its `TOPIC` builds. **Which
+> model that is — the canonical bookstore, another one, or no shared setup block at all — is the exercise
+> prompt's to say, not this table's** (`notes/prompts/practice/sql/sql-exercises-prompt.md` →
+> `## Canonical schema`, and Step 2 of its practice branch), so no list of them is kept here. (Corrected
+> 2026-10-08: this note used to say everything from `02-` on carried the bookstore schema in its own
+> SETUP block, except three files on the TimeTrack model. Read against the prompt that day, two of the
+> three (`12-`, `14-`) and one of the rest (`11-`) did not match what it builds for their topics; the
+> list was a copy nothing checked.) "One file, one schema" is a rule against *mixing* schemas inside one
+> file, not a rule that every file uses the bookstore. Step 0's 30 first-pass exercises are therefore
+> split 20 + 10 across two files. This is why the file numbers no longer match the step numbers — the
+> mapping is this table, and the prompt's path table was updated to match.
 
 **First-pass total when the track is done: 216 exercises across 15 files.** Review batches add on top
 and are deliberately not budgeted. Track-wide today: **50 written** — 40 in `01-basics.sql` and 10 in
@@ -109,35 +109,17 @@ and are deliberately not budgeted. Track-wide today: **50 written** — 40 in `0
 only its 20 first-pass exercises count: the route stands at **20 first-pass scored of 216**, and the
 other 20 are that file's review batch. Every file from `03-` on is still to generate.
 
-**Two header formats exist, and that is deliberate.** The prompt handles both — do not "fix" either
-one by hand.
-
-*Legacy* — `01-basics.sql` only, written before the prompt existed. (the old `02-joins.sql`, now renumbered `03-joins.sql`, was the other one;
-it was deleted and will be regenerated in the current format, so `01-basics.sql` is the last file that
-will ever carry this.)
-The answer goes directly under the description, and grading records its verdict on the header line
-(the example is a graded exercise):
-
-```sql
--- #07 | LEFT JOIN — finding missing data ✅ Corregido 2026-07-22
--- List every author who has never had a book ordered.
-SELECT ...
-```
-
-*Current* — everything the prompt generates from now on, including new batches appended to a legacy
-file:
-
-```sql
--- Exercise 41 [Standard]: LEFT JOIN — finding missing data ✅ Corregido 2026-07-22
--- List every author who has never had a book ordered.
--- Your answer:
-SELECT ...
-```
-
-Appending to a legacy file leaves it **mixed**, and the prompt warns you and asks before doing it —
-answer yes; a mixed file is expected and correctly handled. `review` mode reads both (legacy answers
-are the SQL lines between one `-- #NN |` and the next), so the 40 answered exercises in `01-basics.sql`
-will score normally. **Grading records its verdict on the exercise's header line in both formats.**
+**Two header formats exist on disk, and that is deliberate** — do not "fix" either one by hand.
+`01-basics.sql`, written before the exercise prompt existed, is the only file in the legacy format (the
+old `02-joins.sql`, now renumbered `03-joins.sql`, was the other one; it was deleted and regenerates in
+the current format); every batch the prompt generates is in the current one. What each format looks like,
+what the prompt asks before appending to a legacy file, and how a grading run finds the answer in each
+are the exercise prompt's to say — `notes/prompts/practice/sql/_internal/_sql-exercises-practice.md`
+(Steps 1 and 3) and `notes/prompts/practice/sql/_internal/_sql-exercises-review.md` Step 1 — and are not
+restated here; the 40 answered exercises in `01-basics.sql` scored normally on 2026-07-22. (Collapsed to
+this pointer 2026-10-08: the passage used to reproduce both formats with an example of each, the review
+branch's parsing rule and the prompt's append question — a copy of what those two files own.)
+**Grading records its verdict on the exercise's header line in both formats.**
 Which marker records which verdict, and when an already-marked exercise is graded again or left alone,
 is owned by `notes/prompts/practice/sql/_internal/_sql-exercises-review.md` — Step 2b for the markers,
 Step 1 for the re-grade and skip policy — and is not restated here. (Corrected 2026-10-07: this
@@ -253,24 +235,38 @@ step used to start from were deleted on 2026-07-22 and are not part of that 22 �
 **Difficulty rises inside every step, and later steps integrate earlier ones.** Two rules, both
 mechanical:
 - Every batch spans intro → challenge; the exercise prompt's own difficulty split does this and is not
-  overridden on a first-pass run (a review batch deliberately skips Intro — see doctrine Moment 2b).
+  overridden on a first-pass run. Two kinds of batch sit outside that span, and how each is split is the
+  prompt's to say, not this plan's (`notes/prompts/practice/sql/_internal/_sql-exercises-practice.md`
+  Step 3 and, for the capstone, the `REPORT-QUERIES` block of `_sql-exercise-seeds.md`): a review batch
+  (doctrine Moment 2b), and the capstone, Step 13, which introduces no syntax and so has nothing for an
+  opening tier to introduce (stated here 2026-10-08; until then only Step 13 said it, against a rule
+  that read as universal).
 - **From Step 5 on, at least two Challenge exercises must combine the step's topic with an earlier
   one** (one is enough from Step 4). This is not pasted: the prompt applies it from the topic alone, and
   the `**Reinforces:**` line of each step names which earlier step to combine with, so it is never a
   guess. Without it a late step is drilled in isolation and teaches nothing about composition — which is
-  exactly what a screening tests, since no real question is ever one topic wide.
+  exactly what a screening tests, since no real question is ever one topic wide. **Three steps sit
+  outside that floor, and the exemption is the prompt's own** (`_sql-exercises-practice.md`, its
+  cross-topic integration rule): the self-contained design topics of Steps 9 and 10, which have no
+  shared query schema to compose over and reach back through their `**Focus:**` and `**Reinforces:**`
+  lines instead, and the capstone, where every exercise is an integration already.
 
 > **A note on `TOPIC` values.** The `TOPIC` in a Moment 2 config is the *prompt's* vocabulary, not a
 > coverage section name. Two steps may pass the same `TOPIC` with different `FOCUS` values without
 > either of them claiming the same coverage bullet — invariant 1 is about coverage bullets only.
 
-> **Three coverage sections are split across two steps each, at bullet level.** `JOINs` and
+> **Five coverage sections are split across steps, at bullet level.** `JOINs` and
 > `Aggregates and grouping` each hand their diagnostic half to Step 3, because every pitfall on that
-> list is an *aggregate over a broken join* and cannot be stated before Step 2; and
+> list is an *aggregate over a broken join* and cannot be stated before Step 2;
 > `Filtering and NULL handling`, which the 2026-08-03 recalibration merged out of two older sections,
 > hands its pattern-matching and precedence half to Step 0 and keeps its three-valued-logic half for
-> Step 4. The split is by bullet, not by section name, and the `**Coverage bullets:**` list of each step
-> is what makes it checkable.
+> Step 4; and `Querying basics` and `Set operations` are Step 0's except four bullets that cannot be
+> drilled there — three need a join and are Step 1's (`Qualified column references`, `SELECT *` vs
+> named columns, `UNION` vs `JOIN`), and `SQL string literals vs quoted identifiers` is read off an
+> error message and is Step 12's, which makes `Querying basics` the one section claimed by three
+> steps. The split is by bullet, not by section name, and the `**Coverage bullets:**` list of each step
+> is what makes it checkable. (Corrected 2026-10-08: this note still counted three sections, each
+> split across two steps, after that day's route review moved those four bullets out of Step 0.)
 
 ---
 
@@ -650,7 +646,7 @@ the post-gate half ahead of window functions and the capstone because a live exe
 **Coverage:** `PostgreSQL specifics`, `Common string functions`
 **Reinforces:** Step 2 — `GROUP BY DATE_TRUNC('month', ...)` is `GROUP BY` on an expression instead of a column; Step 6 — `NOW()` and `CURRENT_DATE` stay fixed inside a `BEGIN` … `COMMIT`
 **Moment 2 config:** `TOPIC = dates-strings`, `COUNT = 12`
-**Focus:** `DATE_TRUNC` and grouping by month, `EXTRACT`, `INTERVAL` arithmetic, `NOW()` vs `CURRENT_DATE`, `::` casting a `TIMESTAMP` in `WHERE` and `JOIN` conditions, standard SQL vs vendor extensions, and one exercise each for `||` with `NULL` propagation, `LOWER`/`UPPER`, `TRIM`, `LENGTH`, `SUBSTRING` and `REPLACE` as the Intro half of the batch — the index caveats inside the `EXTRACT` and `LOWER`/`UPPER` bullets are Step 11's sargability and are not drilled here
+**Focus:** `DATE_TRUNC` and grouping by month, `EXTRACT`, `INTERVAL` arithmetic, `NOW()` vs `CURRENT_DATE`, `::` casting a `TIMESTAMP` in `WHERE` and `JOIN` conditions, standard SQL vs vendor extensions, and one exercise each for `||` with `NULL` propagation, `LOWER`/`UPPER`, `TRIM`, `LENGTH`, `SUBSTRING` and `REPLACE` — the index caveats inside the `EXTRACT` and `LOWER`/`UPPER` bullets are Step 11's sargability and are not drilled here
 
 **Concepts:** `DATE_TRUNC` and grouping by month, `EXTRACT`, `INTERVAL` and date arithmetic,
 `NOW()` vs `CURRENT_DATE`, `::` casting a `TIMESTAMP` to a `DATE`, standard SQL vs vendor extensions,
@@ -731,7 +727,7 @@ and met the `NULL` it treats specially (Step 4) — and it is late because a scr
 **Coverage:** `Schema design`
 **Reinforces:** Step 4 — `NULL` in a `UNIQUE` constraint and in a `CHECK`; Step 6 — a constraint violation is the race an application check cannot win, and `ON CONFLICT` is how you handle its verdict
 **Moment 2 config:** run 1 — `TOPIC = schema-design`, `COUNT = 10`
-**Focus:** primary and foreign keys, primary key vs `UNIQUE`, `ON DELETE` / `ON UPDATE`, `NOT NULL`, `UNIQUE`, composite uniqueness, `CHECK` with `NULL`, constraint vs application-side check — constraints read from the SETUP schema and triggered with Step 6's `INSERT`/`UPDATE`/`DELETE`, never written with `CREATE TABLE`/`ALTER TABLE` (Step 10)
+**Focus:** primary and foreign keys, primary key vs `UNIQUE`, `ON DELETE` / `ON UPDATE`, `NOT NULL`, `UNIQUE`, composite uniqueness, `CHECK` with `NULL`, constraint vs application-side check — constraints read from the table definitions each exercise carries and triggered with Step 6's `INSERT`/`UPDATE`/`DELETE`, never written with `CREATE TABLE`/`ALTER TABLE` (Step 10)
 **Moment 2 config:** run 2 — `TOPIC = normalization`, `COUNT = 5` *(append al mismo archivo)*
 **Focus:** one-to-many and many-to-many modelling, natural vs surrogate keys, normalization and the anomalies it prevents — the update/insert/delete anomaly only, no 1NF/2NF/3NF by name (middle) — reading a relational schema, by reading the schema rather than writing DDL
 
@@ -942,10 +938,11 @@ driving table so zero-row groups survive, `COALESCE(SUM(...), 0)`, bound paramet
 interpolated values, verifying a report total against a simpler control query, and reviewing the result
 for the four classic failures — join, predicate, mutation and pagination.
 
-The prompt's `report-queries` topic already builds its own TimeTrack setup block (`users`, `projects`,
-`time_entries`) instead of the bookstore, marks every exercise Challenge, and states a 10-minute
-target per exercise — nothing extra to add to the config. (Moved below `**Concepts:**` on 2026-10-08,
-out of the field block Section C keeps contiguous.)
+Nothing extra to add to the config: what the prompt's `report-queries` topic builds — its setup block,
+how its exercises are labelled, the time target each one states — is the exercise prompt's to say
+(`notes/prompts/practice/sql/_internal/_sql-exercises-practice.md` Step 2 and the `REPORT-QUERIES` block
+of `_sql-exercise-seeds.md`), not this step's. (Moved below `**Concepts:**` on 2026-10-08, out of the
+field block Section C keeps contiguous.)
 
 **Coverage bullets:**
 
@@ -1007,11 +1004,6 @@ significa que ese step no desbloquea ninguna técnica sobre la que un test pueda
 
 **Estado hoy (2026-08-28): 0 steps `closed ✅` → ninguna simulación SQL todavía.** El primer test toca al
 cerrar el **Step 2**: basics + joins + `GROUP BY` ya es un examen real.
-
-> ⚠️ **Los cinco tests que ya están en el banco (`practice/simulations/sql/` 01–05) están bloqueados.**
-> Se escribieron antes de que existiera este plan y **los cinco piden window functions**, o sea el Step 8
-> de esta ruta (Step 7 hasta el 2026-10-07, cuando `REC-288` adelantó DML y transacciones al Step 6). No
-> los abras hasta que cierre: no es que salgan mal, es que no se pueden empezar.
 
 ---
 

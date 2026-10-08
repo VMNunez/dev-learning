@@ -8,9 +8,10 @@ the level's route file (§1) — says *in what order*,
 
 **Database:** PostgreSQL (local, pgAdmin). **Schema:** the canonical bookstore schema defined in
 `notes/prompts/practice/sql/sql-exercises-prompt.md` — that prompt is the single source of truth for
-it, so its tables are not listed here. A route may put some of its files on a different model instead.
-Which files those are, and why, is the route's to say in its §1, not this file's: no list of
-them is kept here, because a copy here is what a route change would leave false.
+it, so its tables are not listed here. Some topics are generated on a different model, or with no shared
+setup block at all. Which topics those are, and why, is that same prompt's to say — the model follows the
+`TOPIC`, and a route only chooses which `TOPIC` each of its files takes — so no list of them is kept here
+or in a route: a copy is what a prompt change would leave false.
 
 > ⚠️ **A file whose schema predates the canonical one is closed, not extended** — one file, one schema
 > (invariant 11). Which files are in that state is the route §1's to say, and how a file sets up its
@@ -105,9 +106,10 @@ named below. Each moment states its trigger and the prompt config or skill to in
 > than copying it here (invariant 9). `MODE` and `TOPIC` are always required;
 > `LEVEL`, `COUNT` and `FILE` are optional overrides (`LEVEL` blank means `junior`, and it is what selects
 > the route file — pin it on any non-junior run), **with the one exception the prompt states itself:
-> `MODE = reinforce` requires `FILE`**. **`FOCUS` and `REVIEW` are not pasted keys**: the prompt derives them from the
-> route §2 step whose `TOPIC` matches, which is why every step below still states its focus — it is read
-> from the plan, not typed into the chat. Pasting `FOCUS = …` is a dead instruction.
+> `MODE = reinforce` requires `FILE`**. **`FOCUS` and `REVIEW` are not pasted keys**: the prompt derives both.
+> On a first-pass run `FOCUS` is the `**Focus:**` line of the route §2 step whose `TOPIC` matches — which is
+> why every step of the route states its focus: it is read from the plan, not typed into the chat — and
+> Moment 2b says where each of the two comes from on a review run. Pasting `FOCUS = …` is a dead instruction.
 
 ### Moment 1 — Read the concept list
 
@@ -498,9 +500,15 @@ rutas vivas, cada nivel responde por sí mismo por su readiness. Aquí solo comp
 La configuración concreta y el formato del test los pone `simulation-generator-prompt.md`; esta sección
 solo dice contra qué steps se puede tirar.
 
-**Quién la mantiene:** la columna de técnicas la escribe `sql-plan-prompt` al autorar el step; la línea
-de estado la reescribe `sql-step-close` en el mismo commit en que el step pasa a `closed ✅`.
-`sql-plan-audit` la audita bajo el invariante 16 y corrige una línea de estado que contradiga su propia tabla.
+**Quién la mantiene:** la columna de técnicas la escribe `sql-plan-prompt` al autorar el step, y
+`sql-plan-audit` la celda de un step que añade en su propio run. Es también `sql-plan-prompt` quien decide
+el **gate del primer test** de la línea de estado, y quien escribe esa línea en una ruta nueva. El conjunto
+cerrado de la línea lo reescribe `sql-step-close` cuando un step cierra, arrastrando el gate tal cual:
+nunca lo elige, lo mueve ni lo suelta. `sql-plan-audit` audita columna y línea bajo el invariante 16:
+corrige una línea de estado que contradiga su propia tabla, restaura desde el historial de la ruta un gate
+que la línea haya perdido y retira cualquier afirmación sobre un spec concreto escrita junto a ella. El
+step del gate no lo elige nadie más: si falta y el historial no lo tiene, se le debe un run al planner
+(§9, G1c).
 
 ---
 
@@ -515,7 +523,7 @@ prompt at the point where the file it *reads* has just become accurate, and befo
 | **G0 — Branch sync** ✅ 2026-07-22 | Before the first SQL session on any branch | *(no prompt — `git merge main` into the branch)* | Appending to a stale file loses exercises at merge time. Done once on `fix/backend-backlog`; re-check on every future branch. |
 | **G1 — Step ritual** | The step's done condition passes | *(automatic — `sql-grade` hands off to `sql-step-close`, §4)* | The SQL closing ritual updates and checks the tracking files before later gates consume them. |
 | **G1b — Plan al día** | Right after G1, when a step closes · when `notes/sql/coverage/{LEVEL}.md` grows (i.e. after G2) · when `sql-exercises-prompt.md` changes | `notes/prompts/practice/sql/sql-plan-audit.md` · `LEVEL = {level}`, `SCOPE = full` (`SCOPE = extend` when the only trigger was new coverage sections) | This file is the one that rots fastest — every closed step, every new coverage section and every prompt change leaves it slightly less true, and nothing else audits it. It runs *after* G1 so it reads the status G1 has just made accurate, and before the next step starts building on a stale plan. Safe to run repeatedly: a clean plan comes back unchanged. |
-| **G1c — Replan owed** | When the audit reports `/sql-plan {LEVEL} owed`: the route grew, was re-pointed, or its coverage fingerprint is stale (invariant 12) | `notes/prompts/practice/sql/sql-plan-prompt.md` · `LEVEL = {level}`, `MODE = update` | Only the planner refreshes the fingerprint and re-syncs the route's projection in `PROGRESS.md`. A stale fingerprint requires a replan even when the audit added no step; the audit preserves that signal. |
+| **G1c — Replan owed** | When the audit's closing line reports `/sql-plan {LEVEL} owed`. What fires that line is listed in `sql-plan-audit.md` Phase 5 — four outcomes today: the route grew or was re-pointed · its coverage fingerprint is stale (invariant 12) · its `PROGRESS.md` projection is broken or stale (invariant 15) · its readiness status line carries no first-test gate and the route's history holds none to restore (invariant 16) | `notes/prompts/practice/sql/sql-plan-prompt.md` · `LEVEL = {level}`, `MODE = update` | Only the planner refreshes the fingerprint, re-syncs the route's projection in `PROGRESS.md` and decides which step the first-test gate names — the audit may do none of the three. A stale fingerprint requires a replan even when the audit added no step; the audit preserves that signal. |
 | **G2 — Coverage refresh** ✅ 2026-07-18 | Once, before the selected route's first step; again if a real job posting reveals a gap | `notes/prompts/knowledge/coverage/coverage-prompt.md` · `TOPIC = sql`, `LEVEL = {level}`, `MODE = update` (logged in `notes/prompts/_internal/_run-tracker.md`) | Coverage is the root of this plan. Refresh it *before* building on it, not after. |
 | **G3 — PROGRESS accurate** | After the selected route's final step closes | `notes/prompts/strategy/tracking/progress-update-prompt.md` · `MODE = active` (its dedicated SQL subagent counts the exercise files in committed history) | Measures the whole `Exercise route` section in one pass, catching anything the per-step ritual missed. **It reports that drift, it does not repair it** — auditor since 2026-08-05: a mismatch is fixed by the section's owner (`sql-exercises MODE = review` §4b, or `sql-step-close` for a `Total` row that no longer adds up), and the gate closes on a **clean drift report**, not on the run happening. Must precede G4. |
 | **G4 — Roadmap resync** | After G3 | `notes/prompts/strategy/tracking/roadmap-review-prompt.md` | The roadmap's SQL gate can only be marked cleared once `PROGRESS.md` says the track is finished. |
@@ -573,7 +581,8 @@ Cross-checks between sections. Verify these whenever this plan is edited:
    22; anything above 12 is split into runs (a file's total may be higher when several steps
    write into it). Any preserved legacy exception is documented in its level's route §2 and never
    used as a precedent for a new step.
-5. **§0 vs the route §3** — the Current step in §0 is the first step row in the route §3 that is not ✅. Every row of that
+5. **§0 vs the route §3** — the Current step in §0 is the first step row in the current level's route §3 that
+   is not ✅, and §0's *Current level* row names a route file that exists. Every row of the route §3
    table is a step: nothing else is tracked there.
 6. **§0 Next revision point vs the route** — the Next revision point in §0 is a real point from the
    current level's route §1, and the first one whose trigger has not fired yet given the §0 Current step.
@@ -590,7 +599,7 @@ Cross-checks between sections. Verify these whenever this plan is edited:
    given, and every config it says to paste uses only that prompt's real keys
    (the key set is **read from `sql-exercises-prompt.md`'s own `## Configuration` block**, never from a
    copy kept here — a copy is what went stale when `LEVEL` was added on 2026-08-02 and no sweep reached
-   this line; `FOCUS` and `REVIEW` are not keys at all, being derived from the route §2 step). A plan pointing at a moved prompt or an invented key rots silently: the
+   this line; `FOCUS` and `REVIEW` are not keys at all: the prompt derives both, as §2 states). A plan pointing at a moved prompt or an invented key rots silently: the
    run happens and produces something else. **And the reverse**: every value the prompt says it derives
    from this plan must be here **in the literal shape it looks for** — a `**Moment 2 config:**` line
    carrying `COUNT = n`, and a `**Focus:**` line, in every route §2 step; plus an exercise range on each run
@@ -643,7 +652,8 @@ Cross-checks between sections. Verify these whenever this plan is edited:
     relocated into `junior/` once, wholesale, when the layout was made symmetric (2026-08-03). Two files
     stay at `practice/sql/` root because neither belongs to a level: this doctrine, and `MISTAKES.md`,
     one shared log for the whole track — a concept failed at junior and re-failed at middle is one row,
-    not two, which is why its `Step` column is qualified (`junior:3`, never `3`).
+    not two (how a row records which level it came from is its writer's to define —
+    `_sql-exercises-review.md` Step 5 — not this plan's).
 
 14. **A closed step is never reopened and never renumbered** — new coverage scope landing on a closed
     step goes to its `**Pending additions:**` field, and a reinforcement run drills it. Reopening a step
@@ -661,9 +671,14 @@ Cross-checks between sections. Verify these whenever this plan is edited:
     preserves every graded figure already there (invariant 14 applies to the projection too).
 
 16. **Readiness lives in the route, and it is complete.** Toda fila no-`R{n}` de la §3 de la ruta lleva su
-    celda de técnica — `—` solo donde el step no desbloquea nada que un test pueda exigir, nunca vacía —
-    y la línea de estado bajo la tabla nombra **exactamente** el conjunto de steps `closed ✅` de esa
-    misma tabla. La §8c de esta doctrina tiene la regla y ningún mapeo propio.
+    celda de técnica — `—` solo donde el step no desbloquea nada que un test pueda exigir, nunca vacía — y
+    la línea de estado bajo la tabla lleva dos cosas: **exactamente** el conjunto de steps `closed ✅` de
+    esa misma tabla, y el **gate del primer test** — una frase que nombra el step de esa tabla cuyo cierre
+    hace posible un primer test realista. Qué step nombra lo decide `sql-plan-prompt` con el orden de la
+    ruta; quien reescribe el conjunto cerrado lo arrastra sin elegirlo, moverlo ni soltarlo, y una línea
+    que lo ha perdido se repara restaurando la frase desde el historial de la ruta, nunca eligiendo un
+    step. El bloque de readiness habla en técnicas y steps y no nombra ningún spec de un banco de
+    simulaciones. La §8c de esta doctrina tiene la regla y ningún mapeo propio.
 
 > **These sixteen are numbered identically to Section D of
 > `notes/prompts/practice/sql/_internal/_sql-plan-standard.md`**, because `sql-plan-audit` splits the work
