@@ -183,9 +183,34 @@ log for the whole track: a concept failed at junior and re-failed at middle is o
     toward a target and never flips a status.
 11. The level's last step is an **integration step under time pressure** (B8): requirements in prose, no
     new syntax, timed.
-12. Validate the complete route: no step may rely on a later one; every step's `Reinforces` names a real
+12. Fill §3's **readiness column** and write the **readiness status line** under that table (`STANDARD`
+    A2 §3 and invariant 16; Section E names this prompt as the column's author and the gate's). Each
+    step's cell names what a test may ask for once that step reads `closed ✅`, in techniques — `—`
+    where the step unlocks nothing a test could be gated on, never blank; revision points have no row.
+    The status line holds two things. The **closed set** is derived: exactly the steps whose §3 status
+    reads `closed ✅`, which on a new route is none. The **first-test gate** is a decision, and it is
+    this planner's: one sentence naming the step of this table whose close makes a realistic first test
+    possible, with its one-clause reason, decided with the route's order and against the same objective
+    that orders the steps (step 3).
+    **On a route that already exists, both are carried, not re-made**: every technique cell, the
+    column's header, the line and the readiness wording around it cross verbatim. A new step gets a
+    new cell, and a step this run split, merged or moved bullets out of has its cell rewritten to what
+    its close now unlocks — no other cell changes. The gate is re-decided only while the step it names
+    is open, and only when this run moved, split or merged that step; its number follows that step when
+    an open step is renumbered — by this run, or by a `sql-plan-audit` run before it, which leaves the
+    sentence's reason describing a step other than the one it numbers. Say any of these in the final
+    report, and a cold-review finding against a gate this run carried goes there too, never into the
+    line. A sentence beside the line that names a simulation spec is not readiness wording: leave it as
+    found and report it for `sql-plan-audit`, whose specialist 3 removes it (invariant 16). A route that
+    arrives with **no** gate sentence gets one decided here only when the route
+    file's own history never carried one (`git log -p -- {PLAN}`); a sentence it once carried is not
+    re-decided — report it lost, for `sql-plan-audit`, which restores it (invariant 16).
+13. Validate the complete route: no step may rely on a later one; every step's `Reinforces` names a real
     earlier step and the concrete concept it reuses; the counts in the file table, the step entries and
-    the progress table agree with each other and with the Guard 2 inventory.
+    the progress table agree with each other and with the Guard 2 inventory; every §3 step row carries
+    a technique cell, and the status line names exactly the `closed ✅` set of that table and one gate
+    — on a carried line, a closed set that disagrees, or a gate step 12 reported lost, is said in the
+    final report for `sql-plan-audit` (invariant 16) and is not rewritten here.
 
 ## Status is read, never invented
 
@@ -223,6 +248,9 @@ forward. The plan's freshness header is out of its scope, `Coverage SHA-256` abo
 normalisation lives in `_coverage-standard.md`, which this reviewer is not given, and `sql-plan-audit`,
 `sql-exercises` and `validate-prompt-system.ps1` each recalculate the value independently — so a digest
 finding here is a value the reviewer could not compute, judged against a definition it could not read.
+§3's technique cells and the closed set on its status line are out of its scope for the same reason —
+`sql-plan-audit` checks both under `STANDARD` invariant 16, which this reviewer is not given. The
+first-test gate is in scope, and the last bullet below is the whole rule it is judged by.
 It does not edit files. It must challenge:
 
 - whether every step's `Why here` survives contact with the step before it, or is a label;
@@ -233,7 +261,11 @@ It does not edit files. It must challenge:
 - any step that carries a question, a note task or a simulation task instead of an exercise one (B5);
 - whether the revision cadence actually holds at every third file (B4);
 - whether the route, drilled in order, produces someone who passes the SQL half of a screening at this
-  level.
+  level;
+- whether the first-test gate under §3 names the **earliest** step by whose close the techniques
+  unlocked so far already compose into a realistic first test — argued in techniques and steps against
+  the objective, never against any test's content, which this plan does not describe and the reviewer
+  is not given.
 
 Acceptance proof must include `N steps reviewed`, an explicit dependency-order verdict, a ceiling
 verdict, and every proposed correction. Re-dispatch once if that proof is absent. Apply accepted
@@ -294,9 +326,12 @@ it from here. A revision table without it declares points nothing can schedule.
 
 ## §3 — Progress
 
-| Step | Topic | Exercises file | Scored / target | Status |
-|------|-------|----------------|-----------------|--------|
-| 0 | Querying basics | `01-basics.sql` + `02-...` | 20 / 30 | in progress ⏳ |
+| Step | Topic | Exercises file | Scored / target | Status | Técnicas que desbloquea al cerrar |
+|------|-------|----------------|-----------------|--------|-----------------------------------|
+| 0 | Querying basics | `01-basics.sql` + `02-...` | 20 / 30 | in progress ⏳ | `SELECT`/`WHERE`/`ORDER BY`, operaciones de conjuntos |
+
+**Estado hoy (YYYY-MM-DD): 0 steps `closed ✅` → ninguna simulación SQL todavía.** El primer test toca
+al cerrar el **Step 2**: basics + joins + `GROUP BY` ya es un examen real.
 
 ## Out of scope at this level
 
@@ -307,6 +342,8 @@ Rules:
 
 - Step headings are unique and ordered numerically. A closed step is never renumbered.
 - `Status` in §3 is exactly `not started`, `in progress ⏳`, or `closed ✅`.
+- §3's technique column and the readiness status line under its table are algorithm step 12's. The
+  step and reason shown above are junior's, an example of the shape and not a value to copy.
 - Every `Coverage bullets` line is exactly `- [ ] {exact bullet}` or `- [x] {exact bullet}`. The checkbox
   is plan metadata, stripped before exact matching against `COVERAGE`; trailing evidence markers are
   handled by the normal scope-byte rule. `[x]` means a scored exercise has drilled it, written by
@@ -321,17 +358,24 @@ Rules:
   removed on the next reconciliation, not carried across.
 - The plan **names** the exercise prompt and points at it. It never describes exercise content, the
   difficulty split or the file format — `STANDARD` Section E decides who owns what.
-- Nothing about notes, interview Q&A or simulations appears here. That fence is the point of this track.
+- Nothing about notes, interview Q&A or simulations appears here, with the one carve-out `STANDARD`
+  states under "What this plan is NOT": **readiness**. §3's technique column and its status line are
+  that carve-out and nothing wider — techniques and steps, never a test's format, time limit, config
+  or bank, and never what one spec demands or which spec a step blocks (invariant 16). That fence is
+  the point of this track.
 
 ## History gate
 
 Before writing anything, take a verbatim copy of the existing `PLAN`'s §1 and §3 count rows, every
-status marker, and every §2 checked bullet. After the reconciliation, compare:
+status marker, every §2 checked bullet, and the readiness status line under §3. After the
+reconciliation, compare:
 
 - every step closed before the run is still closed;
 - every scored count is **≥** what it was;
 - every closed step keeps its number;
-- no bullet went from `[x]` back to `[ ]`.
+- no bullet went from `[x]` back to `[ ]`;
+- no §3 row that carried a technique cell lost it, and a first-test gate sentence present before the
+  run is present after it, naming the same step unless algorithm step 12 re-decided it.
 
 The counts on disk never move in this run — this prompt does not touch a `.sql` file — so a gate that
 only re-greps disk checks nothing. On failure, fix it and re-check once; if it still fails, **abort
@@ -405,5 +449,6 @@ Report level, coverage fingerprint, the `VERIFY` verdict as read (never prescrib
 until zero gaps), migration outcome, step count, exercise-file count, total first-pass exercises,
 assigned/unassigned bullet counts, checked/unchecked bullet counts, closed steps preserved, every closed
 step carrying `Pending additions` with its count, revision-point cadence verdict, ceiling verdict,
-dependency-order verdict, mirror parity, cold-review completion, history-gate verdict, any missing or contradictory
-step status left for the grading run, any `DOCTRINE` finding left for `sql-plan-audit`, and commit or `dry-run`.
+dependency-order verdict, the first-test gate's step and whether it was carried, re-decided, authored or
+reported lost, mirror parity, cold-review completion, history-gate verdict, any missing or contradictory
+step status left for the grading run, any `DOCTRINE` or readiness-line finding left for `sql-plan-audit`, and commit or `dry-run`.

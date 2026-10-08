@@ -240,7 +240,8 @@ this one, and it is exactly how off-scope tracks creep back into §0.
 **Specialist 2 is the extension engine.** For every `## ` section of `notes/sql/coverage/{LEVEL}.md` not
 claimed by a step, it does not merely report the gap — it **writes the new step**, to Section C's
 shape, inserted at the dependency position B1 justifies, with its own file in the route's §1 and its row
-in §3. Existing step numbers are preserved where possible and closed steps are never renumbered.
+in §3 — that row's technique cell included (invariant 16: a technique, or `—`, never blank). Existing
+step numbers are preserved where possible and closed steps are never renumbered.
 Conversely, a step claiming a section coverage no longer has is removed or re-pointed.
 
 **But scope landing on a *closed* step is not its business** (invariant 14). It records the bullets under
@@ -366,7 +367,7 @@ mid-audit.
 
 ## Phase 5 — The handoff this run cannot perform itself
 
-Three outcomes leave work this pipeline is fenced from doing, and the run is not finished until it says
+Four outcomes leave work this pipeline is fenced from doing, and the run is not finished until it says
 so **in its last line to Victor**, not only inside the self-report:
 
 - **Specialist 2 wrote or re-pointed a step.** The route now maps coverage that the header's
@@ -377,11 +378,14 @@ so **in its last line to Victor**, not only inside the self-report:
 - **The digest was already stale on arrival** and specialist 2 could not claim every new bullet.
 - **Specialist 3 reported the projection broken or stale** (invariant 15) — the same `/sql-plan {LEVEL}`
   re-sync Phase 2 hands it to.
+- **Specialist 3 reported the readiness status line without a first-test gate, and the route's history
+  holds no sentence to restore** (invariant 16). The gate has one author, `sql-plan-prompt`, and
+  nothing here may choose its step.
 
 In any of these cases close with exactly one line, keeping only the clauses that apply:
 
 ```text
-⚠ /sql-plan {LEVEL} owed — N steps added/re-pointed · digest stale · PROGRESS.md projection stale (M rows)
+⚠ /sql-plan {LEVEL} owed — N steps added/re-pointed · digest stale · PROGRESS.md projection stale (M rows) · first-test gate absent
 ```
 
 If none applies, close with `route and projection consistent — nothing owed`. **This is the gap the
