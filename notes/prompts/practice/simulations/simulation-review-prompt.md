@@ -63,12 +63,15 @@ Never review a different step because the named file looks similar. Never edit V
 
 ## 1 — Requirements before code
 
-Read the spec before the solution. List each acceptance requirement, numbered. In correction mode list
-only the open recorded gaps; in hint mode list all requirements and continue at Hint below.
+Read the spec before the solution. List each acceptance requirement, numbered, excluding `Bonus`
+under `_simulation-plan-standard.md` §5 → "§2 — Route table" (`Bonus` gates nothing). In correction
+mode list only the open recorded gaps; in hint mode list all requirements and continue at Hint below.
 
 ## 2 — Score a first review
 
-Score 1–3 with evidence. Requirements plus the two marked core dimensions decide the verdict.
+Score 1–3 with evidence. Requirements plus the two marked core dimensions decide the verdict. Apply
+the same standard's `Bonus` rule to every scorecard below: exclude Bonus from X/Y and dimension scores;
+discuss it only as optional feedback in the report.
 
 ### Angular
 
@@ -131,8 +134,10 @@ Closing every row never changes the original tracker/spec verdict or TIME_USED:
 ## 4 — Record gaps and Q&A
 
 On first review, upsert one `practice/simulations/MISTAKES.md` `## Open` row per unmet requirement or
-score-1 dimension. IDs are monotonic `SIM-NNNN`, derived from the highest ID in both sections; never
-reuse an ID. Store ID, date, level:step, track, concept, evidence, verdict, status open. A score-2
+score-1 dimension, excluding `Bonus` under `_simulation-plan-standard.md` §5 → "§2 — Route table";
+Bonus feedback never opens a correction row. IDs are monotonic `SIM-NNNN`, derived from the highest ID
+in both sections; never reuse an ID. Store ID, date, level:step, track, concept, evidence, verdict,
+status open. A score-2
 dimension is feedback in this report and never becomes a row; every row written here is a mandatory
 correction row whatever the verdict, so a Pass that left a requirement unmet or scored 1 on a non-core
 dimension is `correction-required` until they close (standard, *Review and correction semantics*).
