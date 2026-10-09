@@ -36,7 +36,9 @@ Use only what Victor explicitly studied, answered, practised, or explained in th
 or authoring prose is not study evidence: a note edited during the block needs a separate active study
 pass before it can be dated. Never mark
 a whole file because one paragraph or one question was opened. If the session names no completed
-study unit, write nothing and report that no studied evidence was recorded.
+study unit, write nothing and report that no studied evidence was recorded — unless the run was invoked
+to repair a `progress-update` drift row naming this skill: then skip steps 2–3 and commit only if step 4
+changed a cell.
 
 ## 2 — Mark notes studied
 
@@ -80,9 +82,7 @@ For every exact question whose final verdict in this block was `PASS`:
    and Angular Material). A **project** pair has no coverage fingerprint by design, so its gate is the
    substitute `interview-prep-block-open` already applied when it served the question:
    `routes/projects.md` reading `Route status: current`, with its `Question inventory SHA-256` matching
-   the current banks under `interview-prep-route-projects-prompt.md`'s algorithm. Demanding a fingerprint
-   of a bank that will never have one would make this branch unreachable for every project bank there
-   will ever be.
+   the current banks under `interview-prep-route-projects-prompt.md`'s algorithm.
 3. Require `[refined]` in both languages. A `BORDERLINE`, `FAIL`, merely read answer, or unrefined
    question is not study completion. Dictated and typed answers are equivalent evidence. For a project
    question, require its ID to resolve on `routes/projects.md` as well: this ritual records what the
