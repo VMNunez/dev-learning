@@ -223,7 +223,8 @@ Never overlap stages. The Spanish reviewer owns the atomic commit.
 Dispatch `_notes-write-prompt.md` with:
 
 - `TOPIC`, `LEVEL`, resolved English `FILE`;
-- `TASK` containing the entry title, `Action`, exact coverage bullets, dependencies, and rationale;
+- `TASK` containing the entry title, `Action`, exact coverage bullets, any `Audit note`, dependencies,
+  and rationale;
 - the complete pedagogical contract: narrative role, learning outcome, prerequisites, every
   must-answer question, and handoff;
 - `REWRITE_MODE = first-pass` for `create`, `append-only` for a `refined` entry, otherwise `standard`;

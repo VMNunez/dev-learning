@@ -387,12 +387,12 @@ Rules:
   `Depends on` remains the mechanical execution gate while `Prerequisites` states the learning
   assumptions.
 - `Narrative role`, `Learning outcome`, `Must answer`, and `Handoff` are non-empty and specific.
-- Every `Must answer` item is a learner question, not a restatement of a coverage bullet.
+- Every `Must answer` item is a learner question, not a coverage restatement or audit instruction; put audit instructions in `Audit note` instead.
 - At junior, entry `00` satisfies the complete introduction contract for both `create` and `audit`.
 - A missing Spanish file does not change `Action`; the notes pipeline creates or synchronises it.
 - `Audit note:` is the one optional entry field, written between `Coverage concepts` and `Rationale`. It
-  is where an entry records which sections of its existing file move to another entry and which it
-  absorbs. `notes-audit` forwards that exact label to every stage inside `LINK_TARGETS`, and no synonym.
+  records which existing sections move to another entry or topic, which it absorbs or reduces, and what the audit must rebuild or expand.
+  `notes-audit` forwards that exact label to every stage inside `LINK_TARGETS`, and no synonym.
 - No coverage bullet may be absent, duplicated, paraphrased, or assigned across levels.
 - Omit `## Legacy notes requiring split` when empty. If it is non-empty, the run is blocked and no
   relocation or selected plan commit occurs; the proposed plan and routing map are still reported.
