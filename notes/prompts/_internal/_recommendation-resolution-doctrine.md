@@ -285,7 +285,7 @@ compare key by key") while the paragraph above it enumerated, which is `REC-114`
 inside a single file. **And a copy is repaired only once the check that reads it covers copies**: the
 audit's key check was worded over the configs the plan tells Victor to *paste*, so the stale list —
 sitting inside the plan's own invariant — was outside every instrument that could have caught it,
-which is why the fix is a clause in the checker and not only a rewrite of the list.
+which is why the fix is a clause in the checker and not only a rewrite of the list. **Also `REC-310`: and a check handed to a cold role states the repair with the detection** — which neighbour a skipped item joins, that nothing listed is deleted to pass — or two reviewers leave two different tables; and price the sibling columns of the one a row names before writing it.
 
 **A fix that widens an existing cell adopts every claim already inside it, and the inherited half is
 the one nobody re-measures.** From `REC-151`. Adding `spring` to a code-sourcing bullet also handed it
