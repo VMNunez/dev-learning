@@ -1,34 +1,41 @@
 # Last run report — notes-plan-prompt
 
-Date: 2026-10-03
-Target: Angular / junior / update
-Status: rejected
+Date: 2026-10-09
+Target: Architecture / junior / update
+Status: open
 
-- **Plan vs reality** — The coverage fingerprint matched the plan committed the same day
-  (`090fc362`), so reconciliation moved nothing and the run's whole yield came from the cold review:
-  PASS-WITH-CORRECTIONS, 25 non-blocking corrections on a route that had passed the same deep review
-  hours earlier. 24 were applied, 10 of them in a modified form after the orchestrator checked their
-  premises against the note files, `middle.md` and angular.dev; 1 was rejected (splitting entry 18,
-  which the reviewer itself made conditional). Evidence is the reviewer's read of the whole plan,
-  which outranks the orchestrator's mechanical validation — green before the review and after it. 5
-  of the 25 were clauses no `Must answer` commissioned: the seventh run reproducing `REC-248`, added
-  to that row. The corrected plan was re-checked mechanically (173/173 exact, no forward dependency,
-  entry number = file prefix, `audit` ⇔ file on disk) and was not reviewed again.
-- **Report discipline** — One reviewer, one round, complete acceptance proof (5 inputs read to EOF,
-  28 entries, intro, prerequisite-order and used-before-taught verdicts, a verdict token). Nothing
-  trimmed; it opened no file outside its five inputs.
+- **Plan vs reality** — The route was rebuilt for 12 new bullets (20 → 25 entries) and the first
+  draft did not survive the cold review: BLOCKED, 1 blocking correction and 25 non-blocking. The
+  blocking one was a bullet assigned to one entry while another entry's outcome and questions
+  already taught it; three more moved entries, so the committed order is not the drafted one.
+  Evidence is the reviewer's read of the whole plan, which outranks the orchestrator's mechanical
+  check — green on the draft and green again after the corrections (84/84 verbatim and assigned
+  once, no forward dependency, entry number = file prefix, `audit` ⇔ file on disk). The corrected
+  plan was not reviewed again; the prompt asks for one review. 9 of the 26 corrections were
+  clauses no `Must answer` commissioned, under questions carried from the plan committed
+  2026-08-27 after the same deep review: the eighth run reproducing `REC-248`, added to that row.
+- **Report discipline** — One reviewer, one round, complete acceptance proof (5 inputs read to
+  EOF, 25 entries, intro, prerequisite-order and used-before-taught verdicts, a verdict token),
+  persisted to its scratch path before returning. Nothing trimmed; it opened no file outside its
+  five inputs.
 - **Failures & retries** — Required dispatches: 1. Actual: 1. Re-dispatches: 0.
-- **Rule friction and rule breaches** — One deviation, `BRCH-0006`: no step asks the planner to look
-  for a section of a plan-owned file that a sibling-level bullet owns, and the reviewer is given the
-  selected coverage only, so the run wrote that ownership into two `Audit note` fields on its own
-  reading of `middle.md` (13 `fromSignal()`, 22 `ChangeDetectorRef`); the run earlier today had
-  committed 22 with no note. `Audit note` was written under the label the format names, so
-  `BRCH-0004` advances to `confirmed 2/3`. `BRCH-0005` is unchanged: no renumber, so step 6's link
-  rewrite was not reached. Friction, not routed: `MODE` has no default (took `update`).
-- **Verdict** — pipeline clean, no prompt change. `BRCH-0006` fails condition 3: `Audit note` is
-  optional and each entry's bullets and questions already exclude the sibling-level concept, so no
-  output was wrong or missing a required part. `REC-248` stays open in the ledger. The prompt is 501
-  lines, at the smoke alarm; its largest section is `Required plan format` (125 lines, 275–399).
+- **Rule friction and rule breaches** — Two deviations, both under `Required plan format`.
+  `BRCH-0007`: three coverage bullets carry an evidence clause that wraps onto a continuation
+  line, the scope-byte rule strips per line, and the format does not say what the exact bullet is
+  then; the run wrote the three without the tail, as the previous plan had for one of them.
+  `BRCH-0008`: the previous plan carried four audit instructions as `Must answer` items, which the
+  format forbids; the run moved them to `Audit note`, and two of them (05, 24) are a rebuild and
+  an expansion, outside that field's stated job. Reached and clean: `BRCH-0004` (the four notes
+  were written under the label the format names) → `closed`. Not reached: `BRCH-0005` — the one
+  renumber (18 → 24, English-only) had no inbound link in the repository — and `BRCH-0006`.
+  Friction, not routed: `MODE` has no default (took `update`).
+- **Verdict** — change worth considering, both routed to the ledger and neither applied here:
+  `REC-311` (a wrapped evidence clause stays inside the coverage digest and leaves the plan's
+  exact bullet undefined; its owner is `_coverage-standard.md`, which a run may not edit) and
+  `REC-312` (`Audit note` has no licence for a rebuild or expansion; the second row naming that
+  step, routed under the breach log's two-row rule). No edit drafted, so no cold reviewer ran.
+  The prompt is 501 lines, at the smoke alarm; its largest section is `Required plan format`
+  (125 lines, 275–399).
   maps unaffected.
   map: verified — `README.md` interface-index row and catalogue row for `/notes-plan`,
-  `_system-map.md` §7 `notes-plan-{LEVEL}.md` row.
+  `_system-map.md` §7 `notes-plan-{LEVEL}.md` row and the §11 `⚠ stale` symptom row.
