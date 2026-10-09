@@ -73,7 +73,8 @@ stacks) do come from `_shared-context.md` and are checked like any other.
 - After September — three possible paths
 
 **Living sections** — change as progress is made. These are what the review updates:
-- Phase table (status markers ✅ / ⏳ / 🔜)
+- Phase table — its status markers (✅ / ⏳ / 🔜), and its two block columns, which follow the block
+  sections they project
 - Project sequence (which project comes next and why)
 - SQL topic table (12:30 block)
 - Simulation stage (12:30 block) — its gate, its strategy and its pointer to the simulation track
@@ -167,6 +168,26 @@ typescript (e.g. security). If a topic was added in that range and is missing fr
 remain reachable before September. Do not change the other 4 gate conditions unless they are
 factually wrong — all four resolve against `## Projects`, `Practice completed`, and the level matrix's
 `Knowledge consolidation` column, none of which is a concept list.
+
+**Phase plan — the two block columns.** The phase table's `SQL → Practice (12:30)` and
+`Interview prep (13:30)` cells say where each block is expected to stand during a phase. They are a
+projection of the two block sections, never a second statement of them: a cell may name the stage the
+block is in or the topics in hand, and it never carries an order or a switch condition that block's own
+section does not state. Two checks, over every row not yet ✅ — a ✅ row describes a phase that is over,
+and these two checks leave it as it stands:
+- **12:30.** A cell that shows the block reaching `technical test simulation` puts in front of it what
+  the switch condition under the SQL table puts in front of it — the topics that condition names —
+  never the remaining, the whole or the completed SQL list.
+- **13:30.** Notes topics appear down the rows in the canonical study order above: no topic sits in an
+  earlier phase than one the order puts before it, and none is skipped between two that are listed — a
+  ✅ row's topics count as listed, though that row is not edited. A skipped topic joins the cell of the
+  listed topic the order puts directly before it, or the first row not yet ✅ where that cell is in a ✅
+  row; a listed topic is never deleted to close the gap.
+
+Where a cell and its block section disagree, the section wins and the cell is the one corrected. The
+table predates the switch condition it now has to match — its row 3c read "Remaining SQL topics →
+technical test simulation" five minutes before the condition under the SQL table moved to the
+test-relevant topics, and nothing re-read it (`REC-310`).
 
 ---
 

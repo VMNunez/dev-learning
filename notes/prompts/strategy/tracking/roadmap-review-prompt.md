@@ -266,7 +266,8 @@ else: `## Projects` (which project, which steps), `Practice completed` (the SQL 
 the simulation counts), and the `Knowledge consolidation` column of the level matrix (the
 `Notes 0/9` figures and the Q&A state). None of them is a concept list, so the phase table
 survives the 2026-08-03 deletion intact. Do not leave a phase marked ⏳ if those three show
-its goals are already complete.
+its goals are already complete. That is the status column only: the table's two block columns
+are held to the block sections in Step 4, once those sections are settled.
 
 ---
 
@@ -300,6 +301,11 @@ high-priority topics per the standard (angular, spring-boot, java, architecture,
 between architecture and typescript such as security). Do not add typescript, sql, javascript, css,
 or git. Do not change the other 4 gate conditions unless they are factually wrong — all four resolve
 against `## Projects`, `Practice completed`, and the level matrix's `Knowledge consolidation` column.
+
+**Phase plan — block columns:** last, once the two block sections above are settled, hold the phase
+table's `SQL → Practice (12:30)` and `Interview prep (13:30)` cells to the standard's phase-plan bullet
+— every row not yet ✅, cell by cell against the block section it projects. A cell that disagrees is
+the one corrected; a block section is never edited to fit a cell.
 
 ---
 
@@ -377,6 +383,13 @@ its checks need). Its instruction:
 >    present, the gate left under the SQL table rather than copied in; no passage restating the
 >    simulation track's procedure, and none telling Victor to open a spec file or to have a solution
 >    reviewed outside `simulation-grade`. Cut any such passage to the pointer.
+> 5. **Phase-plan block columns.** The `SQL → Practice (12:30)` and `Interview prep (13:30)` cells of
+>    every phase row not yet ✅ match the standard's "Canonical study-block references" phase-plan
+>    bullet, read against the two block sections as invariants 2 and 4 left them: no 12:30 cell puts
+>    anything in front of `technical test simulation` but the topics the switch condition under the SQL
+>    table names, and the 13:30 cells name notes topics in the study order, none skipped between two
+>    listed. Where a cell disagrees, fix the cell — never the switch condition or the order — and leave
+>    ✅ rows as they stand.
 >
 > Report **only** a short table of `Invariant | Verdict (pass / fixed) | What you changed` — no file
 > excerpts, no reasoning trace. If everything passed with no fixes, say so explicitly.
