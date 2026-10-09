@@ -94,7 +94,7 @@ Dos consecuencias salen directamente de ahí, y las dos son preguntas de examen.
 | Anotación | Qué marca | Cubierta a fondo |
 |---|---|---|
 | `@Component` | Cualquier clase gestionada por Spring (genérico) | [18-inyeccion-dependencias.md](18-inyeccion-dependencias.md) |
-| `@Service` | Capa de lógica de negocio | [18-inyeccion-dependencias.md](18-inyeccion-dependencias.md) · reglas dentro: [11-logica-de-negocio-modelado-dominio.md](11-logica-de-negocio-modelado-dominio.md) |
+| `@Service` | Capa de lógica de negocio | [18-inyeccion-dependencias.md](18-inyeccion-dependencias.md) · reglas dentro: [11-logica-de-negocio-modelado-dominio.md](16-logica-de-negocio-modelado-dominio.md) |
 | `@Repository` | Capa de acceso a datos | [03-spring-data-jpa.md](03-spring-data-jpa.md) |
 | `@RestController` | Capa web — gestiona HTTP | [02-controladores-rest.md](02-controladores-rest.md) |
 | `@Configuration` + `@Bean` | Un bean que no puedes anotar directamente (una clase de librería) | [18-inyeccion-dependencias.md](18-inyeccion-dependencias.md) · muy usado en [06-seguridad-jwt.md](06-seguridad-jwt.md) |

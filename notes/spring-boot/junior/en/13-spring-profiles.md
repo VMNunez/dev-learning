@@ -2,7 +2,7 @@
 
 Docs: [Baeldung — Spring Profiles](https://www.baeldung.com/spring-profiles) → read: "Use @Profile on a Bean", "@Profile with Spring XML" (skip), and "Setting the Active Profile"
 
-Every file so far has assumed one thing without ever saying it: that your app runs the *same way everywhere*. The `Specification` filter from [14-specifications-criteria-api.md](14-specifications-criteria-api.md) behaves identically on your laptop and on a server. So does the JWT filter, the exception handler, every service. That assumption holds for *logic* — but it breaks the moment you need something that should exist **only on your machine and never in production**.
+Every file so far has assumed one thing without ever saying it: that your app runs the *same way everywhere*. The `Specification` filter from [14-specifications-criteria-api.md](../../middle/en/01-specifications-criteria-api.md) behaves identically on your laptop and on a server. So does the JWT filter, the exception handler, every service. That assumption holds for *logic* — but it breaks the moment you need something that should exist **only on your machine and never in production**.
 
 TimeTrack has exactly one such thing, and it started as a real bug in the backlog. To log in at all during development you need a manager account in the database, but there is no register endpoint — so the first account had to be seeded at startup. The original way to do that was a `data.sql` file:
 

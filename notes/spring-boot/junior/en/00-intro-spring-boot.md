@@ -94,7 +94,7 @@ Two consequences fall straight out of that, and both are exam questions. **Why m
 | Annotation | What it marks | Covered in full |
 |---|---|---|
 | `@Component` | Any Spring-managed class (generic) | [18-dependency-injection.md](18-dependency-injection.md) |
-| `@Service` | Business logic layer | [18-dependency-injection.md](18-dependency-injection.md) · rules inside it: [11-business-logic-domain-modeling.md](11-business-logic-domain-modeling.md) |
+| `@Service` | Business logic layer | [18-dependency-injection.md](18-dependency-injection.md) · rules inside it: [11-business-logic-domain-modeling.md](16-business-logic-domain-modeling.md) |
 | `@Repository` | Data access layer | [03-spring-data-jpa.md](03-spring-data-jpa.md) |
 | `@RestController` | Web layer — handles HTTP | [02-rest-controllers.md](02-rest-controllers.md) |
 | `@Configuration` + `@Bean` | A bean you can't annotate directly (a library class) | [18-dependency-injection.md](18-dependency-injection.md) · used heavily in [06-security-jwt.md](06-security-jwt.md) |

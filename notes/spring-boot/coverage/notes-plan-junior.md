@@ -2,8 +2,8 @@
 
 Plan status: current
 Coverage: notes/spring-boot/coverage/junior.md
-Coverage SHA-256: d136207edf3c3ce5276814e3cff37d18ba1dcbfd908d1fd122a8dcc235f2d8ad
-Generated: 2026-08-28
+Coverage SHA-256: b7cb1dbcde90bef75bb05fb7fe680d9ec762b6d627b0c4340eed48e174e4285c
+Generated: 2026-10-09
 
 ## 00 — What Spring Boot is and how this topic is organised
 
@@ -23,32 +23,32 @@ Depends on: none
 Pending additions: none
 
 Narrative role: the entry point of the whole topic. Victor arrives knowing JavaScript, TypeScript and
-Angular but never having run a Java backend, so this chapter has to establish what Spring Boot is,
-what problem it was built for, the one mental model — an opinionated layer on top of a container that
-builds and wires your objects — that every later chapter reuses, and the route the rest of the files
-take. It must state three external baselines rather than teaching them: the Java language layer
-(classes, interfaces, generics, records, exceptions), linked to `notes/java/junior/en/`; Maven — POM,
-coordinates, dependency resolution, the lifecycle and the wrapper — which is the `java` topic's
-`Maven fundamentals` section and is assumed from chapter 01, where the parent POM and the Boot plugin
-are distinguished from "Maven's generic lifecycle" the reader would otherwise never have met; and the
-Spring container itself (beans, injection, scopes, proxies), which now belongs to the `spring` topic
-and is linked to `notes/spring/junior/en/`. Naming that second boundary is new and load-bearing: the
-container is assumed by chapters 02 onwards and is no longer taught anywhere inside this topic. Two
-consequences for the audit of this file. First, its existing `## The IoC container` and
-`## Annotations replace configuration` sections (including `### How @ComponentScan actually finds your
-classes` and the `03-dependency-injection.md` column of the stereotype table) now teach another
-topic's concepts: they are reduced to the orientation-level picture plus a link to `spring`, never
-kept as the full explanation. Second, the Java baseline sentence must add Lombok — an annotation
-processor that rewrites the class at compile time is not covered by "classes, interfaces, generics,
-records, exceptions", and its generated members are load-bearing from chapter 01 onwards and
-dangerous in chapter 03. This route also has an external gate the reader must be told about: the
-`spring` junior notes do not exist yet, so every "taught in the `spring` topic" link is a promise
-until that topic's own plan is executed. Six later chapters delegate a load-bearing mechanism across
-that gate — injection (02), `@Validated` and constraint groups (07), the transactional proxy (08),
-bean-creation failure (12), `@Profile` registration (15) and class proxying (16) — so the warning has
-to say which of them a reader can defer and which he cannot: the proxy pair (08 and 16) is the one
-whose absence changes what the chapter's own advice means, and the other four are deferrable because
-this topic teaches the observable behaviour and only the container's internals are missing.
+Angular, with rusty Node, but never having run a Java backend, so this chapter has to establish what
+Spring Boot is, what problem it was built for, the one mental model — an opinionated layer on top of a
+container that builds and wires your objects, configured through annotations the framework reads at
+startup — that every later chapter reuses, and the route the rest of the files take. Before 01 it must
+name, concretely, every baseline this topic stands on, each settled with a link and a one-sentence
+reminder rather than a lesson: the Java language layer in `notes/java/junior/en/` — classes,
+interfaces, generics, records, exceptions, and annotations as metadata that the compiler, an
+annotation processor or a framework reads (the `java` topic's `Annotation metadata`) — plus Lombok,
+the annotation processor that writes members into the class at compile time, load-bearing from 01 and
+dangerous in 03; Maven — POM, coordinates, dependency resolution, the lifecycle and the wrapper — the
+`java` topic's `Maven fundamentals`, assumed from 01, where the parent POM and the Boot plugin are
+distinguished from Maven's generic lifecycle; a relational database and the SQL that defines and fills
+it — tables, rows, primary and foreign keys, a schema — owned by the `sql` topic and assumed from 01's
+datasource, `ddl-auto` and `schema.sql`/`data.sql` material; HTTP and JSON — verbs, status codes,
+headers, `Content-Type` — owned by the `general` topic and assumed from 02; the security concepts
+chapter 06 implements — what a JWT carries, the same-origin policy, CORS and CSRF — owned by the
+`security` topic; and the Spring container itself (beans, injection, scopes, proxies, the transaction
+abstraction), owned by the `spring` topic and linked to `notes/spring/junior/en/`. Naming that last
+boundary is load-bearing: the container is assumed by chapters 02 onwards and is no longer taught
+inside this topic. Six later chapters lean on a `spring` mechanism — injection (02), `@Validated` and
+constraint groups (07), the transactional proxy and boundary placement (08), bean-creation failure
+(11), `@Profile` registration (13) and class proxying (14) — so the introduction tells the reader
+which of them he must have studied in the `spring` topic before which chapter: the proxy pair (08 and
+14) changes what those chapters' own advice means, while the other four are deferrable because this
+topic teaches the observable behaviour. That warning is phrased about what the reader has studied,
+never as a claim that a linked note is not written yet (`HR-11`).
 
 Learning outcome: Victor can explain in his own words what Spring Boot adds on top of the Spring
 Framework, what work it takes off a backend developer, how a request travels through the layers of a
@@ -66,11 +66,14 @@ Must answer:
   which topic teaches that mechanism in full?
 - Half the class is missing from the source file and the code still calls its getters — what is
   Lombok doing, when does it do it, and which topic's notes own that mechanism?
+- Before opening 01, which pieces of other topics does this one stand on — Java annotations, Maven's
+  POM and dependencies, a relational schema, HTTP and JSON, the Spring container — and what is the one
+  sentence about each without which 01 and 02 cannot be read?
 - What are the layers of this kind of application, what does each one own, and why does the boundary
   between them turn out to be where transactions and DTOs live?
 - Where does an incoming HTTP request go, layer by layer, before a response comes back?
-- Which parts of this map onto things already known from Angular's dependency injection, and where
-  does that comparison stop being true?
+- Which parts of this map onto what Victor already knows — Angular's dependency injection, and a Node
+  server that created its own HTTP listener — and where does each comparison stop being true?
 - Where does Spring Boot sit in the stack Victor is targeting — what is on the other side of the API
   he will build, and what does a Spanish consultancy expect a junior to own here?
 - What order do the following files come in, why is that the order that works, and which files in the
@@ -81,6 +84,15 @@ Must answer:
 Coverage concepts:
 
 - [ ] Spring Framework vs Spring Boot — distinguish the core container and framework modules from Boot's opinionated auto-configuration, starters, executable packaging, and operational defaults
+
+Audit note: the existing `## The IoC container — the one idea everything else depends on` section, the
+`### How @ComponentScan actually finds your classes` subsection and the `18-dependency-injection.md`
+column of the stereotype table teach the `spring` topic's container concepts: the audit reduces them
+to the orientation-level picture (a container builds and wires the application's objects at startup)
+plus a link to `notes/spring/junior/en/`, never the full explanation. `## Annotations replace
+configuration — the repeating pattern` stays as the topic-wide characteristic — an annotation is
+metadata the framework reads at startup in place of configuration code — with its
+stereotype-by-stereotype detail cut to that same link.
 
 Rationale: the introduction owns the single distinction that names the topic — framework versus
 Boot — and hangs the orientation, the mental model, the stack context, the two external prerequisite
@@ -111,15 +123,14 @@ Narrative role: chapter 00 described what Boot does; this chapter is where Victo
 running. It covers the mechanisms behind the project he generated — the starters and the
 auto-configuration that make a dependency "just work", the annotation on the main class, the build
 that produces a runnable artifact, the properties that connect the application to a real database
-without hardcoding anything, and the one callback that lets his own code run once the context is
-finally built. `@Value` and `@ConfigurationProperties` arrive here rather than in a bean chapter,
-because at this level they are how a *setting* reaches the code; the injection mechanism behind them
-belongs to the `spring` topic and must be linked, not re-derived.
+without hardcoding anything. `@Value` and `@ConfigurationProperties` arrive here rather than in a bean
+chapter, because at this level they are how a *setting* reaches the code; the injection mechanism
+behind them belongs to the `spring` topic and must be linked, not re-derived.
 
 Learning outcome: Victor can create a Spring Boot project, explain what each starter and the Maven
 parent contribute, describe how auto-configuration decides what to configure, package and run the
 application, externalise its environment-specific settings including database connection and startup
-SQL, and run one-off work at the correct point in startup.
+SQL, and bind each setting to the name and type the code expects.
 
 Prerequisites: 00.
 
@@ -135,14 +146,15 @@ Must answer:
   dependency versions and which one produces the runnable artifact?
 - What does each `ddl-auto` value do to a database that already has tables and rows in it?
 - When does Boot run `schema.sql` and `data.sql`, and why can a seeding script silently do nothing?
-- Seeding an admin user from a constructor runs too early and fails — what is not ready yet, and
-  where does that work belong instead?
-- The seeding code runs again on every restart — why is that not a bug to be fixed with a flag, and
-  what does it force the code to look like?
 - A single timeout value and a group of five related JWT settings both live in properties — which
   binding mechanism suits each, and why?
 - A property holds two comma-separated values and the field receiving them is declared `String` — how
   many values does the application end up with, and what decides that?
+- The hosted deployment sets an environment variable called `APP_CORS_ALLOWEDORIGINS` and the code
+  reads `app.cors.allowed-origins` — how does one name turn into the other, and why does a `@Value`
+  placeholder written in camel case never see the variable at all?
+- A project declares its own bean of a type Boot would otherwise configure, and Boot's version
+  disappears — which condition did auto-configuration check, and where can that decision be read?
 
 Coverage concepts:
 
@@ -151,16 +163,23 @@ Coverage concepts:
 - [ ] Embedded server and executable JAR — a servlet web starter supplies an embedded server so the packaged application can run without deploying a WAR to an external container
 - [ ] `spring-boot-starter-parent` and dependency management — inherit compatible dependency and plugin versions while distinguishing that Boot-specific build behaviour from Maven's generic lifecycle
 - [ ] Spring Boot Maven plugin — package an executable archive and run the application through Boot-specific goals without confusing the plugin with dependency management
-- [ ] `CommandLineRunner` startup callback — run one-off work once after the context is fully built and every bean is available, instead of a constructor or static initialiser that fires before the application is ready; it runs on every boot, so the work must be idempotent
 - [ ] Externalized configuration and property precedence — keep environment-specific values outside code and recognise that command-line arguments, environment variables, profile files, and base configuration can override one another
 - [ ] Datasource and persistence properties — connect the application to a real database through its URL, credentials, and driver settings, and recognise what each `ddl-auto` value does to an existing schema
 - [ ] `@Value` vs `@ConfigurationProperties` — inject an isolated value directly or bind and validate a cohesive typed configuration group when several related settings belong together
 - [ ] SQL initialization — understand when Boot runs `schema.sql` and `data.sql` and how initialization differs for embedded and external databases
 - [ ] Typed property binding — a property value is converted to the type of the target it is injected into, so a comma-separated value binds to a `List<String>` while a `String` target keeps the separators inside one value
+- [ ] Relaxed binding from environment variables — an environment variable overrides a property through its canonical name uppercased, dots turned into underscores and dashes removed (`app.cors.allowed-origins` → `APP_CORS_ALLOWEDORIGINS`), and `@Value` must reference the canonical lower-case kebab-case name for that mapping to apply, so a camel-case placeholder silently ignores the variable
+
+Audit note: two sections of the existing file teach concepts a later entry owns. `## Spring profiles —
+per-environment configuration` moves to entry 13, which owns both profile bullets, and
+`## @Slf4j — structured logging` moves to entry 12, which owns `Application logging`; each leaves at
+most a one-sentence forward reference here. The relaxed-binding bullet lands in or beside
+`### Environment variables in application.properties`, which already shows the `${...}` placeholder it
+extends.
 
 Rationale: these concepts are the single act of getting one application built, started and pointed at
 its environment — the dependency set, the entry point, the packaging, the settings the running process
-reads, and the first moment the application's own code is allowed to run.
+reads.
 
 Handoff: the application now starts, reads its configuration and talks to a database, but it answers
 no HTTP request yet. The next chapter opens the door that clients actually knock on.
@@ -228,6 +247,10 @@ Must answer:
   go stale?
 - A `LocalDateTime` reaches the Angular client as ISO text rather than as an array of numbers —
   what is doing that conversion, and what would turn it back into the array?
+- Why does the API receive one type and return another instead of reusing the persistence class for
+  both, and why do validation constraints go on the incoming type only?
+- Submitting a time entry for approval changes its state — which verb and URL shape does that use, and
+  why is neither a plain POST nor a full PUT honest?
 
 Coverage concepts:
 
@@ -250,6 +273,10 @@ Coverage concepts:
 - [ ] `@JsonIgnore` and serialization access — an ignore annotation suppresses a field in both directions unless the access mode is narrowed, so it is a local serialization rule rather than a substitute for a dedicated response type
 - [ ] OpenAPI generation — expose a browsable, generated HTTP contract for frontend and QA consumers from the existing controller and DTO declarations
 
+Audit note: `### UserRepository` is reduced to a marked preview of chapter 04: the controller example
+shows the service it calls, and the repository appears only as "the object that loads users, taught in
+04".
+
 Rationale: every one of these concepts is a step on the same journey of a single HTTP request —
 matching it to a method, reading its parts, converting its body, and writing a deliberate response —
 so they can only be taught as one continuous trace; generated documentation closes the chapter
@@ -261,8 +288,8 @@ content type that decides whether the body is read at all, (c) writing a deliber
 status, factories, location header, (d) the DTO boundary and what must never cross it, (e) the
 published contract.
 
-Handoff: the controller has a shape to send back and nothing real to put in it. Chapter 03 gives the
-application a database and turns the domain classes into rows.
+Handoff: the controller has a shape to send back and nothing real to put in it. Chapter 03 turns the
+domain classes into rows of the database chapter 01 connected.
 
 ## 03 — Spring Data JPA: entities and relationship mapping
 
@@ -285,16 +312,14 @@ Narrative role: the mapping half of persistence, and the chapter that has to exp
 context, because almost every surprising behaviour in later chapters — stale reads, lazy loading
 failures, deferred constraint errors — traces back to it. It turns one Java class into one table, then
 connects classes to each other, and it is where the Lombok annotations Victor already puts on
-everything become genuinely dangerous for the first time. This entry keeps the existing
-`04-spring-data-jpa.md` pair under a new prefix — this plan renames `en/04-spring-data-jpa.md` and
-`es/04-spring-data-jpa.md` to `03-spring-data-jpa.md` in both languages, after freeing prefix 03 by
-moving the dependency-injection pair to 18 — so `Action: audit` reads the renamed file, not a new
-one. The audit is not additive: the repository and query half of that file leaves this chapter for
-chapter 04, which means the sections `## JpaRepository — what you get for free`,
-`## Repositories group by entity`, `## Derived query methods`, `## Pagination`,
-`## The N+1 problem`, `## save() — insert or update` and `## Aggregation queries and interface
-projections` are removed here and the closing section is rewritten as the handoff to 04. Leaving them
-in place would duplicate the whole of chapter 04.
+everything become genuinely dangerous for the first time. Two things the persistence context depends
+on arrive later and must carry the standard's forward-reference callout rather than being used bare:
+loading and saving through a repository (taught in 04 — read `findById` for now as "load this row as a
+managed object") and the transaction whose commit is the moment a managed change is flushed (its
+boundary is chapter 08, its timing chapter 11). The preview must say the condition, not only the
+behaviour: the change is written when the transaction that loaded the object commits, and chapter 08
+shows that without a declared service boundary that transaction ends with the repository call itself,
+so the same code can silently write nothing.
 
 Learning outcome: Victor can map an entity and its relationships to a schema, choose identifier,
 column, enum, timestamp, equality and fetch strategies deliberately, and explain what "managed" means
@@ -327,6 +352,14 @@ Must answer:
 - A creation timestamp the provider populates once on insert is rewritten by a later update of the
   same entity — what does the generated UPDATE statement contain, and which mapping keeps that column
   out of it?
+- A managed object was changed and nothing called `save()` — at which moment does the UPDATE reach the
+  database, and under what condition does the same change never reach it at all?
+- `nullable = false` and `unique = true` sit on a field — does anything check them in Java, or do they
+  only shape the schema, and when does a violation surface?
+- Both entities declare `@ManyToMany` to each other and the schema grows two join tables — what was
+  missing?
+- `@CreationTimestamp` and `@PrePersist` both fill a creation date — who calls each one, and what does
+  choosing one tie the code to?
 
 Coverage concepts:
 
@@ -346,6 +379,14 @@ Coverage concepts:
 - [ ] Hibernate timestamps vs JPA lifecycle callbacks — choose provider convenience or portable entity callbacks deliberately when populating audit timestamps
 - [ ] `FetchType.LAZY` vs `FetchType.EAGER` — deferred versus mandatory relationship loading, with the defaults deliberately asymmetric: to-one associations load eagerly and to-many associations lazily, so fetching must be chosen per use case rather than fixed globally
 - [ ] Immutable column mapping — `@Column(updatable = false)` excludes a column from the UPDATE statement the provider generates, so a write-once field such as a creation timestamp cannot be rewritten by a later change to the entity
+
+Audit note: the audit is not additive. The repository and query half of the existing file moves to
+entry 04: the sections `## JpaRepository — what you get for free`, `## Repositories group by entity,
+not by feature — a different axis than controllers/services`, `## Derived query methods`,
+`## Pagination — Pageable and Page<T>`, `## The N+1 problem`, `## save() — insert or update` and
+`## Aggregation queries and interface projections` are removed here, and `## Where this leaves you —
+and what comes next` is rewritten as the handoff to 04. Leaving them in place would duplicate the whole
+of chapter 04.
 
 Rationale: every concept here is a decision made on the mapping itself — what a table is called, what
 the key is, what a column allows, what an association owns, and how much of it loads — and they are
@@ -375,19 +416,17 @@ Pending additions: none
 
 Narrative role: the query half of persistence, split out of the old combined JPA file because mapping
 a class to a table and getting data back out of it are two different mental models, and the combined
-file had grown past nine hundred lines. Its prose is not written from scratch: it is extracted from
-the existing `04-spring-data-jpa.md` by the notes pipeline, and the extraction must carry over the
-validated aggregation material — the `SUM` + `GROUP BY` JPQL query, its literals, the `YearMonth`
-range and the interface projection it returns — which is real, already reviewed, and owned here by
-`Interface-based projections`. Two of its bullets also reach forward and must carry the standard's
+file had grown past nine hundred lines. Two of its bullets reach forward and must carry the standard's
 forward-reference callout rather than being used bare: `@Modifying` requires an active transaction and
 `save()` depends on the persistence-context lifecycle, and the boundary that opens both is only taught
-in chapter 08 (with the flush timing in 12). It starts from the interface Victor declares and never
+in chapter 08 (with the flush timing in 11). It starts from the interface Victor declares and never
 implements, works up through derived names, written queries, projections, sorting and pagination, and
 ends on the failure the mapping decisions of chapter 03 quietly set up: the N+1. It also re-enters the
 controller once, and deliberately: `Pageable` and `@PageableDefault` are a repository concern declared
 at the HTTP boundary, so the page, size and sort a client sends are resolved by the argument
-resolution taught in chapter 02 before the repository ever sees them.
+resolution taught in chapter 02 before the repository ever sees them. The N+1 section shows the
+statements it counts, so it carries a marked preview of turning on Hibernate's SQL output, whose
+mechanism chapter 11 owns.
 
 Learning outcome: Victor can obtain data through inherited, derived and declared repository queries,
 choose between an entity, a projection and a page as the return shape, and explain what SQL each
@@ -417,6 +456,9 @@ Must answer:
   query change rather than a mapping change?
 - The endpoint declares a default sort with a unique tie-breaker, but a client sending `?sort=date` sees rows repeat across pages — what happened to the tie-breaker, and why can the incoming `Pageable` not simply be edited?
 - A monthly summary of three numbers loads every entry of the month and folds it in Java — what does that cost that the numbers themselves do not, and how does the query state the answer instead?
+- The service has already loaded the entry to check who owns it and whether it is still a draft —
+  what does calling `deleteById(id)` next actually send to the database, and whose "not found" rule
+  decides what happens when the row is gone?
 
 Coverage concepts:
 
@@ -434,6 +476,17 @@ Coverage concepts:
 - [ ] N+1 problem — one query loads the list, then N extra queries load each lazy relationship in a loop; fix with `JOIN FETCH` in `@Query` or with `@EntityGraph`
 - [ ] `@PageableDefault` is a default, not a floor — a client-supplied `page`, `size` or `sort` replaces the annotation's value entirely rather than merging with it, so any invariant the default was carrying (such as the unique tie-breaker that makes an order total) has to be re-applied to the incoming `Pageable`; `Pageable` and `Sort` are immutable, so re-applying it means rebuilding them rather than mutating what arrived
 - [ ] Aggregating in the database vs in memory — a read whose answer is a handful of scalars states them as `SUM`/`COUNT` in the query itself, because loading every matching row as a managed entity to fold it in Java pays for the persistence context and grows with the data while the result stays the same size
+- [ ] `delete(entity)` vs `deleteById(id)` — `deleteById` is itself a `findById` followed by the delete, so a service that already loaded the entity to check ownership or state asks for it a second time, and it also absorbs the absent case silently under a different not-found policy than the guard that loaded it
+
+Audit note: this entry's prose is not written from scratch. It absorbs, from
+`notes/spring-boot/junior/en/03-spring-data-jpa.md` and its Spanish counterpart, the seven sections
+entry 03's `Audit note` moves out: `## JpaRepository — what you get for free`, `## Repositories group
+by entity, not by feature — a different axis than controllers/services`, `## Derived query methods`,
+`## Pagination — Pageable and Page<T>`, `## The N+1 problem`, `## save() — insert or update` and
+`## Aggregation queries and interface projections`. The extraction must carry over the validated
+aggregation material — the `SUM` + `GROUP BY` JPQL query, its literals, the `YearMonth` range and the
+interface projection it returns — which is real, already reviewed, and owned here by
+`Interface-based projections`.
 
 Rationale: these are all the same act — asking the repository a question and controlling the shape,
 order, size and cost of the answer — and the N+1 closes the chapter because it is the point where a
@@ -485,6 +538,10 @@ Must answer:
 - Filters, interceptors and advice all "run around the request" — where does each one sit, and which
   one is the right place for a concern that must also see requests no controller ever handles?
 - Two different inputs of the same request fail with the same status and need the message rendered under different field names — why is that not two exception types?
+- A handler class annotated `@ControllerAdvice` returns an error object and the client does not get
+  JSON — what does `@RestControllerAdvice` add, and when does plain advice still write JSON?
+- A request body fails `@Valid` — which exception does Spring throw, and what does the client receive
+  if no handler claims it?
 
 Coverage concepts:
 
@@ -574,6 +631,15 @@ Must answer:
 - The caller's identity can be read from a static holder anywhere in the code or taken as a method
   argument in the controller — what resolves the argument, and why is the argument the one to reach
   for first?
+- Nothing in the login code calls `loadUserByUsername` or the encoder — what does `authenticate()`
+  run, in what order, and why must the configuration publish the manager as a bean before the login
+  service can use it?
+- A rule permitting the login path is written after the authenticated catch-all and login now demands
+  a token — why does the order of the rules decide this?
+- The JWT filter returns early without calling the rest of the chain — what does the client receive,
+  and when is stopping the chain the right thing to do?
+- The security starter was added and every endpoint, including ones nobody configured, now refuses
+  anonymous calls — what switched that on, and why does `@PreAuthorize` need a separate switch?
 
 Coverage concepts:
 
@@ -643,9 +709,11 @@ This chapter makes the input contract explicit and explains why a rule enforced 
 produces the wrong HTTP status. The dependency with 05 runs both ways and both sides are written down
 deliberately: 05 handles `MethodArgumentNotValidException` as a marked preview of this chapter, and
 this chapter assumes the error contract 05 established rather than inventing a second one. The cycle
-is unavoidable — a validation failure is an HTTP failure — and this order resolves it. The `@Validated` variant and validation groups are deliberately not
-here: they belong to the `spring` topic's validation integration, and this chapter links to it rather
-than half-teaching it.
+is unavoidable — a validation failure is an HTTP failure — and this order resolves it. The
+`@Validated` variant and validation groups are deliberately not here: they belong to the `spring`
+topic's validation integration, and this chapter links to it rather than half-teaching it. The
+database half of that contrast is a marked preview: the column violation surfaces when the transaction
+flushes, a timing chapter 11 traces.
 
 Learning outcome: Victor can declare the right constraint for each field, trigger validation at the
 controller boundary including nested objects and collections, and handle the two distinct validation
@@ -664,6 +732,9 @@ Must answer:
   definition?
 - Why does validating a path variable throw a different exception than validating a body?
 - A minimum-length rule on the field carrying the *current* password locks out an account created under an older policy — which of the two fields does a policy constraint belong to, and why?
+- A blank description comes back as `must not be blank`, lower case and generic, beside the API's own
+  `Date cannot be in the future` — where does that default text come from, and where is it reworded
+  once so that every DTO's field errors speak in the same voice?
 
 Coverage concepts:
 
@@ -676,6 +747,7 @@ Coverage concepts:
 - [ ] Controller method validation — apply constraints to controller parameters and handle their failures separately from request-body binding errors
 - [ ] Body vs method validation failures — invalid `@RequestBody` binding and invalid method parameters use different exception families; handle both deliberately instead of assuming every violation is a `ConstraintViolationException`
 - [ ] Policy constraints vs verification fields — a field the request submits for comparison against a stored value carries only the constraints that make the comparison possible, because a policy rule such as a minimum length runs before the comparison and rejects a legitimate value created under an earlier policy
+- [ ] Constraint messages — a constraint with no `message` takes its provider's default template, which is lower-case and generic, so the templates the API uses are overridden once in `ValidationMessages.properties`, the resource bundle Bean Validation reads first, and every field error the client renders shares the API's own voice
 
 Rationale: these concepts form one gate — activating constraints, choosing them, cascading them, and
 handling the two ways they can fail — and the gate only makes sense placed against the alternative of
@@ -697,22 +769,30 @@ Action: audit
 English: notes/spring-boot/junior/en/08-transactions.md
 Spanish: notes/spring-boot/junior/es/08-transacciones.md
 
-Depends on: 03, 04, 05
+Depends on: 01, 02, 03, 04, 05
 
 Pending additions: none
 
 Narrative role: the chapter that answers what a repository call is really wrapped in, and why a
-relationship that loads perfectly inside a service explodes in the controller. Transactional
-semantics themselves — rollback rules, propagation, `readOnly`, the proxy that opens the boundary —
-are owned by the `spring` topic and must be linked, not re-derived; what belongs here is the
-Spring Data consequence: a service that never declares a boundary still has one per call, and the
-persistence context lives and dies with it.
+relationship that loads perfectly inside a service explodes in the controller once Boot's open-session
+default is switched off — and what that default costs while it is on, including a pooled connection
+held for the whole request. It depends on 02 because that default is defined by what happens while the
+response is being rendered. Transactional semantics themselves — rollback rules, propagation,
+`readOnly`, the proxy that opens the boundary — are owned by the `spring` topic and must be linked,
+not re-derived; what belongs here is the Spring Data consequence: a service that never declares a
+boundary still has one per call, and the persistence context lives and dies with it. The same boundary
+is also the moment a database connection is borrowed and handed back, so the datasource chapter 01
+configured by URL and credentials is finally seen as what it is at runtime — a pool lending a fixed
+set of open connections to one unit of work at a time. That is placed here and not in 01 because "unit
+of work" means nothing before this chapter defines it.
 
-Learning outcome: Victor can explain what atomicity an unannotated service actually has, predict
-where the persistence context closes, and diagnose and fix a `LazyInitializationException` by
-choosing between mapping the data inside the boundary and loading the relationship in the query.
+Learning outcome: Victor can explain what atomicity an unannotated service actually has, predict where
+the persistence context closes, including what Boot's open-session default changes about that,
+diagnose and fix a `LazyInitializationException` by choosing between mapping the data inside the
+boundary and loading the relationship in the query, and explain which connection a unit of work runs
+on, where it comes from and why a pooler placed in front of the application's own pool can break it.
 
-Prerequisites: 03, 04, 05.
+Prerequisites: 01, 02, 03, 04, 05.
 
 Must answer:
 
@@ -724,15 +804,44 @@ Must answer:
   different about the two?
 - Two fixes are offered for the same exception — mapping to a DTO earlier, or fetching the
   relationship in the query — and what decides which one is right?
+- Opening a fresh connection to PostgreSQL for every request would be slow — what does Boot put
+  between the application and the database instead, which settings control how many connections it
+  keeps, and what does a request do when all of them are lent out?
+- The application works against a local database and fails against a hosted one reached through the
+  provider's transaction-mode pooler — what does the application's pool assume about a connection that
+  such a pooler does not guarantee?
+- Boot keeps lazy loading working while the response is being written unless it is told not to — what
+  keeps the session open, why does that hide the queries being run, and why does it hold a database
+  connection until the response is sent?
+- The fix for both the half-written use case and the lazy-loading failure is the same annotation on
+  the service method — what does it change about where the transaction and the persistence context
+  begin and end, and which topic teaches its rules in full?
+- This chapter says "session" for the Hibernate session and for the database connection's session, and
+  chapter 06 switched off a third kind — which is which, and which one does each failure here involve?
 
 Coverage concepts:
 
 - [ ] Spring Data repository default transactionality — repository CRUD methods carry their own transaction boundary, so an unannotated service commits every call independently with no atomicity across the whole use case
 - [ ] `LazyInitializationException` — thrown when you access a `LAZY` relationship after the Hibernate session is closed; fix by converting to a DTO inside the service transaction or loading the relationship deliberately in the query
+- [ ] Datasource connection pool — Boot backs the `DataSource` with HikariCP, which keeps a set of open connections and lends one to each unit of work instead of opening a connection per request; recognise its `spring.datasource.hikari.*` settings and why an external transaction-mode pooler in front of it breaks the session state the pool relies on
+- [ ] Open EntityManager in View — recognise that Boot's web default can keep lazy loading available during response rendering, why this can hide query behaviour, and why DTO mapping should happen inside an explicit service transaction
 
-Rationale: both concepts are the same boundary seen from two sides — how far a unit of work extends,
-and how long the objects it loaded stay usable — and separating them would leave the most common
-junior persistence exception without the mechanism that explains it.
+Audit note: `## What is a transaction — the all-or-nothing unit` stays as the working definition this
+chapter needs, and `## Where to put @Transactional` is reduced to the one placement this chapter's
+fixes use — the externally called service method — with a link to the `spring` topic for the placement
+rules. `## Read-only transactions — @Transactional(readOnly = true)`, `## @Transactional does not work
+on private methods`, `## Transaction propagation — REQUIRED, REQUIRES_NEW, NESTED, SUPPORTS`, `##
+Isolation levels — what other transactions can see while yours runs` and `## Common mistake — catching
+the exception inside the method` teach `spring`-topic semantics: each is reduced to a one-sentence
+pointer to `notes/spring/junior/en/`, and the removed prose is reported for the `spring` junior plan
+to claim. `## LazyInitializationException — the most common JPA mistake` stays and absorbs the Open
+EntityManager in View material.
+
+Rationale: all four concepts are the same boundary seen from four sides — how far a unit of work
+extends, how long the objects it loaded stay usable, whether the web layer silently extends that, and
+which physical connection it runs on — and separating them would leave the most common junior
+persistence exception, and the most common hosted- database failure, without the mechanism that
+explains them.
 
 Handoff: the application is now correct by construction in Victor's head. Chapter 09 makes that claim
 testable by a machine.
@@ -755,8 +864,12 @@ Depends on: 02, 03, 04, 05, 06, 07, 08
 Pending additions: none
 
 Narrative role: the chapter that turns everything built so far into something a team can change
-safely. It works outward from a plain unit test to a full context, choosing the smallest tool that
-can actually catch the risk in question.
+safely. It works outward from a plain unit test to a full context, choosing the smallest tool that can
+actually catch the risk in question. One concept arrives before its chapter and must carry the
+standard's forward-reference callout, with its why answered in place (`HC-3`): a test profile — a
+`test`-only properties file activated for the test run — whose file and activation mechanism chapter
+13 teaches in full; here it is read as "settings that load only while the tests run, so production
+configuration is never edited to make a test pass".
 
 Learning outcome: Victor can write and justify a unit test, an MVC slice test and a persistence slice
 test, decide when the full context is warranted, and recognise a test that passes no matter what the
@@ -818,11 +931,14 @@ Depends on: 01, 03
 
 Pending additions: none
 
-Narrative role: everything so far has been true on Victor's laptop, where the code is whatever the
-IDE compiled and the schema is whatever Hibernate last decided to do to it. This chapter replaces
-both of those runtime side-effects with reviewed, versioned outputs: an image built once from a
-Dockerfile, and a schema built by an ordered list of migration files. That single idea — the thing
-that runs is produced deliberately, not improvised at startup — is what makes both halves one lesson.
+Narrative role: everything so far has been true on Victor's laptop, where the code is whatever the IDE
+compiled and the schema is whatever Hibernate last decided to do to it. This chapter replaces both of
+those runtime side-effects with reviewed, versioned outputs: an image built once from a Dockerfile,
+and a schema built by an ordered list of migration files. That single idea — the thing that runs is
+produced deliberately, not improvised at startup — is what makes both halves one lesson. Image,
+container and Dockerfile are the `general` topic's baseline and are linked with a one-sentence
+reminder; this chapter teaches what is Spring Boot-specific — the executable JAR inside the image and
+configuration supplied from outside through the relaxed binding of chapter 01.
 
 Learning outcome: Victor can explain why the running artifact and the running schema must both be
 build outputs rather than startup side-effects, package the application as an image configured
@@ -847,15 +963,20 @@ Coverage concepts:
 - [ ] Flyway vs `ddl-auto=update` — evolve schemas through ordered, reviewable migrations rather than allowing runtime ORM metadata to mutate a durable production database implicitly
 - [ ] Spring Boot container packaging — build and run the executable application artifact in a container while supplying configuration externally and leaving generic container orchestration to the General topic
 
+Audit note: the existing ``### `EXPOSE` documents the port — it does not publish it``, `##
+docker-compose — app + database together`, ``### Why `db` works as a hostname — the embedded DNS`` and
+``### `depends_on` waits for the container, not for Postgres`` teach `general`-topic container bullets
+(exposed versus published port, compose, service discovery, readiness); each is reduced to a link with
+a one-sentence reminder.
+
 Rationale: both halves teach the same mechanism seen twice — a reviewed artifact produced by a build
 step and identified by a version, versus something improvised by the process at startup — which is
 why the image and the migration history belong in one chapter rather than in a tooling list.
 
 Handoff: once the application runs on a machine Victor cannot attach a debugger to, the only evidence
-left is what it prints. Chapter 12 reads that evidence. (File `11-business-logic-domain-modeling.md`
-sits between them in the folder but is not part of this route — see the unassigned list below.)
+left is what it prints. Chapter 11 reads that evidence.
 
-## 12 — Diagnosing a running application
+## 11 — Diagnosing a running application
 
 Status: pending
 
@@ -865,28 +986,26 @@ Pending study: none
 
 Action: audit
 
-English: notes/spring-boot/junior/en/12-production-debugging.md
-Spanish: notes/spring-boot/junior/es/12-depuracion-en-produccion.md
+English: notes/spring-boot/junior/en/11-production-debugging.md
+Spanish: notes/spring-boot/junior/es/11-depuracion-en-produccion.md
 
-Depends on: 01, 02, 03, 04, 08
+Depends on: 01, 03, 04, 08
 
 Pending additions: none
 
 Narrative role: the chapter that converts every mechanism already learned into a diagnostic skill. It
 is placed after packaging because that is when the application stops being something Victor can step
 through, and it works from a failure symptom back to the stage that produced it. It switches
-diagnostics on by raising a package's log level, which chapter 13 then formalises — say so where the
+diagnostics on by raising a package's log level, which chapter 12 then formalises — say so where the
 property first appears, so the reader knows the trick is a preview and not a one-off incantation. It
-depends on 02 because Open EntityManager in View is defined by what happens while the *response* is
-being rendered, and it reads startup failures that include bean-creation errors — a container concept
-this topic no longer teaches, so that half must link to the `spring` notes rather than explain the
-lifecycle again.
+reads startup failures that include bean-creation errors — a container concept this topic no longer
+teaches, so that half must link to the `spring` notes rather than explain the lifecycle again.
 
 Learning outcome: Victor can read a Boot startup failure and name which stage failed, make the
 statements the persistence layer really issues visible, and explain why a failure is reported at a
 line other than the one that caused it.
 
-Prerequisites: 01, 02, 03, 04, 08.
+Prerequisites: 01, 03, 04, 08.
 
 Must answer:
 
@@ -895,24 +1014,21 @@ Must answer:
 - The Java code looks like one call; how many SQL statements actually ran?
 - Why does the constraint violation appear at the end of the method instead of on the line that saved
   the row?
-- Why does a relationship load fine while rendering the response and fail as soon as mapping moves
-  into the service?
 
 Coverage concepts:
 
 - [ ] Startup diagnostics — read Boot's condition and failure-analysis output to distinguish configuration, bean creation, port, and datasource failures before changing code
 - [ ] Generated-statement logging — enable Hibernate's SQL and binding output to see the statements the repository layer actually issues, because query count and shape are invisible from Java code alone
 - [ ] Write timing and deferred failure — a persistence call stages work that reaches the database at flush or commit, so a constraint violation is reported at the transaction boundary rather than on the line that appeared to cause it
-- [ ] Open EntityManager in View — recognise that Boot's web default can keep lazy loading available during response rendering, why this can hide query behaviour, and why DTO mapping should happen inside an explicit service transaction
 
-Rationale: all four concepts are about the gap between what the code appears to do and what the
+Rationale: all three concepts are about the gap between what the code appears to do and what the
 running process actually did — at startup, at query time, and at flush time — which is exactly the
 skill an incident demands.
 
 Handoff: diagnosis depends on the application having said something useful in the first place.
-Chapter 13 is about producing that evidence deliberately.
+Chapter 12 is about producing that evidence deliberately.
 
-## 13 — Application logging
+## 12 — Application logging
 
 Status: pending
 
@@ -922,16 +1038,16 @@ Pending study: none
 
 Action: audit
 
-English: notes/spring-boot/junior/en/13-logging-observability.md
-Spanish: notes/spring-boot/junior/es/13-logging-observabilidad.md
+English: notes/spring-boot/junior/en/12-logging-observability.md
+Spanish: notes/spring-boot/junior/es/12-logging-observabilidad.md
 
 Depends on: 01
 
 Pending additions: none
 
-Narrative role: the counterpart to chapter 12. Diagnosis read evidence the framework produced; this
+Narrative role: the counterpart to chapter 11. Diagnosis read evidence the framework produced; this
 chapter is about the evidence Victor's own code leaves behind, and the habits that get a pull request
-rejected when it does not. It also formalises the level-raising property that 12 used ad hoc to see
+rejected when it does not. It also formalises the level-raising property that 11 used ad hoc to see
 Hibernate's SQL: there it was a trick, here it is the mechanism.
 
 Learning outcome: Victor can obtain a logger correctly, choose a level and a message that will still
@@ -958,11 +1074,10 @@ format, exception logging and runtime level control are one skill, and the cover
 its required scope rather than the depth needed to make it a habit.
 
 Handoff: logging levels are the first thing that must differ between a laptop and a real environment,
-which raises the general question of how one build behaves differently per environment. Chapter 15
-answers it. (File `14-specifications-criteria-api.md` sits between them in the folder but is not part
-of this route — see the unassigned list below.)
+which raises the general question of how one build behaves differently per environment. Chapter 13
+answers it.
 
-## 15 — Profiles and environment-specific startup
+## 13 — Profiles and environment-specific startup
 
 Status: pending
 
@@ -972,25 +1087,29 @@ Pending study: none
 
 Action: audit
 
-English: notes/spring-boot/junior/en/15-spring-profiles.md
-Spanish: notes/spring-boot/junior/es/15-perfiles-spring.md
+English: notes/spring-boot/junior/en/13-spring-profiles.md
+Spanish: notes/spring-boot/junior/es/13-perfiles-spring.md
 
-Depends on: 01
+Depends on: 01, 03, 04, 06
 
 Pending additions: none
 
-Narrative role: chapter 01 externalised configuration values and 13 changed one of them per
+Narrative role: chapter 01 externalised configuration values and 12 changed one of them per
 environment by hand; this chapter makes whole configuration files and whole environments switchable,
 which is what lets development conveniences exist without ever reaching a real deployment. `@Value`
 was taught in 01 and must be linked back to rather than re-explained; conditional bean registration
 with `@Profile` is the `spring` topic's bullet, so this chapter shows the effect and links there for
-the container mechanism.
+the container mechanism. It also owns the first moment the application's own code runs after startup:
+a `CommandLineRunner` that seeds the development administrator only under the `dev` profile. That seed
+needs the entity and repository of 03–04 and the password encoder of 06, which is why the callback is
+taught here rather than in 01.
 
 Learning outcome: Victor can activate a profile, split configuration between a shared file and
 profile-specific ones, read both file layouts he will meet in real projects, and explain what a
-profile must never be used to store.
+profile must never be used to store, and run idempotent one-off startup work that exists only in the
+environment that needs it.
 
-Prerequisites: 01.
+Prerequisites: 01, 03, 04, 06.
 
 Must answer:
 
@@ -998,20 +1117,31 @@ Must answer:
 - Which values belong in the shared file and which in the profile-specific one?
 - Two ways exist to write profile configuration in one project — how do you read both?
 - Why is a profile the wrong place to keep a password even though it looks like the natural home?
+- Seeding an admin user from a constructor runs too early and fails — what is not ready yet, and where
+  does that work belong instead?
+- The seeding code runs again on every restart — why is that not a bug to be fixed with a flag, and
+  what does it force the code to look like?
 
 Coverage concepts:
 
 - [ ] Profile-specific configuration files — profile values live either in an `application-{profile}` file or in one multi-document file whose sections are separated by `---` in YAML or `#---` in properties and selected with `spring.config.activate.on-profile`
 - [ ] Profiles — activate environment-specific beans and configuration deliberately without treating a profile as a secrets store
+- [ ] `CommandLineRunner` startup callback — run one-off work once after the context is fully built and every bean is available, instead of a constructor or static initialiser that fires before the application is ready; it runs on every boot, so the work must be idempotent
 
-Rationale: the file mechanism and the activation mechanism are the same feature seen from two sides —
-one environment label deciding what configuration loads and, through it, what the application does.
+Audit note: the existing ``## `CommandLineRunner` — running code once, right after startup`` and `##
+Putting it together — the idempotent seed` sections are this entry's own and stay. ``## `@Value` —
+pulling a single property into a field`` teaches what entry 01 owns through `@Value` vs
+`@ConfigurationProperties` and is reduced to a one-sentence link back to 01.
+
+Rationale: the file mechanism, the activation mechanism and the profile-gated startup callback are one
+feature seen from three sides — one environment label deciding what configuration loads and, through
+it, what the application does when it starts.
 
 Handoff: profiles are the last mechanism this level adds, and they are also the first one Victor will
 find already in place in somebody else's project — usually written in an older style, next to an
-older security configuration and an older set of imports. Chapter 16 teaches him to read that.
+older security configuration and an older set of imports. Chapter 14 teaches him to read that.
 
-## 16 — Reading maintained Spring Boot code
+## 14 — Reading maintained Spring Boot code
 
 Status: pending
 
@@ -1021,10 +1151,10 @@ Pending study: none
 
 Action: create
 
-English: notes/spring-boot/junior/en/16-maintained-code-recognition.md
-Spanish: notes/spring-boot/junior/es/16-reconocer-codigo-heredado.md
+English: notes/spring-boot/junior/en/14-maintained-code-recognition.md
+Spanish: notes/spring-boot/junior/es/14-reconocer-codigo-heredado.md
 
-Depends on: 02, 03, 04, 06
+Depends on: 02, 03, 04, 06, 07, 09
 
 Pending additions: none
 
@@ -1041,12 +1171,12 @@ Learning outcome: Victor can open an unfamiliar Spring Boot codebase, recognise 
 security configuration and repository interface styles it uses, and explain what each older choice
 gives up compared with the current one.
 
-Prerequisites: 02, 03, 04, 06.
+Prerequisites: 02, 03, 04, 06, 07, 09.
 
 Must answer:
 
-- A copied snippet does not compile and the only difference is one word in the import — what
-  happened and why?
+- A copied snippet does not compile and the only difference is one word in the import — what happened,
+  and why can the same mistake compile and be silently ignored instead?
 - The security configuration extends a base class instead of declaring a bean; is that code wrong or
   just old?
 - The repository extends `CrudRepository` and the pagination method is missing — what does that
@@ -1067,7 +1197,7 @@ reading skill rather than four unrelated facts.
 Handoff: Victor can now read and write the service. The final chapter turns it outward: calling the
 services it depends on.
 
-## 17 — Calling another service over HTTP
+## 15 — Calling another service over HTTP
 
 Status: pending
 
@@ -1077,10 +1207,10 @@ Pending study: none
 
 Action: create
 
-English: notes/spring-boot/junior/en/17-http-clients.md
-Spanish: notes/spring-boot/junior/es/17-clientes-http.md
+English: notes/spring-boot/junior/en/15-http-clients.md
+Spanish: notes/spring-boot/junior/es/15-clientes-http.md
 
-Depends on: 02, 05
+Depends on: 02, 04, 05
 
 Pending additions: none
 
@@ -1093,7 +1223,7 @@ Learning outcome: Victor can call an external HTTP API from a Spring Boot servic
 framework's own synchronous client, read the older client style he will find in existing projects,
 and explain what a caller owes a service it does not control.
 
-Prerequisites: 02, 05.
+Prerequisites: 02, 04, 05.
 
 Must answer:
 
@@ -1121,9 +1251,5 @@ ownership, distributed systems and testing depth.
 
 ## Unassigned existing notes
 
-- notes/spring-boot/junior/en/18-dependency-injection.md — teaches the IoC container, stereotypes, bean scopes, proxying and startup failure diagnosis. Every one of those concepts left the Spring Boot coverage between 2026-07-27 and 2026-08-02 and is now owned by the new `spring` topic (`notes/spring/coverage/junior.md`, sections "Container and bean registration", "Scope and lifecycle", "Proxies and AOP"). Recommended disposition: keep the pair intact and let the `spring` junior plan claim it; that plan currently declares all-new files, so it must be re-run to route this prose instead of re-authoring it. This planner relocates across levels, never across topics, so the files stay in place until then. Renumbered 03 → 18 because the route needs prefix 03 for the entity-mapping chapter; the move is
-bilingual and both halves keep the new prefix — `en/03-dependency-injection.md` →
-`en/18-dependency-injection.md` and `es/03-inyeccion-dependencias.md` →
-`es/18-inyeccion-dependencias.md` — so the Spanish file never collides with entry 03.
-- notes/spring-boot/junior/en/11-business-logic-domain-modeling.md — teaches anemic-versus-rich domain models and state-machine encapsulation, which no Spring Boot coverage bullet owns at any level. Recommended disposition: keep the pair intact and route it to the `architecture` topic through that topic's own coverage and plan; this planner cannot relocate across topics, only across levels, so the files stay where they are until that plan claims them. Chapter 10's handoff names the gap so the numeric route does not appear broken.
-- notes/spring-boot/junior/en/14-specifications-criteria-api.md — teaches `Specification`, `JpaSpecificationExecutor` and the Criteria API. A bullet now owns this at Spring Boot **middle** ("Dynamic query construction with `Specification<T>`"), not at junior, so it is not a required junior study file and is not relocated here: the junior progression gate is not closed, so Spring Boot middle cannot be planned yet, and moving the pair is that plan's decision when it can be. Chapter 13's handoff names the gap.
+- notes/spring-boot/junior/en/16-business-logic-domain-modeling.md — teaches where business rules live: anemic versus rich domain models, the `DRAFT → SUBMITTED → APPROVED/REJECTED` state machine guarded in one place, and invariants versus use-case rules. That material is owned by the `architecture` topic (its junior `State machine pattern` bullet), not by any Spring Boot bullet at any level; its one Spring Data section, `## Where a derived value is computed — hours worked`, duplicates what entry 04 owns through `Aggregating in the database vs in memory`. Recommended disposition: keep the pair intact until the `architecture` plan routes it; this planner relocates across levels, never across topics. Renumbered 11 → 16 because the route needs prefix 11, in both languages — `en/11-business-logic-domain-modeling.md` → `en/16-business-logic-domain-modeling.md` and `es/11-logica-de-negocio-modelado-dominio.md` → `es/16-logica-de-negocio-modelado-dominio.md`.
+- notes/spring-boot/junior/en/18-dependency-injection.md — teaches the IoC container, bean stereotypes, scopes, constructor injection, `@Bean`, startup wiring and `@Qualifier`/`@Primary`, all owned by the `spring` topic (`notes/spring/coverage/junior.md`); its last two sections, `## @Value — reading configuration into beans` and `## @ConfigurationProperties — binding grouped config to a class`, duplicate what entry 01 owns through `@Value` vs `@ConfigurationProperties` and `Relaxed binding from environment variables`. Recommended disposition: keep the pair intact and let the `spring` junior plan claim it; that plan currently declares all-new files, so it must be re-run to route this prose instead of re-authoring it.

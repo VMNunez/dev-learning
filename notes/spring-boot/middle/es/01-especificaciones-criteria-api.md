@@ -2,7 +2,7 @@
 
 Docs: https://www.baeldung.com/rest-api-search-language-spring-data-specifications → leer: "Specifications" y "Multiple Specifications"
 
-Ya conoces `@Query` con parámetros nombrados (archivo [03-spring-data-jpa.md](03-spring-data-jpa.md)) — escribes la JPQL como un string fijo y Spring rellena los `:nombreParametro` en el momento de ejecutar. Eso funciona genial cuando la query nunca cambia de forma. Pero `GET /api/entries` del proyecto 07 tiene cuatro filtros *opcionales* — `userId`, `projectId`, `status`, `month` — y puede llegar cualquier combinación de ellos: a veces solo `status`, a veces los cuatro, a veces ninguno. El `WHERE` necesita una forma distinta según lo que haya llegado. Ese es el problema que resuelve este archivo.
+Ya conoces `@Query` con parámetros nombrados (archivo [03-spring-data-jpa.md](../../junior/es/03-spring-data-jpa.md)) — escribes la JPQL como un string fijo y Spring rellena los `:nombreParametro` en el momento de ejecutar. Eso funciona genial cuando la query nunca cambia de forma. Pero `GET /api/entries` del proyecto 07 tiene cuatro filtros *opcionales* — `userId`, `projectId`, `status`, `month` — y puede llegar cualquier combinación de ellos: a veces solo `status`, a veces los cuatro, a veces ninguno. El `WHERE` necesita una forma distinta según lo que haya llegado. Ese es el problema que resuelve este archivo.
 
 ## El arreglo tentador, y por qué se rompe
 

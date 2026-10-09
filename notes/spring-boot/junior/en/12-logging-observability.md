@@ -2,9 +2,9 @@
 
 Docs: [Baeldung — Logging in Spring Boot](https://www.baeldung.com/spring-boot-logging) → read: "Zero Configuration Logging" and "Logback Configuration Logging"
 
-[12-production-debugging.md](12-production-debugging.md) taught you to read the evidence: the `APPLICATION FAILED TO START` block, the `Caused by:` chain, the SQL query count, the security filter that denied a request. Every one of those techniques has a precondition nobody says out loud — **the evidence had to exist**. Spring wrote the startup block. Hibernate printed the SQL because a property was on. Spring Security narrated the filter chain because you raised its level to `DEBUG`.
+[12-production-debugging.md](11-production-debugging.md) taught you to read the evidence: the `APPLICATION FAILED TO START` block, the `Caused by:` chain, the SQL query count, the security filter that denied a request. Every one of those techniques has a precondition nobody says out loud — **the evidence had to exist**. Spring wrote the startup block. Hibernate printed the SQL because a property was on. Spring Security narrated the filter chain because you raised its level to `DEBUG`.
 
-Now go back to the row that opened that file: an entry sitting at `APPROVED` that nobody ever submitted ([11-business-logic-domain-modeling.md](11-business-logic-domain-modeling.md)). Ask the only question that matters — *who approved it, and when?* — and open your `TimeEntryService`:
+Now go back to the row that opened that file: an entry sitting at `APPROVED` that nobody ever submitted ([11-business-logic-domain-modeling.md](16-business-logic-domain-modeling.md)). Ask the only question that matters — *who approved it, and when?* — and open your `TimeEntryService`:
 
 ```java
 public TimeEntryResponse approve(Long id) {
@@ -258,7 +258,7 @@ because the return value of "com.victor.timetrack.model.TimeEntry.getProject()" 
 Caused by: ...
 ```
 
-Same failure. Same instant. One of them is a diagnosis — the class, the line, the null reference, the call path, the `Caused by:` chain that [12-production-debugging.md](12-production-debugging.md) taught you to read bottom-up. The other is the word `null`.
+Same failure. Same instant. One of them is a diagnosis — the class, the line, the null reference, the call path, the `Caused by:` chain that [12-production-debugging.md](11-production-debugging.md) taught you to read bottom-up. The other is the word `null`.
 
 **The mechanism.** `getMessage()` returns *one field* of the exception object: a `String` the author of the exception chose to write, which may be empty, may be `null`, and can never contain a stack trace because a stack trace is not a string — it is an **array of `StackTraceElement` objects** the JVM captured at the moment `new SomeException()` was constructed (see [Java exceptions](../../../java/junior/en/11-exceptions.md)). It lives on the exception instance, alongside the message and the `cause`. When you call `e.getMessage()` you extract the message and **leave the array, and the entire `cause` chain, behind** — and the moment the `catch` block ends, that object is garbage and the array is gone forever.
 
@@ -428,11 +428,11 @@ public class LoginRequest {
 
 `@ToString.Exclude` does not mask the value, and it does not print `password=***`: the field simply **does not appear** in the generated `toString()` at all. The same object logged now prints `LoginRequest(email=victor@timetrack.com)` — the password is not hidden behind stars, it was never written. (Lombok has no masking feature; if you want a `***` marker you have to write `toString()` by hand.)
 
-> **Option B is the one that survives a team.** Option A depends on every developer, forever, remembering not to log the object — and one careless `log.debug("request {}", request)` during a bad afternoon undoes it. `@ToString.Exclude` moves the guarantee into the *class*, so the field cannot be printed by accident from anywhere. This is the same principle as the entity setter in [11-business-logic-domain-modeling.md](11-business-logic-domain-modeling.md): **do not rely on discipline for something a compiler-time construct can enforce.**
+> **Option B is the one that survives a team.** Option A depends on every developer, forever, remembering not to log the object — and one careless `log.debug("request {}", request)` during a bad afternoon undoes it. `@ToString.Exclude` moves the guarantee into the *class*, so the field cannot be printed by accident from anywhere. This is the same principle as the entity setter in [11-business-logic-domain-modeling.md](16-business-logic-domain-modeling.md): **do not rely on discipline for something a compiler-time construct can enforce.**
 
 > **The same trap, one layer up: the JWT.** `log.debug("Authorizing with header {}", authHeader)` in your `JwtFilter` would print `Bearer eyJhbGciOi…` — the entire token, valid for the next 24 hours (`app.jwt.expiration=86400000` in your `application.properties`). Anyone with log access can paste it into Postman and *be that user*. If you must log something about the token, log a *fact* about it, never the token: `log.debug("JWT rejected for {}: expired at {}", email, exp)`. Note that even the email is a judgement call — it is personal data, and at `DEBUG` (off in production) it is defensible; at `INFO`, on every request, it is a GDPR conversation.
 
-> **And the same trap, one layer down: `spring.jpa.show-sql=true`.** It is on in your `application.properties` right now, which is correct for learning, and it prints every statement Hibernate runs — including the `INSERT` into `users`, with the parameter values if you also turned on the bind logger ([12-production-debugging.md](12-production-debugging.md)). That is your data going into the log by a route you did not think of as "logging". It is a **development** switch. It has no business being on in production, and not only for the noise.
+> **And the same trap, one layer down: `spring.jpa.show-sql=true`.** It is on in your `application.properties` right now, which is correct for learning, and it prints every statement Hibernate runs — including the `INSERT` into `users`, with the parameter values if you also turned on the bind logger ([12-production-debugging.md](11-production-debugging.md)). That is your data going into the log by a route you did not think of as "logging". It is a **development** switch. It has no business being on in production, and not only for the noise.
 
 ---
 
@@ -463,7 +463,7 @@ Logback resolves a logger's level by walking **up its dotted name** until it fin
 
 > **This is why you write `log.debug(...)` lines you never see.** A `DEBUG` line is not dead code — it is a switch that is *currently off*. When an endpoint misbehaves in staging, you raise that one package to `DEBUG`, reproduce, read, and put it back — **with no code change, no rebuild, no redeploy**. That is the payoff for having chosen levels carefully in the first place, and it is why the debate about "what level is this line" is not pedantry: the level *is* the API of your log.
 
-> **Where those two Spring/Hibernate switches from [12-production-debugging.md](12-production-debugging.md) came from.** `logging.level.org.springframework.security=DEBUG` is not a special feature Spring Security ships. It is this exact mechanism aimed at *their* loggers — Spring's own classes call `log.debug(...)` all over the filter chain, and every one of those lines has been sitting there, switched off, since your first run. You are not adding logging; you are unmuting it.
+> **Where those two Spring/Hibernate switches from [12-production-debugging.md](11-production-debugging.md) came from.** `logging.level.org.springframework.security=DEBUG` is not a special feature Spring Security ships. It is this exact mechanism aimed at *their* loggers — Spring's own classes call `log.debug(...)` all over the filter chain, and every one of those lines has been sitting there, switched off, since your first run. You are not adding logging; you are unmuting it.
 
 ---
 
@@ -496,7 +496,7 @@ GET /actuator/health
 }
 ```
 
-You met this endpoint in [12-production-debugging.md](12-production-debugging.md) as *your* first triage check. Its real purpose is that **nothing human is reading it.** A container orchestrator (Docker's `healthcheck`, Kubernetes' liveness probe) polls it every few seconds and takes action on the answer: stop routing traffic to a container that stops saying `UP`, restart one that stops answering at all. That is the interview answer to *"how does ops know your app is up?"* — not "they check the logs", but "the platform polls a health endpoint, and Spring Boot ships one".
+You met this endpoint in [12-production-debugging.md](11-production-debugging.md) as *your* first triage check. Its real purpose is that **nothing human is reading it.** A container orchestrator (Docker's `healthcheck`, Kubernetes' liveness probe) polls it every few seconds and takes action on the answer: stop routing traffic to a container that stops saying `UP`, restart one that stops answering at all. That is the interview answer to *"how does ops know your app is up?"* — not "they check the logs", but "the platform polls a health endpoint, and Spring Boot ships one".
 
 The `db` component is doing real work, not repeating a startup fact: Actuator's `DataSourceHealthIndicator` borrows a connection from the Hikari pool and runs a trivial validation query, right then. So `"db": "DOWN"` means Postgres is unreachable **now**, which is precisely the distinction between "the app is down" and "the app is up and the database is not".
 

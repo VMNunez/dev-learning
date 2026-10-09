@@ -2,7 +2,7 @@
 
 Docs: [Baeldung — Spring Profiles](https://www.baeldung.com/spring-profiles) → read: "Use @Profile on a Bean", "@Profile with Spring XML" (sáltalo) y "Setting the Active Profile"
 
-Todos los archivos hasta ahora han dado por hecho una cosa sin decirla nunca: que tu aplicación se ejecuta *igual en todos lados*. El filtro con `Specification` de [14-especificaciones-criteria-api.md](14-especificaciones-criteria-api.md) se comporta idéntico en tu portátil y en un servidor. Igual que el filtro JWT, el manejador de excepciones y cada servicio. Esa suposición se sostiene para la *lógica* — pero se rompe en cuanto necesitas algo que debe existir **solo en tu máquina y nunca en producción**.
+Todos los archivos hasta ahora han dado por hecho una cosa sin decirla nunca: que tu aplicación se ejecuta *igual en todos lados*. El filtro con `Specification` de [14-especificaciones-criteria-api.md](../../middle/es/01-especificaciones-criteria-api.md) se comporta idéntico en tu portátil y en un servidor. Igual que el filtro JWT, el manejador de excepciones y cada servicio. Esa suposición se sostiene para la *lógica* — pero se rompe en cuanto necesitas algo que debe existir **solo en tu máquina y nunca en producción**.
 
 TimeTrack tiene exactamente una cosa así, y empezó siendo un bug real del backlog. Para poder iniciar sesión durante el desarrollo necesitas una cuenta de manager en la base de datos, pero no hay endpoint de registro — así que la primera cuenta había que sembrarla (_seed_) al arranque. La forma original de hacerlo era un archivo `data.sql`:
 

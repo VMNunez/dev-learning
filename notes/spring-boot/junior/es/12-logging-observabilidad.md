@@ -2,9 +2,9 @@
 
 Docs: [Baeldung — Logging in Spring Boot](https://www.baeldung.com/spring-boot-logging) → read: "Zero Configuration Logging" y "Logback Configuration Logging"
 
-[12-depuracion-en-produccion.md](12-depuracion-en-produccion.md) te enseñó a leer la evidencia: el bloque `APPLICATION FAILED TO START`, la cadena de `Caused by:`, el conteo de queries SQL, el filtro de seguridad que denegó una request. Cada una de esas técnicas tiene una precondición que nadie dice en voz alta — **la evidencia tenía que existir**. Spring escribió el bloque de arranque. Hibernate imprimió el SQL porque una property estaba activada. Spring Security narró la cadena de filtros porque subiste su nivel a `DEBUG`.
+[12-depuracion-en-produccion.md](11-depuracion-en-produccion.md) te enseñó a leer la evidencia: el bloque `APPLICATION FAILED TO START`, la cadena de `Caused by:`, el conteo de queries SQL, el filtro de seguridad que denegó una request. Cada una de esas técnicas tiene una precondición que nadie dice en voz alta — **la evidencia tenía que existir**. Spring escribió el bloque de arranque. Hibernate imprimió el SQL porque una property estaba activada. Spring Security narró la cadena de filtros porque subiste su nivel a `DEBUG`.
 
-Ahora vuelve a la fila que abrió aquel archivo: una entry que está en `APPROVED` y que nadie envió nunca ([11-logica-de-negocio-modelado-dominio.md](11-logica-de-negocio-modelado-dominio.md)). Hazte la única pregunta que importa — *¿quién la aprobó, y cuándo?* — y abre tu `TimeEntryService`:
+Ahora vuelve a la fila que abrió aquel archivo: una entry que está en `APPROVED` y que nadie envió nunca ([11-logica-de-negocio-modelado-dominio.md](16-logica-de-negocio-modelado-dominio.md)). Hazte la única pregunta que importa — *¿quién la aprobó, y cuándo?* — y abre tu `TimeEntryService`:
 
 ```java
 public TimeEntryResponse approve(Long id) {
@@ -258,7 +258,7 @@ because the return value of "com.victor.timetrack.model.TimeEntry.getProject()" 
 Caused by: ...
 ```
 
-El mismo fallo. El mismo instante. Uno de ellos es un diagnóstico — la clase, la línea, la referencia null, la cadena de llamadas, la cadena `Caused by:` que [12-depuracion-en-produccion.md](12-depuracion-en-produccion.md) te enseñó a leer de abajo hacia arriba. El otro es la palabra `null`.
+El mismo fallo. El mismo instante. Uno de ellos es un diagnóstico — la clase, la línea, la referencia null, la cadena de llamadas, la cadena `Caused by:` que [12-depuracion-en-produccion.md](11-depuracion-en-produccion.md) te enseñó a leer de abajo hacia arriba. El otro es la palabra `null`.
 
 **El mecanismo.** `getMessage()` devuelve *un solo campo* del objeto exception: un `String` que el autor de la exception eligió escribir, que puede estar vacío, puede ser `null`, y nunca puede contener un stack trace porque un stack trace no es un string — es un **array de objetos `StackTraceElement`** que la JVM capturó en el instante en que se construyó `new SomeException()` (ver [Excepciones en Java](../../../java/junior/es/11-excepciones.md)). Vive en la instancia de la exception, junto al mensaje y a la `cause`. Cuando llamas a `e.getMessage()` extraes el mensaje y **dejas atrás el array, y toda la cadena de `cause`** — y en el momento en que el bloque `catch` termina, ese objeto es basura y el array desaparece para siempre.
 
@@ -428,11 +428,11 @@ public class LoginRequest {
 
 `@ToString.Exclude` no enmascara el valor, y no imprime `password=***`: el campo simplemente **no aparece** en el `toString()` generado en absoluto. El mismo objeto, registrado ahora, imprime `LoginRequest(email=victor@timetrack.com)` — la contraseña no está escondida detrás de asteriscos, nunca se llegó a escribir. (Lombok no tiene una función de enmascarado; si quieres un marcador `***` tienes que escribir el `toString()` a mano.)
 
-> **La opción B es la que sobrevive a un equipo.** La opción A depende de que cada developer, para siempre, recuerde no registrar el objeto — y un descuidado `log.debug("request {}", request)` en una mala tarde lo deshace. `@ToString.Exclude` mueve la garantía a la *clase*, así que el campo no se puede imprimir por accidente desde ningún sitio. Es el mismo principio que el setter de la entidad en [11-logica-de-negocio-modelado-dominio.md](11-logica-de-negocio-modelado-dominio.md): **no dependas de la disciplina para algo que un constructo de tiempo de compilación puede garantizar.**
+> **La opción B es la que sobrevive a un equipo.** La opción A depende de que cada developer, para siempre, recuerde no registrar el objeto — y un descuidado `log.debug("request {}", request)` en una mala tarde lo deshace. `@ToString.Exclude` mueve la garantía a la *clase*, así que el campo no se puede imprimir por accidente desde ningún sitio. Es el mismo principio que el setter de la entidad en [11-logica-de-negocio-modelado-dominio.md](16-logica-de-negocio-modelado-dominio.md): **no dependas de la disciplina para algo que un constructo de tiempo de compilación puede garantizar.**
 
 > **La misma trampa, un nivel más arriba: el JWT.** `log.debug("Authorizing with header {}", authHeader)` en tu `JwtFilter` imprimiría `Bearer eyJhbGciOi…` — el token entero, válido durante las próximas 24 horas (`app.jwt.expiration=86400000` en tu `application.properties`). Cualquiera con acceso al log puede pegarlo en Postman y *ser ese usuario*. Si necesitas registrar algo sobre el token, registra un *hecho* sobre él, nunca el token: `log.debug("JWT rejected for {}: expired at {}", email, exp)`. Fíjate en que incluso el email es una decisión de criterio — es dato personal, y en `DEBUG` (apagado en producción) es defendible; en `INFO`, en cada request, es una conversación sobre RGPD.
 
-> **Y la misma trampa, un nivel más abajo: `spring.jpa.show-sql=true`.** Está activada en tu `application.properties` ahora mismo, lo cual es correcto para aprender, e imprime cada sentencia que ejecuta Hibernate — incluido el `INSERT` en `users`, con los valores de los parámetros si además activaste el bind logger ([12-depuracion-en-produccion.md](12-depuracion-en-produccion.md)). Eso es tu dato entrando al log por una vía en la que no pensabas como "logging". Es un switch de **desarrollo**. No tiene nada que hacer activado en producción, y no solo por el ruido.
+> **Y la misma trampa, un nivel más abajo: `spring.jpa.show-sql=true`.** Está activada en tu `application.properties` ahora mismo, lo cual es correcto para aprender, e imprime cada sentencia que ejecuta Hibernate — incluido el `INSERT` en `users`, con los valores de los parámetros si además activaste el bind logger ([12-depuracion-en-produccion.md](11-depuracion-en-produccion.md)). Eso es tu dato entrando al log por una vía en la que no pensabas como "logging". Es un switch de **desarrollo**. No tiene nada que hacer activado en producción, y no solo por el ruido.
 
 ---
 
@@ -463,7 +463,7 @@ Logback resuelve el nivel de un logger subiendo por su **nombre con puntos** has
 
 > **Por esto escribes líneas `log.debug(...)` que nunca ves.** Una línea `DEBUG` no es código muerto — es un switch que está *apagado ahora mismo*. Cuando un endpoint se comporta mal en staging, subes ese paquete concreto a `DEBUG`, reproduces, lees, y lo devuelves a su sitio — **sin cambio de código, sin rebuild, sin redespliegue**. Ese es el retorno de haber elegido los niveles con cuidado desde el principio, y por eso el debate de "qué nivel es esta línea" no es pedantería: el nivel *es* la API de tu log.
 
-> **De dónde salieron esos dos switches de Spring/Hibernate de [12-depuracion-en-produccion.md](12-depuracion-en-produccion.md).** `logging.level.org.springframework.security=DEBUG` no es una función especial que trae Spring Security. Es este mismo mecanismo apuntado a *sus* loggers — las propias clases de Spring llaman a `log.debug(...)` por toda la cadena de filtros, y cada una de esas líneas ha estado ahí, apagada, desde tu primera ejecución. No estás añadiendo logging; lo estás desmuteando.
+> **De dónde salieron esos dos switches de Spring/Hibernate de [12-depuracion-en-produccion.md](11-depuracion-en-produccion.md).** `logging.level.org.springframework.security=DEBUG` no es una función especial que trae Spring Security. Es este mismo mecanismo apuntado a *sus* loggers — las propias clases de Spring llaman a `log.debug(...)` por toda la cadena de filtros, y cada una de esas líneas ha estado ahí, apagada, desde tu primera ejecución. No estás añadiendo logging; lo estás desmuteando.
 
 ---
 
@@ -496,7 +496,7 @@ GET /actuator/health
 }
 ```
 
-Conociste este endpoint en [12-depuracion-en-produccion.md](12-depuracion-en-produccion.md) como *tu* primer chequeo de triaje. Su propósito real es que **nadie humano lo está leyendo.** Un orquestador de contenedores (el `healthcheck` de Docker, el liveness probe de Kubernetes) lo consulta cada pocos segundos y actúa según la respuesta: deja de enrutar tráfico a un contenedor que deja de decir `UP`, reinicia uno que deja de responder por completo. Esa es la respuesta de entrevista a *"¿cómo sabe ops que tu app está arriba?"* — no "revisan los logs", sino "la plataforma consulta un health endpoint, y Spring Boot trae uno de serie".
+Conociste este endpoint en [12-depuracion-en-produccion.md](11-depuracion-en-produccion.md) como *tu* primer chequeo de triaje. Su propósito real es que **nadie humano lo está leyendo.** Un orquestador de contenedores (el `healthcheck` de Docker, el liveness probe de Kubernetes) lo consulta cada pocos segundos y actúa según la respuesta: deja de enrutar tráfico a un contenedor que deja de decir `UP`, reinicia uno que deja de responder por completo. Esa es la respuesta de entrevista a *"¿cómo sabe ops que tu app está arriba?"* — no "revisan los logs", sino "la plataforma consulta un health endpoint, y Spring Boot trae uno de serie".
 
 El componente `db` está haciendo trabajo real, no repitiendo un dato de arranque: el `DataSourceHealthIndicator` de Actuator toma prestada una conexión del pool de Hikari y ejecuta una query de validación trivial, ahí mismo. Así que `"db": "DOWN"` significa que Postgres es inalcanzable **ahora**, que es precisamente la distinción entre "la app está caída" y "la app está arriba y la base de datos no".
 
