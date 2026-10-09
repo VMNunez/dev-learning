@@ -111,8 +111,14 @@ all on a given day is normal and is not drift. Nothing in the system may read a 
 
 - **08:00–12:30 — active project with the coding agent** (4h total, split by a 30min breakfast break).
   The main learning block. The agent guides, Victor implements. Goal: depend less on AI over time.
-- **12:30–13:30 — SQL then practice.** SQL exercises until all SQL topics are solid, then
-  technical test simulation. LeetCode Easy only after specific gates are complete — see `ROADMAP.md`.
+- **12:30–13:30 — SQL then practice.** SQL exercises first, then technical test simulation, and
+  LeetCode Easy last. **When the block moves from one stage to the next is `ROADMAP.md`'s to state,
+  never this bullet's**: `ROADMAP.md`'s `## 12:30–13:30 block — SQL then practice` section owns both
+  switch conditions — the one that opens the simulation stage, written under its SQL table, and the
+  LeetCode gates — and neither is restated here. This bullet carried its own copy of the first one —
+  "until all SQL topics are solid" — until 2026-10-09, although `ROADMAP.md` had replaced that
+  condition on 2026-07-16 (`146b982e`); these rules outrank `ROADMAP.md`, so the stale copy was the
+  one a session would have obeyed (`REC-309`).
 - **13:30–14:30 — notes then interview prep.** Notes first, then active interview prep when notes
   are well understood. Notes study order (most important for interviews first):
   **angular → spring-boot → java → architecture → security → typescript → sql → javascript → css → git**
