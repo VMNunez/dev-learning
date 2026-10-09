@@ -8,68 +8,33 @@
 
 ## Who you are and where you stand
 
-- **31 years old.** More mature than a fresh graduate. Better soft skills, more motivation, more aware of what you want. Consultancies notice this — they work with clients, and a junior who communicates well is valuable.
-- **Real internship completed** (Next.js + TypeScript + MySQL). Even though the stack is different, this is real team experience. Few self-taught juniors have this. It answers the question every recruiter asks first: _has this person ever worked in a real environment?_
-- **Previous knowledge** (React, Node.js, Express, TypeScript, CSS). You are not starting from zero. This background accelerates your Spring Boot and Angular learning because the patterns are familiar — components, services, HTTP, async, routing.
-- **Full-time study commitment.** Most self-learners study 2–3 hours a day after work. You are doing 6+ hours every day. This is a serious competitive advantage. By the full-application gate you will have months of full-time practice — equivalent to several years of evening learning.
-- **English at B1, targeting Cambridge First Certificate (B2).** Most junior candidates in Spain have weak or no English. B2 opens access to international project tracks at consultancies, which are better paid and more interesting.
+Build the application story around transferable team experience and a finished, defensible full-stack project. Use the internship's concrete delivery and collaboration results to bridge the difference between its stack and the target role; use TimeTrack to demonstrate the target stack itself.
+
+The profile, internship details, strengths and risks are maintained in [`_shared-context.md`](notes/prompts/_internal/_shared-context.md#profile). This plan turns them into priorities: finish the project gate, practise unaided delivery and explanation, and keep the English track alongside the technical work.
 
 ---
 
 ## The market you are targeting
 
-**Target companies:** NTT Data, Capgemini, Indra, Sopra Steria, Accenture, Everis, Atos, CGI, and similar large IT consultancies operating in Spain.
+Target-company and market facts live in [`_shared-context.md`](notes/prompts/_internal/_shared-context.md), in its Spanish job market section. Use them to tailor each application rather than maintain another company list here.
 
 **Why consultancies and not startups or product companies:**
 
-- They hire juniors systematically — internal programs (NTT Academy, Capgemini Academy), not one-off hires
-- They use Angular + Java Spring Boot on real client projects — your stack matches what they need
-- They accept candidates who are still learning, as long as the foundation is solid
-- Real team experience from day one — version control, code reviews, architecture discussions, delivery pressure
-- Startups often want senior developers who can work autonomously from the start
+Prioritise roles where the target stack and supervised junior delivery fit the evidence you can defend. Evaluate each opening against that fit before expanding the search to roles requiring autonomous ownership you have not demonstrated.
 
 **What they look for in a junior:**
 
-- Stack match: Angular + Java Spring Boot + PostgreSQL
-- Real project — not a tutorial, not a course certificate
-- Tests in the project — very few junior candidates have them
-- Can explain the code, not just show it
-- Internship or work experience of any kind
-- Communication — they work with clients
+Turn the hiring criteria in the shared context into application evidence: a runnable project, meaningful tests, a concise decision story and a concrete internship result. Each claim must be supported by something you can show and explain.
 
 **The hiring process at Spanish consultancies (what to expect):**
 
-1. **CV screening** — human or ATS filter. Stack, project, internship. One page.
-2. **HR call** (15–30 min) — motivation, salary expectations, availability, English level. Typical junior range at large Spanish consultancies: **18.000–24.000€ gross per year**. Don't lowball — they expect you to know the market.
-3. **Technical test** — sent by email, 2–3 days to complete. Typically: Angular form with validation + service, or Spring Boot REST endpoint with repository. Sometimes timed.
-4. **Technical interview** — 45–90 min. They ask you to explain your test solution, then ask concepts (what is dependency injection, why JWT, what is a JPA entity). This is where preparation makes the difference.
-5. **Offer** — salary, contract type, project team
+The stages and their conditions are maintained in the shared context's market section. Prepare the evidence for screening, run `/hr-screen` when application work starts or a call is scheduled, and use timed simulations plus active recall to prepare for the technical stages. Keep the ability to explain and review the submitted code at the centre of preparation.
 
 ---
 
 ## The AI factor — how it changes the market
 
-AI is changing what companies look for in junior developers. This is important to understand.
-
-**What AI does:**
-
-- Writes boilerplate code instantly (controllers, DTOs, components)
-- Generates CRUD from a description
-- Autocompletes tests and documentation
-
-**What this means for junior hiring:**
-Juniors who only know how to write syntax are being replaced by AI + one experienced developer. The question is no longer _can you write a Spring Boot controller?_ It is _can you explain why this controller is designed this way, review what AI generated, and catch its mistakes?_
-
-**Skills that go UP in value because of AI:**
-
-| Skill                                           | Why it matters more now                        |
-| ----------------------------------------------- | ---------------------------------------------- |
-| Explaining architectural decisions              | AI generates code — humans must justify it     |
-| Reading and reviewing code                      | AI output must be verified before it ships     |
-| Writing tests                                   | AI-generated code fails silently without tests |
-| Understanding patterns (why, not just how)      | AI knows the what — companies need the why     |
-| Communication with clients and teammates        | AI cannot replace human judgment and trust     |
-| Debugging — reading errors, tracing root causes | AI generates, humans fix what breaks           |
+The market analysis and examples are maintained in [`_shared-context.md`](notes/prompts/_internal/_shared-context.md), in its AI factor section. The strategic consequence is to practise explanation, testing and critical review alongside implementation: generated code only becomes useful evidence when you can defend it and catch its defects unaided.
 
 **What this means for you concretely:**
 
@@ -86,13 +51,13 @@ In order of impact:
 
 1. **Complete, explainable full-stack projects** — starting with project 07 TimeTrack, then project 08, and more if time allows. All live in `projects/`. Spring Boot + Angular + PostgreSQL + Docker + JWT + tests. You must be able to explain every line, every decision, every tradeoff in each one. Every extra project separates you further from other junior candidates.
 
-2. **Tests in the project** — almost no junior candidate has tests. Having JUnit 5 + Mockito on the backend and Vitest + TestBed on the frontend makes you immediately more credible. It shows you understand production code, not just working code.
+2. **Tests in the project** — prioritise tests that catch a broken business rule or failed interaction and explain why each assertion matters. The testing stack and market rationale are maintained in the shared context and the permanent testing rule below.
 
 3. **A README with architecture decisions** — not a list of technologies. Decisions: _why JWT over sessions, why soft delete, why DTOs instead of exposing entities, why coordinator pattern_. One candidate who explains decisions is worth more than five who just list features. The README format and quality standard is defined in `notes/prompts/projects/readme/_internal/_readme-standard.md`.
 
-4. **The internship on the CV** — even with a different stack. It proves you have worked in a team, delivered something real, and handled real deadlines. Mention a specific result: _built X that does Y for Z users/clients_.
+4. **The internship on the CV** — select a specific result from the shared context's internship evidence: _built X that does Y for Z users/clients_. Connect that result to the role rather than retelling the profile here.
 
-5. **English at B2** — most Spanish junior candidates have A2/B1. B2 opens international projects, which pay better and train you faster. The Cambridge First Certificate is a concrete proof, not self-reported.
+5. **English at B2** — keep the English track alongside the technical plan and make only credential claims supported by the profile's current evidence in the shared context.
 
 6. **Interview prep** — knowing how to answer _what is dependency injection, what is lazy loading, what is a JWT, what is a DTO_ fluently and with a project example. The notes/ folder and the simulator prompt exist for this.
 
@@ -108,8 +73,8 @@ to decide what comes next without duplicating its statuses.
 
 Before the first developer job:
 
-1. Close the highest-risk junior gaps across Angular, Spring Boot, Java, Architecture, Security,
-   TypeScript, SQL, JavaScript, CSS, Git, and General.
+1. Close the highest-risk junior gaps across every registered topic in `notes/coverage/junior.md`,
+   including the supporting Angular Material, Spring and HTML topics.
 2. Prioritise Angular + Spring Boot + Java + Architecture + Security because they drive the target
    full-stack role, while still bringing every supporting topic to a credible junior baseline.
 3. Choose projects, exercises, notes, interview sessions, and simulations from the **open junior
@@ -137,9 +102,9 @@ This produces two different decisions:
 | 1   | Angular projects 01–04 delivered                  | Angular 01–04 + CSS/Tailwind                                       | SELECT, WHERE, ORDER BY                                           | Angular notes                                 | ✅ Done    |
 | 2   | Angular projects 05–06 delivered; Java introduced | Angular 05–06 + RxJS + Java foundation                             | SQL basics continued                                              | Angular notes + interview prep started        | ✅ Done    |
 | 3a  | Project 07 backend demonstrable                   | Project 07 backend — JWT auth + protected endpoint                 | SQL querying basics in progress                                   | Spring Boot notes                             | ✅ Done    |
-| 3b  | Project 07 demonstrable — frontend + tests        | Project 07 — Angular frontend (Steps 7a–7d) + backend/Angular tests | JOINs, GROUP BY, aggregates, subqueries                           | Java + Architecture notes                     | ⏳ Current |
-| 3c  | Consolidation — fluent without Claude             | Rebuild key 07 slices solo (no notes, no AI) + Docker + SQL complement | Remaining SQL topics → technical test simulation                  | Interview prep (es/) started                  | 🔜         |
-| 4   | Applications daily + simulations; 08 conditional  | Friday→daily applications; Project 08 **only once simulations are on track** | Technical test simulation                                         | TypeScript + CSS notes + interview prep (es/) | 🔜         |
+| 3b  | Project 07 demonstrable — frontend + tests        | Project 07 — finish backend/Angular tests; frontend already delivered | JOINs, GROUP BY, aggregates, subqueries                           | Java + Architecture + Security notes          | ⏳ Current |
+| 3c  | Consolidation — fluent without Claude             | Rebuild key 07 slices solo (no notes, no AI) + SQL complement; Docker and deployment delivered | JOINs, GROUP BY/aggregates, subqueries/CTEs, NULL handling, DML basics → technical test simulation | Interview prep (es/) started                  | 🔜         |
+| 4   | Applications daily + simulations; 08 conditional  | Friday→daily applications; Project 08 **only once simulations are on track** | Technical test simulation                                         | TypeScript + SQL + JavaScript + CSS + Git notes + interview prep (es/) | 🔜         |
 | 5   | Interview ready — full application push           | Final project polish + applications every day                      | Technical test simulation                                         | Interview prep full focus                     | 🔜         |
 | 6   | After the application push — depends on outcome   | Continue the employment gates, or follow the post-job growth plan once hired | Depends on path                                                   | Depends on path                               | 🔜         |
 
@@ -150,11 +115,11 @@ _Row 6 is intentionally open: if the employment gate is not met, the search and 
 The hiring process above defines urgency: the real filter is a **technical test done alone, timed, no
 notes, no AI** — so fluency without Claude outranks adding more artifacts. In order:
 
-1. **Project 07 Angular frontend (Steps 7a–7d)** — the CV gate depends on it; nothing is applyable without it.
-2. **Project 07 tests (JUnit 5 + Mockito, Vitest + TestBed services)** — the #2 differentiator in this file, and interview material in themselves. Part of finishing, not a phase after.
+1. **Finish Project 07 tests (Steps 8–9)** — the frontend is delivered and the public deploy exists; the demonstrable gate still needs verified backend and Angular service tests. Start with Step 8's exact done condition in `projects/07-timetrack/PLANNING.md`.
+2. **Close the Project 07 SQL complement (Step 10)** — Docker and deployment are already delivered; the remaining tests and SQL work close the project before its final quality gates.
 3. **Consolidation (Phase 3c)** — rebuild key slices of 07 solo (a CRUD endpoint from scratch, a reactive form + service) under the same conditions as a real test. This is what the technical test measures; Claude-guided building does not train it.
 4. **Simulations + interview prep (es/)** — the 15-simulation target and fluent answers with project examples.
-5. **Docker + SQL complement (Steps 10–11)** — CV keyword, 1–2 days of work, never probed deeply at junior level. Deliberately after consolidation, not before.
+5. **Verify and present the finished project** — follow the final quality gates in `projects/07-timetrack/PLANNING.md`, then use their accepted README and project decisions in application material.
 6. **Project 08** — only once simulations are on track. A second project adds less than explaining the first one fluently; it must never displace items 3–4.
 
 LeetCode stays behind its existing five gates — unchanged.
@@ -163,7 +128,7 @@ LeetCode stays behind its existing five gates — unchanged.
 
 ## Daily schedule (fixed from June 2)
 
-_This schedule is fixed for the full-time study window only — June 2 → September 2026. After that window, its available hours adapt to the outcome: unfinished employment gates continue until hiring, then the post-job growth plan applies._
+_This schedule applies while full-time study is available. When available hours change, adapt them to the outcome: unfinished employment gates continue until hiring, then the post-job growth plan applies._
 
 | Block                  | Time        | Focus                                                                              |
 | ---------------------- | ----------- | ---------------------------------------------------------------------------------- |
@@ -174,7 +139,7 @@ _This schedule is fixed for the full-time study window only — June 2 → Septe
 | Sport                  | 19:00–20:30 | Physical training — essential for sustainability in a 10-hour study day            |
 | English reading        | 22:00–23:00 | Cambridge English Reader — listening + reading                                     |
 
-**Friday rule (from July):** the 13:30–14:30 block is always CV + applications.
+**Friday rule:** the 13:30–14:30 block is always CV + applications, starting with the Friday-only stage in the applications strategy.
 
 ---
 
@@ -188,7 +153,7 @@ _This schedule is fixed for the full-time study window only — June 2 → Septe
 
 **Demonstrable gate (Phase 3b):** Angular frontend live (Steps 7a–7d), all services have at least one unit test, README includes at least one architecture decision with a real tradeoff — and every line is explainable out loud in an interview. This is what unlocks the CV update and consolidation.
 
-**Full project gate (Phase 3c):** `docker-compose up` runs everything and the SQL complement is done — Docker closes the project (Step 11), deliberately after consolidation work has started, not before.
+**Full project gate (Phase 3c):** Steps 8–10 pass their done conditions and the plan's final quality gates are signed off. Docker and public deployment are already delivered; the remaining work is backend tests, Angular tests and the SQL complement. See `projects/07-timetrack/PLANNING.md` for the assertions and gate chain.
 
 **CV gate:** Update CV when project 07 is live on GitHub with a README that includes at least one architecture decision — not before.
 
@@ -209,18 +174,16 @@ Planned in two runs, both inside Claude Code once project 07 is complete. `proje
 **Project 08 candidate ideas** — each names the `notes/coverage/junior.md` gaps it closes (gaps that project 07 does not touch). This list **proposes**; the brief decides and is where the reasons live:
 
 - **Invoice Manager** — clients, products, invoices. Covers: many-to-many, Pageable, `@Query`, PDF export.
-  Closes: `Page<T>` vs `Slice<T>`, owning side of a many-to-many, `@Modifying` write queries,
-  and Angular server-side paginator state.
+  Closes: `Page<T>` vs `Slice<T>`, owning side of a many-to-many, and `@Modifying` write queries.
 - **Expense Reports** — submit and approve expenses. Covers: file upload, email, approval workflow, Flyway.
   Closes: Flyway / schema evolution, server-side file validation and safe storage/serving,
   `@Transactional` propagation, and transaction limits around files or outbound calls.
 - **Library Catalog** — books, authors, members, loans. Covers: many-to-many, complex queries, component tests.
-  Closes: Vitest + TestBed **component** behaviour through `ComponentFixture` (project-08 rule),
-  `@DataJpaTest` repository tests, many-to-many ownership, and report-total verification.
+  Closes: `@DataJpaTest` repository tests, many-to-many ownership, and report-total verification.
 - **Support Desk** — tickets with comments, search, and dynamic forms. Covers: typeahead search,
   dynamic form sections, status workflow with an audit trail.
   Closes: the RxJS search-pipeline gap (`debounceTime`, `distinctUntilChanged`, `switchMap`),
-  inner-stream error handling and `finalize`, `FormArray`, and `@WebMvcTest` slice tests.
+  `finalize`, `FormArray`, and `@WebMvcTest` slice tests.
 
 ---
 
@@ -266,18 +229,7 @@ Simulate real consultancy tests: write a Spring Boot endpoint from scratch, buil
 | Angular     | 5       | Reactive form + service + HTTP call + error state                     |
 | SQL         | 5       | Given a schema: SELECT, JOIN, GROUP BY, subquery — under a time limit |
 
-**Rules for each simulation:**
-
-- No notes, no documentation, no AI — exactly like a real test
-- Set a timer: 60–90 minutes per test
-- When time is up, review with Claude: what was wrong, what was slow, what you could not recall
-
-**Where to get the tests:**
-All 15 tests are already written in `practice/simulations/` — 5 Angular, 5 Spring Boot, 5 SQL. Check `practice/simulations/TRACKER.md` for the full list and your progress.
-
-To do a simulation: open the spec file, set a timer, and build. No notes, no AI. When time is up, open a new chat and write:
-
-> _"Review my solution for [practice/simulations/angular/01-task-form.md]. Here is my code: [paste code]. Tell me what is wrong, what is missing, and what I would score."_
+**Procedure:** `/simulation-plan` builds the level route, including admissible tests, order and time limits. `simulation-block-open` opens the block and states its attempt conditions without starting the timer; `simulation-grade` is the door to a recorded review. Follow that track for readiness and attempt rules.
 
 **Stage 3 — LeetCode Easy (only if all of the following are complete):**
 
@@ -298,7 +250,9 @@ When all five gates are complete, start LeetCode Easy. Until then, use that time
 ## 13:30–14:30 block — Notes then interview prep
 
 **Stage 1 — Notes:**
-Study in priority order: `angular → spring-boot → java → architecture → security → typescript → sql → javascript → css → git`. SQL is last — it is already practiced daily in the 12:30 block. Move to Stage 2 when notes for the high-priority topics are well understood.
+Study in priority order: `angular → spring-boot → java → architecture → security → typescript → sql → javascript → css → git`. SQL also has daily practice in the 12:30 block. Move to Stage 2 when notes for the high-priority topics are well understood.
+
+Supporting topics have an explicit place alongside that order: Angular Material with Angular, Spring with Spring Boot, HTML with CSS, and General with Git. Use each topic's junior notes plan and active recall to consolidate its uncovered fundamentals; the coverage files remain the concept inventory.
 
 **Stage 2 — Interview prep:**
 Active recall with `notes/interview-prep/junior/es/`. Later levels use their own isolated folders.
@@ -382,7 +336,7 @@ What matters most:
 
 **Why this matters for consultancies:** large consultancies (NTT Data, Capgemini) have international clients and European delivery teams. A junior with B2 English is placed on better projects, grows faster, and is harder to replace.
 
-**Current plan:** B1 → B2 (Cambridge First Certificate) alongside the technical preparation. Daily exposure through English-only study sessions with Claude.
+**Current plan:** keep Cambridge First Certificate preparation alongside the technical work; use the English technical documents for additional exposure. Study sessions follow the shared session rules' current language preference, and the profile's language level remains in `_shared-context.md`.
 
 **In the CV:** Cambridge First Certificate (B2) is a concrete certification — not self-reported. It signals discipline and that you invest in yourself beyond the minimum.
 
