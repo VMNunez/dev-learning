@@ -1128,7 +1128,8 @@ Aug–Sep 2026, per the market analysis in `_shared-context.md`) are now **built
 - ✅ **`practice/interview/code-review-prompt.md`** — trains the stage-3 code-review step (critique a flawed,
   often AI-style snippet). Was the biggest blind spot: nothing else hands me broken code to review.
 - ✅ **`practice/simulations/simulation-generator-prompt.md`** — produces new timed test specs in the existing
-  format, so the bank is no longer fixed at 15 and I can drill a weak type on demand.
+  format, so the bank is no longer fixed at 15. It materialises only the step the level route plans; a
+  weak type is drilled through the reinforcement step `simulation-plan` authors, never on demand.
 - ✅ **`practice/interview/hr-screen-prompt.md`** — covers the non-technical stage-2 HR call (motivation,
   career-change story, availability, salary), which only had a one-line touch in `simulator`.
 
