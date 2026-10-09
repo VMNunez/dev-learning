@@ -1,6 +1,6 @@
 # Pipeline self-report — roadmap-review
 
-**Date:** 2026-10-09 · **Target:** `ROADMAP.md` (branch `projects/07-timetrack`) · **Status:** open
+**Date:** 2026-10-09 · **Target:** `ROADMAP.md` (branch `projects/07-timetrack`) · **Status:** applied in 2656e651
 
 1. **Plan vs reality** — the split never completed: 2 of the 4 mandated dispatches ran (both
    fact-gatherers), 2a returned `STOPPED` at its parity gate, and Steps 3–6 with both reviewers were
@@ -24,6 +24,13 @@
    plans have carried `⚠ stale` tracker flags since 2026-09-22/24 — this prompt has been unrunnable
    since then, by a stop the prompt states clearly.
 5. **Verdict** — change worth considering: Step 2's stale counts and its unconditional
-   `/coverage-audit` repair. The prompt is 519 lines, over the ~500 alarm; its largest section is
-   Step 2 at 127. The validator coupling is recorded, not applied — condition 2: the stop is stated
-   clearly, and the debt is three `⚠ stale` tracker cells `/notes-plan` clears, a cell and not a row.
+   `/coverage-audit` repair — applied in `2656e651`. The prompt was 519 lines, over the ~500 alarm,
+   its largest section Step 2 at 127; it is 508 after the edit, which took out the spent
+   Angular-backfill exception. The validator coupling is recorded, not applied — condition 2: the
+   stop is stated clearly, and the debt is three `⚠ stale` tracker cells `/notes-plan` clears, a cell
+   and not a row.
+   `cold reviewer: approve-with-tightening` — the repair line approved on all four conditions; the
+   count rewordings approved as stale-fact pruning at net-negative length, condition 3 not met by
+   this run alone since 2a stopped before any topic row. Left as found, Step 7 not reached: its
+   "four topics no project will ever close" list predates HTML. Maps unaffected.
+   `map: verified` — README interface-index and catalogue rows, `_system-map.md` §7 `ROADMAP.md` row.
