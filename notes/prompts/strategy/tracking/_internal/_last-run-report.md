@@ -1,9 +1,9 @@
 # Pipeline self-report — progress-update
 
-**Date:** 2026-09-27 (second run) · **Target:** `MODE = all` — projects 01–07, SQL and simulations · **Status:** clean
+**Date:** 2026-10-09 · **Target:** `MODE = active` — `projects/07-timetrack`, SQL and simulations · **Status:** clean
 
-1. **Plan vs reality** — the split fit: 7 project roles + 1 SQL role, all independent; the rest measured locally. No whole-artefact review step exists, so project results are bounded to the plans' markers.
-2. **Report discipline** — all 8 returns usable, with the EOF line; nothing trimmed.
-3. **Failures & retries** — none; 8/8 required dispatches returned without re-dispatch. Session rules re-read to EOF before the first dispatch.
-4. **Rule friction and rule breaches** — no rule breached. First run of the `66637a70` Step 0 wording: the fingerprint recompute executed as written and fed D7. Residual friction only: "13 topics" vs the matrix's 14 rows, and Step 0's "Format B" label for 07 (this run's subagent read it as B; the earlier one as C) — neither changes a result.
-5. **Verdict** — pipeline clean. Prompt length 590 lines, over the ~500 alarm; largest section Step E. `map: verified` — README interface and catalogue rows for this prompt (Reads cell as updated in `66637a70`); `_system-map.md` §7 rows, chain B and §11 rows naming this prompt.
+1. **Plan vs reality** — the split fit: 1 project role + 1 SQL role, independent; everything else measured locally. No whole-artefact review step exists, so the project result is bounded to the plan's `✅` markers.
+2. **Report discipline** — both returns usable, the project one opening with its EOF line; nothing trimmed.
+3. **Failures & retries** — none; 2/2 required dispatches returned without re-dispatch. Session rules read to EOF before the first dispatch; `_skill-friction.md` holds no `open` row, so no reconciliation commit.
+4. **Rule friction and rule breaches** — one breach, `BRCH-0002`: the Step B dispatch asked for a per-ref raw-count line under the table, against that step's "Return **only** one row per topic". It cost nothing and changed no figure. Residual friction, unchanged from the last run: "13 topics" against the matrix's 14 rows, and Step 0's "Format B" label for 07, which this run's subagent read as C — neither changes a result. `BRCH-0001` stays `open` (one row, `shared`); it is not a `fixed`/`confirmed` row, so there was nothing to rule on.
+5. **Verdict** — pipeline clean. `BRCH-0002` is a clearly stated rule broken once — condition 2 fails, recorded and not applied. Prompt length 601 lines, over the ~500 alarm; largest section Step D (261 lines). `map: verified` — `README.md` interface row and catalogue row for this prompt; `_system-map.md` §7 row for `_last-drift-report.md`, §8's `Professional level by topic` row and the §11 rows naming this prompt.
