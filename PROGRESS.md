@@ -167,6 +167,7 @@ fraction, keeps its marker, and is named in that ritual's report.
 | 03-expense-tracker | — |
 | 04-meal-finder | — |
 | 05-task-manager | — |
+| 06-hr-portal | — |
 
 `—` here is the missing route: `notes/interview-prep/routes/projects.md` has never been built, so no
 project has a study denominator yet. `/interview-prep-route-projects MODE = update` is what creates it.
