@@ -115,8 +115,8 @@ Launch **both** `role-appropriate` subagents in a single message so they run in 
 > below are the ones this analysis lives or dies by.
 >
 > **You are reading the mirror, not the sources of truth, and the standard permits that only on a
-> proved parity.** This is a cross-topic enumeration, the one use the mirror exists for — thirteen
-> topic files would saturate your context and the doer's. The permission is conditional: run the
+> proved parity.** This is a cross-topic enumeration, the one use the mirror exists for — the per-topic
+> files would saturate your context and the doer's. The permission is conditional: run the
 > validator below first and quote its parity line, and if that proof is missing, stop there. Do not
 > switch to the topic files instead — a run that silently changes its input has hidden the drift
 > rather than announced it.
@@ -130,13 +130,6 @@ Launch **both** `role-appropriate` subagents in a single message so they run in 
 >    12:30 SQL block** — say which of the two when you list it.
 > 4. **Markers record demonstration, never study.** An unmarked bullet means *not yet demonstrated*, not
 >    *not yet studied* — Victor may know it well from `notes/`. Never write "not yet learned".
->
-> **The dated exception — the 07 Angular tier.** `PROGRESS.md`'s `Coverage demonstrated` paragraph records
-> which projects have been backfilled with markers, and you must **re-read that paragraph every run**.
-> While it still says the Angular tier of project 07 is not backfilled, an unmarked `Angular` or
-> `Angular Material` bullet that project 07's frontend already touches is a *missing marker*, not a gap:
-> exclude it and report how many you excluded. The exception dies the day the backfill lands, and an
-> analysis that keeps applying it afterwards under-counts Angular permanently.
 >
 > **Rank what is left; never drop it.** `notes/coverage/junior.md` is *already* calibrated to exactly
 > this target — "junior Angular + Spring Boot at a Spanish consultancy" is the criterion
@@ -182,17 +175,16 @@ Launch **both** `role-appropriate` subagents in a single message so they run in 
 > file yourself. The `REPORT:` lines about notes-plan fingerprints print only on a passing run and do
 > not block you.
 >
-> **Report size is contracted, and holding the contract is the hard part.** Roughly two thirds of the
-> ~1359 junior bullets are unmarked, so one line per gap is an unusable report that saturates the doer's
-> context. Return **only**:
+> **Report size is contracted, and holding the contract is the hard part.** Hundreds of junior bullets
+> are unmarked, so one line per gap is an unusable report that saturates the doer's context. Return
+> **only**:
 >
 > 1. One row per topic — `Topic | marked/total | one sentence naming what the unmarked remainder is
->    about`. **All 13 topics**, including the ones no project will ever close.
+>    about`. **Every topic in the registry**, including the ones no project will ever close.
 > 2. Per topic, **at most 8** unmarked bullets quoted verbatim, ranked by what those interviews ask
 >    first. These are the only ones the doer plans against.
 > 3. The SQL topic list.
-> 4. The read-to-EOF line, the validator's `PASS: coverage mirror parity` line verbatim, and the
->    Angular-exception count.
+> 4. The read-to-EOF line and the validator's `PASS: coverage mirror parity` line verbatim.
 > 5. `Coverage miscalibration candidates` — the bullets above that look like they sit above junior, or
 >    `none`. **At most 8 in total** across all topics — not 8 per topic, which is item 2's bound — and
 >    never a substitute for item 2.
@@ -215,15 +207,12 @@ The 2a gap list drives Steps 3 and 4; the 2b summary replaces reading PLANNING.m
 
 **A missing parity proof in 2a stops the run**, and it is the one report you may not work around: do
 not re-dispatch 2a against the topic files, do not fix either coverage file, and do not edit
-`ROADMAP.md` from a partial list. Write the report with the validator's output, name `/coverage-audit`
-as the repair, and leave `ROADMAP.md` untouched — a gap analysis built on a drifted mirror is worse
+`ROADMAP.md` from a partial list. Write the report with the validator's output, name its repair —
+`/coverage-audit` only for a mirror drift the script reported, the failing invariant's owner otherwise —
+and leave `ROADMAP.md` untouched — a gap analysis built on a drifted mirror is worse
 than no run, because the file it writes carries no sign that its input was wrong. Carry the passing
 line into the Step 7 report too: it is what makes this run's central input falsifiable by a later
 reader, at no token cost.
-The old "borderline" group is gone with the marker rewire — a bullet either carries a project marker or it
-does not, so there is nothing left to adjudicate by wording. Its one successor is the Angular-backfill
-exclusion: carry 2a's count of it into the Step 7 report, because until that backfill lands the Angular
-gap figure is knowingly under-reported and a reader must be told so.
 
 ---
 
@@ -420,7 +409,7 @@ its checks need). Its instruction:
 >    the **evidence markers** in coverage-junior.md: a bullet with no `✅ NN-slug` project marker is a
 >    gap, a bare pre-2026-08-01 marker still counts as covered, and a `✅ sql:` drill marker alone does
 >    not cover anything. **Never from `PROGRESS.md`** — it has held no concept list since 2026-08-03, so
->    every one of the ~1359 bullets would read as a gap.
+>    every bullet would read as a gap.
 > 3. **Active project (⏳) gate.** The active project has a concrete, verifiable gate condition — a
 >    state that is true or false regardless of the date. If it is vague or date-based, rewrite it as a
 >    gate.
@@ -467,7 +456,7 @@ reported by 2a. Split them into two groups; the split is the point, not the leng
   naming it — say so as one line for the topic *with that ratio*, instead of listing its bullets;
   coverage-junior.md owns the full list. That one-line form is the normal case for the four topics no
   project will ever close (CSS, Git, JavaScript, General), whose only route is the 13:30 block — which is
-  precisely why 2a reports all 13 topics and not just the nine a project could touch.
+  precisely why 2a reports every topic in the registry and not just the ones a project could touch.
 
 Never restate coverage-junior.md — reference it for detail.
 
