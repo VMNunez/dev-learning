@@ -2,8 +2,8 @@
 
 Plan status: current
 Coverage: notes/security/coverage/junior.md
-Coverage SHA-256: f2da5662218372c6a951a9878706e1c6b57156d3aeffc0fafdaff7f71aa49427
-Generated: 2026-09-04
+Coverage SHA-256: 9236b4b8e1ba439e3c24985aee6a5777cf7d43bc9e868d2a0e822dcaf08f172f
+Generated: 2026-10-09
 
 ## 00 — Security as boundary reasoning
 
@@ -32,7 +32,7 @@ Must answer:
 
 - What does this introduction itself cover, in the order its sections appear, and why is that order the one that works?
 - What is application security, what practical failures does it prevent, and why does it matter in Victor's Angular + Spring Boot work?
-- What must Victor already be able to name before opening chapter 01 — an endpoint and its HTTP method, a request body and a response DTO, a status code (200, 400, 401, 403, 404, 500), a cookie and a request header — and what does each mean in one sentence?
+- What must Victor already be able to name before opening chapter 01 — an endpoint and its HTTP method, a request body and a response DTO, a status code (200, 400, 401, 403, 404, 500), a cookie and a request header, HTTP versus HTTPS, and what a logged-in request carries (a session cookie or an `Authorization: Bearer` token that the server turns into the current user, built in chapters 02–04) — and what does each mean in one sentence?
 - What is the difference between a threat, a vulnerability, an asset, and a control, and how do the four combine into one sentence about a single risk?
 - Where are the trust boundaries in an Angular + Spring Boot system, and what must be verified when data or an identity crosses one?
 - What makes input that a framework parsed successfully still untrusted?
@@ -95,7 +95,7 @@ Must answer:
 
 - Which claim in a request only names an identity, and which one proves it?
 - Why can a valid request body and a logged-in user still be unauthorised?
-- What do 401 and 403 each mean, and when is 404 the correct answer to a request the caller was not allowed to make?
+- What do 401 and 403 each mean, and which of the two does a logged-in caller who lacks permission receive?
 - What does an Angular route guard or a hidden button actually protect, and why must the same rule exist on the server anyway?
 - How are roles or authorities mapped consistently, and why must a client never be able to name its own role?
 - When several authorisation rules apply to one request, in what order are they evaluated, and what happens to a request that matches none of them?
@@ -132,7 +132,9 @@ Coverage concepts:
 - [ ] Input validation vs authorisation — valid data shape and business values do not prove that the caller
   has permission to perform the requested action
 
-Rationale: Every bullet here answers one question — may this caller perform this action on this record — and the chapter is only coherent if the gate form and the scope form of that answer are taught together, since a junior who knows only the gate writes an endpoint that returns everyone's rows to everyone allowed in. `Credentials, identity, and session state` is deliberately not here: it describes the state a decision runs on rather than the decision, and chapter 03 owns it. The audit inherits the IDOR, BOLA, and server-is-the-boundary material currently in `06-security-vulnerabilities.md`, whose concepts this plan assigns here; entry 06 keeps none of it.
+Audit note: This entry absorbs the `## Broken access control (IDOR) — never trust a client-sent user ID` and `## Broken access control (BOLA) — a filter enforced on the list endpoint, forgotten on the detail one` sections of `06-security-vulnerabilities.md`, except the callout on answering 404 rather than 403 in the `## Broken access control (BOLA) — a filter enforced on the list endpoint, forgotten on the detail one` section, which moves to entry 09 (resource-existence disclosure) and is left here as a one-sentence forward reference. Its own `## Generic authentication errors — prevent user enumeration` section moves to entry 02.
+
+Rationale: Every bullet here answers one question — may this caller perform this action on this record — and the chapter is only coherent if the gate form and the scope form of that answer are taught together, since a junior who knows only the gate writes an endpoint that returns everyone's rows to everyone allowed in. `Credentials, identity, and session state` is deliberately not here: it describes the state a decision runs on rather than the decision, and chapter 03 owns it.
 
 Handoff: Once access decisions are clear, chapter 02 explains how passwords establish the identity those decisions depend on.
 
@@ -155,7 +157,7 @@ Pending additions: none
 
 Narrative role: Show how a server verifies identity without storing recoverable passwords, and how it limits abuse around the endpoints that accept or change credentials — then generalises that same bound to every endpoint whose cost or effect an attacker can repeat.
 
-Learning outcome: Explain salts, adaptive work factors, input bounds, secure randomness, generic failures, reset tokens, MFA awareness, and throttling trade-offs, and review a credential-change endpoint.
+Learning outcome: Explain salts, adaptive work factors, input bounds, secure randomness, generic failures, reset tokens, operator-issued resets, MFA awareness, and throttling trade-offs, and review a credential-change or credential-reset endpoint.
 
 Prerequisites: 01
 
@@ -167,7 +169,10 @@ Must answer:
 - Why does a password field need an explicit maximum measured in bytes, and what happens silently without one?
 - Why can a password change that stores a different hash still leave the old password working, and where must the check for that sit in the flow?
 - What must a password-reset token be — how is it generated, how long does it live, how many times may it be used, and why is emailing the existing password never an option?
+- When a user can no longer prove who they are and no self-service reset exists, how does an authorised operator give them a new password without ever seeing or re-sending the old one, why is that new password shown only once, and why can the operator not use this path on their own account?
 - How can rate limits and generic failures resist abuse without becoming a denial-of-service tool?
+- Why must a failed login look the same in status, body, message, and response time whether or not the account exists, and what does an attacker learn when it does not?
+- What does a second independent factor protect once a password has been stolen, and what makes a factor independent of the password?
 
 Coverage concepts:
 
@@ -191,6 +196,7 @@ Coverage concepts:
 - [ ] Credential change must actually change the credential — a rotation request that re-stores the value already in use produces a different stored hash yet leaves the old secret valid, so the new value is compared against the stored one and refused when they match, and that comparison runs only after the current credential has been proven so it cannot answer "is this the password?" for an unauthenticated caller
 - [ ] Password reset — use a short-lived, single-use, unpredictable token, invalidate it after success,
   and never email the existing password or trust only an account identifier
+- [ ] Administrative credential reset — when a user can no longer prove who they are and no out-of-band channel exists for a self-service reset, an authorised operator issues a fresh generated credential that is shown once and stored only as a hash, never recovering or re-sending the old one; the operator's own account is excluded, because it has the self-service path that verifies the current credential
 - [ ] Multi-factor authentication awareness — recognise that a second independent factor reduces the
   damage from a stolen password without requiring a junior to design an enterprise identity system
 - [ ] Generic authentication failures — keep login status, response shape, message, and observable timing
@@ -198,7 +204,9 @@ Coverage concepts:
 - [ ] Endpoint abuse limiting — recognise that registration, reset, verification, and expensive API
   operations also need bounded throttling, while distributed policy design remains a later-level task
 
-Rationale: The chapter follows one credential through its whole life — chosen, bounded, hashed, verified, rotated, reset, and defended against guessing — so the abuse-resistance bullets are not a separate topic but the last stage of the same story. The audit inherits the generic-authentication-errors material currently in `01-authn-vs-authz.md`, whose concept this plan assigns here.
+Audit note: This entry absorbs the `## Generic authentication errors — prevent user enumeration` section of `01-authn-vs-authz.md`.
+
+Rationale: The chapter follows one credential through its whole life — chosen, bounded, hashed, verified, rotated, reset by its owner or, when the owner can no longer prove who they are, by an operator, and defended against guessing — so the abuse-resistance bullets are not a separate topic but the last stage of the same story.
 
 Handoff: Successful verification creates authenticated state; chapter 03 follows that state across later requests.
 
@@ -228,7 +236,7 @@ Prerequisites: 02
 Must answer:
 
 - What changes between verifying credentials once and carrying the result of that verification on every later request?
-- What does a server-held session store that a self-contained token does not, and what does each choice cost in storage, scaling, and revocation?
+- What does a server-held session store that a self-contained token does not, what lets the server trust a self-contained token without a lookup (previewed here, opened in chapter 04), and what does each choice cost in storage, scaling, expiry, logout, and revocation?
 - Why must the identifier a session or token is bound to be one the account can never lose, and what goes wrong when an editable email is used instead?
 - How does an attacker obtain someone else's session or token in practice, and which of those paths does rotating the identifier after login close?
 - Why is a bearer token dangerous the moment it appears in a URL, a log line, a screenshot, or an error message?
@@ -248,6 +256,8 @@ Coverage concepts:
   error messages, and analytics must not expose it
 - [ ] Credentials, identity, and session state — a password proves identity at login, while a session ID
   or bearer token carries the resulting authenticated state across later requests
+
+Audit note: This entry absorbs the `## The problem JWT solves` section of `04-auth-jwt.md`.
 
 Rationale: This is one mental model — state that outlives the request that created it — and it has to be understood before a JWT can be read as anything but a string. The CSRF clause in the session-versus-token bullet is previewed here and named as chapter 06's subject; the transport that protects a bearer token in flight is previewed as chapter 10's.
 
@@ -284,6 +294,7 @@ Must answer:
 - Which key, algorithm, issuer, audience, time, subject, and application-claim checks must happen before a token is trusted, and what does skipping each one allow?
 - Why does a signed, unexpired, correctly issued token still not authorise a particular action?
 - What can logout, short expiry, refresh tokens, and revocation each guarantee — and not guarantee?
+- Why can anyone holding a single token test guesses against a weak HMAC signing key offline, and what makes a signing key strong enough?
 
 Coverage concepts:
 
@@ -312,9 +323,11 @@ Coverage concepts:
 - [ ] Logout and revocation limits — deleting a browser token ends local use but does not invalidate an
   already issued stateless token unless the server adds revocation state or waits for expiry
 
-Rationale: Validation is only teachable as the answer to a question chapter 03 raised — this string arrived claiming to be authenticated state, why should the server believe it — so the twelve bullets read as one argument rather than a checklist of claim names. The audit relocates this file's token-storage material to chapter 06, which owns that concept.
+Audit note: The `## Where to store the token` section of this file moves to entry 06, which owns token storage in browsers. Its `## The problem JWT solves` section moves to entry 03, which owns the comparison of server-held sessions with self-contained tokens, and this entry opens on a one-sentence back-reference to it instead.
 
-Handoff: A token the browser holds is only as safe as the pages allowed to use it; chapter 05 explains the origin boundary that decides which pages those are.
+Rationale: Validation is only teachable as the answer to a question chapter 03 raised — this string arrived claiming to be authenticated state, why should the server believe it — so the twelve bullets read as one argument rather than a checklist of claim names.
+
+Handoff: To send that token, the Angular client calls an API on a different origin; chapter 05 explains the Same-Origin Policy that blocks such calls by default, the CORS headers that relax it, and why neither decides who may call the API.
 
 ## 05 — Same-Origin Policy and CORS
 
@@ -345,6 +358,7 @@ Must answer:
 - When can a cross-origin request reach the server even though JavaScript cannot read the response?
 - Why do JSON bodies, `Authorization`, credentials, and wildcards change the preflight or response rules?
 - Why does a correct CORS policy protect nothing, and what still stops curl, Postman, or a script on a server from calling the API?
+- Which origins, methods, headers, and credential mode does the deployed Angular client actually need, and what does each value allowed beyond that list open up?
 
 Coverage concepts:
 
@@ -393,10 +407,12 @@ Prerequisites: 05
 Must answer:
 
 - Which browser sinks execute or interpret attacker-controlled data, and why does the output context change the safe answer?
-- Why can an `HttpOnly` cookie reduce token theft yet create CSRF obligations?
+- What is the difference between rejecting invalid data, transforming it, and encoding it for one output context, and why does XSS defence rest on the third rather than on cleaning input?
+- What does a CSRF attack make the victim's browser send, and why does an `HttpOnly` cookie that reduces token theft create exactly that obligation?
 - How do anti-CSRF tokens, custom headers, `SameSite`, `Secure`, and `HttpOnly` cover different attack paths?
 - Which fields may a browser keep about the signed-in user, and why is anything in Web Storage readable by any script on the page?
 - Why does changing what the client writes not fix the values already stored on users' machines, and what must happen when one is read back?
+- How do stored, reflected, and DOM-based XSS each get script into the page, and what can that script do once it runs with the signed-in user's browser privileges?
 
 Coverage concepts:
 
@@ -408,6 +424,8 @@ Coverage concepts:
   understand how injected code can act with the victim's browser privileges
 - [ ] Context-sensitive output handling — HTML text, attributes, URLs, JavaScript, and CSS have different
   safe output rules, so generic input sanitisation cannot replace framework escaping
+- [ ] Validation vs sanitisation vs output encoding — distinguish rejecting invalid data, transforming
+  data, and rendering it safely in a specific output context
 - [ ] Cross-site request forgery (CSRF) — an attacker abuses credentials the browser attaches
   automatically, especially cookies, to make an unwanted state-changing request
 - [ ] CSRF defences — use anti-CSRF tokens or a custom-header design whose preflight is denied to untrusted
@@ -424,7 +442,9 @@ Coverage concepts:
   sensitive field is written straight back on the next save and the fix never reaches the users who
   already hold one
 
-Rationale: Injected script, ambient credentials, and persisted client state are the three ways the browser turns into an attack surface, and they share one question — what does the browser do on the user's behalf without being asked: it executes what a page contains, it sends what it has stored, and it keeps what a script wrote. The audit receives the token-storage material from `04-auth-jwt.md` and gives up its injection, mass-assignment, IDOR, BOLA and server-side-validation sections to chapters 07 and 01, which own those concepts.
+Audit note: This entry absorbs the `## Where to store the token` section of `04-auth-jwt.md`. Its own `## SQL Injection`, `## Mass assignment — why you never bind the request body to the entity` and `## Always validate on the server — the client is never the boundary` sections move to entry 07, and its `## Broken access control (IDOR) — never trust a client-sent user ID` and `## Broken access control (BOLA) — a filter enforced on the list endpoint, forgotten on the detail one` sections move to entry 01, so its `## Summary` keeps only the attacks this entry still teaches.
+
+Rationale: Injected script, ambient credentials, and persisted client state are the three ways the browser turns into an attack surface, and they share one question — what does the browser do on the user's behalf without being asked: it executes what a page contains, it sends what it has stored, and it keeps what a script wrote.
 
 Handoff: Chapter 07 moves the same untrusted-input reasoning from the browser into server parsers, queries, DTOs, and interpreters.
 
@@ -454,7 +474,7 @@ Prerequisites: 06
 Must answer:
 
 - Why does client validation never replace server validation?
-- How do syntactic validation, semantic validation, sanitisation, and output encoding differ, and why can one not substitute for another?
+- How do syntactic and semantic validation differ, why is an ownership fact checked during semantic validation still not the object-level authorisation chapter 01 requires, and why does neither replace the output encoding chapter 06 applies?
 - Why are parameterised queries safe while string-built SQL or JPQL remains injectable even inside an ORM?
 - Beyond SQL, which other things in a Spring Boot service are interpreters — a shell command, a template, an expression, a file path, a log line — and what does concatenating unchecked input into each one actually let an attacker do?
 - How do constrained DTOs prevent both unsafe deserialisation and mass assignment?
@@ -465,8 +485,6 @@ Coverage concepts:
   every untrusted request independently
 - [ ] Syntactic vs semantic validation — validate shape and range as well as business facts such as
   ownership, allowed state transitions, and permitted relationships
-- [ ] Validation vs sanitisation vs output encoding — distinguish rejecting invalid data, transforming
-  data, and rendering it safely in a specific output context
 - [ ] SQL injection — bind query parameters and never concatenate untrusted input into SQL or JPQL;
   an ORM cannot make string-built queries safe
 - [ ] Injection beyond SQL — avoid building shell commands, templates, expressions, paths, or log records
@@ -476,7 +494,9 @@ Coverage concepts:
 - [ ] Mass assignment / over-posting — constrain request DTO fields so a client cannot set roles,
   ownership, approval state, audit metadata, or other server-controlled properties
 
-Rationale: Every bullet is the same failure at a different interpreter: data that the server allowed to become instructions or state, and the fix in each case has the same shape — constrain the accepted form instead of cleaning the dangerous one. The chapter receives the SQL-injection and mass-assignment material currently in `06-security-vulnerabilities.md`.
+Audit note: This entry absorbs the `## SQL Injection`, `## Mass assignment — why you never bind the request body to the entity` and `## Always validate on the server — the client is never the boundary` sections of `06-security-vulnerabilities.md`.
+
+Rationale: Every bullet is the same failure at a different interpreter: data that the server allowed to become instructions or state, and the fix in each case has the same shape — constrain the accepted form instead of cleaning the dangerous one.
 
 Handoff: Once input is constrained, chapter 08 covers the inputs that choose files, network destinations, or navigation targets.
 
@@ -508,7 +528,8 @@ Must answer:
 - How can a harmless-looking filename escape the directory it was meant to stay in?
 - Why are the supplied filename and `Content-Type` insufficient upload validation?
 - Once an upload is accepted, what name is it stored under, where must it not be stored, and what has to be true of the endpoint that serves it back?
-- How do SSRF and open redirects turn an accepted URL into a security boundary?
+- How can a URL the user supplies make the server itself reach an internal address it was never meant to expose, and why is that called server-side request forgery (SSRF)?
+- How does forwarding a user to a client-supplied redirect target turn a trusted domain into a phishing step, and what does validating the destination check?
 
 Coverage concepts:
 
@@ -552,13 +573,14 @@ Prerequisites: 08
 
 Must answer:
 
-- Which of these does the feature actually need to collect, keep, process, and return, and what is the cost of each one it keeps out of habit?
+- Which personal or sensitive fields does a feature actually need to collect, keep, process, and return, and what does each field kept out of habit cost when it leaks?
 - Why is returning an entity dangerous even when the endpoint is correctly authorised?
 - Which details make an error useful to an attacker but unnecessary to the client?
 - When should an object the caller may not reach be reported as missing rather than forbidden?
 - Why does hiding a resource on one endpoint fail if another endpoint accepting the same identifier answers differently?
 - How can a field the response never returns still be observed through the order of a result set?
-- How can authentication logging stay useful without recording credentials or personal data, and when must a response avoid browser or shared caching?
+- How can authentication and authorisation logging stay useful without recording passwords, tokens, session IDs, authorisation headers, or unnecessary personal data?
+- Where can a private response stay stored after it is sent — the browser cache or a shared cache — and when must `private` or `no-store` prevent it?
 
 Coverage concepts:
 
@@ -583,7 +605,9 @@ Coverage concepts:
 - [ ] Sensitive-response caching — use appropriate private or `no-store` cache controls when credentials or
   private responses must not remain in browser or shared caches
 
-Rationale: Disclosure is one model asked of eight channels, which is what makes the three counter-intuitive bullets — concealment consistency, result ordering, and caching — teachable rather than surprising: a junior who has learned to check only the serialised fields will miss every one of them.
+Audit note: This entry absorbs the callout on answering 404 rather than 403 from the `## Broken access control (BOLA) — a filter enforced on the list endpoint, forgotten on the detail one` section of `06-security-vulnerabilities.md`; entry 01 absorbs the rest of that section and keeps a one-sentence forward reference to this entry.
+
+Rationale: Disclosure is one model asked of every channel the narrative role names, which is what makes the three counter-intuitive bullets — concealment consistency, result ordering, and caching — teachable rather than surprising: a junior who has learned to check only the serialised fields will miss every one of them.
 
 Handoff: After controlling disclosure, chapter 10 protects the secrets and transport on which every preceding control depends.
 
