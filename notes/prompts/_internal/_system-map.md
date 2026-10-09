@@ -1,7 +1,7 @@
 # System map — every prompt, every skill, and the file each one writes
 
 **What this file is.** The wiring diagram of the whole study system: *producer → file → consumer*, with
-prompts and skills on the same page. It answers four questions the other reference files answer only
+prompts and skills on the same page. It answers five questions the other reference files answer only
 in halves:
 
 1. **What runs after what**, and why (the chains in §3–§6).

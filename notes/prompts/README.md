@@ -252,8 +252,9 @@ over the 200 rows on disk today the 90th percentile is **1,848** and 49 rows are
 2026-09-04 against the PASS line, **counting the closure that re-measured it**, since the previous two
 readings each ran before their own row landed and were stale on arrival — so the threshold no longer sits
 where that reasoning put it, and the
-number it now reports is a file that has already grown past it rather than one about to.
-object under test and the oracle are the same machinery file.
+number it now reports is a file that has already grown past it rather than one about to. Like
+invariant 8 it is **not** skipped under `-MachineryOnly`: the object under test and the oracle are the
+same machinery file.
 
 `/system-check` invokes the same validator with `-MachineryOnly`: prompt/launcher/skill/path/map/report/ledger
 invariants still block — the last two of those being the cold-review verdict check and the closed-ledger
