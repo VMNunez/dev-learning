@@ -69,7 +69,8 @@ digest is hard stale.
    original verdict or time.
 7. `§6 — Readiness gates`: common gate plus Angular, Spring Boot, and SQL-specific fences.
 8. `§7 — MISTAKES and friction`: graded gaps vs friction-without-failure.
-9. `§8 — Tracking`: route, tracker, spec header, MISTAKES, and PROGRESS ownership.
+9. `§8 — Tracking`: route, tracker, spec header, MISTAKES, and PROGRESS ownership — the tracker's
+   header and scale included, whose owner and text are section 8 of this standard.
 10. `§9 — Level close and next gates`.
 11. `§10 — Commit boundary`.
 12. `§11 — Invariants`.
@@ -202,3 +203,54 @@ left a requirement unmet or scored 1 on a non-core dimension and still earned th
 12. A reinforcement Pass closes its linked Fail/Assisted learning step without changing historical evidence.
 13. `simulation-grade` is the only entry point that may dispatch a state-writing review or correction.
 14. A `current` route is never attempted against a moved coverage manifest or unadjudicated progress snapshot.
+
+## 8 — The tracker's header and scale
+
+`practice/simulations/TRACKER.md` is the inventory of every spec and its recorded outcome. Its track
+sections — one `##` heading and table per track — belong to their row writers — `/simulation-generator`,
+`simulation-block-close` and `/simulation-review` — each of whose own text states the fields it writes
+(generator §3, block-close §1, review §5). **Everything else in the file — the header
+above the first track heading and the self-assessment scale below the last table — has one writer,
+`/simulation-plan`**, which writes both to the text below on every update run and changes nothing in a
+track section. The header only points. A tracker that tells Victor to time, review or mark an attempt
+himself sends him around `simulation-block-open`, `simulation-block-close` and `simulation-grade`
+(invariant 13), so it states no procedure of its own.
+
+Each row's link to its spec is inventory and stays, because the generator's row contract writes it. A
+link is not an entry point: which spec is current is the route's §0, read by `simulation-block-open`.
+
+The scale is the vocabulary `simulation-block-close` records and `simulation-review-prompt.md`'s
+`SELF_ASSESSMENT` accepts. Its meanings describe the attempt and never prescribe what comes next —
+reinforcement is `/simulation-plan`'s to author (invariant 11), and the order is the route's.
+
+Header, from the first line of the file to the first track heading:
+
+```markdown
+# Technical Test Simulations — Tracker
+
+Inventory of every timed-simulation spec and its recorded outcome — not a procedure. Open a block with
+`simulation-block-open` ("vamos con una simulación"): it names the current test, its time limit and the
+attempt conditions. `simulation-block-close` records the attempt and `simulation-grade` reviews it. The
+rows are written by `/simulation-generator`, `simulation-block-close` and the review `simulation-grade`
+dispatches — never by hand. The target this count serves is set in `ROADMAP.md` (Stage 2 and the
+minimum for applying).
+
+---
+```
+
+Scale, from the rule after the last track table to the end of the file:
+
+```markdown
+---
+
+## Self-assessment scale
+
+The value you state when you close an attempt. The reviewed verdict goes in the `Status` column.
+
+| Score | Meaning |
+|-------|---------|
+| ✅ Solid | Finished before time, all requirements met, clean code |
+| 🔧 Good | Finished in time, minor gaps or rough edges |
+| ⚠️ Weak | Did not finish or had significant gaps |
+| ❌ Failed | Could not build a working solution |
+```

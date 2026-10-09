@@ -76,6 +76,9 @@ If DOCTRINE is missing, author it once from the standard's twelve required secti
 preserve it byte-for-byte; findings about doctrine go in the final report, never into an opportunistic
 rewrite during route planning.
 
+Reconcile TRACKER's header and self-assessment scale to section 8 of the standard, text for text. Every
+track section stays byte-for-byte: its rows belong to the generator, the close and the review.
+
 Create or reconcile ROUTE to every required section in the standard. Preserve all prior attempt,
 verdict, correction, and review-history fields exactly. Reuse pending existing specs when their actual
 requirements fit the selected level and readiness fence. A legacy spec without `Level` may be admitted
@@ -119,19 +122,23 @@ Before writing in update mode, prove:
 - DOCTRINE and ROUTE satisfy the standard.
 - every reinforcement step has one valid `Redeems` target and every `reinforcement-required` step has
   exactly one planned reinforcement successor.
+- TRACKER's header and scale equal the standard's section 8 text, and its track sections are
+  byte-identical to the file as this run found it.
 
-`MODE = dry-run` prints the proposed doctrine/route and reconciliation summary without writing either.
+`MODE = dry-run` prints the proposed doctrine/route, the TRACKER header/scale diff and the
+reconciliation summary without writing any of them.
 
 In update mode, write the accepted files. These are system-owned tracking files under the session-rule
 exception. Run `git status --short` immediately before staging and committing; stage only DOCTRINE when
-created and ROUTE. Commit:
+created, ROUTE, and TRACKER when its header or scale changed. Commit:
 
 `docs: plan {LEVEL} timed simulation route`
 
 ## 5 — Final report and close-out
 
 Report: level, manifest digest, readiness verdict per track, steps admitted/generated later, legacy
-specs reused, blocked gates, preserved history, cold-review verdict, and commit/dry-run/blocked result.
+specs reused, blocked gates, preserved history, whether TRACKER's header/scale changed, cold-review
+verdict, and commit/dry-run/blocked result.
 
 Then execute `notes/prompts/_internal/_pipeline-self-report.md` in full. Write
 `notes/prompts/practice/simulations/_internal/_last-run-report-simulation-plan.md`, update the Simulation
