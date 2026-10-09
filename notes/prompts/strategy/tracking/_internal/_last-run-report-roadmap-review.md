@@ -1,25 +1,29 @@
 # Pipeline self-report — roadmap-review
 
-**Date:** 2026-08-08 · **Target:** `ROADMAP.md` (branch `fix/backend-backlog`) · **Status:** open
+**Date:** 2026-10-09 · **Target:** `ROADMAP.md` (branch `projects/07-timetrack`) · **Status:** open
 
-1. **Plan vs reality** — `progress-update` ran first, then the two fact-gatherers and two sequential
-   cold reviewers ran in the required order. Their evidence supports that the machinery ran: the
-   active plan was read to EOF (1,820 lines), junior coverage to EOF (2,094 lines), and both reviewer
-   trace tables were returned. Soundness rests on the final cross-file checks, not on those traces.
-2. **Report discipline** — the project summary and both reviewer tables matched their contracts. The
-   gap gatherer's first SQL answer used bullet-level concepts instead of the requested coverage
-   headings; a bounded follow-up returned the exact 18 headings and its EOF declaration. No report
-   prose was copied into `ROADMAP.md` without verification against the source files.
-3. **Failures & retries** — no agent or tool failed and no full re-dispatch was needed. One bounded
-   follow-up corrected the gap gatherer's SQL output grain. The prerequisite `progress-update` had
-   already recorded its own retry in its separate report, so it is not counted again here.
-4. **Rule friction and rule breaches** — no rule was breached. Final orchestration caught two small
-   residues after the reviewers: Phase 3a still claimed JOINs had started although the junior route
-   says 0/22, and several links named a nonexistent “three possible paths” section. Both were fixed
-   in `ROADMAP.md` before commit. This is output-validation work the current contracts already require,
-   not evidence for a new rule or prompt edit.
-5. **Verdict** — pipeline clean; no prompt change pending. `ROADMAP.md` now follows the current project
-   gate, exact SQL coverage headings and route statuses, gate-based timing, and unmarked Project 08
-   gap candidates. Two cold reviews passed with fixes applied; the mandatory cold ledger review then
-   approved closing `REC-050` with its Suggested-order tightening. `map: verified`: the catalogue and
-   system-map rows for this prompt remain true; only roadmap content and run records changed.
+1. **Plan vs reality** — the split never completed: 2 of the 4 mandated dispatches ran (both
+   fact-gatherers), 2a returned `STOPPED` at its parity gate, and Steps 3–6 with both reviewers were
+   not reached. Evidence is the orchestrator's own re-run of the validator, not 2a's word: exit 1,
+   three errors, no `PASS: coverage mirror parity` line. No step read a finished artefact, because
+   none was produced — `ROADMAP.md` is untouched and nothing is claimed about it.
+2. **Report discipline** — both reports held their contract: 2a stopped without a gap list and quoted
+   the validator's errors; 2b opened with `2840 lines, read to EOF` and stayed under its bound.
+3. **Failures & retries** — no dispatch failed and none was re-dispatched; a missing parity proof is
+   the one report this prompt forbids working around. The `▶ Run first` was met by repair, not by the
+   run having happened: the 2026-10-09 drift report named two rows and both owners ran first
+   (`94651084`, `c30c8ede`). The second owner's own text forbade that write (`SBRC-0032`).
+4. **Rule friction and rule breaches** — no rule broken by the run; two workarounds of Step 2's text,
+   both logged as `BRCH-0001`. (i) The doer paragraph orders "name `/coverage-audit` as the repair"
+   while 2a's instruction forbids reporting a mirror problem it did not observe: the validator failed
+   on three notes plans claiming `current` over a mismatching Coverage SHA-256 (architecture,
+   security, spring-boot), so this run named `/notes-plan` on those three instead. (ii) The step says
+   "All 13 topics", "thirteen topic files" and "~1359 junior bullets"; the registry holds 14 since
+   HTML and the junior total is 1589, so 2a's dispatch said "every topic in the registry". Friction
+   with no row: the parity line is hostage to every other invariant of the validator, and those three
+   plans have carried `⚠ stale` tracker flags since 2026-09-22/24 — this prompt has been unrunnable
+   since then, by a stop the prompt states clearly.
+5. **Verdict** — change worth considering: Step 2's stale counts and its unconditional
+   `/coverage-audit` repair. The prompt is 519 lines, over the ~500 alarm; its largest section is
+   Step 2 at 127. The validator coupling is recorded, not applied — condition 2: the stop is stated
+   clearly, and the debt is three `⚠ stale` tracker cells `/notes-plan` clears, a cell and not a row.
