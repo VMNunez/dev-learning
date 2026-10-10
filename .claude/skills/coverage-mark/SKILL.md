@@ -162,10 +162,10 @@ that has already closed, and the chat does not survive the session — the same 
   and mark it here normally. This bar sits **on top of** the adder's step-3 filter, not in place of it:
   **two authored bullets on a large diff is a lot, and zero is the normal result** — a sweep that
   authors freely is how a level file inflates, which is what the older prohibition held.
-- **First project still wins.** The construct may pre-date this diff. If you already know an earlier
-  project demonstrates it, the marker and its clause name **that** project and say where you saw it;
-  never open a search across projects to find out — that is the backfill this skill refuses to start
-  mid-ritual, and a marker for the current project would falsely date the first demonstration.
+- **First project still wins.** If an earlier project's demonstration is already known from code,
+  name that project and the code proving it. Otherwise mark the caller's project from its diff;
+  suspicion of an earlier use is not evidence and does not withhold a demonstrated marker.
+  Never search across projects to establish chronology or replace an existing marker.
 - **Carry back what the adder owes.** If `coverage-bullet-add` reports a `/notes-plan {topic} {LEVEL}`
   remap for the bullet it just wrote, that debt reaches the session only through your §5 report — put it
   in a row of its own. A ritual that never passed the concept in has no other way to learn it exists.
