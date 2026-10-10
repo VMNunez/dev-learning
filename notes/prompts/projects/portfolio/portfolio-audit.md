@@ -185,8 +185,10 @@ more. The single surviving pause is a legacy two-option `cv-bullets.md` section 
 > scratch paths** (they share a basename, so one directory would let one overwrite the other). That copy is the **comparison snapshot** Phase 1b's parity gate reads, and it works in
 > every git state, including the untracked bank a dry run leaves, where `{BASELINE}` holds no pre-run
 > bytes. It is never a restore source: the `en/` restore reads `{BASELINE}` alone, and the `es/` twin has
-> no restore branch at all — its disposition is leave-and-declare and its safety is stage T's STOP
-> conditions.
+> no restore branch at all — its disposition is leave-and-declare, and its safety is stage T's STOP
+> conditions and write bound, the second checked against this copy by the parity gate's test (d), whose
+> one retry quotes this copy's text to T for the lines it moved: T rewrites them, the orchestrator
+> restores nothing.
 
 First read
 `notes/prompts/projects/portfolio/_internal/_portfolio-standard.md` so you know the verdict logic, the question
@@ -542,19 +544,26 @@ named to T as skipped — whose `en/` block is absent from the snapshot `en/` or
 B names its corrections in prose, and your own dedupe, renumber and downgrade edits are in none.
 
 **Parity gate — act on the files, never on T's return alone.** A `RE-SYNCED` with matching counts has
-shipped stale Spanish before (`REC-236`). **It runs over the sub-headings
+shipped stale Spanish before (`REC-236`). **Its parity tests run over the sub-headings
 `{PORTFOLIO_SCOPE}` covers, and only those** — an out-of-scope half that no longer matches its English
 is reported as behind, never retried and never repaired here, because this run did not write it and a
-retry would only send T back into Spanish it may not touch. Three tests, each by command over the two
-files and over the in-lane sub-headings only, since T omits a skipped one: **(a)** every in-lane
+retry would only send T back into Spanish it may not touch. **What the gate does check outside the lane
+is that T left it alone** — test (d). Three tests by command over the two files and over the in-lane
+sub-headings only, since T omits a skipped one, and a fourth over the bytes they leave out: **(a)** every in-lane
 sub-heading's Spanish question count equals its English one, and none is missing that was not named as
 skipped; **(b)** the ordered sequence of ID + priority marker on the in-lane bold lines is identical in
 both files — a dropped, reordered or renumbered question or a lost `⭐` moves no count; **(c)** on a
 re-sync, every listed ID not carrying `[refined]` has a Spanish bold line that differs from its snapshot
 `es/` one where its English bold line changed, and a Spanish body that differs where its English body
 changed — a part byte-identical to its snapshot is Spanish nobody re-rendered against English that moved.
-This proves a re-render happened, not that it is faithful; that is T's and stage C's. Any failure
-means the twin is not done: re-dispatch T **once**, naming the exact sections or IDs that fail. One retry maximum; if parity still
+This proves a re-render happened, not that it is faithful; that is T's and stage C's. **(d)** on a
+partial scope of a full-stack project, by command over the `es/` and the snapshot `es/` (`REC-316`): where the snapshot holds
+one, every byte outside the in-lane sub-headings and the header is identical to it — the `##` and `###`
+lines included, a `##` line being new only as the home of an in-lane sub-heading; where it holds none,
+the `es/` carries no `###` line outside the in-lane set. (a)–(c) cannot see this, since an out-of-lane
+heading added, dropped or renamed moves none of their numbers. Any failure
+means the twin is not done: re-dispatch T **once**, naming the exact sections or IDs that fail — or,
+for (d), the out-of-lane lines, with the snapshot's text for them. One retry maximum; if parity still
 fails, **this content acceptance gate has failed** — name the failing sections or IDs in the final report
 and record this project `blocked` in `_run-tracker.md`, on the dry branch too, exactly as a below-1
 ratio does in Phase 1a.
@@ -567,7 +576,14 @@ he knows the twin is now behind, and **leave the `es/` file out of the commit en
 staging rule below). The project still records `blocked` in `_run-tracker.md`, because the pair this
 run was supposed to produce was not produced.
 
-**If T returns `BLOCKED`** — a half-written twin — take the leave-and-declare side, never the restore
+**A `BLOCKED` is tested like a `RE-SYNCED`, never taken on its word** (`REC-316`). Stage T has two
+licences for it — an `en/` that does not exist, and a write it began and could not complete — so check
+both by command: where the `en/` exists and the `es/` is identical to the snapshot's, or still absent
+where the snapshot held none, the return names a licence nothing on disk supports. That is a role that
+did not do its job, not a disposition: re-dispatch T once — the gate's one retry, not a second — naming
+it, and take what returns through the gate like any other return.
+
+**If T's `BLOCKED` stands** — a half-written twin — take the leave-and-declare side, never the restore
 side. The `es/` is created by this stage, so on a first run there is nothing at `{BASELINE}` to restore
 to, and on a later run restoring would throw away a twin that is more current than the committed one.
 Declare it `blocked — partial (es/)`, and the project records `blocked`.

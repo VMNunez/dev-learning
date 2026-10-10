@@ -108,6 +108,14 @@ which is worse than an absent one. Omit that section's heading from the `es/` en
 sections are worth having, and stopping the whole twin over one of them buys nothing. Parity is owed on
 every section except the ones you were told to skip.
 
+---
+
+## What you may write — `{SCOPE}`'s sub-headings, and the header
+
+**This bound holds for every line you write, which is why it is not one of the STOP conditions above**
+(`REC-316`): those are checked once, before the first write; this one is checked again at every heading
+line you are about to touch.
+
 **`{SCOPE}` bounds what you write, never what you read.** Read the whole `en/` file, always: parity is a
 whole-file property and an ID you copy must be checked against every other. But when `{SCOPE}` is not
 `full`, **write only inside the `###` sub-headings it names** — `backend` → `Backend`, `frontend` →
@@ -118,6 +126,15 @@ block it would break a freeze outright. Where an **out-of-scope** sub-heading's 
 matches its English, **report it and change nothing** — that half is simply older than its source, and
 saying so is the whole of your job there. On an Angular-only project there are no sub-headings and every
 scope translates the same bare sections.
+
+**Heading lines are bytes too.** `_portfolio-standard.md` → "A partial run stays in its lane" is the rule,
+and on a partial scope of a full-stack project it reaches the `##` and `###` lines themselves: outside `{SCOPE}` you never add,
+delete, rename or move one — not to match the English, and not to complete the standard's file template
+— and a sub-heading one language carries and the other lacks there is reported by section, never
+repaired. Inside `{SCOPE}` the one heading line you create is the in-scope `###` sub-heading the English
+has and the Spanish lacks, at the English position, plus its `##` section only where that sub-heading
+needs a home. The orchestrator compares every out-of-scope byte with the twin it copied before you ran,
+so a heading changed there fails its gate.
 
 **The header is the one exception, and it is rendered on every scope.** The `**Último banco — «capa»:**`
 lines are not `###` sub-headings and no other role can write them — the orchestrator writes only the
@@ -229,8 +246,11 @@ Do **not** commit. Leave the `es/` file in the working tree; the orchestrator bu
 atomic commit with the `en/` bank and the CV bullet. Report:
 
 - `TRANSLATED` (created the `es/`), `RE-SYNCED` (updated an existing one), or `TODO-STOPPED` (you wrote
-  nothing because the `es/` carries Victor's markers) — and `BLOCKED` only where you were unable to
-  finish. The four are disjoint: only the first two mean you changed the file.
+  nothing because the `es/` carries Victor's markers) — and `BLOCKED` only on one of its two licences:
+  the missing-`en/` stop above, or a write you began and could not complete. **Nothing else licenses
+  it** (`REC-316`): a read the tool cut short — by its line limit or by the size of its output — is
+  redone in bounded passes to EOF, and an English question you doubt is reported by ID, never stopped
+  on. The four are disjoint: only the first two mean you changed the file.
 - The **"N lines, read to EOF"** line for each file you read whole.
 - The section-by-section trace, with the per-section counts and the per-section frozen count.
 - The total question count, `en/` and `es/`. **They must match on a `full` run**; on a partial one report
@@ -243,7 +263,8 @@ atomic commit with the `en/` bank and the CV bullet. Report:
   it as owed a correction; you did **not** change it — and any place the existing Spanish diverged in a
   way that looked deliberate.
 
-**If you cannot finish**, stop and open your report with `BLOCKED — <reason>`, then state exactly which
-sections you had already written into the `es/`. You are writing a file the orchestrator commits
+**If you cannot finish**, stop and open your report with `BLOCKED — <reason>`, the reason naming which
+of those two licences you are using, then state exactly which sections you had already written into
+the `es/`. You are writing a file the orchestrator commits
 wholesale, so that line is the only thing that lets it restore or declare a half-translated twin
 instead of committing it as a finished pair.
