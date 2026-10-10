@@ -117,6 +117,7 @@ dispositions was right about one and wrong about the other. **Split a rule at it
 adjudicating either half**, and expect a row that reads as one contradiction to be two; the cold
 reviewer is what catches the miss, because a repair citing the paragraph as its warrant will quote
 the heading and mandate what the sentences forbid.
+**Also `REC-316`: a heading that *counts* its clauses is the name likeliest to rot** — `dc0955b4` filed a write bound under `STOP conditions — check all three before writing anything` without touching the count, and both partial runs broke it; count a section's clauses against its own heading, and move a rule of another kind out rather than re-count it.
 
 **A licence found in the tree is not yet the warrant — read what its own section is *about*.** Also
 `REC-145`. The repair's second draft founded the append on the route's "a mixed file is expected
