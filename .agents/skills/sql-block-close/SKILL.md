@@ -43,8 +43,9 @@ to fill with a questionnaire. The rituals of this track ask zero questions by de
 
 ## 0 — What the block actually did
 
-Read the current exercise file from `{PLAN}` §1 and count with these exact commands — both header
-formats live on disk, and a pattern matching neither returns `0`:
+Resolve the block's exercise file from what Victor named in this session; fall back to the current
+file in `{PLAN}` §1 only when he named none. For that file's saved state, count with these commands —
+both header formats live on disk, and a pattern matching neither returns `0`:
 
 ```
 grep -cE '^-- (Exercise [0-9]+ \[|#[0-9]+ \|)' {FILE}   → written
@@ -55,13 +56,14 @@ grep -cE '^--.*✅ Corregido' {FILE}                      → accepted
 Graded minus accepted is what `sql-block-open`'s "Moment 3 again" row reads, together with the file's
 `Status` in `PROGRESS.md` → `### Exercise route` (that one row, nothing else of the file).
 
-Answered = headers with at least one non-comment SQL line under them. For **today's** delta, compare
-against the last committed version: `git show HEAD:{FILE}` counted the same way. Uncommitted answers
-are today's work.
-
-Report it as a fact, never as a judgement: `3 respondidos hoy · 7 pendientes en el archivo`. **No
-encouragement, no assessment of the pace, no suggestion about tomorrow's length.** He decides what the
-block is worth.
+Answered = headers with at least one non-comment SQL line under them. Compare with
+`git show HEAD:{FILE}` counted the same way for newly saved answers; that delta measures the file,
+not all work done in the block. For a revision in pgAdmin or another external tool, report only
+what Victor already stated, e.g. `40 repasados en pgAdmin · 0 respuestas nuevas guardadas`.
+Without a stated number, say `repaso en pgAdmin, cantidad no indicada`; never infer it from the
+file's total, ask for it, or treat it as graded work or route progress. If both happened, report
+saved answers and the stated revision separately. Keep `pendientes en el archivo` as a disk count.
+**No encouragement, pace assessment, or suggestion about tomorrow's length.**
 
 ---
 
@@ -115,8 +117,8 @@ rediscovering:
 Mañana: Step 0 · practice/sql/junior/02-execution-order-set-ops.sql · Moment 3 — quedan 7 por responder
 ```
 
-Derive the Moment from the same table `sql-block-open` uses. If the file is now fully answered, the
-line is `Moment 4 — di "corrige el 02"`. **Do not run it.**
+Derive tomorrow's file and Moment from the current route and the table `sql-block-open` uses,
+not from a closed file revised today. **Do not run the next Moment.**
 
 ---
 
@@ -125,9 +127,10 @@ line is `Moment 4 — di "corrige el 02"`. **Do not run it.**
 - **`practice/sql/MISTAKES.md` — you commit it** (authorized 2026-07-22; the prompt writes this file,
   never Victor). Only if a `## Fricción` row was actually added:
   `docs(sql): log N friction rows from the {date} block`
-- **His `.sql` file — he commits it.** Hand him the standard two blocks (`git add`, then `git commit`),
-  one command per block. Run `git status` right before, so no doc file is staged alongside it.
-  `docs(sql): answer exercises N–M in {FILE}`
+- **His `.sql` file — he commits it, only if it changed.** Hand him the standard two blocks
+  (`git add`, then `git commit`), one command per block, for the actual saved edit alone — a revision
+  in pgAdmin is not a `.sql` change. Run `git status` right before, so no doc file is staged alongside it.
+  `docs(sql): answer exercises N–M in {FILE}` for newly saved answers; otherwise name the actual edit.
 - Nothing else is staged. If `git status` shows a doc file this skill did not write, name it and leave
   it — it belongs to whichever ritual last ran.
 
