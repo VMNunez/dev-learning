@@ -67,7 +67,8 @@ ABSORBED = [none | per section another entry's `Audit note` moves into this one:
 
 REWRITE_MODE = [standard | first-pass | append-only]
        → standard (default): existing prose is final unless marked with a TODO, unless TASK
-         explicitly asks to rewrite a named section, or unless it states something **false** — the
+         explicitly asks to rewrite a named section or its `Audit note` moves a section out of
+         `{FILE}` (Step 3), or unless it states something **false** — the
          one modification of existing text the Action rules in Step 2 mandate, on the narrow bar
          defined there. Do not reword, restructure, or "improve" text that is already written.
          Report other quality issues in the summary — Victor adds a TODO if he wants a fix. (Adding
@@ -317,6 +318,19 @@ rewritten exactly as `{FILE}`'s own existing prose would be in this `{REWRITE_MO
 corrected under the Action rules in Step 2. Cut one only where the entry's contract or the standard
 requires it, and report why: what you cut leaves the notes tree with it.
 
+The giving end of a move is this run's too. What TASK's `Audit note` moves out of `{FILE}` — to
+another entry or to another topic — **leaves `{FILE}` in this run**, in every mode except
+`append-only`: the removal is the plan's order, not a rewrite you chose, so `standard` does not protect
+that prose. How much leaves is what the note says: a section by its heading, with the subsections under
+it, or the part of one the note names. At most a reference to where it went stays in its place — the
+one the note asks for, or, where the prose that remains still uses the concept, the one the standard
+gives that target (its forward-reference marker for a later entry, a link with its one-sentence
+reminder for an earlier one, its preview callout for another topic) — written under the linking rules
+above, and a sentence elsewhere in `{FILE}` that pointed at what left is re-aimed the same way. You copy its text nowhere and never write the file that
+takes it: an absorbing entry of this plan receives it from git, as `{ABSORBED}`, in its own run. Where
+the note describes what leaves instead of naming it and you cannot tell which prose it means, leave it
+and report it — never guess at a removal.
+
 Coverage bullets define required level scope, not sufficient teaching prose. Add the orientation,
 prerequisite explanations, worked examples, contrasts, and transitions needed to achieve TASK's
 `Learning outcome` and resolve every `Must answer` question from zero. Do not use this permission to
@@ -410,6 +424,8 @@ the Step 1 exception — and report:
 - The siblings you actually opened, each one shown to be in `{READABLE_SIBLINGS}`, plus any internal link
   you wrote to a target that is declared but not yet written.
 - Per `{ABSORBED}` heading, the section of `{FILE}` it landed in, or the reason you cut it.
+- Per section TASK's `Audit note` moves out of `{FILE}`: its heading, the entry or topic the note sends
+  it to, and what you left in its place — or why it is still in the file.
 - A **pedagogical-contract trace**: learning outcome; each must-answer question; prerequisites;
   handoff; and, when applicable, every introduction invariant → PASS or the work completed.
 

@@ -171,7 +171,8 @@ An `Audit note` can move a section out of one note and into another entry, and `
 runs by pedagogy alone, so either may come first, and neither order leaves the bytes readable: while the
 giving entry is `pending` its prose is outside `READABLE_SIBLINGS`, and once its own run has removed the
 section the file no longer holds it (`REC-314`). So **the absorbing run carries them across, from git**,
-and the giving run removes its sections whenever it runs, whatever the absorbing entry's status.
+and the giving run removes its sections whenever it runs, whatever the absorbing entry's status —
+Stage A under its Step 3, Stage B confirming they are gone (`REC-321`).
 
 For each heading the selected entry's `Audit note` absorbs, resolve one `ABSORBED` row before dispatch:
 
@@ -286,7 +287,9 @@ Dispatch `_notes-write-prompt.md` with:
 
 It must author or audit only the selected English file — plus, under its Step 1 exception, the `es/`
 sections where it resolved a TODO Victor wrote there — cover every assigned concept, avoid sibling
-level scope, and report a section trace plus `N lines, read to EOF`. Keep the `es/` sections its report
+level scope, remove what the entry's `Audit note` moves out of the file (never in append-only mode),
+and report a section trace plus `N lines, read to EOF` and, per section moved out, where the note
+sends it and what stands in its place. Keep the `es/` sections its report
 names as written directly as `ES_AUTHORED`, by paired exact English/Spanish headings and the original
 markers' wording choices, or `none` when it wrote none —
 always `none` in append-only mode, where its Step 1 resolves nothing. When the trace gate re-dispatches
@@ -308,7 +311,8 @@ Pass `ES_AUTHORED` on every B dispatch, including the trace-gate retry and the c
 It audits those English sections but returns `Spanish-source repairs` instead of changing them.
 It must fix the file, verify every bullet is substantively covered, verify that the
 learning outcome and must-answer questions are achieved without undeclared prerequisites, enforce
-the introduction invariant when applicable, reject unassigned higher-level expansion, and return a
+the introduction invariant when applicable, reject unassigned higher-level expansion, confirm that
+what the entry's `Audit note` moves out has left the file, and return a
 section trace, pedagogical-contract trace, and EOF proof.
 
 **Spanish-source repair gate.** A B return with `Spanish-source repairs` stops before T/C. Re-dispatch
@@ -428,7 +432,9 @@ the sibling-admissibility resolution — how many entries were admitted as `READ
 `LINK_TARGETS` rows are declared but unwritten, every claim mismatch stage T or stage C reported
 against `LINK_TARGETS`, and every orphan file found in `EN_DIR`/`ES_DIR` — every `ABSORBED` row with
 its giving file and revision, the commits "Absorbed sections" step 2 reported as newer than a recorded
-revision, and the section Stage A landed it in or the reason it cut it,
+revision, and the section Stage A landed it in or the reason it cut it, every section the entry's
+`Audit note` moved out of the note with where the note sends it and what Stage A left in its place, or
+why it stayed,
 dependency gate, pedagogical-contract gate, intro-contract gate when applicable, the `ES_AUTHORED`
 sections relayed to stages B, T and C (or `none`) with T's `frozen` trace entry for each, any
 Spanish-source repair and its disposition, four stage results,
