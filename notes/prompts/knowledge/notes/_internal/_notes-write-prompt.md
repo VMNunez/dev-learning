@@ -34,7 +34,8 @@ budget stays on writing that file well.
 3. Fill in `TASK` — the selected persistent-plan entry, including its exact assigned concepts.
 4. Fill in `READABLE_SIBLINGS` and `LINK_TARGETS` from the plan — which sibling notes may be read, and
    which filenames may be linked, each with its title and any `Audit note` saying what that entry is
-   assigned to teach. Standalone, resolve them yourself from `notes-plan-{LEVEL}.md`.
+   assigned to teach. Standalone, resolve them yourself from `notes-plan-{LEVEL}.md` — and `ABSORBED`
+   too, under `notes-audit.md` → "Absorbed sections".
 5. Fill in `REWRITE_MODE` — `standard` (protect existing prose) or `first-pass` (allow full rewrites).
 6. Paste the entire prompt below into a new chat.
 
@@ -60,6 +61,9 @@ LINK_TARGETS = [every plan entry's number, title, en/ path and es/ path, with it
 ES_AUTHORED = [none | paired English/Spanish headings retained from an earlier A pass this run,
         with the original marker's wording choices; default none on the first pass]
 SOURCE_REPAIRS = [none | defects returned by B, T or C in those sections, with text and evidence]
+ABSORBED = [none | per section another entry's `Audit note` moves into this one: its exact heading,
+        the giving file and revision, and its English text as committed there — resolved from git by
+        the orchestrator; always none in append-only mode]
 
 REWRITE_MODE = [standard | first-pass | append-only]
        → standard (default): existing prose is final unless marked with a TODO, unless TASK
@@ -81,7 +85,7 @@ REWRITE_MODE = [standard | first-pass | append-only]
          content Victor has not validated yet. After the run, the file is validated — use standard
          from then on.
 
-Use TOPIC, LEVEL, FILE, TASK, READABLE_SIBLINGS, LINK_TARGETS, ES_AUTHORED, SOURCE_REPAIRS, and REWRITE_MODE wherever
+Use TOPIC, LEVEL, FILE, TASK, READABLE_SIBLINGS, LINK_TARGETS, ES_AUTHORED, SOURCE_REPAIRS, ABSORBED, and REWRITE_MODE wherever
 the prompt refers to their placeholders.
 
 ---
@@ -108,6 +112,10 @@ the full standard in English.
 > `{READABLE_SIBLINGS}` — `{FILE}`'s own `es/` counterpart is not a sibling, and Step 1 still reads it
 > for Victor's TODO markers. Where two admissible siblings disagree, follow the `refined` one — Victor
 > froze it himself.
+>
+> **`{ABSORBED}` is not a sibling read.** It is this entry's own source — sections the plan moves into
+> `{FILE}` from another note — handed to you as text, so you never open the giving file for it. Treat it
+> exactly as `{FILE}`'s existing prose under `{REWRITE_MODE}`, and never as precedent for anything else.
 >
 > **`{READABLE_SIBLINGS}` is legitimately `none` on an early route** — this is the topic's first entry,
 > or every sibling is still `pending`. Then no sibling prose has been accepted yet: write from the
@@ -300,6 +308,12 @@ If TASK asks to create the file, add a section, or complete a thin one, write it
 in `_note-quality-standard.md`. The persistent plan already owns the exact number and path; never
 renumber the file here.
 
+If `{ABSORBED}` is not `none`, its sections join `{FILE}`: place each where the entry's route needs it
+and carry its material over — code, queries, worked examples and the facts they rest on — protected or
+rewritten exactly as `{FILE}`'s own existing prose would be in this `{REWRITE_MODE}`, false statements
+corrected under the Action rules in Step 2. Cut one only where the entry's contract or the standard
+requires it, and report why: what you cut leaves the notes tree with it.
+
 Coverage bullets define required level scope, not sufficient teaching prose. Add the orientation,
 prerequisite explanations, worked examples, contrasts, and transitions needed to achieve TASK's
 `Learning outcome` and resolve every `Must answer` question from zero. Do not use this permission to
@@ -392,6 +406,7 @@ the Step 1 exception — and report:
   it fixed.
 - The siblings you actually opened, each one shown to be in `{READABLE_SIBLINGS}`, plus any internal link
   you wrote to a target that is declared but not yet written.
+- Per `{ABSORBED}` heading, the section of `{FILE}` it landed in, or the reason you cut it.
 - A **pedagogical-contract trace**: learning outcome; each must-answer question; prerequisites;
   handoff; and, when applicable, every introduction invariant → PASS or the work completed.
 

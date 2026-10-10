@@ -103,6 +103,10 @@ Before dispatching any role:
     `Spanish:` columns. A file no entry declares is an orphan: record it for the final report and pass it
     to no stage. This is a filename check — no orphan's prose is opened, and the run neither renames nor
     deletes one.
+17. Read the `Audit note` of every `LINK_TARGETS` row, then resolve `ABSORBED` under "Absorbed
+    sections" below. Stop with `run notes-plan-prompt` when another entry moves a section into `{NOTE}`
+    that `{NOTE}`'s own note does not absorb, when a section is named by description rather than heading,
+    or when a heading is not found exactly once at the revision step 2 there resolves.
 
 Guards 9 and 10 do not reopen a `refined` entry: a missing or malformed pedagogical contract on a frozen
 pair is reported, not fixed, because fixing it would mean rewriting prose Victor has declared final.
@@ -155,6 +159,41 @@ harvested the last of those pairs: what they teach now lives in `_note-quality-s
 from refined pairs**, which every stage already reads, and a read that grows with every refined pair is
 the cost the harvest exists to remove. Pass no such list, and never admit a refined note outside
 `READABLE_SIBLINGS` to a stage as an exemplar.
+
+## Absorbed sections — the receiving run carries the bytes
+
+An `Audit note` can move a section out of one note and into another entry, and `notes-plan-prompt.md` →
+"Required plan format" has it name the section on both ends by exact heading. The plan orders the two
+runs by pedagogy alone, so either may come first, and neither order leaves the bytes readable: while the
+giving entry is `pending` its prose is outside `READABLE_SIBLINGS`, and once its own run has removed the
+section the file no longer holds it (`REC-314`). So **the absorbing run carries them across, from git**,
+and the giving run removes its sections whenever it runs, whatever the absorbing entry's status.
+
+For each heading the selected entry's `Audit note` absorbs, resolve one `ABSORBED` row before dispatch:
+
+1. **The giving file** — the `English:` path `LINK_TARGETS` gives the entry the note names.
+2. **The revision** — the giving file as it stood before this pipeline first rewrote it. List its
+   whole history with `git log --follow --name-only --format='%H %s' -- <giving file>` — never with
+   `--grep`, which stops `--follow` at a rename it filters out — and keep the commits whose subject
+   matches, case-insensitively, `docs(notes): complete <topic> <level> note NN`, any topic and level.
+   None means the run that executes its moves has not happened, and the revision is `HEAD`. Otherwise
+   it is the parent of the **oldest** one, `<hash>^`, read at the path the file had in that commit. A
+   heading still present at `HEAD` proves nothing: a giving run that splits or shortens a section keeps
+   its heading. The rule is right only for a move written before that first completion, which is why
+   `notes-plan-prompt.md` writes no other.
+3. **The text** — the line equal to the heading, which must occur exactly once in that revision, to the
+   next heading of the same or a higher level outside a fenced code block, read with
+   `git show <revision>:<path>`. A heading the plan
+   wraps across lines is rejoined first; `## X` never matches `### X` or a longer heading that begins
+   with `X`.
+
+Guard 17 stops the run when a row cannot be resolved. `ABSORBED` is the entry's own **source**, not
+sibling precedent: like the entry's own existing file it is material this run audits and owes nothing as
+evidence, so it is handed to Stage A as text whatever the giving entry's `Status:` — the one prose outside
+`READABLE_SIBLINGS` a stage receives, and it receives it from the orchestrator, never by opening the
+giving file. The English is carried; its Spanish is rendered by stage T from the receiving English like
+any other section. This run never writes the giving file. `notes-plan-prompt.md` never moves a section
+into a `refined` entry, so on append-only runs `ABSORBED` is `none`.
 
 ## Append-only mode
 
@@ -231,7 +270,8 @@ Dispatch `_notes-write-prompt.md` with:
 - `ES_AUTHORED = none` and `SOURCE_REPAIRS = none` on the first pass; a later A dispatch receives
   the retained list and any source repairs as specified below;
 - `READABLE_SIBLINGS` and `LINK_TARGETS` as resolved above — the author reads sibling prose only from
-  the first list and links only rows of the second.
+  the first list and links only rows of the second;
+- `ABSORBED` as resolved above, or `none` — each row's heading, giving file, revision and text.
 
 It must author or audit only the selected English file — plus, under its Step 1 exception, the `es/`
 sections where it resolved a TODO Victor wrote there — cover every assigned concept, avoid sibling
@@ -375,7 +415,8 @@ stops the run. Never mark a partially verified or merely bullet-complete file co
 Report branch, topic, level, note, resolved paths, action, assigned-concept count, fingerprint match,
 the sibling-admissibility resolution — how many entries were admitted as `READABLE_SIBLINGS`, how many
 `LINK_TARGETS` rows are declared but unwritten, every claim mismatch stage T or stage C reported
-against `LINK_TARGETS`, and every orphan file found in `EN_DIR`/`ES_DIR` —
+against `LINK_TARGETS`, and every orphan file found in `EN_DIR`/`ES_DIR` — every `ABSORBED` row with
+its giving file and revision, and the section Stage A landed it in or the reason it cut it,
 dependency gate, pedagogical-contract gate, intro-contract gate when applicable, the `ES_AUTHORED`
 sections relayed to stages B, T and C (or `none`) with T's `frozen` trace entry for each, any
 Spanish-source repair and its disposition, four stage results,

@@ -393,6 +393,19 @@ Rules:
 - `Audit note:` is the one optional entry field, written between `Coverage concepts` and `Rationale`. It
   records which existing sections move to another entry or topic, which it absorbs or reduces, and what the audit must rebuild or expand.
   `notes-audit` forwards that exact label to every stage inside `LINK_TARGETS`, and no synonym.
+  **A move inside this plan is written on both ends, by exact heading** (`REC-314`): the giving entry
+  names each section it moves out by its heading and the entry that takes it, and the absorbing entry
+  names the same headings verbatim and the entry they come from. Never move a section by description
+  alone ("the input-event sections"): `notes-audit` finds the bytes it carries across by heading, and
+  stops when it cannot. A heading the giving file no longer holds at `HEAD` is quoted from the revision
+  `notes-audit.md` → "Absorbed sections" resolves, read with `git show`. Neither end is ordered against
+  the other — `Depends on` stays pedagogical, the giving run removes its sections whenever it runs, and
+  the absorbing run reads them as the giving file stood before the pipeline first rewrote it. So never
+  write a new move out of a note whose file already carries a `docs(notes): complete …` commit —
+  restating by heading a move the plan already carried before that first completion is not a new
+  move — since that revision would predate what the pipeline wrote since, and no remaining run of the
+  giving entry is certain to remove the section. Never move a section into a `refined` entry, nor out of one whose
+  frozen prose still holds it: the freeze admits neither the append nor the removal.
 - No coverage bullet may be absent, duplicated, paraphrased, or assigned across levels.
 - Omit `## Legacy notes requiring split` when empty. If it is non-empty, the run is blocked and no
   relocation or selected plan commit occurs; the proposed plan and routing map are still reported.
