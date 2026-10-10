@@ -301,7 +301,15 @@ cleared and cannot name them. Stages B, T and C are owed that list
 below: T freezes those sections and C keeps his wording only when told, and neither can find them on
 its own.
 
-If it cannot finish, stop without translation and leave the entry pending.
+If it cannot finish, stop without translation and leave the entry pending. **A section the
+`Audit note` moves out that is still in the file after Stage B — Stage A and then Stage B having left
+it because the note describes it and neither can tell which prose that is — stops the run the same
+way**, before Stage T, with `run notes-plan-prompt`, which owes that order by exact heading or, for
+part of a section, that part named so it can be found inside the heading it leaves from (`REC-322`);
+report the order's text and the stage's reason, with the changed spans and any `ES_AUTHORED` pairs, as
+the Spanish-source repair gate's block does. Completing the entry would
+turn an order nobody carried out into the executed history `notes-plan-prompt.md` step 8 says a
+`complete` entry's note is.
 
 ## Stage B — English reviewer
 

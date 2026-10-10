@@ -187,14 +187,22 @@ means the plan is stale.
    - `create` when it does not.
 8. Every new or existing entry begins `pending`, except an old `complete` entry may remain complete
    only when its English path, Spanish path, exact assigned bullet set, and complete pedagogical
-   contract are unchanged, both files still exist, and this run writes no new `Audit note` move onto
+   contract are unchanged, both files still exist, and this run writes no new `Audit note` order onto
    it. A newly added or materially changed learning
    outcome, prerequisite, must-answer question, handoff, or introduction contract reopens the entry
    to `pending`; prose previously accepted against a weaker plan has not passed the new contract.
-   So does an `Audit note` move this run writes onto the entry for the first time — out of it or into
-   it (`REC-315`): `notes-audit` reports a `complete` entry as a no-op, so the removal or the
-   absorption the note orders would never run. A move restated from the plan as it stood reopens
-   nothing.
+   So does an `Audit note` order this run writes onto the entry for the first time — a move out of it
+   or into it (`REC-315`), or a rebuild, expansion or reduction (`REC-322`): `notes-audit` reports a
+   `complete` entry as a no-op, so nothing the note orders would ever run. **What tells a new order from
+   a restated one is the bytes, never a reading of the prose**: a `complete` entry's `Audit note` is
+   carried over byte-for-byte, apart from the path and entry-number corrections a renumber or
+   relocation owes, and that restatement reopens nothing; any other change this run makes to it adds an
+   order and reopens the entry. What the note carried when the entry was completed is **executed
+   history, not owed work** — the run that completed it was handed the note, in its `TASK` since
+   `REC-312` and in its own `LINK_TARGETS` row before that, and since `REC-322` `notes-audit` stops short
+   of completing an entry that leaves a section its note moves out — so it stays as written, the plan's
+   own record of what that run did, and no run clears it or rewrites it to a format rule written after
+   it, since conforming it would reopen the entry for work already done.
    `refined` is the exception to this entire rule. It is Victor's manual freeze, set only by him, and it
    outranks every reconciliation rule here. This plan never sets it, never clears it, and never
    downgrades it to `pending` or `complete` for any reason — not a changed contract, not a changed
@@ -365,7 +373,7 @@ Rules:
 - `[ ]` means the concept is assigned but has not yet been incorporated by a successful notes pipeline
   run. `[x]` means the English and Spanish note pair contains it and Stage C committed that fact.
 - A `pending` entry may contain `[x]` concepts preserved from an earlier successful run when a changed
-  contract, newly assigned coverage or a first-written `Audit note` move reopened it; those checks are
+  contract, newly assigned coverage or a first-written `Audit note` order reopened it; those checks are
   permanent history. Notes-audit
   owes every unchecked concept, may review the whole non-refined note against its current contract,
   and never clears an existing `[x]`.
@@ -434,8 +442,10 @@ Rules:
   because the giving run may have rewritten or removed the section since. Restating by heading a move
   the plan already carried before the giving file's first completion commit is not a new move and
   gains no revision.
-  Writing a move for the first time onto a `complete` entry — out of it or into it — reopens that
-  entry under Planning algorithm step 8. Never move a section into a `refined` entry, nor out of one whose
+  Writing any order for the first time onto a `complete` entry — a move out of it or into it, a
+  rebuild, an expansion or a reduction, told from a restated one by its bytes — reopens that entry
+  under Planning algorithm step 8, and what the note carried when the entry was completed stays there
+  as executed history (`REC-322`). Never move a section into a `refined` entry, nor out of one whose
   frozen prose still holds it: the freeze admits neither the append nor the removal.
 - No coverage bullet may be absent, duplicated, paraphrased, or assigned across levels.
 - Omit `## Legacy notes requiring split` when empty. If it is non-empty, the run is blocked and no
@@ -539,8 +549,8 @@ verification until zero gaps), entry count,
 concept count, create/audit counts,
 checked/unchecked concept counts, preserved-complete count, studied/pending entry counts, every `refined` entry with the count of `Pending additions` it now carries, and every entry carrying an open `Pending study` with the sections it still owes — plus any gap line this reconciliation dropped and the reason, since dropping one is the only way study state is ever lost here
 (and any broken freeze), every legacy classification decision, relocations, renumberings, split
-blockers, every `Audit note` move this run wrote for the first time — the revision it records, where
-it records one, and each `complete` entry it reopened —
+blockers, every `Audit note` order this run wrote for the first time — for a move, the revision it
+records, where it records one — and each `complete` entry it reopened,
 unassigned existing notes, mirror parity, pedagogical-review completion, intro-contract verdict,
 learning-outcome count, prerequisite-order verdict, handoff count, concepts-used-before-taught
 verdict, and commit or `dry-run`.
