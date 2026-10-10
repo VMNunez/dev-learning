@@ -197,8 +197,8 @@ none of your context" fourteen lines above the clause: an inheritance claim abou
 really a claim about the *orchestrator's* context, and the platform adapter that carries it binds
 only its own reader. Where the read is genuinely owed, resolve it `REC-112`'s way — name the section
 inside the fence, for the one check that needs it, **with the mechanism that keeps it a section
-read**; a file under the 2000-line limit is loaded whole by a plain Read, so "that section only" is
-an instruction and `grep -n` plus `offset` is what executes it.
+read**; a plain Read starts at a file's first line and takes as much of it as one call returns, so
+"that section only" is an instruction and `grep -n` plus `offset` is what executes it.
 **Also `REC-175`, which names the enumerator: a cold reviewer's own *acceptance proof* lists the
 verdicts it is required to return, and each one is owed the rule it is measured against — supply that
 rule, or fence the verdict out of scope; nothing else disposes of it.** An artefact carries fields and
@@ -657,7 +657,12 @@ enumeration belongs at the definer, naming every copy**, which is what `REC-074`
 Its own second lesson is that such an enumeration **is** the thing it guards: the first draft said "both
 consumers" where four plan prompts read the copy and one of the two it named reads the produced file
 instead, and two rounds took the copy count from one to five — enumerate from what *defines* the
-population, never from the copies the defect brought to mind.
+population, never from the copies the defect brought to mind. **Also `REC-317`: a copy a cold role
+needs carries the instruction, never a threshold that says when the instruction may be skipped** —
+eighteen files restated the read rule's 2000-line trigger and each outlived the two cuts by size that
+falsified it; and a guard
+conditioned on a *predictor* of the failure is tested on the result instead, since the reviewer's one
+blocker was a second predictor (where the read ended) standing in for the thing itself (no line missing).
 
 **A possessive is an ownership claim, and it survives the sweep that deletes the explicit one.** From
 `REC-119`, where the false universal — "**this prompt is its only writer**" — had a twin one sentence
