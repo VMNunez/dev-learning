@@ -30,8 +30,10 @@ property an extraction can never have.
 - **The machinery wins.** A disagreement between a map and its source is the map's bug. Never propose
   correcting a source to make a map look right.
 - **Whole-file reads are declared.** Count lines first, read to the real EOF, and open your return with
-  one `N lines, read to EOF` line per file you read whole. The Read tool truncates past 2000 lines in
-  silence.
+  one `N lines, read to EOF` line per file you read whole. A read can stop short of a file's end at any
+  line count — cut at the end or in the middle, by the tool's line limit or by the size of what one
+  call returns, and not always with an error — so check that what each read returned runs unbroken to
+  that count's last line, and read on in bounded passes until every line has been returned.
 
 ## Received input
 

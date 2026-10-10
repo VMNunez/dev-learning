@@ -362,7 +362,7 @@ tie always goes to `open`, never to editing on your own. **Record the verdict in
 `cold reviewer: approve | approve-with-tightening | reject`, beside the Verdict. It is the only trace the
 gate ran at all: an applied edit with no such line is indistinguishable on disk from a self-approval, and
 a later reader must treat it as one. The reviewer's return must open with `N lines, read to EOF` for the
-prompt file (the shared session rules' whole-file rule — the Read tool truncates past 2000 lines in silence); without
+prompt file (the shared session rules' whole-file rule); without
 it you cannot tell a whole-file judgement from a skim, so treat the verdict as a reject.
 
 **The prompt has a health budget — refinement is net-neutral above it.** The thing being protected is

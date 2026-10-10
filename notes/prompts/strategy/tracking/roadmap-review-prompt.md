@@ -52,9 +52,12 @@ Step 0 also includes the run-start check stated above this fenced block.
 > is currently active — a feature branch is the normal case; name it in the final report. If you are
 > on **`main`**, stop and ask Victor which branch to use — `main` never receives direct commits.
 
-> **Verifiable reads (the shared session rules non-negotiable):** `notes/coverage/junior.md` is near the Read tool's
-> silent 2000-line truncation limit. Subagent 2a and Reviewer 2 must run `wc -l` on it before
-> reading, use `offset` passes to the real end if needed, and state **"N lines, read to EOF"** in
+> **Verifiable reads (the shared session rules non-negotiable):** `notes/coverage/junior.md` is a long file, and a
+> read can stop short of a file's end at any line count — cut at the end or in the middle, by the
+> tool's line limit or by the size of what one call returns, and not always with an error. Subagent 2a
+> and Reviewer 2 must run `wc -l` on it before reading, check that what each read returned runs
+> unbroken to that count's last line, read on in bounded `offset` passes until every line has been
+> returned, and state **"N lines, read to EOF"** in
 > their report — treat a report without that line as unusable (re-dispatch once; if it fails again,
 > flag it in the self-report instead of merging from a possibly truncated read). That file is the
 > **mirror**, not the sources of truth, so 2a carries a second verifiable line: the parity check
@@ -153,8 +156,11 @@ Launch **both** `role-appropriate` subagents in a single message so they run in 
 > Also return, verbatim, the SQL topic list from coverage-junior.md's SQL section (topic names + any
 > in/out-of-scope markers) — the doer needs it to reconcile a table without opening coverage-junior.md.
 >
-> Run `wc -l notes/coverage/junior.md` before reading it (silent 2000-line Read truncation — use `offset`
-> passes if needed) and include "N lines, read to EOF" in your report.
+> Run `wc -l notes/coverage/junior.md` before reading it, check that what your read returned runs
+> unbroken to that count's last line (a read can be cut at the end or in the middle, at any line
+> count, by the tool's line limit or by the size of what one call returns) and read on in bounded
+> `offset` passes until every line has been returned;
+> include "N lines, read to EOF" in your report.
 >
 > **The parity proof, before you trust a single bullet.** You are enumerating from a copy, so quote the
 > evidence that the copy is exact — do not improvise a counting check, one already exists and is
@@ -200,8 +206,9 @@ Launch **both** `role-appropriate` subagents in a single message so they run in 
 > Do not return full step descriptions or code.
 >
 > This is a whole-file assignment on a file that runs past 1800 lines, so it takes the repository rule:
-> run `wc -l` on it first, use `offset` passes to the real end, and include "N lines, read to EOF" in
-> your report — a step list cut short by the silent 2000-line truncation would report the tail as absent.
+> run `wc -l` on it first, check that what each read returned runs unbroken to that count's last
+> line, use bounded `offset` passes to the real end, and include "N lines, read to EOF" in your
+> report — a step list cut short by a truncated read, which the line count alone never rules out, would report the tail as absent.
 
 The 2a gap list drives Steps 3 and 4; the 2b summary replaces reading PLANNING.md yourself.
 
@@ -359,7 +366,8 @@ its checks need). Its instruction:
 >    `angular → spring-boot → java → architecture → security → typescript → sql → javascript → css → git`
 >    You are cold and hold none of the orchestrator's context, so do not assume the shared session rules
 >    are loaded: read `## Daily study blocks (from June 2)` in `notes/prompts/_internal/_session-rules.md`
->    — **that section only.** The file is 800+ lines and a plain Read would load all of it, so `grep -n`
+>    — **that section only.** A plain read starts at the file's first line and takes as much of it as
+>    one call returns, so `grep -n`
 >    the heading and read from that line with `offset`/`limit`. Compare its order with the string above.
 >    **If the two differ, the session rules win**: fix `ROADMAP.md` to the session-rules order and report
 >    the standard's string as forked. Edit neither `_session-rules.md` nor the standard — the standard is
@@ -422,8 +430,11 @@ its checks need). Its instruction:
 >    `Practice completed` and the level matrix's `Knowledge consolidation` column show its goals
 >    complete, ⏳ only for the active phase, 🔜 if not started. Fix any marker that disagrees.
 >
-> Run `wc -l notes/coverage/junior.md` before reading it (silent 2000-line Read truncation — use `offset`
-> passes if needed) and include "N lines, read to EOF" in your report.
+> Run `wc -l notes/coverage/junior.md` before reading it, check that what your read returned runs
+> unbroken to that count's last line (a read can be cut at the end or in the middle, at any line
+> count, by the tool's line limit or by the size of what one call returns) and read on in bounded
+> `offset` passes until every line has been returned;
+> include "N lines, read to EOF" in your report.
 > Report **only** a short table of `Invariant | Verdict (pass / fixed) | What you changed` plus the
 > read-to-EOF line — no file excerpts, no reasoning trace. If everything passed with no fixes, say
 > so explicitly.

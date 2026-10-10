@@ -138,8 +138,10 @@ You are the orchestrator for building Victor's interview Q&A, hands-off.
 
 > **Verifiable reads (the shared session rules non-negotiable):** any subagent that must read a whole file (G reads
 > the full `en/` Q&A; A and B read both `en/`+`es/` files to locate their section) runs `wc -l`
-> first — the Read tool truncates at 2000 lines **silently** — and reads with `offset` passes to the
-> real end if the file is near or over that. G's report must state **"N lines, read to EOF"** for
+> first, then checks that what its read returned runs unbroken to that count's last line — a read can
+> stop short of a file's end at any line count, cut at the end or in the middle, by the tool's line
+> limit or by the size of what one call returns, and not always with an error — and reads on with
+> bounded `offset` passes to the real end where it stops short or skips a stretch. G's report must state **"N lines, read to EOF"** for
 > the Q&A file; treat a G report without it as unusable (re-dispatch once).
 
 First read
@@ -260,7 +262,9 @@ the obvious gaps, not the ones that matter):
 > it. Output only the **market gaps**: the questions the file does NOT cover, each written as the real
 > interviewer question, tagged with its section and type (Conceptual / Decision / Pressure). Be
 > adversarial — assume the file is incomplete until your questions prove otherwise. Run `wc -l` on
-> the Q&A file before reading it and state "N lines, read to EOF" in your report. Do not edit any
+> the Q&A file before reading it, check that what your read returned runs unbroken to that count's last
+> line, read on in `offset` passes where it does not, and state "N lines, read to EOF" in your report.
+> Do not edit any
 > file — return only the gap list and that line, no narrative.
 
 Wait for G and keep its gap list — **also tagged by section**.

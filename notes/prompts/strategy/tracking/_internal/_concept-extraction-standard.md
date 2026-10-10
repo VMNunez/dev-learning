@@ -39,9 +39,12 @@ the steps you run; do not run the others.
 ## Step 0 — Read the whole file, verifiably
 
 The Read tool loads **2000 lines by default and truncates longer files silently** — no error, no
-warning. A truncated PLANNING.md makes you report an incomplete step status and miss the last steps'
-concepts with full confidence. So, before anything else: check the file's line count (`wc -l`). If it
-is near or over 2000, read it in passes with `offset` until you reach the real end. Either way,
+warning — and one call also returns only so much text whatever the line count, so a plan under 2000
+lines can be cut short too. A truncated PLANNING.md makes you report an incomplete step status and miss the last steps'
+concepts with full confidence. So, before anything else: check the file's line count (`wc -l`), read,
+and check that what the read returned runs unbroken to that count's last line — a cut can fall at
+the end or in the middle. Where it stops short or skips a stretch, read on in bounded passes with
+`offset` until you reach the real end. Either way,
 **state in your report the total line count and that you read to EOF** — that line is the
 orchestrator's proof your extraction saw the whole plan.
 

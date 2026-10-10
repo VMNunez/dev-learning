@@ -90,12 +90,14 @@ slice or it did not. Read the plan in the tiers the `Reading map` above sets —
 is the cross-referenced sections that map names, never the whole file — and **audit and fix only the
 sections, invariants, and checks your `{SCOPE}` owns**, listed here.
 
-**Read the plan to your slice's real end first.** The Read tool loads 2000 lines by default and
-truncates longer files silently — and the tail sections (§22/§23) are exactly where some scopes live,
+**Read the plan to your slice's real end first.** A read can stop short of a file's end at any line
+count — the Read tool loads 2000 lines by default and truncates longer files silently, and one call
+also returns only so much text — and the tail sections (§22/§23) are exactly where some scopes live,
 so a truncated read breaks the "cannot skim" guarantee with no error and a plausible-looking trace.
-Check the plan's line count (`wc -l`) before any read and use `offset` passes to reach the **last**
-line your slice needs. A full plan already runs to ~1800 lines, so §22/§23 sit closest to the cut and
-are the first thing lost when one comes.
+Check the plan's line count (`wc -l`) before any read, check that what each read returned runs
+unbroken to the line your slice needed it to reach, and use bounded `offset` passes to reach the
+**last** line your slice needs. §22/§23 are a plan's last sections, so a read that stops early loses them
+first.
 
 **The `N lines, read to EOF` proof is owed for a file you had to read whole** — the repository's rule
 in `_session-rules.md`, which is what it says. **None of the six concerns reads the plan whole**, so

@@ -82,8 +82,11 @@ end you MUST produce a **section-by-section trace**: list every `##`/`###` headi
 to each, write PASS or the specific fix you made in it. That trace is your proof you read to the end —
 a review without it is not accepted.
 
-> **Verifiable read (the shared session rules non-negotiable):** run `wc -l {FILE}` before reading — the Read tool
-> truncates at 2000 lines **silently**; if the file is near or over that, read it in passes with
+> **Verifiable read (the shared session rules non-negotiable):** run `wc -l {FILE}` before reading, then check that
+> what your read returned runs unbroken to that count's last line — a read can stop short of a file's
+> end at any line count, cut at the end or in the middle, by the tool's line limit or by the size of
+> what one call returns, and not always with an error. Where it stops short or skips a stretch, read
+> on in bounded passes with
 > `offset` to the real end. Your report must state **"N lines, read to EOF"**; the orchestrator
 > rejects a review without it.
 

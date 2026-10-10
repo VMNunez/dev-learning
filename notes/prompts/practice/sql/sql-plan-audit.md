@@ -140,7 +140,10 @@ For each, launch a fresh `role-appropriate` subagent, `reasoning tier: deep`, `e
 > lines) and the exact replacement text (`delete` when nothing replaces it). End with any
 > cross-concern ripple the orchestrator must reconcile.
 >
-> **Read-to-EOF guard:** run `wc -l` on the plan first; if it is near or over 2000 lines, read it in
+> **Read-to-EOF guard:** run `wc -l` on the plan first, then check that what your read returned
+> runs unbroken to that count's last line — a read can be cut at the end or in the middle, at any line
+> count, by the tool's line limit or by the size of what one call returns; where it stops short or
+> skips a stretch, read on in bounded
 > passes with `offset` to the real end. Open your report with "N lines, read to EOF" — a report
 > without that line is rejected.
 >

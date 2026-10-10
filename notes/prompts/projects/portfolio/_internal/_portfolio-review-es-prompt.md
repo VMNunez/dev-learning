@@ -77,8 +77,11 @@ Spanish exactly as if you had not, and say in your report that you saw it.
 `notes/interview-prep/projects/en/{PROJECT_NAME}.md` is the one file you must not open.
 
 **Verifiable read (the shared session rules non-negotiable):** run `wc -l` on the `es/` file before
-reading — the Read tool truncates at 2000 lines **silently**, and a question bank is long by design. If
-it is near or over that, read it in passes with `offset` to the real end. Your report must state
+reading, then check that what your read returned runs unbroken to that count's last line — a read can
+stop short of a file's end at any line count, cut at the end or in the middle, by the tool's line
+limit or by the size of what one call returns, and not always with an error, and a question bank is
+long by design. Where it stops short or skips a stretch, read on in bounded passes with `offset` to
+the real end. Your report must state
 **"N lines, read to EOF"**.
 
 ---

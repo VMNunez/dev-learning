@@ -82,8 +82,11 @@ every section, code block, table, and callout so the two match exactly.
 > byte alone and mark it `frozen` in your trace. Structural parity is still owed everywhere else.
 
 > **Verifiable read (the shared session rules non-negotiable):** run `wc -l` on `{FILE}` (and the existing `es/`, if
-> any) before reading — the Read tool truncates at 2000 lines **silently**; a truncated read here means
-> a silently missing tail in the translation. If a file is near or over 2000 lines, read it in passes
+> any) before reading, then check that what your read returned runs unbroken to that count's last line
+> — a read can stop short of a file's end at any line count, cut at the end or in the middle, by the
+> tool's line limit or by the size of what one call returns, and not always with an error; a truncated
+> read here means a silently missing stretch in the translation. Where it stops short or skips a
+> stretch, read on in bounded passes
 > with `offset` to the real end. Your report must state **"N lines, read to EOF"** for each file read
 > whole; the orchestrator rejects a report without it.
 

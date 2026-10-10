@@ -86,7 +86,9 @@ it receives the brief, the sources, and the acceptance format — never this run
    and do not repair this hand-maintained input inside the prompt run. This bounded check does not
    claim to detect a same-number rename; the human writer owns the published name, stack, and status.
 6. Read `COVERAGE` to the real end. It is the largest file in this pipeline (over 2000 lines) and the
-   Read tool truncates past 2000 silently: check `wc -l` first and read in passes with `offset`. A
+   Read tool truncates past 2000 silently — and one call also returns only so much text, whatever the
+   line count: check `wc -l` first, read in bounded passes with `offset`, each starting where the one
+   before ended, and check that together they run unbroken to that count's last line. A
    truncated read drops whole topics from the gap analysis with no error and a plausible result.
 7. Preserve unrelated working-tree changes.
 

@@ -98,8 +98,11 @@ the only thing "reads it cold" protects.
 **This prompt audits exactly ONE `es/` file — never a batch.** Read it **in full, top to bottom** —
 do not skim, do not stop early, reach the last line.
 
-> **Verifiable read (the shared session rules non-negotiable):** run `wc -l` on the `es/` file before reading — the
-> Read tool truncates at 2000 lines **silently**; if it is near or over that, read it in passes with
+> **Verifiable read (the shared session rules non-negotiable):** run `wc -l` on the `es/` file before reading, then
+> check that what your read returned runs unbroken to that count's last line — a read can stop short of
+> a file's end at any line count, cut at the end or in the middle, by the tool's line limit or by the
+> size of what one call returns, and not always with an error. Where it stops short or skips a
+> stretch, read on in bounded passes with
 > `offset` to the real end. Your report must state **"N lines, read to EOF"**; the orchestrator
 > rejects a report without it.
 

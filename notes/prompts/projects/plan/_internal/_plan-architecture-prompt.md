@@ -42,8 +42,10 @@ Before starting, read:
   `PROGRESS.md`'s `## Projects` table and level matrix for project history and level-appropriateness
   only: its per-technology concept lists were deleted on 2026-08-03.
 - `{PROJECT}/PLANNING.md` — the draft the author just wrote. §6, §3, §7, §10, §20 are your focus.
-  The Read tool truncates files over 2000 lines silently — check `wc -l` first and, if near or over
-  2000, read in passes with `offset` to the real end (§20 lives in the tail).
+  A read can stop short of a file's end at any line count, cut at the end or in the middle, by the
+  tool's line limit or by the size of what one call returns — check `wc -l` first, check that what
+  your read returned runs unbroken to that count's last line and, where it stops short or skips a
+  stretch, read on in bounded passes with `offset` to the real end (§20 lives in the tail).
 
 ---
 

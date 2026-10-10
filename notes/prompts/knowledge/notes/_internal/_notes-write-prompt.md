@@ -93,8 +93,11 @@ the prompt refers to their placeholders.
 I want you to do deep work on ONE English notes file: {FILE}. `{TASK}` contains the selected plan
 entry's pedagogical contract and exact coverage assignment. Do only what {TASK} asks — do not wander
 into other files or folder-level work. **Verifiable read (the shared session rules non-negotiable):** before reading
-`{FILE}` (or the `es/` for TODO markers), run `wc -l` on it — the Read tool truncates at 2000 lines
-silently; if a file is near or over that, read it in passes with `offset` to the real end, and state
+`{FILE}` (or the `es/` for TODO markers), run `wc -l` on it, then check that what your read
+returned runs unbroken to that count's last line — a read can stop short of a file's end at any line
+count, cut at the end or in the middle, by the tool's line limit or by the size of what one call
+returns, and not always with an error; where it stops short or skips a stretch, read on in bounded
+passes with `offset` to the real end, and state
 **"N lines, read to EOF"** in your report for every file you had to process end-to-end. **You write
 English only.** You never create or edit the `es/`
 file — a later stage translates your finished English. Your single deliverable is a `{FILE}` that is at

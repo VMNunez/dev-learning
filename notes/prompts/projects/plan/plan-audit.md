@@ -138,8 +138,8 @@ Resolve `NUMBER` (the next number above the highest existing `projects/` folder)
   designing 24 sections first would only make it expensive.
 
 **Phase 0 acceptance check.** The brief's header must carry `Coverage read: {n} lines, read to EOF`
-and a `Coverage SHA-256`. That confirmation is the truncation guard for the one file in this pipeline
-already past 2000 lines — it now sits with the run that actually reads it whole. A brief missing either
+and a `Coverage SHA-256`. That confirmation is the truncation guard for the coverage mirror the brief is
+built from — it now sits with the run that actually reads it whole. A brief missing either
 field is unusable: re-run the brief prompt once, and if it fails again, stop rather than design against
 a gap analysis that may have been built on a partial read.
 

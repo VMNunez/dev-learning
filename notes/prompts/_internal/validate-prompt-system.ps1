@@ -166,11 +166,13 @@ foreach ($claudeLauncher in $claudeLaunchers) {
 # What stays UNCOVERED, named so nothing reads this as complete:
 #   - the bare words `Bash`, `Grep`, `Read`, `Write`, `Edit`, `Glob`. "Git Bash" and "Grep all
 #     three topic files" are legitimate prose, and a check that cries wolf gets disabled.
-#   - the `X tool` form, which is live in 13 canonical files. Twelve of them are "the Read tool
-#     truncates at 2000 lines silently", which restates `_session-rules.md` - a file exempt from
-#     this pattern by name, and the owner of that rule. Policing the restatements while the
-#     owner is exempt would fail files for using their own rulebook's words; the fork itself is
-#     a REC-064 problem for whoever unifies that sentence, not a runtime-isolation defect.
+#   - the `X tool` form, which is live in 5 canonical files. Four of them say what "the Read
+#     tool" does by default (it loads 2000 lines and truncates the rest silently), which
+#     restates `_session-rules.md` - a file exempt from this pattern by name, and the owner of
+#     that rule. Policing the restatements while the owner is exempt would fail files for using
+#     their own rulebook's words; the fork itself is a REC-064 problem for whoever unifies that
+#     sentence, not a runtime-isolation defect. (Eleven more carried it until REC-317 reworded
+#     them, 2026-10-10, to a clause that names no tool and no line count.)
 #     The one instruction-form use, `progress-update-prompt.md`'s "Edit tool", was reworded;
 #     `_coverage-prompt-rationale.md`'s "Grep tool" is retained history and stays as written.
 $exclusivePattern = 'Claude Code|CLAUDE\.md|model: (opus|sonnet|haiku)|general-purpose|run_in_background|/model opus|\b(Opus|Sonnet|Haiku)\b|\b(SendMessage|WebFetch|WebSearch|TodoWrite|NotebookEdit|ExitPlanMode|AskUserQuestion|TaskOutput|MultiEdit|BashOutput|SlashCommand|KillShell)\b'

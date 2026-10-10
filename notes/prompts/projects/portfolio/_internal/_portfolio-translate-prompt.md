@@ -67,9 +67,12 @@ an identifier, not prose, so it is never translated (the levelled banks keep `an
   Q&A reads like. It is a levelled bank, not a project one; read it for the register, not the content.
 
 **Verifiable read (the shared session rules non-negotiable):** run `wc -l` on the `en/` file (and the
-existing `es/`, if any) before reading — the Read tool truncates at 2000 lines **silently**, and a
-truncated read here is a silently missing tail in the translation. A question bank is long by design;
-if a file is near or over 2000 lines, read it in passes with `offset` to the real end. Your report must
+existing `es/`, if any) before reading, then check that what your read returned runs unbroken to that
+count's last line — a read can stop short of a file's end at any line count, cut at the end or in the
+middle, by the tool's line limit or by the size of what one call returns, and not always with an
+error, and a
+truncated read here is a silently missing stretch in the translation. A question bank is long by design;
+where a read stops short or skips a stretch, read on in bounded passes with `offset` to the real end. Your report must
 state **"N lines, read to EOF"** for each file read whole.
 
 ---
