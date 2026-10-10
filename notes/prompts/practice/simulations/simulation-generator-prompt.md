@@ -84,7 +84,8 @@ Quality gates:
 ## 3 — Register and advance
 
 Add one TRACKER row under the correct track with number, link, LEVEL, time limit, Pending status, blank
-date, and blank self-assessment. Update only that section's denominator.
+date, and blank self-assessment. Recount only that section's heading denominator from its inventory
+rows under the standard's section 8; preserve the numerator.
 
 In the route step set `Generation: generated YYYY-MM-DD` and `State: ready`; repoint route §0 and doctrine
 §0 to Moment 3. Preserve every other step and all review history byte-for-byte.
@@ -92,7 +93,7 @@ In the route step set `Generation: generated YYYY-MM-DD` and `State: ready`; rep
 ## 4 — Verify and commit
 
 Re-open the written spec, its TRACKER row, route step, and both §0 pointers. Prove path/level/time/state
-agree. Run `git diff --check`.
+agree, and that the heading denominator equals that track table's spec-row count. Run `git diff --check`.
 
 These specs and tracking files are system-authored artifacts under the simulation exception in the
 session rules. Run status immediately before staging and committing; stage only the new spec, TRACKER,

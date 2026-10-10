@@ -70,7 +70,8 @@ digest is hard stale.
 7. `§6 — Readiness gates`: common gate plus Angular, Spring Boot, and SQL-specific fences.
 8. `§7 — MISTAKES and friction`: graded gaps vs friction-without-failure.
 9. `§8 — Tracking`: route, tracker, spec header, MISTAKES, and PROGRESS ownership — the tracker's
-   header and scale included, whose owner and text are section 8 of this standard.
+   header and scale included, whose owner and text are section 8 of this standard, and its
+   track-heading counts, whose meaning and two writers are there too.
 10. `§9 — Level close and next gates`.
 11. `§10 — Commit boundary`.
 12. `§11 — Invariants`.
@@ -218,6 +219,18 @@ himself sends him around `simulation-block-open`, `simulation-block-close` and `
 
 Each row's link to its spec is inventory and stays, because the generator's row contract writes it. A
 link is not an entry point: which spec is current is the route's §0, read by `simulation-block-open`.
+
+Each track heading is `## {Track} ({completed} / {total})`. Both counts cover **all inventory rows in
+that track section, across levels**, a row with no Level included. `total` is the
+number of spec rows, never the route target; `/simulation-generator` recounts it after registering a
+spec and preserves the numerator. `completed` counts rows whose recorded timed `Status` is `Pass` or
+`Borderline`, the same completed-attempt meaning as `simulation-review-prompt.md` §5's PROGRESS count.
+Pending, awaiting-review, Fail and Assisted rows count zero, whatever their self-assessment or an
+Assisted attempt's quality verdict. `/simulation-review` recounts the numerator from the whole affected
+track table after every first review, preserving the denominator. Corrections and reinforcement
+redemption never turn an old verdict into another completed attempt; a reinforcement spec counts only
+through its own first review. The heading is a projection of recorded timed outcomes, never a count of
+`closed ✅` learning steps or a level-close gate. Neither the block close nor the planner edits it.
 
 The scale is the vocabulary `simulation-block-close` records and `simulation-review-prompt.md`'s
 `SELF_ASSESSMENT` accepts. Its meanings describe the attempt and never prescribe what comes next —

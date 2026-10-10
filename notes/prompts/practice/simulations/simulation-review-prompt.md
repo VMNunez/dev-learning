@@ -157,6 +157,8 @@ First review:
 
 - spec: Level, Route step, Status, Date completed, Time used, Self-assessment;
 - TRACKER: same level/status/date/self-assessment (add Time used only if the table carries that column);
+- TRACKER track heading: recount its completed numerator from the entire affected track table under
+  the standard's section 8, across levels; preserve the denominator;
 - route: review history and timed verdict; `closed ✅`, `correction-required`, or
   `reinforcement-required` for an Assisted attempt after any corrections;
 - doctrine/route §0: next correction moment or next open step;
