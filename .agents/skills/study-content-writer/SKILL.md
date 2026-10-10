@@ -251,14 +251,15 @@ entry in `notes/{topic}/coverage/notes-plan-{LEVEL}.md`.
   the dead counter but still created content outside the plan's denominator; that is the systemic
   half of REC-053 and is now forbidden.
 
-Interview-prep has no per-file plan. Existing topic banks may still receive inline Q&A under the
-interview standard. Allocate the next stable bilingual question ID; every new question is unrefined.
-Only Victor's explicit confirmation may append `[refined]` in both languages. Once present, the whole
-bilingual block is immutable. A TODO on that block or an explicit reopen first removes `[refined]` and
-`[studied]` from both languages, then permits the edit — which runs in the direction of the file
-carrying the marker, resolved in the language it was written in and the twin re-translated from the
-repaired side (Step 3); the changed version must be refined and studied again. The 13:30 closing
-ritual, not this writer, owns `[studied]` after a final active-recall PASS.
+Interview-prep has no per-file plan. Existing topic banks may receive inline Q&A under the interview
+standard. **Allocate the next stable bilingual ID only in an ID-migrated bank.** In a legacy bank with
+no IDs, add or repair the question without one; cite its quoted bold line in reports and hand the ID
+migration to `/interview-prep-audit`. Never assign IDs to that bank here. Every new question is unrefined.
+Only Victor's explicit confirmation may append `[refined]` in both languages; the whole bilingual block
+then freezes. A TODO or explicit reopen removes `[refined]` and `[studied]` from both languages before
+the edit; follow Step 3's repair direction and re-translate the twin from the repaired side. The changed
+version must be refined and studied again; `study-block-close` alone writes `[studied]` after a final
+active-recall PASS.
 
 **The project question banks (`notes/interview-prep/projects/en|es/*.md`) are a narrower route: you
 resolve TODOs there and author nothing.** Those questions are written by `/portfolio-audit` from a
@@ -291,16 +292,15 @@ the state markers that reopening it requires. You never write either of them bac
   your report which of the two you removed.
 - **A question with no ID yet is still repaired, and named by its quoted bold line instead.** The banks
   written before the identity rules landed (2026-08-31) carry none until their next `/portfolio-audit`
-  run allocates them — `01-todo-list`'s 118 questions all carry one since 2026-09-05. Never allocate one yourself
-  to have something to cite: an ID handed out here would collide with the one that run assigns. Say in
-  the report that the bank owes its IDs and to which run.
+  run allocates them. Never allocate one yourself to have something to cite: an ID handed out here
+  would collide with the one that run assigns. Say in the report that the bank owes its IDs and to which run.
 - **No harvest row.** The note-TODO sink is scoped to note prose, and the Q&A voice sink is `REC-184`'s
   and does not exist yet — so this route prints no `cosecha:` line and invents no row. Its evidence is
   the report below.
 
 **This route owes the same report the frozen-note route owes, and for the same reason: it has no cold
 reviewer and no diff gate.** Quote the instruction you acted on (the `TODO:` text, or Victor's words in
-chat), name the question ID and the side you repaired, state that the twin was re-translated from that
+chat), name the question ID (or its quoted bold line where no ID exists) and the side you repaired, state that the twin was re-translated from that
 side and not from the stale English, and — where the block was `[refined]` — that every state marker it
 carried came off both languages first. Write it even when the fix was one word.
 Whenever a question's `[refined]` state changed in both languages, **invoke the
@@ -310,8 +310,7 @@ Whenever a question's `[refined]` state changed in both languages, **invoke the
 `[refined]`, but it removes one, and a removal moves that row down exactly as Victor's write moves it
 up. It owns the interview rows and the project table end to end,
 it commits `PROGRESS.md`, and you neither count nor edit them here. Do not reproduce its counting. One
-thing to pass it explicitly, because it is this route's context and not the skill's: the exact question
-IDs whose `[refined]` state changed in this session and in which direction, so it can say whether its
+thing to pass it explicitly, because it is this route's context and not the skill's: the exact question IDs (or quoted bold lines where no IDs exist) whose `[refined]` state changed in this session and in which direction, so it can say whether its
 gate or your write is the reason a cell did not move. The two **levelled** rows read `—` until the first
 `interview-prep-audit` migration gives those banks stable IDs, so expect a reported no-op rather than a
 moved cell there; the project table has real denominators from its first run. Fold its report row into your own
