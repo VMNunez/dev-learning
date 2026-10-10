@@ -172,7 +172,10 @@ runs by pedagogy alone, so either may come first, and neither order leaves the b
 giving entry is `pending` its prose is outside `READABLE_SIBLINGS`, and once its own run has removed the
 section the file no longer holds it (`REC-314`). So **the absorbing run carries them across, from git**,
 and the giving run removes its sections whenever it runs, whatever the absorbing entry's status —
-Stage A under its Step 3, Stage B confirming they are gone (`REC-321`).
+Stage A under its Step 3, Stage B confirming they are gone (`REC-321`). A section an `Audit note`
+sends outside this plan — to another topic or another level — has no absorbing run: no `ABSORBED` row
+resolves for it, and the note that owns it is built from its own plan entry, never from this text
+(`REC-325`).
 
 For each heading the selected entry's `Audit note` absorbs, resolve one `ABSORBED` row before dispatch:
 

@@ -173,11 +173,12 @@ For each section of the file, check:
   its narrative role and handoff — not against that file's prose.
 - **No duplication** — no example or concept repeats an admissible sibling. A legacy file you may not
   read cannot be checked for duplication and is not a finding.
-- **Moved-out sections** — what TASK's `Audit note` moves out of this entry, to another entry or to
-  another topic, is gone from `{FILE}`: the section by its heading, or the part of one the note names,
+- **Moved-out sections** — what TASK's `Audit note` moves out of this entry, to another entry, or to
+  another topic or level, is gone from `{FILE}`: the section by its heading, or the part of one the note names,
   with at most a reference to where it went in its place. One still there is a miss like any other —
   remove it and re-aim any sentence that pointed at it; you copy its text nowhere, because an absorbing
-  entry of this plan receives it from git in its own run. Where the note describes what leaves instead
+  entry of this plan receives it from git in its own run, and a section sent to another topic or level
+  has no receiver at all — that note is built from its own plan entry, never from this text (`REC-325`). Where the note describes what leaves instead
   of naming it and you cannot tell which prose it means, report it and remove nothing. Never under
   `SCOPE = append-only`, where nothing leaves a frozen file.
 - **Plan contract** — the learning outcome is achieved, every must-answer question is resolved in

@@ -319,7 +319,7 @@ corrected under the Action rules in Step 2. Cut one only where the entry's contr
 requires it, and report why: what you cut leaves the notes tree with it.
 
 The giving end of a move is this run's too. What TASK's `Audit note` moves out of `{FILE}` — to
-another entry or to another topic — **leaves `{FILE}` in this run**, in every mode except
+another entry, or to another topic or level — **leaves `{FILE}` in this run**, in every mode except
 `append-only`: the removal is the plan's order, not a rewrite you chose, so `standard` does not protect
 that prose. How much leaves is what the note says: a section by its heading, with the subsections under
 it, or the part of one the note names. At most a reference to where it went stays in its place — the
@@ -327,7 +327,9 @@ one the note asks for, or, where the prose that remains still uses the concept, 
 gives that target (its forward-reference marker for a later entry, a link with its one-sentence
 reminder for an earlier one, its preview callout for another topic) — written under the linking rules
 above, and a sentence elsewhere in `{FILE}` that pointed at what left is re-aimed the same way. You copy its text nowhere and never write the file that
-takes it: an absorbing entry of this plan receives it from git, as `{ABSORBED}`, in its own run. Where
+takes it: an absorbing entry of this plan receives it from git, as `{ABSORBED}`, in its own run. A
+section sent to another topic or another level has no such receiver — that note is built from its own
+plan entry, never from this text, and the text stays in git (`REC-325`). Where
 the note describes what leaves instead of naming it and you cannot tell which prose it means, leave it
 and report it — never guess at a removal.
 
@@ -424,8 +426,8 @@ the Step 1 exception — and report:
 - The siblings you actually opened, each one shown to be in `{READABLE_SIBLINGS}`, plus any internal link
   you wrote to a target that is declared but not yet written.
 - Per `{ABSORBED}` heading, the section of `{FILE}` it landed in, or the reason you cut it.
-- Per section TASK's `Audit note` moves out of `{FILE}`: its heading, the entry or topic the note sends
-  it to, and what you left in its place — or why it is still in the file.
+- Per section TASK's `Audit note` moves out of `{FILE}`: its heading, the entry, topic or level the note
+  sends it to, and what you left in its place — or why it is still in the file.
 - A **pedagogical-contract trace**: learning outcome; each must-answer question; prerequisites;
   handoff; and, when applicable, every introduction invariant → PASS or the work completed.
 

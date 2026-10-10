@@ -399,6 +399,15 @@ Rules:
 - `Audit note:` is the one optional entry field, written between `Coverage concepts` and `Rationale`. It
   records which existing sections move to another entry or topic, which it absorbs or reduces, and what the audit must rebuild or expand.
   `notes-audit` forwards that exact label to every stage inside `LINK_TARGETS`, and no synonym.
+  **A section sent outside this plan — to another topic, or to another level of this one — has no
+  receiving end** (`REC-325`): the giving entry names it by exact heading — when only part of a section
+  leaves, the heading of the section it leaves from — and names its owner by topic and, where this
+  planner's own inputs show it, level, never by a bare entry number, which names an entry of this plan;
+  nothing else names it. No other plan absorbs it and no other plan's run reads it — the owner's note is
+  built from its own plan entry, never from this text — so this planner never writes an absorbing end for prose a
+  note outside this plan gave up, and never asks another plan to claim one. That order is the only
+  record of where the section went, so it stays in the entry after the giving run has executed it,
+  kept on every reconciliation and never cleared; git holds the text.
   **A move inside this plan is written on both ends, by exact heading** (`REC-314`): the giving entry
   names each section it moves out by its heading and the entry that takes it, and the absorbing entry
   names the same headings verbatim and the entry they come from. Never move a section by description
