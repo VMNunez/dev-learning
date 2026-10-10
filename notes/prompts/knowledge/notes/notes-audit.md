@@ -106,7 +106,11 @@ Before dispatching any role:
 17. Read the `Audit note` of every `LINK_TARGETS` row, then resolve `ABSORBED` under "Absorbed
     sections" below. Stop with `run notes-plan-prompt` when another entry moves a section into `{NOTE}`
     that `{NOTE}`'s own note does not absorb, when a section is named by description rather than heading,
-    or when a heading is not found exactly once at the revision step 2 there resolves.
+    or when a heading with no recorded revision is not found exactly once at the revision step 2 there
+    resolves. A **recorded** revision that fails — not a commit in the giving file's history as that
+    step lists it, or its heading not exactly once there — stops the run too, but is reported to Victor
+    with the heading, the hash and what was found (`not listed`, or the count), never as
+    `run notes-plan-prompt`: that prompt carries a record over verbatim and cannot clear it.
 
 Guards 9 and 10 do not reopen a `refined` entry: a missing or malformed pedagogical contract on a frozen
 pair is reported, not fixed, because fixing it would mean rewriting prose Victor has declared final.
@@ -172,17 +176,24 @@ and the giving run removes its sections whenever it runs, whatever the absorbing
 For each heading the selected entry's `Audit note` absorbs, resolve one `ABSORBED` row before dispatch:
 
 1. **The giving file** — the `English:` path `LINK_TARGETS` gives the entry the note names.
-2. **The revision** — the giving file as it stood before this pipeline first rewrote it. List its
-   whole history with `git log --follow --name-only --format='%H %s' -- <giving file>` — never with
-   `--grep`, which stops `--follow` at a rename it filters out — and keep the commits whose subject
-   matches, case-insensitively, `docs(notes): complete <topic> <level> note NN`, any topic and level.
-   None means the run that executes its moves has not happened, and the revision is `HEAD`. Otherwise
-   it is the parent of the **oldest** one, `<hash>^`, read at the path the file had in that commit. A
-   heading still present at `HEAD` proves nothing: a giving run that splits or shortens a section keeps
-   its heading. The rule is right only for a move written before that first completion, which is why
-   `notes-plan-prompt.md` writes no other.
-3. **The text** — the line equal to the heading, which must occur exactly once in that revision, to the
-   next heading of the same or a higher level outside a fenced code block, read with
+2. **The revision** — list the giving file's whole history with
+   `git log --follow --name-only --format='%H %s' -- <giving file>` — never with `--grep`, which stops
+   `--follow` at a rename it filters out. **A revision the selected entry's `Audit note` records for the
+   heading comes first** (`REC-315`): `notes-plan-prompt.md` writes `at revision <hash>` beside a
+   heading it moved out of a note this pipeline had already completed, and that hash is used as
+   written, read at the path the listing gives the file in that commit. Report every listed commit
+   newer than that hash and older than the giving file's next completion commit (every newer one when
+   there is none): it changed the giving file after the plan read the heading, and what it changed
+   inside the section is not in the carried text. **With none recorded**, the
+   revision is the giving file as it stood before this pipeline first rewrote it: keep the listed
+   commits whose subject matches, case-insensitively, `docs(notes): complete <topic> <level> note NN`,
+   any topic and level. None means the run that executes its moves has not happened, and the revision
+   is `HEAD`. Otherwise it is the parent of the **oldest** one, `<hash>^`, read at the path the file
+   had in that commit. A heading still present at `HEAD` proves nothing: a giving run that splits or
+   shortens a section keeps its heading. That fallback is right only for a move written before the
+   first completion, which is why `notes-plan-prompt.md` records the revision on every other.
+3. **The text** — the line equal to the heading, which must occur exactly once in that revision outside
+   a fenced code block, to the next heading of the same or a higher level, likewise outside one, read with
    `git show <revision>:<path>`. A heading the plan
    wraps across lines is rejoined first; `## X` never matches `### X` or a longer heading that begins
    with `X`.
@@ -416,7 +427,8 @@ Report branch, topic, level, note, resolved paths, action, assigned-concept coun
 the sibling-admissibility resolution — how many entries were admitted as `READABLE_SIBLINGS`, how many
 `LINK_TARGETS` rows are declared but unwritten, every claim mismatch stage T or stage C reported
 against `LINK_TARGETS`, and every orphan file found in `EN_DIR`/`ES_DIR` — every `ABSORBED` row with
-its giving file and revision, and the section Stage A landed it in or the reason it cut it,
+its giving file and revision, the commits "Absorbed sections" step 2 reported as newer than a recorded
+revision, and the section Stage A landed it in or the reason it cut it,
 dependency gate, pedagogical-contract gate, intro-contract gate when applicable, the `ES_AUTHORED`
 sections relayed to stages B, T and C (or `none`) with T's `frozen` trace entry for each, any
 Spanish-source repair and its disposition, four stage results,

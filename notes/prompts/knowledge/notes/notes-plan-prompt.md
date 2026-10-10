@@ -187,9 +187,14 @@ means the plan is stale.
    - `create` when it does not.
 8. Every new or existing entry begins `pending`, except an old `complete` entry may remain complete
    only when its English path, Spanish path, exact assigned bullet set, and complete pedagogical
-   contract are unchanged and both files still exist. A newly added or materially changed learning
+   contract are unchanged, both files still exist, and this run writes no new `Audit note` move onto
+   it. A newly added or materially changed learning
    outcome, prerequisite, must-answer question, handoff, or introduction contract reopens the entry
    to `pending`; prose previously accepted against a weaker plan has not passed the new contract.
+   So does an `Audit note` move this run writes onto the entry for the first time — out of it or into
+   it (`REC-315`): `notes-audit` reports a `complete` entry as a no-op, so the removal or the
+   absorption the note orders would never run. A move restated from the plan as it stood reopens
+   nothing.
    `refined` is the exception to this entire rule. It is Victor's manual freeze, set only by him, and it
    outranks every reconciliation rule here. This plan never sets it, never clears it, and never
    downgrades it to `pending` or `complete` for any reason — not a changed contract, not a changed
@@ -360,7 +365,8 @@ Rules:
 - `[ ]` means the concept is assigned but has not yet been incorporated by a successful notes pipeline
   run. `[x]` means the English and Spanish note pair contains it and Stage C committed that fact.
 - A `pending` entry may contain `[x]` concepts preserved from an earlier successful run when a changed
-  contract or newly assigned coverage reopened it; those checks are permanent history. Notes-audit
+  contract, newly assigned coverage or a first-written `Audit note` move reopened it; those checks are
+  permanent history. Notes-audit
   owes every unchecked concept, may review the whole non-refined note against its current contract,
   and never clears an existing `[x]`.
 - `Status: complete` requires every assigned concept to be `[x]`. `Status: refined` may contain `[ ]`
@@ -400,11 +406,27 @@ Rules:
   stops when it cannot. A heading the giving file no longer holds at `HEAD` is quoted from the revision
   `notes-audit.md` → "Absorbed sections" resolves, read with `git show`. Neither end is ordered against
   the other — `Depends on` stays pedagogical, the giving run removes its sections whenever it runs, and
-  the absorbing run reads them as the giving file stood before the pipeline first rewrote it. So never
-  write a new move out of a note whose file already carries a `docs(notes): complete …` commit —
-  restating by heading a move the plan already carried before that first completion is not a new
-  move — since that revision would predate what the pipeline wrote since, and no remaining run of the
-  giving entry is certain to remove the section. Never move a section into a `refined` entry, nor out of one whose
+  the absorbing run reads them as the giving file stood before the pipeline first rewrote it. **A move
+  first written out of a note whose file already carries a completion commit cannot use that
+  revision** (`REC-315`): it predates what the pipeline wrote since, so a section the pipeline authored
+  is not in it and a legacy one is there in its unreviewed form. Each git command this rule runs is given **the
+  path the giving English file has at `HEAD`** — a renumber this same run performs is not committed
+  yet, so no commit holds the file under the plan's new `English:` name, and a `git log` on that name
+  prints nothing, or the past of a file that once held it. A completion commit is one
+  `notes-audit.md` → "Absorbed sections" step 2 keeps, found with that step's own `--follow` listing
+  and subject match, never by the `docs(notes): complete` prefix alone. **So the absorbing end records
+  the revision the heading was read at**, written `at revision <hash>` immediately after that heading —
+  one record per heading, never one for a list of them — the full hash
+  `git log -1 --format=%H -- <that path>` prints, and only after `git show <hash>:<that path>` passes
+  the test step 3 there will run: the whole line equal to the heading, exactly once outside a fenced
+  code block. A heading that fails it is not moved by this run: write the move on neither end, reopen
+  nothing for it, and report it with the count found.
+  The record is written once: a later reconciliation carries it over verbatim and never refreshes it,
+  because the giving run may have rewritten or removed the section since. Restating by heading a move
+  the plan already carried before the giving file's first completion commit is not a new move and
+  gains no revision.
+  Writing a move for the first time onto a `complete` entry — out of it or into it — reopens that
+  entry under Planning algorithm step 8. Never move a section into a `refined` entry, nor out of one whose
   frozen prose still holds it: the freeze admits neither the append nor the removal.
 - No coverage bullet may be absent, duplicated, paraphrased, or assigned across levels.
 - Omit `## Legacy notes requiring split` when empty. If it is non-empty, the run is blocked and no
@@ -508,7 +530,8 @@ verification until zero gaps), entry count,
 concept count, create/audit counts,
 checked/unchecked concept counts, preserved-complete count, studied/pending entry counts, every `refined` entry with the count of `Pending additions` it now carries, and every entry carrying an open `Pending study` with the sections it still owes — plus any gap line this reconciliation dropped and the reason, since dropping one is the only way study state is ever lost here
 (and any broken freeze), every legacy classification decision, relocations, renumberings, split
-blockers,
+blockers, every `Audit note` move this run wrote for the first time — the revision it records, where
+it records one, and each `complete` entry it reopened —
 unassigned existing notes, mirror parity, pedagogical-review completion, intro-contract verdict,
 learning-outcome count, prerequisite-order verdict, handoff count, concepts-used-before-taught
 verdict, and commit or `dry-run`.
