@@ -49,7 +49,8 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-*No open Low tasks.*
+- [ ] **[Low]** `[frontend]` — The sidebar's pending-approvals badge keeps its previous count when a refresh fails: `PendingApprovals` swallows every error of `GET /api/entries?status=SUBMITTED&size=1` with `catchError(() => EMPTY)` (`core/state/pending-approvals.ts:38`), so a `500` or a dropped connection leaves `count` (`:24`) holding the last value and the manager reads a stale queue size on every page, with no sign it is stale. Clear or hide the badge on a failed refresh, and name that state in PLANNING §13's shared-state line for the badge, which describes no failed-refresh state *(Effort: Small)* *(raised 2026-10-11 by `REC-243`'s step-1 measurement, a cold cross-tier contract pass over Step 7d; not yet triaged)*
+- [ ] **[Low]** `[frontend]` — PLANNING §15 Step 7d's verification paragraph ends mid-sentence: "…the Reports card reads "Approved hours" because the month is chosen", with no end and the `### Step 8` heading on the next line — written that way by the step's own close (`fd13f668`), so the reason for the card's wording is lost. Complete the sentence from that session's record or delete the dangling clause *(Effort: Small)* *(raised 2026-10-11 by `REC-243`'s step-1 measurement, read in passing by its cold pass over Step 7d; not yet triaged)*
 
 ## Beyond the current gate
 
