@@ -74,6 +74,12 @@ role on *nobody asks this*, grep the existing roles' own checklists for the ques
 ask it, found the addition on what changes about **how** it is asked. That is also the only thing
 separating it from `REC-042`'s illegitimate second computation, which the same row invoked to refuse its
 other half.
+**Also `REC-244`, from the value side: a row saying a check is missing is priced against everything that already reads
+the work, not only against the gate it names.** It priced a per-step cold review against what G4 "later finds"; G4 found
+one Low in Step 7a's code, because an in-session pre-PR review had drained the step the same day, and the only new
+Mediums sat in backlog-fix code the row's trigger never reached. Run the proposed check once, cold, on a real closed
+unit, and sort every finding against that unit's whole history — caught before, caught later and by whom, never caught,
+noise — before choosing the trigger.
 **Also `REC-180`'s `es`-review half, the same test run in the opposite direction — a row proposing to
 *avoid* a new role by widening an existing one, which reads as the cheap shape and is priced from the
 role's subject alone.** That row asked for "a clause in `_portfolio-review-prompt.md` widening it to a
