@@ -8,8 +8,7 @@ English/Spanish pair when the evidence makes the correct level unambiguous.
 > **▶ Run first:** `coverage-prompt` for this exact topic and level — the coverage files are the input
 > this plan maps, and it refuses to proceed when they are missing or differ from the global mirror.
 > `coverage-verify` is recommended but **advisory**: it reports whether the coverage is complete for the
-> job target. A consumed `superseded` verdict records a completed review cycle; a missing, stale, or
-> open `gaps` verdict is recorded without stopping the run.
+> job target.
 
 ## Configuration
 
@@ -243,7 +242,9 @@ means the plan is stale.
     receives `Action: audit`. A note relocated out cannot remain assigned by the selected plan.
 12. Give every entry the complete pedagogical contract from `_note-quality-standard.md`: narrative
     role, observable learning outcome, prerequisites, must-answer questions, and handoff. Coverage
-    bullets define required scope, not the maximum explanation needed to teach it.
+    bullets define required scope, not the maximum explanation needed to teach it. Write the
+    `Must answer` questions so that every bullet the commissioning rule in "Required plan format"
+    covers is commissioned part by part (`REC-248`).
 13. At `LEVEL = junior`, treat the topic introduction as a required learning unit. An existing `00`
     file receives the same full introduction contract under `Action: audit`; never assume that an
     existing first file already introduces the topic. If no `00` exists, allocate `00` for the
@@ -262,7 +263,9 @@ not background: it is the contract the reviewer's own prerequisite-order verdict
 `Prerequisites` there accepts `none` or earlier entry numbers only, so a reviewer that cannot see the
 restriction proposes the cross-topic dependencies the field cannot carry. It is handed as a **field
 contract, never as a conformance checklist**: field presence and field shape are the
-orchestrator's check and the validator's, not the reviewer's.
+orchestrator's check and the validator's, not the reviewer's. The commissioning rule in that section
+is neither presence nor shape: it is a judgement, and the reviewer walks it as the challenge list
+below states.
 
 The plan's freshness header is out of the reviewer's scope, `Coverage SHA-256` above all. Its byte
 normalisation lives in `_coverage-standard.md`, which this reviewer is not given, and both `notes-audit`
@@ -276,12 +279,19 @@ It does not edit files. It must challenge:
 - whether every learning outcome is achievable from the declared prerequisites;
 - concepts or terms used before they are taught;
 - chapters grouped around a label rather than one teachable mental model;
-- missing must-answer questions that would leave the assigned concepts recognisable but unexplained;
+- missing must-answer questions that would leave the assigned concepts recognisable but unexplained —
+  **walked, never sampled** (`REC-248`): in every entry, take each assigned bullet the commissioning
+  rule covers, part by part, and name every part no `Must answer` question commissions, with the
+  learner question that would;
 - broken narrative handoffs, oversized chapters, and disconnected files;
 - whether the route can teach the topic from zero as Victor's only study source.
 
 Acceptance proof must include `N entries reviewed`, an explicit intro verdict, a prerequisite-order
-verdict, and every proposed correction. Re-dispatch once if that proof is absent. Apply accepted
+verdict, **one commissioning line per entry** — `NN: B bullets walked · uncommissioned: none`, or in
+place of `none` each uncommissioned part as `{lead phrase} → {part}`, `B` counting only the bullets
+the rule covers — and every proposed correction. `N` commissioning lines are owed, each `B` equal to
+the covered bullets the plan shows for that entry; a proof holding fewer lines, or a `B` that
+disagrees, is absent. Re-dispatch once if that proof is absent. Apply accepted
 findings, then repeat exact coverage assignment and route validation. If the reviewer cannot be
 dispatched or fails twice, stop; there is no single-agent fallback.
 
@@ -402,6 +412,18 @@ Rules:
   assumptions.
 - `Narrative role`, `Learning outcome`, `Must answer`, and `Handoff` are non-empty and specific.
 - Every `Must answer` item is a learner question, not a coverage restatement or audit instruction; put audit instructions in `Audit note` instead.
+- **Every bullet a note still owes is commissioned, part by part** (`REC-248`). Its parts are the lead
+  phrase — the text before the first ` — ` — and each distinct mechanism, alternative or named term
+  the description lists: in "from a loaded icon font or registered SVG set", the registered SVG set is
+  one.
+  A part is commissioned when the finished note cannot answer one of that entry's `Must answer`
+  questions without explaining it — judged by what answering takes, never by matching text, since the
+  rule above forbids restating the bullet and a question about something else that merely names the
+  term commissions nothing. An uncommissioned part gets a question. The rule covers what `notes-audit`
+  still owes — every bullet of a `pending` entry and a `refined` entry's `Pending additions`, where the
+  question travels with the addition and changes neither `Status` nor `Studied`. Outside it: a
+  `refined` entry's `[x]` bullets, their prose being frozen, and a `complete` entry, where a new
+  question would reopen the note (Planning algorithm step 8) on a judgement made without reading it.
 - At junior, entry `00` satisfies the complete introduction contract for both `create` and `audit`.
 - A missing Spanish file does not change `Action`; the notes pipeline creates or synchronises it.
 - `Audit note:` is the one optional entry field, written between `Coverage concepts` and `Rationale`. It
@@ -551,6 +573,7 @@ checked/unchecked concept counts, preserved-complete count, studied/pending entr
 (and any broken freeze), every legacy classification decision, relocations, renumberings, split
 blockers, every `Audit note` order this run wrote for the first time — for a move, the revision it
 records, where it records one — and each `complete` entry it reopened,
-unassigned existing notes, mirror parity, pedagogical-review completion, intro-contract verdict,
+unassigned existing notes, mirror parity, pedagogical-review completion, the commissioning walk's
+count — bullets walked, parts found uncommissioned, questions added — intro-contract verdict,
 learning-outcome count, prerequisite-order verdict, handoff count, concepts-used-before-taught
 verdict, and commit or `dry-run`.
