@@ -724,7 +724,10 @@ rather than at the G4 review — three steps too late to be cheap.
 - **No page is done in its success state alone.** Every page that loads data gets its loading and error
   states built in the same session as its happy path — never "later". §14 declares them per page and the
   step's done condition requires one of them, so this is not extra scope: it is the scope. This is the
-  single most common gap in a junior portfolio frontend and the most visible in a live demo.
+  single most common gap in a junior portfolio frontend and the most visible in a live demo. Which error
+  responses a page owes is §10's to say, never memory's: the step's done condition names them — or the
+  `@Valid` path, the one `404` line, the prevention or the handler the standard lets stand for them (`_planning-standard.md`
+  → "Done-condition format", `REC-243`) — so build a state for each.
 - **Start a page step with the visual reference, before any code.** Open §14's wireframe and its
   inspiration row, and **ask Victor for his own references** — a page he likes, a screenshot, a product
   in the domain. If he has none, propose two or three concrete ones and say what to take from each. Ten

@@ -268,7 +268,9 @@ per the shared session rules "Testing rules"), and a **SQL complement** step.
 - **Pass:** every step has a done condition; every done condition is valid (format below) **and covers
   the step's full listed scope**; each step introduces at most one major new concept; no step spans
   more than a few days of work (a whole app tier in one step fails — split it); the three dedicated
-  steps are present.
+  steps are present; every step that builds UI meets the two UI rules under "Done-condition format" —
+  one non-happy state, and, on a step not yet marked `✅`, the error responses of the endpoints it
+  calls.
 
 ### 16. Testing plan
 What is tested, at which **level**, and why — a real test plan, not "we will write tests". Organise it
@@ -377,6 +379,27 @@ Every done condition (§0 and every step in §15) must follow **one** of these e
 populated success path *and* at least one of the empty, loading, or error states of a page the step
 built — §14 makes the plan declare them; this is what forces them to be built. Extend the condition
 rather than adding a step: `…and the table shows its empty state before the first entry exists`.
+
+**A step whose UI calls endpoints must name their error responses** (`REC-243`). For every endpoint the
+step's pages, components and dialogs call — the consumers §13 names under invariant 12 — the `Browser:`
+condition names each non-2xx response §10 states for it — its status, and its `fieldErrors` key where it
+carries one — with the state that shows it: `…after five wrong passwords the sixth attempt answers 429 and the error line shows the
+cooldown message`. A shared rendering path does not stand in for the responses it renders: two
+responses shown in one error line, or two keys placed by one helper, are two clauses, because the path
+proves where a response lands and not that the step's code reaches it. Four exceptions, and only these.
+The `400`s `@Valid` builds from a request DTO's constraint annotations are named once per step, as the
+`fieldErrors` path, by any one key shown under its own input — one handler builds them all — while a key
+a service sets for a business rule is named on its own. A `404` on an id the page took from its own list
+is named once per step, as the line it lands in. A response the step's own UI makes unreachable — an action withheld or
+disabled on the caller's own row, or an input a client rule mirroring the server's own constraint never
+lets the page send — is named as that prevention, which is what the browser can show: `…the caller's own
+row offers no Deactivate`. When every `@Valid` constraint of a request is mirrored that way, the step's
+one `@Valid` clause is that prevention: `…an empty name keeps Save from sending`. And two are named once in the project,
+in the step that builds what handles them: the mid-session `401` the interceptor turns into a redirect,
+and the `403` a route guard makes unreachable. This is what puts the responses under gate G1, because
+`step-complete` checks the condition clause by clause and a response no clause names is never exercised.
+It binds steps not yet marked `✅`; a closed step's condition is its record and is not rewritten to meet
+it.
 
 These are the only valid formats. Never use vague conditions like "the feature works", "it renders
 correctly", or "the API is ready" — they are not testable. When auditing, mark each condition:

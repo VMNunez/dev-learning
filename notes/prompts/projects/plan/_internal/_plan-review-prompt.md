@@ -52,7 +52,7 @@ then let it through.
 focused context per reviewer; a specialist that reads everything defeats it.
 - `{PROJECT}/PLANNING.md` — the file to audit, read in **tiers**: your own sections in full · the
   sections your invariants cross-reference in full (e.g. `ui-design` needs §13's page list for
-  invariant 3, not its annotated file tree — stop at the routes table) · everything else headings-only, just
+  invariant 3, not its annotated file tree — stop at the routes table) · `steps-tests` also reads the four §10/§13/§14 pieces check 3 names, and no more of those sections · everything else headings-only, just
   enough to know the plan's shape. Never read tail sections your slice does not touch. **`whole-plan` is
   the sole exception to the tiered read** — it reads the file end to end by definition; the tier rules
   above bind the six concern scopes only.
@@ -161,7 +161,13 @@ summary of them. If the standard and the plan disagree, the standard wins.
 
 **3. Done-condition format** *(owners: `steps-tests` for §15, `rules-security` for §0)*. For every
 done condition in your slice, mark ✅ valid or ⚠️ vague against the four formats in the standard. For
-each ⚠️, rewrite it to a valid format.
+each ⚠️, rewrite it to a valid format. On `steps-tests`, also hold every §15 step that builds UI to the
+two UI rules under the standard's "Done-condition format" — one non-happy state, and the error responses
+of the endpoints it calls — and extend a condition that misses one, on steps not yet marked `✅` only
+(`REC-243`). That second rule needs four reads beyond your tiers, and only these: §13's consumer lines
+for the endpoints the step's pages call, those endpoints' §10 response cells, §10's error-contract
+paragraph, and §14's error state for each page and dialog the step builds. When the step you extend is
+§0's `Current step`, report a ripple so §0's copy is made verbatim again.
 
 **4. Internal consistency** *(split by the table: 1–2 and 12 `data-model-api` · 3 and 11 `ui-design` ·
 4–5 `steps-tests` · 7 `rules-security` · 6, 8, 9 and 10 `branches-coverage`)*. Run only the invariants your `{SCOPE}` owns. Fix
