@@ -430,6 +430,7 @@ the 214-319 the unaudited project carries), which sizes a bound and falsifies a 
 **And a test retired this way is retired by name in the standard**, with the reintroduction it must
 refuse — "including as a narrower test over X" — because the next reader's instinct is to rescope rather
 than to drop, and the rescoping is what already failed.
+**Also `REC-248`, where the draft test is a *string match* offered in place of a judgement: run it over artefacts a reviewer already approved and over one known defect on both sides of its repair before believing it** — lead-phrase matching flagged 109 of 132 bullets on a reviewed plan and cleared 0 of 107 flags when the fixing run repaired the defect, because the artefact's own format forbids the text the match looks for; a check a correct repair cannot clear is not a gate. Where an existing role already asks the question, the fix is the proof line that makes it walk — scoped to what is still owed, since a walk over finished artefacts reopens them on a judgement made without reading them.
 
 **A topic whose source is in another language is routed, not exempt.** Also `REC-151`. The row argued
 `javascript` had no project behind it "since the stack is TypeScript"; its coverage file carries 33
