@@ -2,7 +2,8 @@
 
 **Internal component.** This is the functional reviewer in the review pipeline. `review-audit.md`
 dispatches it **once per vertical slice** — one backend resource's full flow, one frontend feature, or
-one cross-cutting area — never the whole codebase. It reads only that slice and returns a **findings
+one cross-cutting area — never the whole codebase; the in-session `slice-review` skill dispatches it the
+same way over only the slices a closed step or backlog fix touched (`REC-244`). It reads only that slice and returns a **findings
 table** for the orchestrator to merge into the backlog. It does **not** edit any file and does **not**
 commit — Victor fixes everything himself to learn. (Security is a separate reviewer,
 `_review-security-prompt.md`.)

@@ -36,12 +36,14 @@ breach log"; do not restate or widen that trigger here.
 
 
 A learning-plan step just finished. The shared session rules ("After every learning plan step is
-completed") require three updates — PLANNING.md, PROGRESS.md, the README — and this ritual adds three
+completed") require three updates — PLANNING.md, PROGRESS.md, the README — and this ritual adds four
 more: a **check that the step really passed** (step 0, gate G1's actual trigger), **coverage** (step 3),
 which since `REC-230` *verifies* that every piece of the step left its bullet and its marker and authors
 only what they missed, and the **§0 repoint** (step 5) that leaves the plan pointing at the next step rather than
-the finished one. So the step's concepts end up recorded as part of the curriculum and as *demonstrated*,
-not merely as done, and the next session opens on a true pointer. Walk all six in order, without being
+the finished one — and, once its own commits have landed, a **cold review** of the slices the step's code
+touched (step 6, `REC-244`), so code built between two gates is read by someone other than the agent that
+guided it. So the step's concepts end up recorded as part of the curriculum and as *demonstrated*,
+not merely as done, and the next session opens on a true pointer. Walk all seven in order, without being
 asked. If one genuinely does not apply, say so explicitly instead of silently skipping it.
 
 **Steps 3 and 4 changed hands on 2026-09-09 (`REC-230`).** A `§15` step spans days and several
@@ -374,6 +376,21 @@ Everything lands on the **active branch** (`main` only receives merges via PR).
 Before every commit you run, `git status` immediately before the `add` and before the `commit`, so no
 project code file is staged alongside a doc file.
 
+## 6 — Cold review of the slices the step touched
+
+**After every commit this ritual runs has landed, invoke the `slice-review` skill** with step 3's base —
+the last §15 close's `<sha>`, handed over rather than re-derived. The skill takes the range against the
+working tree, so Victor's code commit, which may still be pending, is reviewed all the same. It dispatches
+`review-audit`'s two per-slice reviewers cold over every slice that range touched, verifies what they
+find against the code, and writes the survivors to `PROJECT-BACKLOG.md` as tasks in a commit of its own
+(`REC-244`).
+
+It runs last for two reasons. It must start on a tree holding none of this ritual's writes, and nothing it
+finds reopens the step: step 0 already proved the done condition, the `✅` stands, and a finding is the next
+`backlog-task-open`'s to triage. Invoke it on every close — a range that touched no code is the skill's
+own n/a to report, not this ritual's to predict. What it may change in `PLANNING.md` is its own §4's to
+state, and that includes §0 — say what it changed. Fold its report rows into this ritual's final table.
+
 ## If the whole project just finished
 
 Remind Victor to update the `Current study progress` section of
@@ -399,3 +416,4 @@ Close with a compact table so Victor can see at a glance that nothing was skippe
 | README | `backend` / Key patterns — 2 entries added; 1 concept already represented; *(swept)* id tie-breaker on a paged sort — added, not named by this step |
 | PLANNING §0 | repointed to Step 6 — branch `feat/reports`, done condition copied verbatim, phase unchanged, dated today · `Next gate` re-derived as G3, keeping this morning's close qualifier "signable, last High merged" (or: qualifier **dropped** — the re-derivation names G4, which the close's fact does not describe) |
 | Gate due | none yet (or: G3 backend review is now due — `review-audit REVIEW_SCOPE = backend`) |
+| Cold review | `slice-review` — 4 slices, 5 dispatches, 2 Low `[frontend]` raised (or: no code touched — n/a; or: 1 High raised — `Next gate` qualifier set to blocked) |

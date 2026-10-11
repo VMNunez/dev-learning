@@ -10,6 +10,10 @@ become backlog tasks. The pieces of the review pipeline read it:
   cross-cutting area).
 - `_review-security-prompt.md` (the **per-slice security reviewer**) reads the security scope + finding
   format — it hunts **one slice** (a resource's endpoints, or the cross-cutting `security-infra`).
+- `slice-review` (an **in-session skill**, `REC-244`) dispatches those same two reviewers outside this
+  pipeline, cold, over only the slices a closed step or backlog fix touched, and raises what it verifies
+  as tasks. It is not a gate pass: it stamps no `Last Reviewed` line, so the gate below still fires and
+  G3/G4 still read every slice.
 - `review-audit.md` (the **orchestrator**) reads the gate, the learning-objectives rubric, the
   task/priority/effort rules, and the backlog format. It maps the slices and merges every slice's
   findings.
@@ -543,10 +547,10 @@ finds the gate has moved.
 **A review run merges into `## Tasks`; it never regenerates it.** It adds its new tasks and leaves every
 open `[ ]` task already in the file exactly as it found it — never deleted, reworded, re-tiered or
 re-prioritised — and a finding that matches one is not filed a second time. `## Tasks` has other writers
-besides this pipeline. Five raise tasks into it: `backlog-task-open` and `backlog-task-close` the defects
+besides this pipeline. Six raise tasks into it: `slice-review` what its cold pass over the slices a closed step or fix touched verifies, `backlog-task-open` and `backlog-task-close` the defects
 they notice in passing, `coverage-mark` a marker it could not decide, `readme-audit` the project defects
 its roles report outside the README, and `portfolio-audit` the bank corrections its Spanish stages report
-owed — each with a provenance note. A sixth, `plan-audit`'s `whole-plan` specialist, rewords an open task
+owed — each with a provenance note. A seventh, `plan-audit`'s `whole-plan` specialist, rewords an open task
 a recorded plan decision has superseded: that licence rests on holding the plan, which a code snapshot
 does not. A task list rebuilt from this run's slice tables drops
 every one of them, which is the persistence those channels exist to give, and drops with them any earlier

@@ -3,7 +3,9 @@
 **Internal component (full-stack projects only).** This is the security reviewer in the review
 pipeline: an adversarial, systematic pass that goes deeper than the code reviewer's fixed checklist.
 `review-audit.md` dispatches it **once per security slice** — one backend resource's flow, or the
-cross-cutting `security-infra` — never the whole backend at once. It returns a **findings table** for
+cross-cutting `security-infra` — never the whole backend at once; the in-session `slice-review` skill
+dispatches it the same way over every backend resource a closed step or backlog fix touched, and over
+`security-infra` when it was touched (`REC-244`). It returns a **findings table** for
 the orchestrator to merge into the backlog. **Severity is graded, never automatic:** a *confirmed*
 finding becomes a **High** task, while one resting only on a plan that is silent becomes the **Medium
 "decide and document"** task — the test is `_review-standard.md`'s **What "confirmed" means**, which

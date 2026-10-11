@@ -311,8 +311,8 @@ the project code. The two are separate logical changes and take separate commits
 `docs(backlog): raise <finding> found while triaging <task>`.
 
 **You commit that marker yourself**, on the active branch. `PROJECT-BACKLOG.md` is authorized
-(2026-07-29): it is written by `review-audit`, by this skill and by `backlog-task-close`, never by
-Victor, so the authorship boundary puts it on your side. Apply the hygiene rule — `git status`
+(2026-07-29): it is written by `review-audit`, by this skill, by `backlog-task-close` and by
+`slice-review`, never by Victor, so the authorship boundary puts it on your side. Apply the hygiene rule — `git status`
 immediately before the `add` and before the `commit`, so no project code is staged alongside it:
 
 ```

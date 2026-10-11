@@ -1340,10 +1340,11 @@ if (-not $skillSection.Success) {
     # after a skill is added - the failure REC-057 caught in README.md's own prose.
     $numberWords = @('zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine',
         'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen',
-        'eighteen', 'nineteen', 'twenty')
+        'eighteen', 'nineteen', 'twenty', 'twenty-one', 'twenty-two', 'twenty-three', 'twenty-four',
+        'twenty-five', 'twenty-six', 'twenty-seven', 'twenty-eight', 'twenty-nine', 'thirty')
     # The number may be emphasised - _system-map.md bolds most of its load-bearing words -
     # and a cosmetic `All **twelve**` must not read as "the count sentence is gone".
-    $countClaim = [regex]::Match($skillSection.Value, '(?m)^All\s+[*_]{0,2}(?<word>[a-z]+)[*_]{0,2}\s+are mirrored')
+    $countClaim = [regex]::Match($skillSection.Value, '(?m)^All\s+[*_]{0,2}(?<word>[a-z]+(?:-[a-z]+)?)[*_]{0,2}\s+are mirrored')
     if (-not $countClaim.Success) {
         Add-ValidationError '_system-map.md section 9 no longer states how many skills are mirrored.'
     } elseif ($diskSkills.Count -ge $numberWords.Count -or $countClaim.Groups['word'].Value -ne $numberWords[$diskSkills.Count]) {

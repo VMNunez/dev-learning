@@ -30,8 +30,8 @@ breach log"; do not restate or widen that trigger here.
 
 
 A task from `{PROJECT_PATH}/PROJECT-BACKLOG.md` just finished. Checking its box is the *last* thing you
-do, not the first. Walk every step below in order (0 through 5, including sub-steps 1a, 1b and 3b),
-without being asked. If one genuinely does not apply, **say so explicitly** in the chat summary instead
+do, not the first. Walk every step below in order (0 through 5, including sub-steps 1a, 1b and 3b, and
+then step 6 once the close's commits have landed), without being asked. If one genuinely does not apply, **say so explicitly** in the chat summary instead
 of silently skipping it.
 
 The task should already carry a verdict from `backlog-task-open`, which validated it against PLANNING,
@@ -420,7 +420,8 @@ to the ledger, with the reason in place of the concept tail: `→ dropped: super
 
 ## Incidental findings — write them, do not mention them
 
-This ritual is **not a second review**. It does not go looking for defects, does not fix what it finds,
+This ritual is **not a second review** — the cold look at the fix's code is step 6's `slice-review`,
+never this ritual's own reading. It does not go looking for defects, does not fix what it finds,
 and does not widen or reopen the task it is closing — widening a task in flight is what `REC-173`
 guards against. But closing is exactly when the next finding surfaces: the fix just written makes the
 identical defect visible in a sibling class. A finding disposed of in the chat does not survive the
@@ -474,7 +475,8 @@ Everything below lands on the **active branch** (`main` only receives merges via
   (step 4) is made where the walk reaches it and takes a commit of its own, whatever step 1 and 1a wrote.
   When step 4 is n/a, PROGRESS.md takes no commit here.
 - `PROJECT-BACKLOG.md` — authorized 2026-07-29. It is written by `review-audit`, by `backlog-task-open`
-  (the `⏸ Deferred` marker and a raised incidental finding) and by this skill, never by Victor, so the
+  (the `⏸ Deferred` marker and a raised incidental finding), by this skill, and by `slice-review`, which
+  step 6 invokes and which commits its own raise, never by Victor, so the
   authorship boundary puts it on your side. Its own atomic commit, separate from the coverage one — and
   a task raised for an incidental finding is a **second**, separate commit, carrying the PLANNING §0
   count with it.
@@ -494,6 +496,26 @@ then `git commit` block), one command per block:
 
 Before every commit you run, apply the hygiene rule: `git status` right before `git add` and right
 before `git commit`, so no project code file is staged alongside a doc file.
+
+---
+
+## 6 — Cold review of the slices the fix touched
+
+**On a code task, after every commit this ritual runs has landed, invoke the `slice-review` skill** with
+the fix's base — the parent of its first commit, or `HEAD` while Victor's commit is still pending, since
+the skill takes the range against the working tree — one run, from the earliest base, when several tasks
+closed together. It dispatches
+`review-audit`'s two per-slice reviewers cold over every slice the fix touched, verifies what they find
+against the code, and writes the survivors to `PROJECT-BACKLOG.md` as tasks in a commit of its own
+(`REC-244`). This is where the unreviewed code sat: `REC-244`'s only new Mediums were in backlog-fix
+code no gate had read since it was written.
+
+It is **n/a** on every kind of close that wrote no code in this session — a design decision, a false
+positive or dropped task, a question-bank correction, and an already-resolved task, whose code landed
+under an earlier close that owed its own review. Say which. Nothing it finds reopens this close: the
+ledger line stands and a finding is the next `backlog-task-open`'s to triage. A new open High may turn
+the `Next gate` qualifier step 3b wrote back to blocked — the skill writes that itself and says so. Fold
+its report rows into this ritual's final table.
 
 ---
 
@@ -517,3 +539,4 @@ Close with a compact table so Victor can see at a glance that nothing was skippe
 | PROGRESS.md | n/a — evidence cell unchanged (coverage table owned by the coverage skills) |
 | Gate due | none (or: G3 sign-off is now unblocked — PR `fix/backend-backlog` into `projects/07-timetrack`) |
 | Backlog | task collapsed into `## Closed` |
+| Cold review | `slice-review` — 1 slice (`auth`), 2 dispatches, nothing raised (or: n/a — DECISION, no code change) |
