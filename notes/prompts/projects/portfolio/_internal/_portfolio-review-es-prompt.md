@@ -18,8 +18,8 @@ English beside you, any calque still parses.** The only faithful test is a reade
 cold, as the sole source, exactly as Victor does. So this prompt is forbidden from opening the `en/`
 bank. It judges the Spanish on its own terms.
 
-**You do not audit the questions.** Whether a question is worth asking, whether the bank is exhaustive,
-whether an answer is technically right — all of that was settled in English by stage B against the code,
+**You do not audit the questions.** Whether a question is worth asking, whether a decision is still
+unasked, whether an answer is technically right — all of that belongs to the English stages and the code,
 which you cannot see. Your subject is the **prose**: register, naturalness, voice, calque. A question
 you believe is factually wrong is **reported, never rewritten**.
 

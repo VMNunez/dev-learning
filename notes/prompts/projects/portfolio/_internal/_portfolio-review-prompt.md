@@ -72,7 +72,7 @@ leaving it unchecked.
 Before starting, read:
 - `notes/prompts/projects/portfolio/_internal/_portfolio-standard.md` — the question quality bar, in full.
 - PLANNING.md + the real source **for your section's code area** (per the standard's canonical table). You cannot judge
-  whether the section is exhaustive without seeing what there was to ask about in that area.
+  whether the section is thin without seeing what there was to ask about in that area.
 - The `{SECTION}` section of `notes/interview-prep/projects/en/{PROJECT_NAME}.md` — the part to audit.
 - **The bold question lines of the whole bank file, for the Identity check below and nothing else.** The
   ID counter runs over the file, so allocating or checking one is the single judgement in this prompt
@@ -87,6 +87,8 @@ Before starting, read:
   **add it**. This is where most misses are: a thin section. Make it **measurable**: count the real
   decisions you found in this area vs the questions covering them, and treat the section as incomplete
   until questions ≥ decisions. Report that ratio in the finish so a thin section is a number, not a guess.
+  **It is a number about your walk, not about the area**: at 1 nothing *you found* is unasked, which the
+  standard's exhaustiveness rule keeps apart from the section being exhaustive — never report it as that.
   **Both sides of that ratio are scoped**: count the decisions in the columns `{SCOPE}` names against the
   questions under its sub-headings only. Counting a whole section's questions against one tier's decisions
   inflates the ratio with another run's work and hides exactly the thin tier this number exists to catch.
@@ -125,8 +127,8 @@ Before starting, read:
 ## Fix, don't just report
 
 Where a check fails, **fix it directly** in the file — add missing questions, rewrite weak ones, cut
-duplicates. Preserve the author's good questions; only change what misses the bar. If the bank is
-genuinely already exhaustive and at bar, change nothing and record it as PASS.
+duplicates. Preserve the author's good questions; only change what misses the bar. If your walk finds
+no decision left unasked and nothing below the bar, change nothing and record it as PASS.
 
 **This licence stops at your scope's sub-headings.** A weak or duplicated question under another tier's
 sub-heading is reported, never rewritten and never cut — the same disposition as a `[refined]` block, for

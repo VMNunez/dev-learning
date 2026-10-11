@@ -13,10 +13,10 @@ is a `cv-bullets.md` section left with two options by a pre-2026-08-31 run, whos
 a `backend` / `frontend` / `global` run is bank-only and produces the first alone, and a run the step-0
 gate preflight stops produces none**:
 
-1. An **exhaustive bank of project-specific interview questions, in English and Spanish** — the
-   English built **one bank section at a time**, each authored then cold-reviewed by its own pair of
-   subagents (so no section gets skimmed), then translated once per project into its `es/` twin and
-   audited once more by a Spanish reviewer that never sees the English. Saved regardless of the verdict.
+1. A **bank of project-specific interview questions, in English and Spanish**, never certified
+   exhaustive — the English built **one bank section at a time**, each authored then cold-reviewed by
+   its own pair of subagents (so no section gets skimmed), then translated once per project into `es/`
+   and audited by a Spanish reviewer that never sees the English. Saved regardless of the verdict.
 2. A **verdict** — ✅ Ready / ⚠️ Almost / ❌ Not ready.
 3. If not ❌ — a **CV bullet** (Spanish, reused as-is by `cv-prompt`) and, **only for a project that has a
    repo of its own**, a **GitHub description**. Every project under `projects/` is a folder in the
@@ -110,6 +110,7 @@ let it run to the end. Pick the recipe:
 PROJECT_PATH = projects/07-timetrack
 DRY_RUN      = true       ← true the first time; false once you trust it
 ```
+(Run it again on a banked project to mine what a first walk left unasked; its `Last banked` line then says how much that was.)
 
 **B · Gate every project in one run**
 ```
@@ -126,11 +127,7 @@ DRY_RUN          = false
 ```
 (Bank-only: questions for that tier and nothing else — no verdict, no CV bullet, no gate signed.)
 
-**Rules of thumb:**
-- `PORTFOLIO_SCOPE` defaults to `full`. Use `backend` / `frontend` / `global` to bank a full-stack
-  project one tier at a time — including while the other tier is still being built. It buys a session
-  boundary, not tokens: each scope still walks all five sections, only with a narrower code area.
-- Fill in **only** the config block. Everything below it is machinery — never edit it.
+**Rule of thumb:**
 - The verdict is honest: ❌ means the questions were still saved (they are useful prep) but no CV
   bullet or GitHub description was produced.
 
@@ -324,8 +321,8 @@ gate sets against its own count of the files, so a trace that disagrees with dis
 ### Phase 1a — English question bank (one cold author → reviewer per SECTION)
 
 **The unit of deep work is one section of the bank, not the whole bank.** The bank has five fixed
-sections, each mapping to a distinct code area — so each is a specific, self-contained task a subagent
-cannot half-finish (it either covered every decision in *that one area* or it did not). The mapping
+sections, each mapping to a distinct code area — so each is a specific, self-contained task small enough
+that a subagent walks all of *that one area* rather than skimming its tail. The mapping
 lives in the standard's **"Bank sections → code areas (canonical table)"** — use that, including its
 skip notes.
 
@@ -417,12 +414,14 @@ questions-vs-decisions ratio below 1 (decisions found in the code area that stil
 section is not done — re-dispatch subagent B **once** for the same section, telling it which decisions
 its own report listed as uncovered, so it adds the missing questions. One retry maximum; if the ratio is
 still below 1 after the retry, **this content acceptance gate has failed**: note the uncovered decisions
-in the final report instead of looping. Ending the section there scopes the **section** and never the
+in the final report instead of looping. **The gate can fail only on what B found: a ratio of 1 or more
+is B's own walk, never evidence that the code area is covered, so nothing this run prints calls a
+section or a bank exhaustive** (`REC-246`). Ending a failed section there scopes the **section** and never the
 run's close-out — `_agent-runtime-standard.md` → "Runnable close-out contract" settles that: only a run
 satisfying its content acceptance gates closes out as `completed`. Only then start the next section.
 
 **Two not-complete shapes, disposed of differently.** A ratio still below 1 is *finished* content that
-covers less than everything: keep every byte and declare the uncovered decisions. A **half-written**
+covers less than B itself found: keep every byte and declare the uncovered decisions. A **half-written**
 section — A or B returned `BLOCKED` — takes the restore-or-declare branch above, because nobody finished
 those bytes; a **B** block always takes the leave-and-declare side of it, since restoring would revert
 past A's finished pass to undo a partial edit. A declared `BLOCKED` is not a below-1 ratio and does not
@@ -490,26 +489,27 @@ for two reasons: Phase 1a is where the run learns which sections completed, and 
 header that is already current rather than the previous run's dates. **Three branches, and they are
 `_review-standard.md`'s, which this borrows in full rather than in part:**
 
-1. **Every section of this scope completed** → set `**Last banked — «tier»:**` to today for each tier in
-   `{PORTFOLIO_SCOPE}`.
+1. **Every section of this scope completed** → set `**Last banked — «tier»:**` to today **followed by
+   `· +N of M`**, for each tier in `{PORTFOLIO_SCOPE}`.
 2. **A section of this scope did not** — it returned `BLOCKED`, or its questions-vs-decisions ratio was
-   still below 1 after its one retry → today's date **plus** `(incomplete — «section(s)» not banked)`,
-   naming every such section. A plain date claims the whole tier was mined, and the next reader has no
-   other way to learn otherwise. **The qualifier attaches to a tier only where that section had a cell
-   for it**: the unit that fails here is a *section*, which spans tiers, while the rule this borrows had
-   slices that each belonged to one tier. So a blocked `Testing` section on a `full` run qualifies
-   `backend` and `frontend` and leaves `cross-tier` a plain date, because the canonical table gives
-   Testing no cross-tier cell and cross-tier lost nothing.
+   still below 1 after its one retry → the same, **plus** `(incomplete — «section(s)» not banked)`,
+   naming every such section. A line without it claims every section of that tier was banked, and the next reader has
+   no other way to learn otherwise. **The qualifier attaches to a tier only where that section had a cell
+   for it** in the canonical table: a blocked `Testing` section on a `full` run qualifies `backend` and
+   `frontend` and leaves `cross-tier` unqualified, Testing having no cross-tier cell to lose.
 3. **Every section of this scope failed that way** → **stamp nothing**; leave the line exactly as it was.
    A date on a tier this run did not actually bank is worse than the `never` it replaces.
 
-**Every other tier's line is left exactly as it was**, a date or `never` — that is the whole point of the
-borrowed rule, and it is what keeps a partial run from making an unbanked tier look current. On an
-Angular-only project the same three branches apply to the single untiered `**Last banked:**` line. A bank
-with no header gains one now — **including under branch 3**, where the header is created with every line
-reading `never`, since "leave the line as it was" cannot mean anything when there is no line yet, and an
-absent header is indistinguishable from a bank written before this rule existed. **The stamp gates nothing**: no run refuses on it, and Finishing item 1 is
-what puts it in front of Victor.
+**`+N of M` is what this walk added, counted by command and never taken from a return**: `M` is the
+question IDs now under that tier's sub-headings in the `en/` bank (the whole file on an Angular-only
+project), `N` those of them absent from the step-0 comparison snapshot — `N = M` on a first bank.
+
+**Every other tier's line is left exactly as it was**, a dated line or `never` — which is what keeps a
+partial run from making an unbanked tier look current. On an Angular-only project the same three branches
+apply to the single untiered `**Last banked:**` line. A bank with no header gains one now — **including
+under branch 3**, with every line reading `never`, since an absent header is indistinguishable from a bank
+written before this rule existed. **The stamp gates nothing**: no run refuses on it, and Finishing item 1
+is what puts it in front of Victor.
 
 ### Phase 1b — Spanish twin (one translator per PROJECT, after every section)
 
@@ -829,9 +829,9 @@ Otherwise print, in this order:
    this line is the only place the difference is stated. On its own line too, **every suspected factual
    error C returned and every English question T reported wrong, outside a frozen block, by ID with its
    evidence, labelled `owed a correction`** — or `factual errors: none reported` — and, beside each, the
-   backlog task it was raised as or the reason it was dropped. **On a full-stack
-   project also print the three `Last banked` lines as they now stand**, so a tier still reading `never`
-   is visible at the moment the run ends rather than only inside the file.
+   backlog task it was raised as or the reason it was dropped. **Also print
+   the bank's `Last banked` line or lines as they now stand**, so what this walk added, and a tier still
+   reading `never`, are visible at the moment the run ends rather than only inside the file.
 2. **Final verdict: ✅ Ready / ⚠️ Almost / ❌ Not ready** (with the checkbox list if ⚠️/❌). **Where
    Check 1 resolved on its markerless-plan branch, the line the standard mandates goes here**, under the
    verdict — "PLANNING.md carries no step markers; completeness read from `PROGRESS.md`'s projects table
@@ -927,7 +927,7 @@ freshness marker of its own — no coverage fingerprint, and `/simulator` reads 
 since 2026-09-06 `routes/projects.md` carries an inventory digest `interview-prep-block-open` checks — so that label,
 the tracker cell and the header's `**Last banked — «tier»:**` line are the only marks either shape leaves
 on disk. The stamp is the one a later reader meets first, which is why its `(incomplete — …)` branch
-exists: a blocked section that stamped a plain date would be the one mark that lies.
+exists: a blocked section that stamped an unqualified line would be the one mark that lies.
 
 **Neither shape moves the Phase 2 verdict.** That verdict is the go/no-go on the **project**, and
 `_portfolio-standard.md`'s verdict logic owns it: PLANNING.md, then the backlog, then its two sanity

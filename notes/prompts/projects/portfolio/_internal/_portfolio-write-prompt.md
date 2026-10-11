@@ -5,8 +5,8 @@
 `_portfolio-review-prompt.md` (the reviewer). It is documented here so the orchestrator can point a
 subagent at it; you can also run it standalone to draft one project's question bank.
 
-**What it does.** Reads **one section's** code area of the project and PLANNING.md and writes the
-**exhaustive set of project-specific interview questions for that section** into
+**What it does.** Reads **one section's** code area of the project and PLANNING.md and writes
+**that section's project-specific interview questions, one for every decision it finds,** into
 `notes/interview-prep/projects/en/{PROJECT_NAME}.md`. The orchestrator runs it once per bank section
 (`{SECTION}`), so each run is a small, specific task that cannot skim a tail — the failure mode when one
 prompt tries to author the whole bank. It does **not** compute the verdict, write the CV bullet, or

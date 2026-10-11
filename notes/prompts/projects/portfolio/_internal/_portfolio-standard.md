@@ -378,6 +378,14 @@ patterns to defend. **Do not cap at 5.** Cover every decision, every pattern, ev
 every testing choice that could come up in a 30-minute technical interview. *A thin file is a gap the
 interviewer will find.*
 
+**That is what a walk aims at, never a state a run certifies.** The section reviewer's
+questions-vs-decisions ratio counts the decisions *that reviewer* found, so a ratio of 1 says its own walk
+left nothing it found unasked and says nothing about the code area. Measured (`REC-246`): three re-walks
+over unchanged code and unchanged prompts, no section of either pass failing its ratio, added a third and a
+half of what two banks held and three times what one tier held — 103 questions, 4 of them `⭐⭐⭐`. **So no role and no report
+calls a section or a bank exhaustive or complete.** What a run states is what it added, on the bank's
+`Last banked` line below, and a re-walk is how the `⭐⭐` and `⭐` tail a first pass leaves is mined.
+
 ### Question identity, the refined freeze and the TODO channel
 
 **Scope extension ruled by Victor 2026-08-29** (`REC-180`): the two Q&A banks **behave practically
@@ -524,11 +532,12 @@ en este proyecto.` / ``Úsalas junto a los archivos por tema en `interview-prep/
 `# Preguntas de entrevista — {PROJECT_NAME}` (the project name itself never translated), the
 five section headings translated as `Arquitectura y patrones` · `Seguridad y autenticación` · `Reglas
 de negocio` · `Decisiones técnicas` · `Testing`, the tier sub-headings as `Backend` · `Frontend` ·
-`Transversal`, and the stamp lines as `**Último banco — «capa»:**` with `nunca` for an unbanked tier):
+`Transversal`, and the stamp lines as `**Último banco — «capa»:**` with `nunca` for an unbanked tier
+and the count rendered `+N de M`):
 ```markdown
 # Interview Questions — {PROJECT_NAME}
 
-**Last banked — backend:** YYYY-MM-DD
+**Last banked — backend:** YYYY-MM-DD · +N of M
 **Last banked — frontend:** never
 **Last banked — cross-tier:** never
 
@@ -565,7 +574,7 @@ removed — omit if the project has no tests]
 `Technical Decisions` take the same three, `Testing` takes `Backend` and `Frontend` only, per the
 canonical table's `—`). **On an Angular-only project (01–06) none of them appear**: the five headings
 carry their questions directly, exactly as before, and the header holds one untiered
-`**Last banked:** YYYY-MM-DD` line instead of three. A bank written before this template existed has no
+`**Last banked:** YYYY-MM-DD · +N of M` line instead of three. A bank written before this template existed has no
 stamp at all, which reads as `never` for every tier.
 
 **One tier, four spellings, and they are fixed here so nothing has to infer them.** The scope token is
@@ -577,13 +586,19 @@ from this paragraph, never from the column header of the table above.
 **The `Last banked` lines, and what they are not.** They are stamped by the orchestrator at the end of
 Phase 1a — before stage T runs, so the Spanish header it renders is this run's and not the last one's —
 on `_review-standard.md`'s three-branch rule, borrowed from the `**Last Reviewed — «tier»:**` lines
-beside them and borrowed **in full**: a plain date only where every section of the scope completed;
-today's date plus `(incomplete — «section(s)» not banked)` where one returned `BLOCKED` or stayed below
+beside them and borrowed **in full**: the date and its count alone only where every section of the scope completed;
+the same plus `(incomplete — «section(s)» not banked)` where one returned `BLOCKED` or stayed below
 its questions-vs-decisions ratio — **and that qualifier reaches a tier only where the failed section had
 a cell for it**, since the unit that fails here is a section spanning tiers where the borrowed rule had
 slices belonging to one; and **no stamp at all** where none of the scope's sections completed,
 the line left exactly as it was, a header that does not exist yet being created with every line `never`. Every tier outside the scope keeps its line untouched, so a partial run
-can never make an unbanked tier look current. **They gate nothing.** No run refuses on them, no
+can never make an unbanked tier look current. **The count after the date, `· +N of M`, is what that run
+added**: `M` the question IDs under that tier's sub-headings when it finished — the whole file on an
+Angular-only project — and `N` those of them the bank did not hold when the run started, counted by the
+orchestrator from the `en/` bank and the copy of it taken before the run, never from a role's return. A first bank reads `+M of M`; a re-walk
+that still adds a third says how much the walk before it had left unasked, which is the one thing a ratio
+cannot say. A line carrying a date and no count was stamped before this rule and gains one the next time
+that tier is banked. **They gate nothing.** No run refuses on them, no
 prerequisite reads them; they exist so a reader — and the run's own closing report — can see which half
 of the bank is older than the code it describes. They are header prose and do not enter the translator's
 parity count, which is why stage T renders them on every scope even though it writes no other
