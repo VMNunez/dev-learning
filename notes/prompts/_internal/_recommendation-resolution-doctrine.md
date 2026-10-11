@@ -79,7 +79,7 @@ the work, not only against the gate it names.** It priced a per-step cold review
 one Low in Step 7a's code, because an in-session pre-PR review had drained the step the same day, and the only new
 Mediums sat in backlog-fix code the row's trigger never reached. Run the proposed check once, cold, on a real closed
 unit, and sort every finding against that unit's whole history — caught before, caught later and by whom, never caught,
-noise — before choosing the trigger.
+noise — before choosing the trigger. **Also `REC-243`: a measurement that yields nothing on a drained unit moves the check, not only its trigger** — a cross-tier code read at ~195k tokens per step found no contract gap, so the ruling put the responses into the done condition, where G1's clause-by-clause check already exercises them, and the draft was then applied by hand to the row's own instance (7a) before it was believed.
 **Also `REC-180`'s `es`-review half, the same test run in the opposite direction — a row proposing to
 *avoid* a new role by widening an existing one, which reads as the cheap shape and is priced from the
 role's subject alone.** That row asked for "a clause in `_portfolio-review-prompt.md` widening it to a
