@@ -98,6 +98,24 @@ Before starting, read:
   candidate could answer from a tutorial.
 - **Model answer.** 2–4 sentences, references the **actual implementation**, uses "I chose" / "I
   decided" — not "it is used". Fix passive, textbook, or code-free answers.
+- **Claims about the code.** Settle every statement a question or its answer makes about this project's
+  code against the source — a count, a name, which file or class holds what, what calls what, what a
+  method does or returns. **Count what it counts and open what it names**: an answer in the right voice,
+  referencing the real implementation, passes every check above with a wrong number in it, and you are
+  the only role of this pipeline asked to read an answer against the code. The source decides, never
+  `PLANNING.md` alone, which records what was planned. A hosted setting no repository file holds — a
+  provider dashboard's — is not a claim about the code: where the canonical table sources it from
+  `PLANNING.md`'s deployment step (`global` Technical Decisions), settle it there, and never take one
+  out for being absent from the source. **Correct a false claim to what the source
+  shows**, and where a question or answer asserts something about this project's code that the source
+  does not hold at all — a class, a call, a test that is not there — take the assertion out. Where a
+  question in your lane names code outside the area you walked — another section's files, another
+  tier's — **open the file it names, for that one claim**. It is the one read of the project's
+  code this prompt allows outside the area you walked, and it settles the claim and nothing else: it
+  adds no decision to your ratio and licenses no new question. **This check reaches what a file of this project settles and promises
+  nothing past it**: what a library, the framework, the browser or a tool does, where no file here
+  shows it, is neither settled nor certified by this item (`REC-330`) — so never report a section's
+  answers as verified.
 - **Format.** Every question in this section follows the standard's format (the orchestrator handles
   cross-section presence/dedupe; you own this section's questions).
 - **Identity.** Every question in this section carries an ID in the standard's `{PROJECT_NAME}-{NNN}`
@@ -126,9 +144,10 @@ Before starting, read:
 
 ## Fix, don't just report
 
-Where a check fails, **fix it directly** in the file — add missing questions, rewrite weak ones, cut
-duplicates. Preserve the author's good questions; only change what misses the bar. If your walk finds
-no decision left unasked and nothing below the bar, change nothing and record it as PASS.
+Where a check fails, **fix it directly** in the file — add missing questions, rewrite weak ones, correct
+false claims about the code, cut duplicates. Preserve the author's good questions; only change what
+misses the bar. If your walk finds no decision left unasked and nothing below the bar, change nothing
+and record it as PASS.
 
 **This licence stops at your scope's sub-headings.** A weak or duplicated question under another tier's
 sub-heading is reported, never rewritten and never cut — the same disposition as a `[refined]` block, for
@@ -157,6 +176,11 @@ working tree. Report your **verdict** for `{SECTION}`:
   plus any question you had to leave unmarked because it sits outside your lane. The scan that owns the
   whole-file proportion counts the finished file itself; your split is what lets it see which section a
   correction came from without re-reading your work.
+- **The IDs of the questions you corrected under *Claims about the code*** — each with the claim as it
+  stood and the file that settles it — or `claims: none corrected`, so a silent return is
+  distinguishable from a clean one. It counts what you corrected, never that the rest is true. A false
+  claim inside a `[refined]` block is not on this line: it is a frozen defect, on the line below, quoted
+  beside what the source shows.
 - **The IDs you allocated or repaired**, and every defect you found inside a `[refined]` block — quoted,
   and stated as left untouched. That line is the only route a frozen question's defect has: nothing else
   in this pipeline may open one, and Victor is the only reader who can.

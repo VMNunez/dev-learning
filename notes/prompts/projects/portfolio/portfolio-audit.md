@@ -302,7 +302,8 @@ context. In `all` mode, hold each subagent to its own return contract below and 
 author to its **question count, its allocated ID range, its marker split and any decision it could not
 cover**, the
 reviewer to its **question count, its questions-vs-decisions ratio, its marker split and the markers it
-added or downgraded, the IDs it allocated or repaired,
+added or downgraded, the IDs it allocated or repaired, the IDs of the questions whose claims about the
+code it corrected,
 and the uncovered decisions if that ratio is below 1**, the
 translator to its **verdict, its per-section counts including the frozen-kept ones, its total and any
 English question it believes is wrong, by ID with its reason**, and
@@ -392,7 +393,10 @@ the wrong place to save):
 > improve it; report a defect you see there instead. Audit **only this section** hard against
 > the standard: walk its code area, count decisions-found vs questions, add every missing one, fix
 > thin/weak/duplicate questions directly — **except inside a `[refined]` block, which you judge, count
-> and report but never repair**. Check every question carries a well-formed, unique `«name»-NNN` ID,
+> and report but never repair**. **Settle every claim a question or its answer in your lane makes about
+> this project's code against the source** — the checklist's *Claims about the code* — and correct a
+> false one directly, under that same freeze.
+> Check every question carries a well-formed, unique `«name»-NNN` ID,
 > reading the whole bank file's **bold lines only** for it — uniqueness is a whole-file property and your
 > section cannot answer it alone. Report a collision with a question outside your section rather than
 > renumbering it; the cross-section renumber is mine. Check every question in your lane carries a
@@ -400,7 +404,8 @@ the wrong place to save):
 > proportion is mine, not yours, and a section cannot see its own denominator.
 > **Do NOT commit.** Return your verdict (PASS/FIXED), the
 > **questions-vs-decisions ratio for this section**, your final `⭐⭐⭐`/`⭐⭐`/`⭐` split and how many
-> markers you added or downgraded, the IDs you allocated or repaired, every defect you
+> markers you added or downgraded, the IDs you allocated or repaired, the IDs of the questions whose
+> claims about the code you corrected (or `claims: none corrected`), every defect you
 > left standing inside a refined block, and — only if that ratio is still below 1 — the
 > **list of decisions you left uncovered**, which is what the acceptance gate below re-dispatches on.
 > Write your findings and verdict to «scratch path for this section» as you reach them, before
@@ -824,6 +829,10 @@ Otherwise print, in this order:
    line, **every defect a subagent reported inside a `[refined]`
    block, quoted and by ID**. That line is the only route those defects have: the freeze stopped every
    role from repairing them, and Victor is the only reader who can reopen one. On its own line too,
+   **the IDs of the questions whose claims about the code a section reviewer corrected against the
+   source** — or `claims: none corrected` (`REC-328`): on a re-run those are answers Victor may already
+   have read as they stood, and the line says what was corrected, never that the rest is true. On its
+   own line too,
    **stage C's verdict on the twin and every suspected translation error it returned, by ID** — or the
    reason Phase 1c did not run. A twin nobody audited and a twin that passed look identical on disk, so
    this line is the only place the difference is stated. On its own line too, **every suspected factual

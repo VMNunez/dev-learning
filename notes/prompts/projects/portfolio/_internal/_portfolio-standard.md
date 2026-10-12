@@ -373,6 +373,24 @@ context walking Java.
 **Model answer:** 2–4 sentences, references the **actual implementation** (not a textbook
 definition), and uses "I chose" / "I decided" — not "it is used".
 
+**What a question or its answer says about the code is true, and the source is what settles it.** A
+count, a name, which file or class holds what, what calls what, what a method does — each is a claim
+about this project's code, and an answer can reference the actual implementation, in the right voice,
+with a wrong one in it: `05-task-manager`'s first bank said "all three `open()` sites" over a source
+holding four, in a section whose reviewer reported `1.00` (`REC-328`). The source decides, never
+`PLANNING.md` alone, which records what was planned. **A hosted setting no repository file holds is the
+exception, and it is not a claim about the code**: the canonical table sources it from `PLANNING.md`'s
+deployment step under `global` Technical Decisions, and it is never taken out for being absent from the
+source. The author states about the code only what it read there; the section reviewer — the one role of
+the pipeline asked to read an answer against the code — settles each such claim against the source,
+correcting a false one and reporting one inside a `[refined]` block. **That check reaches what a file of this project settles and nothing past it**: what
+a library, the framework, the browser or a tool does, where no file here shows it, is settled by no
+role, and the only channel that reports such a claim is the Spanish stages' *suspected* errors
+(`REC-330`). So
+no role and no report calls a section's answers verified. A bank whose `Last banked` date is earlier
+than 2026-10-12 was written before this check existed; its next run applies it to every question in the
+lanes that run walks.
+
 **Exhaustiveness — the highest-value rule.** Generate as many questions as there are real decisions and
 patterns to defend. **Do not cap at 5.** Cover every decision, every pattern, every business rule, and
 every testing choice that could come up in a 30-minute technical interview. *A thin file is a gap the

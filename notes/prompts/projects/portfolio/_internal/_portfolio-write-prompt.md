@@ -142,6 +142,14 @@ implementation choices, not generic technology questions. First **list every rea
 rule in your section's code area** (from the source + PLANNING.md); then write one question per decision
 so none is left undefended. Mine the source for the real code paths behind each.
 
+**State about the code only what you read in it.** The standard's quality bar makes the truth of those
+claims part of the answer: a count is counted in the source, a name is copied from the file, and what a
+method does is what its body shows. What your code area does not show about this project's code,
+neither the question nor its answer asserts — `PLANNING.md` records what was planned, not what the
+source holds; the one thing it is the record of is a hosted setting no repository file holds, which the
+canonical table sources from its deployment step. The reviewer settles every such claim against the
+source after you.
+
 Examples of the shape (adapt to the actual code):
 - "In TimeTrack, why does the service use `SecurityContextHolder` instead of the userId from the request body?"
 - "Your HR portal has three route guards. Walk me through when each fires and why you split them."
