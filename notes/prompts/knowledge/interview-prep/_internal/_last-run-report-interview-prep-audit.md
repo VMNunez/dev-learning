@@ -17,16 +17,24 @@
 3. **Failures & retries** — none. Two of the run's own verification commands were mis-written on the
    first try (an LF/CRLF comparison against the blob, a broken `sed` parity diff) and were re-run
    correctly before the commit; nothing was written on their output.
-4. **Rule friction and rule breaches** — none. Another session ran this prompt on `git` and `general`
-   in the same tree during this run (its `git` commit `58d5e59d` landed between this run's step 0 and its
-   topic commit), but the css pair was clean at step 0 and the report and tracker working copies were
-   clean at this close-out, so neither `REC-341` case recurred; the topic commit staged the pair alone.
+4. **Rule friction and rule breaches** — one deviation, `REC-341`'s case again (`BRCH-0009`). Another
+   session ran this prompt on `git` and `general` in the same tree (its `git` commit `58d5e59d` landed
+   between this run's step 0 and its topic commit). The tracker was clean when this run wrote its CSS
+   cell, but that session then wrote and staged its `Git` cell, so `git add` of the tracker swept both;
+   caught at the cached diff before the commit, the tracker was re-staged as `HEAD`'s blob plus the CSS
+   cell alone and the working copy, holding both cells, was left as it stood. Before this run could
+   commit, that session's `general` topic commit `01c9436b` took the whole index — this run's tracker
+   blob and its first report draft with it — so the CSS cell is in `HEAD` under that commit's message and
+   this commit carries the corrected report and the breach row only. The topic commit staged the css pair
+   alone and was unaffected.
 5. **Verdict** — pipeline clean. The prompt is 611 lines, over the ~500 alarm; its largest section is
    `### Per-section deep work` at 118 lines. No step was skipped, so the count is noted, not acted on.
 
-Close-out check: declared files — the `en/` + `es/` pair (`a278f642`), this report and `_run-tracker.md`;
-dispatches 0 of 0 required; the breach log holds no `fixed` / `confirmed` row to rule on, and its one
-`open` row (`BRCH-0008`, `shared`, one sighting) stays open; `_skill-friction.md` holds no `open` row. No
+Close-out check: declared files — the `en/` + `es/` pair (`a278f642`), `_run-tracker.md`'s CSS cell
+(landed in `01c9436b`, see bullet 4) and this report;
+dispatches 0 of 0 required; the breach log holds no `fixed` / `confirmed` row to rule on, its
+`BRCH-0008` (`shared`, one sighting) stays open, and `BRCH-0009` is routed to the `REC-341` row, which
+cites it; `_skill-friction.md` holds no `open` row. No
 fingerprint was written or deleted: neither file carries a `Coverage SHA-256` line, so the bank is still
 stale by definition and owes `MODE = full`. 75 questions unrefined, 0 refined, 0 studied; no study mark in
 the `es/` index; no `TODO:`. No authoring recount, which index mode excludes.
