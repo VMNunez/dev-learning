@@ -564,8 +564,10 @@ substitution):
 > frozen-kept counts**, the
 > totals, and any English question you believe is wrong — which you did not change. **Render the study
 > index with the header, on every scope, and mirror the anchor line above every bold question line
-> inside `SCOPE`, kept ones included** — the standard's "Study index and question anchors"; return, on
-> one line, the index's entries per pass and how many labels you rendered new against how many you kept.
+> inside `SCOPE`, kept ones included** — the standard's "Study index and question anchors"; **keep
+> every study mark Victor wrote at the end of an `es/` entry — whatever follows its link — byte-for-byte, on the same ID's entry
+> wherever it now stands**; return, on one line, the index's entries per pass, how many labels you
+> rendered new against how many you kept, and how many study marks you kept.
 
 **The changed-ID list is yours, computed by command before the dispatch** — only where the snapshot holds
 an `es/`, since a first translation has no stale Spanish. A **block** is a bold question line and every
@@ -601,11 +603,16 @@ heading added, dropped or renamed moves none of their numbers. **(e)** on every 
 the `es/` alone (`REC-333`): its study index agrees with **its own** bold question lines under the
 standard's order rule — every marked ID exactly once, under its marker's pass and its section, in
 ascending ID order, each table count equal to the entries under its pass, no label empty — and every
-in-lane bold question line has its anchor. The index half is whole-file on every scope, the index being
+in-lane bold question line has its anchor. **Against the snapshot `es/` too, where it holds one** (`REC-335`): every study
+mark its index carried — whatever followed an entry's link — ends the same ID's entry now, byte-for-byte, wherever the rebuild placed it; a
+marked ID with no bold line left in the `es/` is the one exception, and it is reported by ID with its mark
+rather than failed. The index half is whole-file on every scope, the index being
 header; it is tested against the file it sits in and never against the English one, since a twin
 legitimately lacks a section T was told to skip. Any failure
 means the twin is not done: re-dispatch T **once**, naming the exact sections or IDs that fail — or,
-for (d), the out-of-lane lines, with the snapshot's text for them. One retry maximum; if parity still
+for (d), the out-of-lane lines, with the snapshot's text for them, and for a lost study mark, the ID with
+the snapshot's mark verbatim, which T writes back at the end of that ID's entry — its retry reads its own
+first output, which no longer holds the mark. One retry maximum; if parity still
 fails, **this content acceptance gate has failed** — name the failing sections or IDs in the final report
 and record this project `blocked` in `_run-tracker.md`, on the dry branch too, exactly as a below-1
 ratio does in Phase 1a.
@@ -877,8 +884,10 @@ Otherwise print, in this order:
    evidence, labelled `owed a correction`** — or `factual errors: none reported` — and, beside each, the
    backlog task it was raised as or the reason it was dropped. On its own line too, **the study index as
    rebuilt** (`REC-333`) — its entries per pass in the `en/`, and in the `es/` where T rendered it (on
-   `TODO-STOPPED`, or a `BLOCKED` that did not reach it, say the twin's index was not rebuilt), how many labels this run wrote, and any
-   out-of-lane ID left without an anchor. **Also print
+   `TODO-STOPPED`, or a `BLOCKED` that did not reach it, say the twin's index was not rebuilt), how many labels this run wrote, any
+   out-of-lane ID left without an anchor, and every study-marked ID that left the twin or whose mark the
+   twin lost — a parity gate that failed, a `BLOCKED` twin, checked against the snapshot `es/` by the mark
+   half of test (e) — with the mark verbatim, so Victor can write it back (`REC-335`). **Also print
    the bank's `Last banked` line or lines as they now stand**, so what this walk added, and a tier still
    reading `never`, are visible at the moment the run ends rather than only inside the file.
 2. **Final verdict: ✅ Ready / ⚠️ Almost / ❌ Not ready** (with the checkbox list if ⚠️/❌). **Where
@@ -1013,7 +1022,8 @@ the diff.
   left byte-for-byte, the cross-section scan reports a boundary-straddling duplicate instead of removing
   it, and the header stamp moves only for the tiers actually banked. A run must never overwrite the half
   it did not read. **The study index is header and is rebuilt whole on every scope; an anchor is a byte
-  of its sub-heading and is set in-lane only** (`REC-333`).
+  of its sub-heading and is set in-lane only** (`REC-333`); **Victor's study marks in the `es/` index
+  survive every rebuild** (`REC-335`).
 - **Only `full` computes a verdict, and only a verdict signs G7.** A bank-only run prints no ✅/⚠️/❌,
   drafts no CV bullet or GitHub description, never touches the profile README, and never stages
   `notes/cv/cv-bullets.md`. It needs none of §23's chain, and it closes no gate.

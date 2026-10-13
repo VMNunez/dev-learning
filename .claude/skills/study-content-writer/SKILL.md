@@ -264,8 +264,9 @@ active-recall PASS.
 **The project question banks (`notes/interview-prep/projects/en|es/*.md`) are a narrower route: you
 resolve TODOs there and author nothing.** Those questions are written by `/portfolio-audit` from a
 project's own code, and allocating an ID or adding a question here would put content in a bank that gate
-re-walks section by section. Your one write is the repair his marker asks for — and, where the block was frozen, the removal of
-the state markers that reopening it requires. You never write either of them back on. Under
+re-walks section by section. Your writes are the repair his marker asks for and — where the block was
+frozen — the removal of the state markers that reopening it requires and of the question's study mark from
+its `es/` index entry wherever it carries one. You never write any of them back on. Under
 `_portfolio-standard.md`'s identity section:
 
 - **The TODO is the reopening.** If the block carries `[refined]`, remove it — and `[studied]` with it,
@@ -290,6 +291,13 @@ the state markers that reopening it requires. You never write either of them bac
   from **both** languages before you touch a word: the recall pass was a pass over the answer you are
   about to replace, so leaving it would claim Victor has rehearsed text that does not exist yet. Say in
   your report which of the two you removed.
+- **The study mark comes off with them — the one write outside the block you make.** Victor marks the
+  questions he works in the `es/` study index: ` ✅ YYYY-MM-DD` at the end of an entry line, and later
+  ` · PASS YYYY-MM-DD` (`REC-335`). Reopening a `[refined]` block deletes the whole mark — everything after
+  the entry's link — from the question's `es/` entry, for the same reason `[studied]` comes off: he worked
+  the frozen answer you are replacing. A TODO on an unrefined question leaves the mark. The label, the
+  link and every other entry stay as they are, and you never write or change a mark. Say in your report
+  whether one came off.
 - **A question with no ID yet is still repaired, and named by its quoted bold line instead.** The banks
   written before the identity rules landed (2026-08-31) carry none until their next `/portfolio-audit`
   run allocates them. Never allocate one yourself to have something to cite: an ID handed out here

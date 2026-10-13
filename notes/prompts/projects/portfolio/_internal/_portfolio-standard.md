@@ -492,7 +492,8 @@ improve them, and the improvement is a loss.
 
 **Only Victor reopens a refined question** — by saying so, or by writing a `TODO:` on it. Reopening
 removes **both state markers** from **both** languages before any edit — `[studied]` with `[refined]`,
-since a recall pass is a pass over the answer that is being replaced — and the repair runs **in the direction of
+since a recall pass is a pass over the answer that is being replaced, and the study mark on the question's
+`es/` index entry with them for the same reason ("Study index and question anchors", `REC-335`) — and the repair runs **in the direction of
 the file carrying the marker** (the bilingual contract stage T already reads): a marker in `es/` is
 answered in Spanish, in his words, and the `en/` twin is re-translated from that; a marker in `en/` runs
 the other way. The twin's re-translation belongs to the same reopening, so no writer leaves it stale on
@@ -705,7 +706,8 @@ marked, `/simulator` reads unmarked questions and its own Step 3 says how it ran
 ### Study index and question anchors
 
 **Every bank opens with a study index, and it is derived: nothing in it is authored but one short label
-per question.** Ruled by Victor 2026-10-13 (`REC-333`) on the index `07-timetrack`'s pair had gained by
+per question — and, in the `es/` index alone, the study mark Victor writes at the end of an entry
+(`REC-335`, below).** Ruled by Victor 2026-10-13 (`REC-333`) on the index `07-timetrack`'s pair had gained by
 hand (`57e7463e`), which is the model for every line below. It sits between the header's two intro lines
 and the first bank section, and it is **header**: a bank's header runs from its H1 to the line above its
 first bank section's `##` heading. So whatever this file says of the header — rendered on every scope,
@@ -731,7 +733,7 @@ Start with the first pass. Within each pass, follow the topics from top to botto
 
 Read the question, try to answer without looking, check the answer against your code and explain it again in your own words. In the next block, recall an earlier question without consulting its answer.
 
-Links lead to the original questions. The numbers are their identifiers, not the study order. This index supports independent study; it does not record passed questions.
+Links lead to the original questions. The numbers are their identifiers, not the study order. This index supports independent study. Record your progress in the Spanish index: ✅ and the date at the end of the line of each question you have worked on, then · PASS and the date when you pass it in a recall exam.
 
 <a id="study-pass-1"></a>
 
@@ -760,8 +762,9 @@ concepto de otra vuelta, consulta esa pregunta y vuelve al punto donde estabas.`
 `3. Detalles` · `Lee la pregunta, intenta responder sin mirar, contrasta la respuesta con tu código y
 vuelve a explicarla con tus palabras. En el siguiente bloque, recupera alguna pregunta anterior sin
 consultar la respuesta.` · `Los enlaces llevan a las preguntas originales. Los números son sus
-identificadores, no el orden de estudio. Este índice sirve para estudiar por tu cuenta; no registra
-preguntas superadas.` · `### Primera vuelta — Imprescindibles — ⭐⭐⭐` · `### Segunda vuelta —
+identificadores, no el orden de estudio. Este índice sirve para estudiar por tu cuenta. Registra aquí tu
+progreso: ✅ y la fecha al final de la línea de cada pregunta que hayas trabajado, y después · PASS y la
+fecha cuando la superes en un examen de repaso.` · `### Primera vuelta — Imprescindibles — ⭐⭐⭐` · `### Segunda vuelta —
 Profundización — ⭐⭐` · `### Tercera vuelta — Detalles — ⭐`. The bold group names are the bank's own
 Spanish section names.
 
@@ -776,17 +779,46 @@ priority marker has no entry until it gains one — the proportion scan already 
 language does not carry — a section stage T was told to skip, a tier the twin has not been rendered for
 yet — has no entry in that language's index, since its link would lead nowhere.
 
-**An entry is `- [NNN — label](#{PROJECT_NAME}-NNN)`**, `NNN` the ID's counter alone. **The label is a
+**An entry is `- [NNN — label](#{PROJECT_NAME}-NNN)`**, `NNN` the ID's counter alone — followed, in the
+`es/` index, by the study mark below wherever Victor has written one: for every run, **whatever follows the
+link's closing `)` on that line**, kept byte-for-byte, and never part of the label. **The label is a
 short name for the decision the question asks about — a handful of words, two to nine in the model** — a
 name read off the question's own bold line, never a claim about the code and never the answer. **It is written once, when its ID enters
 the index, and kept byte-for-byte by every later run, in both languages**: the ID stays with the decision
 however the question is reworded, so the label does too, and a label Victor edits by hand survives every
 rebuild. It leaves the index only when its question leaves the bank or loses its marker.
 
-**The index carries no state and gates nothing.** No `[refined]` and no `[studied]` is ever written into
-it — its own last sentence says so to the reader — and no route, recall block, counter or verdict reads
-it. It is **as current as the last run**: a marker Victor changes by hand, or a question a `TODO:` repair
-rewrites, moves nothing in it until the next run rebuilds it.
+**The index carries no question-state marker and gates nothing.** No `[refined]` and no `[studied]` is
+ever written into it, and no route, skill, counter or verdict reads it — only the conversation below reads
+its study marks. It is **as current as the last run**: a marker Victor changes by hand, or a question a
+`TODO:` repair rewrites, moves nothing in it until the next run rebuilds it — except that a reopening
+clears that question's study mark at once.
+
+**The study mark is Victor's: no run writes or changes it, and none drops it while its question stays in
+the twin** (`REC-335`, ruled 2026-10-13). An `es/` entry line may end with ` ✅ YYYY-MM-DD` — he worked the
+question on his own — and then, once he has passed it in a recall exam, ` · PASS YYYY-MM-DD`, the date of
+the last such pass, which the next one overwrites. He writes it, or an agent does on his say-so; it lives
+in the `es/` index alone, the side he studies, and the `en/` index carries none. **It is bound to its ID,
+not to its line**: a rebuild that moves the entry to another pass or section — a re-starred question, a
+deduped one — carries the mark to the end of the same ID's entry byte-for-byte, the way it keeps the
+label. It leaves on two events only. **A reopening** of a `[refined]` question — Victor's `TODO:` or word,
+under the identity section above — clears it in the same edit that removes the state markers, since the
+frozen answer he worked is the one being replaced; a `TODO:` on an unrefined question leaves it, as every
+run's rewrite of an unrefined answer does. **The question leaving the twin** takes its entry and the mark
+with it, and the run that removed it reports the ID with the mark verbatim. A `PASS` here is not
+`[studied]` and never becomes one: `[studied]` stays `study-block-close`'s, from the routed recall block.
+
+**How the marks are used is a conversation, not a component.** No skill serves, counts or gates on them:
+Victor asks an agent to examine him from the marked entries, and his 2026-10-13 rulings govern that exam.
+**Exam 1** asks only `⭐⭐⭐` entries carrying ✅; it is the one active today and always runs first.
+**Exam 2** asks `⭐⭐` and `⭐` entries carrying ✅, stays off until Victor switches it on — the agent says
+when a bank is ready for it: every `⭐⭐⭐` there carries a `PASS` — never displaces exam 1, and grades
+understanding rather than recall: an answer in his own words from his code is a `PASS`, with no bar on
+completeness or wording. An exam's **pool** is its entries with ✅ and no `PASS`, served **oldest ✅ date
+first**; a session is owed once roughly 20–25 sit in it. A `FAIL` or `BORDERLINE` on a pool question
+writes nothing, so the miss stays at the head of the pool; a `PASS` writes or overwrites the `PASS` date.
+Each session also re-asks 2–3 questions whose last `PASS` is at least about two weeks old; one that now
+scores `FAIL` or `BORDERLINE` loses its ` · PASS …`, which puts it back in the pool under its old ✅ date.
 
 **Every question has an anchor: one `<a id="{PROJECT_NAME}-NNN"></a>` line above its bold line, one blank
 line between them**, which is what its entry links to. The anchor is **not part of the question block**
@@ -804,10 +836,11 @@ counts, an ID allocation, the route's inventory fingerprint — is taken over bo
 at the end of Phase 1a, beside the header stamp and for the same reason — stage T must render a header
 that is already current. Everything in the rebuild is read off the bold lines by command except the label
 of an ID entering the index, which is the one thing the orchestrator writes there. Stage T renders the
-`es/` index on every scope, over the questions the `es/` carries, keeping every Spanish label the twin
-already holds and rendering only a new one, and mirrors the anchors inside its lane. **No author, section
-reviewer or Spanish reviewer writes an anchor, an entry or a label**, and `study-content-writer`'s TODO
-repair touches neither. A bank written before this rule carries no index and no anchor, and gains both on
+`es/` index on every scope, over the questions the `es/` carries, keeping every Spanish label and every
+study mark the twin already holds and rendering only a new label, and mirrors the anchors inside its lane.
+**No author, section reviewer or Spanish reviewer writes an anchor, an entry, a label or a study mark**,
+and `study-content-writer`'s TODO repair touches none of them but one: on a reopening it clears that
+question's study mark. A bank written before this rule carries no index and no anchor, and gains both on
 its next run under it.
 
 ---

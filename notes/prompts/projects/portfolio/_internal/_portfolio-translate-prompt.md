@@ -161,7 +161,10 @@ section you were told to skip, a tier not rendered yet) has no entry: its link w
 label is the only prose in it.** Where the existing `es/` index already holds a label for an ID, keep it
 byte-for-byte, whatever the English one reads now; otherwise render the English label as a short Spanish
 name for the same decision, identifiers verbatim. The three `study-…` anchor lines and every link target
-are copied, never translated.
+are copied, never translated. **Keep every study mark too** (`REC-335`): whatever follows an `es/`
+entry's link on its line — normally ` ✅ YYYY-MM-DD`, then ` · PASS YYYY-MM-DD` — is Victor's mark, bound to its ID, so it
+ends the same ID's entry wherever your rebuild places it, byte-for-byte. You never write, change or drop
+one; a marked ID your `es/` no longer carries is reported by ID with its mark.
 
 **Mirror the anchor above every bold question line inside `{SCOPE}` — rendered, re-synced or kept
 byte-for-byte alike** — the `<a id="…"></a>` line, verbatim, one blank line between it and the bold line. It is not part of the question block, so writing one above a
@@ -261,7 +264,8 @@ counts you still report because a mismatch there is the one signal that half of 
 behind. The two counts must be equal for every row you wrote, and the frozen count is
 part of the trace because a frozen block you silently re-rendered is invisible in a count that only
 compares totals. **The study index is header, not a section, and has no row here**: report it on one line
-of its own — entries per pass, and how many labels you rendered new against how many you kept. A report without this trace is not accepted — it is your proof
+of its own — entries per pass, how many labels you rendered new against how many you kept, and how many
+study marks you kept. A report without this trace is not accepted — it is your proof
 you reached the last question instead of stopping in the middle of a long bank.
 
 ---
