@@ -1,8 +1,170 @@
 # Spring Boot — Interview Questions
 
+<a id="study-index"></a>
+
+## Study index
+
+Start with the first pass. Within each pass, follow the topics from top to bottom and work through a small group of questions at a time. If a question needs a concept from another pass, consult that question and then return to where you were.
+
+| Pass | Priority | Questions |
+|---|---|---:|
+| [1. Essentials](#study-pass-1) | ⭐⭐⭐ | 24 |
+| [2. Deeper understanding](#study-pass-2) | ⭐⭐ | 41 |
+| [3. Details](#study-pass-3) | ⭐ | 5 |
+
+Read the question, try to answer without looking, check your answer against the written one and explain it again in your own words. In the next block, recall an earlier question without consulting its answer.
+
+Links lead to the original questions. The numbers are their identifiers, not the study order. This index supports independent study. Record your progress in the Spanish index: ✅ and the date at the end of the line of each question you have worked on, then · PASS and the date when you pass it in a recall exam.
+
+<a id="study-pass-1"></a>
+
+### First pass — Essentials — ⭐⭐⭐
+
+**Spring Boot basics**
+
+- [001 — What Spring Boot is and why companies use it](#SB-J-001)
+- [002 — What auto-configuration is](#SB-J-002)
+- [003 — Constructor injection versus field @Autowired](#SB-J-003)
+- [004 — @Transactional and where it goes](#SB-J-004)
+- [005 — Lombok's @Data and the service-class annotation](#SB-J-005)
+
+**REST controllers**
+
+- [014 — @Controller versus @RestController](#SB-J-014)
+- [015 — @PathVariable versus @RequestParam](#SB-J-015)
+- [016 — Layered architecture in Spring Boot](#SB-J-016)
+- [017 — DTOs versus returning JPA entities](#SB-J-017)
+- [018 — CORS and the Angular CORS error](#SB-J-018)
+
+**Spring Data JPA**
+
+- [027 — JPA versus Hibernate](#SB-J-027)
+- [028 — What JpaRepository gives you](#SB-J-028)
+- [029 — FetchType.LAZY versus FetchType.EAGER](#SB-J-029)
+- [030 — The N+1 problem](#SB-J-030)
+- [031 — Mapping an enum with @Enumerated(EnumType.STRING)](#SB-J-031)
+
+**Security and JWT**
+
+- [042 — How JWT authentication works](#SB-J-042)
+- [043 — SecurityFilterChain and what it configures](#SB-J-043)
+- [044 — Authentication versus authorization](#SB-J-044)
+- [045 — BCryptPasswordEncoder and plain-text passwords](#SB-J-045)
+- [046 — JWT versus server-side sessions](#SB-J-046)
+
+**Exception handling**
+
+- [056 — @ControllerAdvice and when to use it](#SB-J-056)
+
+**Testing**
+
+- [063 — @SpringBootTest and when to use it](#SB-J-063)
+- [064 — Mockito and @MockBean](#SB-J-064)
+
+**Tooling**
+
+- [069 — Containerising a Spring Boot application](#SB-J-069)
+
+<a id="study-pass-2"></a>
+
+### Second pass — Deeper understanding — ⭐⭐
+
+**Spring Boot basics**
+
+- [006 — What @SpringBootApplication does](#SB-J-006)
+- [007 — What application.properties is for](#SB-J-007)
+- [008 — ddl-auto options per environment](#SB-J-008)
+- [009 — Why Spring Boot for project 07](#SB-J-009)
+- [010 — LAZY relationship outside a transaction](#SB-J-010)
+- [011 — @Bean methods in a @Configuration class](#SB-J-011)
+- [012 — Separate configuration for development and production](#SB-J-012)
+
+**REST controllers**
+
+- [019 — Why return ResponseEntity](#SB-J-019)
+- [020 — @RequestBody and how it works](#SB-J-020)
+- [021 — @Service and @Repository versus @Component](#SB-J-021)
+- [022 — @PatchMapping versus @PutMapping](#SB-J-022)
+- [023 — Converting an entity to a DTO](#SB-J-023)
+- [024 — Bean Validation annotations and @Valid](#SB-J-024)
+- [025 — Keeping the password hash out of the JSON](#SB-J-025)
+
+**Spring Data JPA**
+
+- [032 — What a derived query method is](#SB-J-032)
+- [033 — Derived query method versus @Query](#SB-J-033)
+- [034 — How save() chooses insert or update](#SB-J-034)
+- [035 — @OneToMany versus @ManyToOne](#SB-J-035)
+- [036 — Minimum annotations of a JPA entity](#SB-J-036)
+- [037 — Hundreds of SELECTs for one list request](#SB-J-037)
+- [038 — Pageable and when to use it](#SB-J-038)
+- [039 — Why the User entity needs @Table](#SB-J-039)
+- [040 — CascadeType.ALL versus orphanRemoval](#SB-J-040)
+- [041 — Soft delete versus deleting the row](#SB-J-041)
+
+**Security and JWT**
+
+- [047 — Disabling CSRF in a REST API](#SB-J-047)
+- [048 — @PreAuthorize and when to use it](#SB-J-048)
+- [049 — Where the JWT secret is stored](#SB-J-049)
+- [050 — What a JWT contains and generateToken()](#SB-J-050)
+- [051 — 401 Unauthorized versus 403 Forbidden](#SB-J-051)
+- [052 — UserDetailsService and why implement it](#SB-J-052)
+- [053 — Stateless session management](#SB-J-053)
+- [054 — Invalidating a JWT before it expires](#SB-J-054)
+
+**Exception handling**
+
+- [057 — Extending RuntimeException versus Exception](#SB-J-057)
+- [058 — try/catch in every controller method](#SB-J-058)
+
+**Transactions**
+
+- [060 — @Transactional(readOnly = true) on read methods](#SB-J-060)
+- [061 — @Transactional on private methods](#SB-J-061)
+- [062 — Catching a RuntimeException inside @Transactional](#SB-J-062)
+
+**Testing**
+
+- [065 — What @WebMvcTest is](#SB-J-065)
+- [066 — @WebMvcTest versus @SpringBootTest for a controller](#SB-J-066)
+- [067 — @DataJpaTest and when to use it](#SB-J-067)
+
+**Tooling**
+
+- [070 — Flyway versus ddl-auto=update](#SB-J-070)
+
+<a id="study-pass-3"></a>
+
+### Third pass — Details — ⭐
+
+**Spring Boot basics**
+
+- [013 — Failed to configure a DataSource at startup](#SB-J-013)
+
+**REST controllers**
+
+- [026 — POST returning 200 instead of 201](#SB-J-026)
+
+**Security and JWT**
+
+- [055 — JWT filter rejecting valid tokens](#SB-J-055)
+
+**Exception handling**
+
+- [059 — MethodArgumentNotValidException versus ConstraintViolationException](#SB-J-059)
+
+**Testing**
+
+- [068 — @WebMvcTest passing, integration test failing](#SB-J-068)
+
+---
+
 ## Spring Boot basics
 
-**What is Spring Boot and why do companies use it instead of plain Spring?** ⭐⭐⭐
+<a id="SB-J-001"></a>
+
+**[SB-J-001] What is Spring Boot and why do companies use it instead of plain Spring?** ⭐⭐⭐
 
 Spring Boot is a framework built on top of Spring that removes manual configuration — it auto-configures the application based on the dependencies in the pom.xml and includes an embedded Tomcat server. Companies use it because a new project is ready to run in minutes instead of days of XML setup.
 
@@ -11,7 +173,9 @@ Spring Boot is a framework built on top of Spring that removes manual configurat
 
 ---
 
-**What is auto-configuration in Spring Boot?** ⭐⭐⭐
+<a id="SB-J-002"></a>
+
+**[SB-J-002] What is auto-configuration in Spring Boot?** ⭐⭐⭐
 
 Auto-configuration reads the classpath and configures beans automatically. If spring-boot-starter-data-jpa is in the pom.xml, Spring Boot creates the DataSource, EntityManagerFactory, and transaction manager without any extra code from you. You can override any auto-configured bean by defining your own.
 
@@ -20,7 +184,9 @@ Auto-configuration reads the classpath and configures beans automatically. If sp
 
 ---
 
-**Why use constructor injection instead of @Autowired on a field?** ⭐⭐⭐
+<a id="SB-J-003"></a>
+
+**[SB-J-003] Why use constructor injection instead of @Autowired on a field?** ⭐⭐⭐
 
 Three reasons: the field can be `final` (cannot be changed after injection), the dependencies are visible in the constructor signature (you see exactly what the class needs), and the class is easy to unit test (pass a mock in the constructor without needing a Spring context at all). Since Spring Framework 4.3, if a class has a single constructor, @Autowired is not even required.
 
@@ -28,7 +194,9 @@ Red flag answer: "I always use @Autowired on fields because it is simpler." That
 
 ---
 
-**What is @Transactional and where do you put it?** ⭐⭐⭐
+<a id="SB-J-004"></a>
+
+**[SB-J-004] What is @Transactional and where do you put it?** ⭐⭐⭐
 
 @Transactional wraps a service method in a database transaction — either all operations succeed together, or none do and everything is rolled back. It goes on service methods, not on controllers or repositories. Repositories already manage their own transactions. In project 07 I use @Transactional on service methods that do more than one database write, so a partial failure does not leave the database in an inconsistent state.
 
@@ -39,7 +207,9 @@ Red flag answer: "I put it on the controller." That shows a misunderstanding of 
 
 ---
 
-**What does Lombok's `@Data` generate, and which Lombok annotation do you use on a service class?** ⭐⭐⭐
+<a id="SB-J-005"></a>
+
+**[SB-J-005] What does Lombok's `@Data` generate, and which Lombok annotation do you use on a service class?** ⭐⭐⭐
 
 `@Data` generates getters, setters, `toString()`, `equals()`, and `hashCode()` for all fields — it removes the boilerplate from DTOs. On a service class I use `@RequiredArgsConstructor` instead: it generates a constructor with only the `private final` fields, which is exactly what constructor injection needs — Spring injects the dependencies through it with no `@Autowired`. I also use `@Slf4j` to get a ready `log` field for `log.info()` / `log.error()`. In project 07 entities use `@Getter`/`@Setter`, services use `@RequiredArgsConstructor`.
 
@@ -48,7 +218,9 @@ Red flag answer: "I put it on the controller." That shows a misunderstanding of 
 
 ---
 
-**What does @SpringBootApplication do?** ⭐⭐
+<a id="SB-J-006"></a>
+
+**[SB-J-006] What does @SpringBootApplication do?** ⭐⭐
 
 It combines three annotations: @Configuration (marks the class as a source of Spring beans), @EnableAutoConfiguration (activates auto-configuration based on the classpath), and @ComponentScan (scans the current package and sub-packages for components). Every Spring Boot application has exactly one class with this annotation — it is the entry point.
 
@@ -57,7 +229,9 @@ It combines three annotations: @Configuration (marks the class as a source of Sp
 
 ---
 
-**What is application.properties used for?** ⭐⭐
+<a id="SB-J-007"></a>
+
+**[SB-J-007] What is application.properties used for?** ⭐⭐
 
 It is the central configuration file — database URL, server port, JWT secret, Hibernate DDL mode. In project 07 I store the PostgreSQL connection, server port 8080, and JWT configuration there. In production, secrets are replaced with environment variables so they are not committed to the git repository.
 
@@ -66,7 +240,9 @@ It is the central configuration file — database URL, server port, JWT secret, 
 
 ---
 
-**What are the options for spring.jpa.hibernate.ddl-auto and which one do you use in each environment?** ⭐⭐
+<a id="SB-J-008"></a>
+
+**[SB-J-008] What are the options for spring.jpa.hibernate.ddl-auto and which one do you use in each environment?** ⭐⭐
 
 The main options are: `update` (adds new columns, never drops — safe for development), `create` (drops all tables and recreates on every startup — destroys all data), `validate` (checks the schema matches the entity and fails if not — useful in production to catch drift), and `none` (does nothing — used when you manage the schema with a migration tool like Flyway). In project 07 I use `update` during development so the schema evolves as I add entities, and would switch to `validate` or `none` in production.
 
@@ -77,7 +253,9 @@ Red flag answer: "I always use `create` — it is easier to develop with." That 
 
 ---
 
-**Why did you choose Spring Boot instead of plain Spring for project 07?** ⭐⭐
+<a id="SB-J-009"></a>
+
+**[SB-J-009] Why did you choose Spring Boot instead of plain Spring for project 07?** ⭐⭐
 
 Plain Spring requires XML configuration, explicit bean declarations, and a separately installed server. Spring Boot eliminates all of that — I could start writing REST endpoints immediately after generating the project on start.spring.io. For a portfolio project built to demonstrate full-stack skills, removing the setup ceremony is the right decision.
 
@@ -85,7 +263,9 @@ Red flag answer: "Because the tutorial used Spring Boot." That shows you followe
 
 ---
 
-**What happens when you access a LAZY relationship outside a transaction?** ⭐⭐
+<a id="SB-J-010"></a>
+
+**[SB-J-010] What happens when you access a LAZY relationship outside a transaction?** ⭐⭐
 
 You get a LazyInitializationException — the Hibernate session is already closed, so it cannot execute the extra query to load the relationship. The correct fix is to convert the entity to a DTO inside the @Transactional service method, while the session is still open — not to access lazy fields in the controller after the session has closed.
 
@@ -94,7 +274,9 @@ You get a LazyInitializationException — the Hibernate session is already close
 
 ---
 
-**What is a `@Bean` method in a `@Configuration` class and why did you need one for `BCryptPasswordEncoder`?** ⭐⭐
+<a id="SB-J-011"></a>
+
+**[SB-J-011] What is a `@Bean` method in a `@Configuration` class and why did you need one for `BCryptPasswordEncoder`?** ⭐⭐
 
 `@Bean` registers an object Spring should manage when you cannot put `@Component` on the class — typically a class from a library. `BCryptPasswordEncoder` comes from Spring Security, so I cannot annotate its source; instead I write a method that returns `new BCryptPasswordEncoder()` and annotate the method with `@Bean` inside `SecurityConfig`. Spring then injects that single instance anywhere a `PasswordEncoder` is needed. I do the same for the `AuthenticationManager`.
 
@@ -103,7 +285,9 @@ You get a LazyInitializationException — the Hibernate session is already close
 
 ---
 
-**How do you keep different configuration for development and production in Spring Boot?** ⭐⭐
+<a id="SB-J-012"></a>
+
+**[SB-J-012] How do you keep different configuration for development and production in Spring Boot?** ⭐⭐
 
 With profiles: `application.properties` holds shared config, and `application-dev.properties` / `application-prod.properties` hold per-environment overrides. You activate one with `spring.profiles.active=dev`. Production secrets are not written in any file — they come from environment variables referenced as `${JWT_SECRET}`, and the app fails fast at startup if the variable is missing, which is safer than a silent null at runtime. This lets the same jar run in any environment without recompiling.
 
@@ -112,14 +296,18 @@ With profiles: `application.properties` holds shared config, and `application-de
 
 ---
 
-**The app fails to start with "Failed to configure a DataSource" — what do you check first?** ⭐
+<a id="SB-J-013"></a>
+
+**[SB-J-013] The app fails to start with "Failed to configure a DataSource" — what do you check first?** ⭐
 
 I check application.properties — the database URL, username, and password. If those are correct, I check if PostgreSQL is running and the database exists. The most common cause is a missing or incorrect spring.datasource.url. If spring-boot-starter-data-jpa is in the pom.xml but no DataSource is configured, Spring Boot cannot start.
 
 ---
 ## REST controllers
 
-**What is the difference between @Controller and @RestController?** ⭐⭐⭐
+<a id="SB-J-014"></a>
+
+**[SB-J-014] What is the difference between @Controller and @RestController?** ⭐⭐⭐
 
 @Controller is for applications that return HTML views. @RestController combines @Controller and @ResponseBody — every method returns data directly as JSON without a view layer. In project 07 I use @RestController for all endpoints because the backend is a pure REST API consumed by Angular.
 
@@ -128,7 +316,9 @@ I check application.properties — the database URL, username, and password. If 
 
 ---
 
-**What is the difference between @PathVariable and @RequestParam?** ⭐⭐⭐
+<a id="SB-J-015"></a>
+
+**[SB-J-015] What is the difference between @PathVariable and @RequestParam?** ⭐⭐⭐
 
 @PathVariable reads a value from the URL path: GET /transactions/{id} — the id is part of the URL structure. @RequestParam reads from query parameters: GET /transactions?category=food — it comes after the ?. The convention: @PathVariable for resource identifiers (mandatory), @RequestParam for optional filters.
 
@@ -137,7 +327,9 @@ I check application.properties — the database URL, username, and password. If 
 
 ---
 
-**What is the layered architecture in Spring Boot and why does it matter?** ⭐⭐⭐
+<a id="SB-J-016"></a>
+
+**[SB-J-016] What is the layered architecture in Spring Boot and why does it matter?** ⭐⭐⭐
 
 The three layers are controller (handles HTTP), service (all business logic), and repository (database access). Each layer only calls the layer directly below it. In project 07 the TransactionController never touches the repository — if the business logic changes, I only change the service. This is separation of concerns.
 
@@ -148,7 +340,9 @@ Red flag answer: "I put everything in the controller because it is simpler." Tha
 
 ---
 
-**Why use DTOs instead of returning JPA entities directly from the controller?** ⭐⭐⭐
+<a id="SB-J-017"></a>
+
+**[SB-J-017] Why use DTOs instead of returning JPA entities directly from the controller?** ⭐⭐⭐
 
 Entities are tied to the database schema — they can expose fields you should not send to the client (password hash, internal foreign keys, lazy-loaded collections). DTOs let you control exactly what the API returns. In project 07 the Transaction entity has a user field with the full User object — the TransactionDTO exposes only the fields the Angular frontend actually needs.
 
@@ -156,7 +350,9 @@ Red flag answer: "I return entities because it is less code." Entities can cause
 
 ---
 
-**What is CORS and why does your Angular app get a CORS error when calling the Spring Boot API?** ⭐⭐⭐
+<a id="SB-J-018"></a>
+
+**[SB-J-018] What is CORS and why does your Angular app get a CORS error when calling the Spring Boot API?** ⭐⭐⭐
 
 CORS (Cross-Origin Resource Sharing) is a browser security policy that blocks JavaScript from calling a server on a different origin. The Angular dev server runs on localhost:4200 and the Spring Boot API runs on localhost:8080 — different ports mean different origins. The fix is to configure Spring Boot to allow requests from localhost:4200 using a CorsConfigurationSource bean in the SecurityFilterChain configuration.
 
@@ -167,7 +363,9 @@ Red flag answer: "I added @CrossOrigin to every controller." That works but it i
 
 ---
 
-**Why do you return ResponseEntity instead of the object directly?** ⭐⭐
+<a id="SB-J-019"></a>
+
+**[SB-J-019] Why do you return ResponseEntity instead of the object directly?** ⭐⭐
 
 ResponseEntity lets you set the HTTP status code explicitly. Returning just an object always gives 200. With ResponseEntity I can return 201 when something is created, 204 when a delete succeeds, or 404 when something is not found. In project 07 every controller method returns ResponseEntity so the Angular frontend knows exactly what happened.
 
@@ -175,7 +373,9 @@ Red flag answer: "I just return the object — Spring handles the rest." That sh
 
 ---
 
-**What is @RequestBody and how does it work?** ⭐⭐
+<a id="SB-J-020"></a>
+
+**[SB-J-020] What is @RequestBody and how does it work?** ⭐⭐
 
 @RequestBody tells Spring to read the HTTP request body and convert it from JSON to a Java object using Jackson, the JSON library Spring Boot includes automatically. The JSON field names must match the Java field names. In project 07 POST /transactions receives a TransactionCreateDTO via @RequestBody.
 
@@ -184,7 +384,9 @@ Red flag answer: "I just return the object — Spring handles the rest." That sh
 
 ---
 
-**Why use @Service and @Repository instead of @Component for everything?** ⭐⭐
+<a id="SB-J-021"></a>
+
+**[SB-J-021] Why use @Service and @Repository instead of @Component for everything?** ⭐⭐
 
 All three register the class as a Spring bean, but the semantic difference matters. @Repository also translates JPA exceptions into Spring's DataAccessException hierarchy so the service never needs to handle Hibernate-specific errors. Using the right annotation makes the code self-documenting — any developer can identify the layer immediately.
 
@@ -193,7 +395,9 @@ All three register the class as a Spring bean, but the semantic difference matte
 
 ---
 
-**What is the difference between @PatchMapping and @PutMapping, and when do you use each?** ⭐⭐
+<a id="SB-J-022"></a>
+
+**[SB-J-022] What is the difference between @PatchMapping and @PutMapping, and when do you use each?** ⭐⭐
 
 @PutMapping replaces the entire resource — the client sends all fields, even the ones that did not change. @PatchMapping updates only the fields provided — the rest stay unchanged. In project 07 I use @PutMapping for full form edits where the frontend always sends the complete object, and @PatchMapping for single-field updates like marking a transaction as reconciled. Most CRUD apps use @PutMapping by default; @PatchMapping is correct when only part of the data is being changed.
 
@@ -202,7 +406,9 @@ All three register the class as a Spring bean, but the semantic difference matte
 
 ---
 
-**How do you convert a JPA entity to a DTO in the service layer?** ⭐⭐
+<a id="SB-J-023"></a>
+
+**[SB-J-023] How do you convert a JPA entity to a DTO in the service layer?** ⭐⭐
 
 I create the DTO directly in the service method using the DTO's constructor. In project 07, because TransactionDTO is a Java record, I call `new TransactionDTO(entity.getId(), entity.getAmount(), entity.getDescription(), entity.getDate(), entity.getCategory())` inside the service. If the same conversion is needed in multiple places, I extract it into a private static helper method on the service. A separate mapper class or MapStruct only makes sense when conversions are shared across many services.
 
@@ -213,7 +419,9 @@ Red flag answer: "I return the entity directly — it is less code." Entities ex
 
 ---
 
-**What Bean Validation annotations do you use on request DTOs and what does @Valid trigger?** ⭐⭐
+<a id="SB-J-024"></a>
+
+**[SB-J-024] What Bean Validation annotations do you use on request DTOs and what does @Valid trigger?** ⭐⭐
 
 Common annotations: @NotNull (value cannot be null), @NotBlank (string cannot be null or empty — preferred for strings), @Size(min, max) (length), @Min/@Max (number range), @Email (valid email format). @Valid on a @RequestBody parameter tells Spring to run all validations before the controller method executes — if any constraint fails, Spring throws MethodArgumentNotValidException and @ControllerAdvice maps it to 400.
 
@@ -222,7 +430,9 @@ Common annotations: @NotNull (value cannot be null), @NotBlank (string cannot be
 
 ---
 
-**How do you stop your API from ever returning the password hash in the JSON response?** ⭐⭐
+<a id="SB-J-025"></a>
+
+**[SB-J-025] How do you stop your API from ever returning the password hash in the JSON response?** ⭐⭐
 
 Two layers. The main one is using DTOs — the response DTO simply has no password field, so it cannot leak. As a defensive backup on the entity itself, `@JsonIgnore` on the `password` field tells Jackson to never serialize it, even if an entity is accidentally returned somewhere. In project 07 the User entity's password is hashed with BCrypt and never appears in any response DTO.
 
@@ -231,14 +441,18 @@ Two layers. The main one is using DTOs — the response DTO simply has no passwo
 
 ---
 
-**A POST endpoint always returns 200 instead of 201 — what did you forget?** ⭐
+<a id="SB-J-026"></a>
+
+**[SB-J-026] A POST endpoint always returns 200 instead of 201 — what did you forget?** ⭐
 
 I forgot to return ResponseEntity.status(201).body(created). Returning the object directly or using ResponseEntity.ok() always gives 200. The fix is explicit in the controller's return statement.
 
 ---
 ## Spring Data JPA
 
-**What is the difference between JPA and Hibernate?** ⭐⭐⭐
+<a id="SB-J-027"></a>
+
+**[SB-J-027] What is the difference between JPA and Hibernate?** ⭐⭐⭐
 
 JPA (Jakarta Persistence API) is the specification — it defines the standard annotations (@Entity, @Id, @ManyToOne) and interfaces. Hibernate is the most common implementation — it translates those annotations into SQL. Spring Boot uses Hibernate by default. You write against the JPA spec; Hibernate executes the queries.
 
@@ -247,7 +461,9 @@ JPA (Jakarta Persistence API) is the specification — it defines the standard a
 
 ---
 
-**What does JpaRepository give you for free?** ⭐⭐⭐
+<a id="SB-J-028"></a>
+
+**[SB-J-028] What does JpaRepository give you for free?** ⭐⭐⭐
 
 Extending JpaRepository<Transaction, Long> gives you save(), findById(), findAll(), findAllById(), deleteById(), count(), and existsById() without writing any code. Spring Data JPA generates the implementation at startup. You only write additional methods when the built-in ones are not enough.
 
@@ -256,7 +472,9 @@ Extending JpaRepository<Transaction, Long> gives you save(), findById(), findAll
 
 ---
 
-**Why do you use FetchType.LAZY instead of FetchType.EAGER?** ⭐⭐⭐
+<a id="SB-J-029"></a>
+
+**[SB-J-029] Why do you use FetchType.LAZY instead of FetchType.EAGER?** ⭐⭐⭐
 
 LAZY loads the related entity only when you access it in code. EAGER loads it immediately with the parent, even when you do not need it. EAGER can trigger unexpected extra queries and load large object graphs. In project 07 I use LAZY on all relationships — when I query transactions, I do not automatically load the full User object with every row.
 
@@ -264,13 +482,17 @@ Red flag answer: "I always use EAGER because it is simpler." That shows no aware
 
 ---
 
-**What is the N+1 problem?** ⭐⭐⭐
+<a id="SB-J-030"></a>
+
+**[SB-J-030] What is the N+1 problem?** ⭐⭐⭐
 
 The N+1 problem happens when you load N entities and then access a lazy relationship on each one — that triggers N additional queries. Loading 100 transactions and calling transaction.getUser().getName() in a loop sends 100 extra SELECT queries to the database. The fix is JOIN FETCH in a @Query to load both entities in one query instead of N+1.
 
 ---
 
-**How do you map an enum field to the database, and why is `@Enumerated(EnumType.STRING)` the safe choice?** ⭐⭐⭐
+<a id="SB-J-031"></a>
+
+**[SB-J-031] How do you map an enum field to the database, and why is `@Enumerated(EnumType.STRING)` the safe choice?** ⭐⭐⭐
 
 You annotate the field with `@Enumerated`. The default is `EnumType.ORDINAL`, which stores the enum's position number (0, 1, 2). The problem: if you later insert a new value in the middle of the enum, every existing row's number now points to the wrong constant — the data is silently corrupted. `EnumType.STRING` stores the name (`DRAFT`, `SUBMITTED`), so reordering or inserting values is safe. I always use `@Enumerated(EnumType.STRING)`.
 
@@ -279,13 +501,17 @@ You annotate the field with `@Enumerated`. The default is `EnumType.ORDINAL`, wh
 
 ---
 
-**What is a derived query method in Spring Data JPA?** ⭐⭐
+<a id="SB-J-032"></a>
+
+**[SB-J-032] What is a derived query method in Spring Data JPA?** ⭐⭐
 
 A derived query method is a method you declare in the repository whose name Spring Data JPA parses to generate the SQL automatically. findByCategory(String category) generates SELECT * FROM transactions WHERE category = ?. You can combine conditions with And/Or, add ordering with OrderBy, and count with countBy. In project 07 I use findByUserAndDateBetween to get a user's transactions in a date range.
 
 ---
 
-**When is a derived query method not enough and you need @Query?** ⭐⭐
+<a id="SB-J-033"></a>
+
+**[SB-J-033] When is a derived query method not enough and you need @Query?** ⭐⭐
 
 When the logic cannot be expressed through method naming — for example, joining multiple tables, using aggregate functions, or loading a related entity with JOIN FETCH to avoid the N+1 problem. In project 07 I use @Query when the derived method name would become unreadably long or when I need to control exactly which relationships are loaded.
 
@@ -294,7 +520,9 @@ When the logic cannot be expressed through method naming — for example, joinin
 
 ---
 
-**How does save() know whether to insert or update?** ⭐⭐
+<a id="SB-J-034"></a>
+
+**[SB-J-034] How does save() know whether to insert or update?** ⭐⭐
 
 save() checks the @Id field. If it is null, JPA inserts a new row. If it has an existing value, JPA merges (updates) the existing row. You do not need separate insert() and update() methods.
 
@@ -303,7 +531,9 @@ save() checks the @Id field. If it is null, JPA inserts a new row. If it has an 
 
 ---
 
-**What is the difference between @OneToMany and @ManyToOne, and how do you decide which goes where?** ⭐⭐
+<a id="SB-J-035"></a>
+
+**[SB-J-035] What is the difference between @OneToMany and @ManyToOne, and how do you decide which goes where?** ⭐⭐
 
 @ManyToOne goes on the entity whose database table has the foreign key column. In project 07 the transactions table has a user_id column, so the Transaction entity has @ManyToOne pointing to User. @OneToMany is the other side — User has @OneToMany(mappedBy = "user") pointing to its transactions. The foreign key column in the database determines where @ManyToOne goes.
 
@@ -312,7 +542,9 @@ save() checks the @Id field. If it is null, JPA inserts a new row. If it has an 
 
 ---
 
-**What annotations does a JPA entity need at minimum?** ⭐⭐
+<a id="SB-J-036"></a>
+
+**[SB-J-036] What annotations does a JPA entity need at minimum?** ⭐⭐
 
 @Entity on the class, @Id on the primary key field, and @GeneratedValue(strategy = GenerationType.IDENTITY) to let the database auto-increment the id using a SERIAL column in PostgreSQL. Everything else (@Table, @Column) is optional configuration.
 
@@ -321,13 +553,17 @@ save() checks the @Id field. If it is null, JPA inserts a new row. If it has an 
 
 ---
 
-**Your app logs hundreds of SELECT queries for a single list request — what happened?** ⭐⭐
+<a id="SB-J-037"></a>
+
+**[SB-J-037] Your app logs hundreds of SELECT queries for a single list request — what happened?** ⭐⭐
 
 This is the N+1 problem. The query loads entities and then each access to a lazy relationship triggers a separate SELECT. I would identify which relationship is LAZY, then fix it with JOIN FETCH in a @Query on the repository method to load everything in one query.
 
 ---
 
-**What is Pageable in Spring Data JPA and when would you use it?** ⭐⭐
+<a id="SB-J-038"></a>
+
+**[SB-J-038] What is Pageable in Spring Data JPA and when would you use it?** ⭐⭐
 
 Pageable lets you load a slice of data instead of the full table — you pass a page number and page size, and the repository returns a Page<T> with the results, total count, and metadata. In project 07 I add pagination to GET /transactions so the Angular frontend can load 20 transactions at a time instead of the full history. The repository method signature becomes Page<Transaction> findAll(Pageable pageable).
 
@@ -338,7 +574,9 @@ Red flag answer: "I just call findAll() — the list is not that long yet." That
 
 ---
 
-**Why does your `User` entity need `@Table(name = "users")`?** ⭐⭐
+<a id="SB-J-039"></a>
+
+**[SB-J-039] Why does your `User` entity need `@Table(name = "users")`?** ⭐⭐
 
 Because `user` is a reserved word in PostgreSQL — a table literally called `user` clashes with the built-in keyword and the queries fail. `@Table(name = "users")` sets an explicit table name and avoids the conflict. My convention is plural lowercase names for every table (`users`, `projects`, `time_entries`), which sidesteps reserved words and reads consistently.
 
@@ -347,7 +585,9 @@ Because `user` is a reserved word in PostgreSQL — a table literally called `us
 
 ---
 
-**What is the difference between `cascade = CascadeType.ALL` and `orphanRemoval = true`?** ⭐⭐
+<a id="SB-J-040"></a>
+
+**[SB-J-040] What is the difference between `cascade = CascadeType.ALL` and `orphanRemoval = true`?** ⭐⭐
 
 `cascade` propagates operations from parent to child: saving or deleting the parent also saves or deletes its children automatically. `orphanRemoval = true` goes further — it deletes a child the moment it is removed from the parent's collection, even if the parent itself is not deleted. So `cascade` is about operations flowing down; `orphanRemoval` is about cleaning up children that no longer belong to any parent. You combine both when a child has no meaning without its parent — like a project's time entries.
 
@@ -356,7 +596,9 @@ Because `user` is a reserved word in PostgreSQL — a table literally called `us
 
 ---
 
-**What is a soft delete and when would you use it instead of actually deleting the row?** ⭐⭐
+<a id="SB-J-041"></a>
+
+**[SB-J-041] What is a soft delete and when would you use it instead of actually deleting the row?** ⭐⭐
 
 A soft delete sets a flag — `active = false` — instead of running `DELETE`. The row stays in the database but is filtered out of normal queries. You use it whenever the data has historical or audit value: in project 07, deleting a project must not erase the time entries already logged against it, so the project is deactivated, not removed. A hard delete would break the foreign keys and lose history. The trade-off is that every query must remember to filter `active = true`.
 
@@ -365,7 +607,9 @@ Red flag answer: "I always use deleteById()." — In a business app that destroy
 ---
 ## Security and JWT
 
-**How does JWT authentication work in Spring Boot at a high level?** ⭐⭐⭐
+<a id="SB-J-042"></a>
+
+**[SB-J-042] How does JWT authentication work in Spring Boot at a high level?** ⭐⭐⭐
 
 The user sends credentials to POST /auth/login. The service verifies them and returns a JWT token. On every subsequent request the Angular frontend sends the token in the Authorization header as "Bearer token". A filter extending OncePerRequestFilter intercepts each request, validates the token, extracts the user, and sets the SecurityContext. Spring Security then allows or denies access based on the SecurityFilterChain rules.
 
@@ -374,7 +618,9 @@ The user sends credentials to POST /auth/login. The service verifies them and re
 
 ---
 
-**What is SecurityFilterChain and what do you configure in it?** ⭐⭐⭐
+<a id="SB-J-043"></a>
+
+**[SB-J-043] What is SecurityFilterChain and what do you configure in it?** ⭐⭐⭐
 
 SecurityFilterChain defines the security rules for the application — which endpoints are public, which require authentication, CORS settings, CSRF configuration, and which custom filters to add. In project 07 I configure POST /auth/login and POST /auth/register as public and all other endpoints as authenticated. I also add the JWT filter before Spring's default authentication filter.
 
@@ -383,7 +629,9 @@ SecurityFilterChain defines the security rules for the application — which end
 
 ---
 
-**What is the difference between authentication and authorization?** ⭐⭐⭐
+<a id="SB-J-044"></a>
+
+**[SB-J-044] What is the difference between authentication and authorization?** ⭐⭐⭐
 
 Authentication is proving who you are — logging in with email and password. Authorization is controlling what you can do — only ADMIN users can delete other users' data. Spring Security handles both: JWT authentication happens in the filter; authorization is enforced with roles and @PreAuthorize.
 
@@ -392,7 +640,9 @@ Authentication is proving who you are — logging in with email and password. Au
 
 ---
 
-**What is BCryptPasswordEncoder and why do you never store a plain text password?** ⭐⭐⭐
+<a id="SB-J-045"></a>
+
+**[SB-J-045] What is BCryptPasswordEncoder and why do you never store a plain text password?** ⭐⭐⭐
 
 BCryptPasswordEncoder hashes passwords using the BCrypt algorithm before storing them. A plain text password in the database is a critical security vulnerability — if the database is compromised, every account is exposed immediately. With BCrypt, each password produces a unique hash that cannot be reversed. In project 07 I define a PasswordEncoder bean and use it in the registration service to hash the password before saving.
 
@@ -400,7 +650,9 @@ Red flag answer: "I store the password directly — it is just a portfolio proje
 
 ---
 
-**Why did you choose JWT instead of server-side sessions?** ⭐⭐⭐
+<a id="SB-J-046"></a>
+
+**[SB-J-046] Why did you choose JWT instead of server-side sessions?** ⭐⭐⭐
 
 A session stores authentication state on the server and hands the client a session id in a cookie; a JWT stores the state inside the token on the client and the server keeps nothing. JWT fits a REST API because it is stateless — any instance of the backend can validate the token without a shared session store, which scales horizontally and matches the stateless principle of REST. Sessions are easier to revoke instantly but tie the user to one server or need a shared session cache. For project 07's Angular + Spring Boot split, JWT is the natural fit.
 
@@ -408,7 +660,9 @@ Red flag answer: "JWT is more modern." — That is fashion, not a reason. The in
 
 ---
 
-**Why do you disable CSRF in a REST API?** ⭐⭐
+<a id="SB-J-047"></a>
+
+**[SB-J-047] Why do you disable CSRF in a REST API?** ⭐⭐
 
 CSRF protection is designed for server-rendered HTML apps that use cookies for sessions. A REST API with JWT does not use cookies — each request carries the token in a header. Enabling CSRF would reject all non-GET requests without a matching CSRF token, breaking the API. So you disable it for stateless, token-based APIs.
 
@@ -416,13 +670,17 @@ Red flag answer: "I disabled CSRF because it was in the tutorial." You need to u
 
 ---
 
-**What is @PreAuthorize and when would you use it?** ⭐⭐
+<a id="SB-J-048"></a>
+
+**[SB-J-048] What is @PreAuthorize and when would you use it?** ⭐⭐
 
 @PreAuthorize adds method-level authorization. @PreAuthorize("hasRole('ADMIN')") blocks non-admin users before the method runs. In project 07 I use it on admin-only endpoints like DELETE /users/{id}. It requires @EnableMethodSecurity on the security configuration class.
 
 ---
 
-**Why store the JWT secret in application.properties or an environment variable instead of hardcoding it?** ⭐⭐
+<a id="SB-J-049"></a>
+
+**[SB-J-049] Why store the JWT secret in application.properties or an environment variable instead of hardcoding it?** ⭐⭐
 
 A secret hardcoded in the source code is committed to git and visible to anyone with repository access. application.properties is not committed in production — the secret comes from an environment variable set on the server. If the secret leaks, any JWT signed with it can be verified by attackers. In project 07 I use @Value("${app.jwt.secret}") to read it from the config file.
 
@@ -430,7 +688,9 @@ Red flag answer: "I put it in the code because it is easier." That is a security
 
 ---
 
-**What goes inside a JWT token and how does JwtUtil.generateToken() build it?** ⭐⭐
+<a id="SB-J-050"></a>
+
+**[SB-J-050] What goes inside a JWT token and how does JwtUtil.generateToken() build it?** ⭐⭐
 
 A JWT has three parts: header (signing algorithm), payload (the data), and signature (the proof it was not tampered with). The payload in project 07 contains three standard fields: `sub` (the user's email), `iat` (when the token was created), and `exp` (when it expires). `generateToken()` uses the JJWT builder to set those three fields, signs the result with the secret key, and calls `.compact()` to produce the final `header.payload.signature` string. The expiration is calculated as `System.currentTimeMillis() + expiration`, where `expiration` is 86400000 (24 hours in milliseconds) read from `application.properties`.
 
@@ -438,7 +698,9 @@ A JWT has three parts: header (signing algorithm), payload (the data), and signa
 
 ---
 
-**What is the difference between 401 Unauthorized and 403 Forbidden, and when does Spring Security return each?** ⭐⭐
+<a id="SB-J-051"></a>
+
+**[SB-J-051] What is the difference between 401 Unauthorized and 403 Forbidden, and when does Spring Security return each?** ⭐⭐
 
 401 means the request has no valid authentication — no token, an expired token, or an invalid signature. 403 means the user is authenticated (the token is valid) but does not have permission to access that resource. In project 07, a request without a JWT to a protected endpoint returns 401. A USER trying to access an endpoint annotated with @PreAuthorize("hasRole('ADMIN')") returns 403. Spring Security can return 403 for unauthenticated requests by default — you override this with a custom AuthenticationEntryPoint that returns 401 instead.
 
@@ -447,7 +709,9 @@ A JWT has three parts: header (signing algorithm), payload (the data), and signa
 
 ---
 
-**What is UserDetailsService and why do you implement it?** ⭐⭐
+<a id="SB-J-052"></a>
+
+**[SB-J-052] What is UserDetailsService and why do you implement it?** ⭐⭐
 
 UserDetailsService is a Spring Security interface with one method — loadUserByUsername(String username). You implement it to tell Spring Security how to find a user in your database during authentication. In project 07 UserDetailsServiceImpl calls the UserRepository, loads the user by email, and returns a UserDetails object with the email, hashed password, and roles. Without this, Spring Security does not know how to verify credentials.
 
@@ -456,7 +720,9 @@ UserDetailsService is a Spring Security interface with one method — loadUserBy
 
 ---
 
-**What does stateless session management mean in the SecurityFilterChain?** ⭐⭐
+<a id="SB-J-053"></a>
+
+**[SB-J-053] What does stateless session management mean in the SecurityFilterChain?** ⭐⭐
 
 Stateless means Spring Security does not create or use an HTTP session to remember authenticated users between requests. Each request must carry its own JWT token and be validated independently. The configuration is SessionCreationPolicy.STATELESS. Without this, Spring creates sessions by default, which conflicts with JWT auth and wastes server memory.
 
@@ -465,7 +731,9 @@ Stateless means Spring Security does not create or use an HTTP session to rememb
 
 ---
 
-**Once you have issued a JWT, can you invalidate it before it expires?** ⭐⭐
+<a id="SB-J-054"></a>
+
+**[SB-J-054] Once you have issued a JWT, can you invalidate it before it expires?** ⭐⭐
 
 Not directly — a JWT is valid until its `exp` claim passes, because the server stores no state about it; it just verifies the signature. So a "logout" on the client only deletes the token locally; the token itself would still pass validation until it expires. The practical mitigations are a short expiry (15–60 minutes), and if you truly need instant revocation, a server-side blacklist (e.g. in Redis) — but that reintroduces the server state JWT was meant to avoid. In project 07 I rely on a short expiry.
 
@@ -473,14 +741,18 @@ Red flag answer: "Yes, I delete it on logout." — Deleting the client copy does
 
 ---
 
-**Your JWT filter is rejecting valid tokens — what do you check first?** ⭐
+<a id="SB-J-055"></a>
+
+**[SB-J-055] Your JWT filter is rejecting valid tokens — what do you check first?** ⭐
 
 I check three things: the secret key (is it the same one used to sign the token?), the token expiration (has it expired?), and the Authorization header format (must be exactly "Bearer token" with a space). I also check the SecurityFilterChain configuration to confirm the endpoint is not accidentally marked as requiring a role the user does not have.
 
 ---
 ## Exception handling
 
-**What is @ControllerAdvice and when do you use it?** ⭐⭐⭐
+<a id="SB-J-056"></a>
+
+**[SB-J-056] What is @ControllerAdvice and when do you use it?** ⭐⭐⭐
 
 @ControllerAdvice is a global exception handler. You define @ExceptionHandler methods inside it and Spring calls them automatically when those exceptions are thrown from any controller. In project 07 I have one GlobalExceptionHandler that maps ResourceNotFoundException to 404, IllegalArgumentException to 400, and a fallback Exception handler to 500.
 
@@ -489,7 +761,9 @@ I check three things: the secret key (is it the same one used to sign the token?
 
 ---
 
-**Why extend RuntimeException for custom exceptions in Spring Boot instead of extending Exception?** ⭐⭐
+<a id="SB-J-057"></a>
+
+**[SB-J-057] Why extend RuntimeException for custom exceptions in Spring Boot instead of extending Exception?** ⭐⭐
 
 RuntimeException is unchecked — callers do not need to declare it with throws. Checked exceptions (extending Exception) force every method in the call stack to either handle or re-declare the exception, which clutters service code with error handling for problems it cannot fix. Spring Boot's convention is: throw unchecked exceptions from the service, catch them globally with @ControllerAdvice.
 
@@ -498,13 +772,17 @@ RuntimeException is unchecked — callers do not need to declare it with throws.
 
 ---
 
-**A junior colleague has a try/catch block in every controller method — what do you tell them?** ⭐⭐
+<a id="SB-J-058"></a>
+
+**[SB-J-058] A junior colleague has a try/catch block in every controller method — what do you tell them?** ⭐⭐
 
 I would explain that Spring Boot has @ControllerAdvice for this — you define all error handling in one class and Spring routes exceptions there automatically. It removes duplication, keeps controllers focused on the happy path, and makes error responses consistent across the entire API. I would show them the GlobalExceptionHandler from project 07 as an example.
 
 ---
 
-**What is the difference between MethodArgumentNotValidException and ConstraintViolationException?** ⭐
+<a id="SB-J-059"></a>
+
+**[SB-J-059] What is the difference between MethodArgumentNotValidException and ConstraintViolationException?** ⭐
 
 MethodArgumentNotValidException is thrown when @Valid on a @RequestBody object fails — a field in the DTO violates a constraint like @NotBlank or @Positive. ConstraintViolationException is thrown when @Validated on the controller class triggers validation on individual @PathVariable or @RequestParam parameters. Both need to be handled in @ControllerAdvice, but with separate @ExceptionHandler methods because they are different exception types.
 
@@ -514,7 +792,9 @@ MethodArgumentNotValidException is thrown when @Valid on a @RequestBody object f
 ---
 ## Transactions
 
-**What does @Transactional(readOnly = true) do and why should you use it on read methods?** ⭐⭐
+<a id="SB-J-060"></a>
+
+**[SB-J-060] What does @Transactional(readOnly = true) do and why should you use it on read methods?** ⭐⭐
 
 It tells Hibernate to skip dirty checking at the end of the transaction — Hibernate does not compare the loaded entity state to detect changes, because you declared no changes will happen. This makes read operations faster. In project 07 I annotate every service method that only reads data with @Transactional(readOnly = true), and every write method with @Transactional.
 
@@ -523,7 +803,9 @@ It tells Hibernate to skip dirty checking at the end of the transaction — Hibe
 
 ---
 
-**Why does @Transactional not work on private methods?** ⭐⭐
+<a id="SB-J-061"></a>
+
+**[SB-J-061] Why does @Transactional not work on private methods?** ⭐⭐
 
 @Transactional works through a Spring proxy — Spring wraps the bean in a wrapper object that intercepts method calls and manages the transaction. A proxy can only intercept public methods. When you call a private method, you call it directly on the real object — the proxy is bypassed and the annotation is silently ignored with no error at startup. In project 07 I always make service methods that need transactions public.
 
@@ -531,7 +813,9 @@ Red flag answer: "I tested it and it works." It may appear to work if the privat
 
 ---
 
-**What happens if you catch a `RuntimeException` inside a `@Transactional` method and do not re-throw it?** ⭐⭐
+<a id="SB-J-062"></a>
+
+**[SB-J-062] What happens if you catch a `RuntimeException` inside a `@Transactional` method and do not re-throw it?** ⭐⭐
 
 The transaction commits. `@Transactional` only rolls back when an unchecked exception propagates OUT of the method — if you catch it and swallow it, Spring sees a normal return and commits whatever was written before the failure. So the operation "failed" but the half-finished data is persisted. If I need to handle the exception but still roll back, I either re-throw it, or call `TransactionAspectSupport.currentTransactionStatus().setRollbackOnly()`. In project 07 I let service exceptions propagate to the `@RestControllerAdvice` rather than catching them locally.
 
@@ -540,7 +824,9 @@ Red flag answer: "Catching it is safer." — It silently commits partial data �
 ---
 ## Testing
 
-**What is @SpringBootTest and when do you use it?** ⭐⭐⭐
+<a id="SB-J-063"></a>
+
+**[SB-J-063] What is @SpringBootTest and when do you use it?** ⭐⭐⭐
 
 @SpringBootTest loads the full application context — all beans, auto-configuration, and the database connection. Use it for integration tests that verify the full flow from HTTP request to database write. It is slow, so use it only for the critical paths — not for every method.
 
@@ -549,19 +835,25 @@ Red flag answer: "Catching it is safer." — It silently commits partial data �
 
 ---
 
-**What is Mockito and how do you use @MockBean in a Spring Boot test?** ⭐⭐⭐
+<a id="SB-J-064"></a>
+
+**[SB-J-064] What is Mockito and how do you use @MockBean in a Spring Boot test?** ⭐⭐⭐
 
 Mockito creates fake implementations of your dependencies. when(service.getAll()).thenReturn(List.of(transaction)) tells Mockito what to return when that method is called. @MockBean replaces the real bean in the Spring context with a Mockito mock, letting you test the controller in isolation without a real service or database connection.
 
 ---
 
-**What is @WebMvcTest and what problem does it solve?** ⭐⭐
+<a id="SB-J-065"></a>
+
+**[SB-J-065] What is @WebMvcTest and what problem does it solve?** ⭐⭐
 
 @WebMvcTest loads only the web layer — controllers, filters, and @ControllerAdvice. Services and repositories are not loaded; you mock them with @MockBean. Tests run much faster than @SpringBootTest and focus exclusively on the HTTP layer: correct status codes, request mapping, and JSON response shape. In project 07 I use @WebMvcTest to test TransactionController without a real database.
 
 ---
 
-**Why use @WebMvcTest instead of @SpringBootTest for testing a controller?** ⭐⭐
+<a id="SB-J-066"></a>
+
+**[SB-J-066] Why use @WebMvcTest instead of @SpringBootTest for testing a controller?** ⭐⭐
 
 @WebMvcTest is faster (loads only the web layer), more focused (failures point directly to the controller or filter), and does not require a running database. If a controller test fails with @WebMvcTest, the problem is in the HTTP layer. @SpringBootTest would also pass or fail for reasons inside the service and repository, making it harder to locate the bug. Smaller scope means faster feedback.
 
@@ -569,7 +861,9 @@ Red flag answer: "I always use @SpringBootTest because it tests everything." Tha
 
 ---
 
-**What is @DataJpaTest and when would you use it?** ⭐⭐
+<a id="SB-J-067"></a>
+
+**[SB-J-067] What is @DataJpaTest and when would you use it?** ⭐⭐
 
 @DataJpaTest loads only the persistence layer — JPA entities, repositories, and an in-memory H2 database by default. It does not load controllers or services. Use it to test repository methods and derived queries in isolation — for example, verifying that findByUserAndDateBetween returns the correct results for a given date range. It is faster than @SpringBootTest because it loads much less of the application.
 
@@ -578,14 +872,18 @@ Red flag answer: "I always use @SpringBootTest because it tests everything." Tha
 
 ---
 
-**Your @WebMvcTest passes but the same flow fails in the full integration test — what does that tell you?** ⭐
+<a id="SB-J-068"></a>
+
+**[SB-J-068] Your @WebMvcTest passes but the same flow fails in the full integration test — what does that tell you?** ⭐
 
 The HTTP layer is correct — the controller, request mapping, and response format are fine. The problem is in the service or repository layer, or in the interaction between layers. The mock in the unit test hid the real bug. This is exactly why both unit tests and integration tests are needed — they catch different kinds of bugs.
 
 ---
 ## Tooling
 
-**How do you containerise a Spring Boot application, and how does someone run your project without installing PostgreSQL?** ⭐⭐⭐
+<a id="SB-J-069"></a>
+
+**[SB-J-069] How do you containerise a Spring Boot application, and how does someone run your project without installing PostgreSQL?** ⭐⭐⭐
 
 I write a `Dockerfile` that starts from a JDK base image (`FROM eclipse-temurin:25-jdk`), copies the built jar (`COPY target/*.jar app.jar`), and sets `ENTRYPOINT ["java","-jar","app.jar"]`. Then a `docker-compose.yml` runs two services together — the Spring Boot container and a `postgres` container — on a shared network, so `docker compose up` starts the whole stack with one command. Nobody needs PostgreSQL installed locally; the database runs in its own container. In project 07 this is how the backend and database run together.
 
@@ -594,7 +892,9 @@ I write a `Dockerfile` that starts from a JDK base image (`FROM eclipse-temurin:
 
 ---
 
-**Why would a team use Flyway instead of `spring.jpa.hibernate.ddl-auto=update`?** ⭐⭐
+<a id="SB-J-070"></a>
+
+**[SB-J-070] Why would a team use Flyway instead of `spring.jpa.hibernate.ddl-auto=update`?** ⭐⭐
 
 `ddl-auto=update` lets Hibernate alter the schema automatically by comparing entities to the tables — convenient in development, but dangerous in production because the changes are implicit, unreviewable, and can silently alter or lock a live table. Flyway makes each schema change an explicit, versioned SQL script (`V1__init.sql`, `V2__add_status.sql`) that lives in git, is reviewed in a PR, and runs in order exactly once. The team controls and audits every migration. In production you set `ddl-auto=validate` and let Flyway own the schema.
 

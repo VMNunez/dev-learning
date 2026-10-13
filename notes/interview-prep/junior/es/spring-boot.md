@@ -1,8 +1,170 @@
 # Spring Boot — Preguntas de entrevista
 
+<a id="study-index"></a>
+
+## Índice de estudio
+
+Empieza por la primera vuelta. Dentro de cada vuelta, sigue los temas de arriba abajo y trabaja un grupo pequeño de preguntas cada vez. Si una pregunta requiere un concepto de otra vuelta, consulta esa pregunta y vuelve al punto donde estabas.
+
+| Vuelta | Prioridad | Preguntas |
+|---|---|---:|
+| [1. Imprescindibles](#study-pass-1) | ⭐⭐⭐ | 24 |
+| [2. Profundización](#study-pass-2) | ⭐⭐ | 41 |
+| [3. Detalles](#study-pass-3) | ⭐ | 5 |
+
+Lee la pregunta, intenta responder sin mirar, contrasta tu respuesta con la escrita y vuelve a explicarla con tus palabras. En el siguiente bloque, recupera alguna pregunta anterior sin consultar la respuesta.
+
+Los enlaces llevan a las preguntas originales. Los números son sus identificadores, no el orden de estudio. Este índice sirve para estudiar por tu cuenta. Registra aquí tu progreso: ✅ y la fecha al final de la línea de cada pregunta que hayas trabajado, y después · PASS y la fecha cuando la superes en un examen de repaso.
+
+<a id="study-pass-1"></a>
+
+### Primera vuelta — Imprescindibles — ⭐⭐⭐
+
+**Spring Boot básico**
+
+- [001 — Qué es Spring Boot y por qué se usa](#SB-J-001)
+- [002 — Qué es la auto-configuración](#SB-J-002)
+- [003 — Inyección por constructor frente a @Autowired en campo](#SB-J-003)
+- [004 — @Transactional y dónde se pone](#SB-J-004)
+- [005 — @Data de Lombok y la anotación del servicio](#SB-J-005)
+
+**REST controllers**
+
+- [014 — @Controller frente a @RestController](#SB-J-014)
+- [015 — @PathVariable frente a @RequestParam](#SB-J-015)
+- [016 — Arquitectura en capas de Spring Boot](#SB-J-016)
+- [017 — DTOs frente a devolver entidades JPA](#SB-J-017)
+- [018 — CORS y el error CORS desde Angular](#SB-J-018)
+
+**Spring Data JPA**
+
+- [027 — JPA frente a Hibernate](#SB-J-027)
+- [028 — Qué te da JpaRepository](#SB-J-028)
+- [029 — FetchType.LAZY frente a FetchType.EAGER](#SB-J-029)
+- [030 — El problema N+1](#SB-J-030)
+- [031 — Mapear un enum con @Enumerated(EnumType.STRING)](#SB-J-031)
+
+**Seguridad y JWT**
+
+- [042 — Cómo funciona la autenticación JWT](#SB-J-042)
+- [043 — SecurityFilterChain y qué se configura en él](#SB-J-043)
+- [044 — Autenticación frente a autorización](#SB-J-044)
+- [045 — BCryptPasswordEncoder y las contraseñas en texto plano](#SB-J-045)
+- [046 — JWT frente a sesiones del lado del servidor](#SB-J-046)
+
+**Gestión de excepciones**
+
+- [056 — @ControllerAdvice y cuándo usarlo](#SB-J-056)
+
+**Testing**
+
+- [063 — @SpringBootTest y cuándo usarlo](#SB-J-063)
+- [064 — Mockito y @MockBean](#SB-J-064)
+
+**Tooling**
+
+- [069 — Containerizar una aplicación Spring Boot](#SB-J-069)
+
+<a id="study-pass-2"></a>
+
+### Segunda vuelta — Profundización — ⭐⭐
+
+**Spring Boot básico**
+
+- [006 — Qué hace @SpringBootApplication](#SB-J-006)
+- [007 — Para qué sirve application.properties](#SB-J-007)
+- [008 — Opciones de ddl-auto por entorno](#SB-J-008)
+- [009 — Por qué Spring Boot en el proyecto 07](#SB-J-009)
+- [010 — Relación LAZY fuera de una transacción](#SB-J-010)
+- [011 — Métodos @Bean en una clase @Configuration](#SB-J-011)
+- [012 — Configuración distinta para desarrollo y producción](#SB-J-012)
+
+**REST controllers**
+
+- [019 — Por qué devolver ResponseEntity](#SB-J-019)
+- [020 — @RequestBody y cómo funciona](#SB-J-020)
+- [021 — @Service y @Repository frente a @Component](#SB-J-021)
+- [022 — @PatchMapping frente a @PutMapping](#SB-J-022)
+- [023 — Convertir una entidad en un DTO](#SB-J-023)
+- [024 — Anotaciones de Bean Validation y @Valid](#SB-J-024)
+- [025 — Mantener el hash de la contraseña fuera del JSON](#SB-J-025)
+
+**Spring Data JPA**
+
+- [032 — Qué es un derived query method](#SB-J-032)
+- [033 — Derived query method frente a @Query](#SB-J-033)
+- [034 — Cómo decide save() entre insertar o actualizar](#SB-J-034)
+- [035 — @OneToMany frente a @ManyToOne](#SB-J-035)
+- [036 — Anotaciones mínimas de una entidad JPA](#SB-J-036)
+- [037 — Cientos de SELECT para una sola lista](#SB-J-037)
+- [038 — Pageable y cuándo usarlo](#SB-J-038)
+- [039 — Por qué la entidad User necesita @Table](#SB-J-039)
+- [040 — CascadeType.ALL frente a orphanRemoval](#SB-J-040)
+- [041 — Soft delete frente a borrar la fila](#SB-J-041)
+
+**Seguridad y JWT**
+
+- [047 — Deshabilitar CSRF en una API REST](#SB-J-047)
+- [048 — @PreAuthorize y cuándo usarlo](#SB-J-048)
+- [049 — Dónde se guarda el secreto JWT](#SB-J-049)
+- [050 — Qué contiene un JWT y generateToken()](#SB-J-050)
+- [051 — 401 Unauthorized frente a 403 Forbidden](#SB-J-051)
+- [052 — UserDetailsService y por qué implementarlo](#SB-J-052)
+- [053 — Gestión de sesión sin estado (stateless)](#SB-J-053)
+- [054 — Invalidar un JWT antes de que caduque](#SB-J-054)
+
+**Gestión de excepciones**
+
+- [057 — Extender RuntimeException frente a Exception](#SB-J-057)
+- [058 — try/catch en cada método del controlador](#SB-J-058)
+
+**Transacciones**
+
+- [060 — @Transactional(readOnly = true) en métodos de lectura](#SB-J-060)
+- [061 — @Transactional en métodos privados](#SB-J-061)
+- [062 — Capturar una RuntimeException dentro de @Transactional](#SB-J-062)
+
+**Testing**
+
+- [065 — Qué es @WebMvcTest](#SB-J-065)
+- [066 — @WebMvcTest frente a @SpringBootTest en un controlador](#SB-J-066)
+- [067 — @DataJpaTest y cuándo usarlo](#SB-J-067)
+
+**Tooling**
+
+- [070 — Flyway frente a ddl-auto=update](#SB-J-070)
+
+<a id="study-pass-3"></a>
+
+### Tercera vuelta — Detalles — ⭐
+
+**Spring Boot básico**
+
+- [013 — Failed to configure a DataSource al arrancar](#SB-J-013)
+
+**REST controllers**
+
+- [026 — POST que devuelve 200 en lugar de 201](#SB-J-026)
+
+**Seguridad y JWT**
+
+- [055 — Filtro JWT que rechaza tokens válidos](#SB-J-055)
+
+**Gestión de excepciones**
+
+- [059 — MethodArgumentNotValidException frente a ConstraintViolationException](#SB-J-059)
+
+**Testing**
+
+- [068 — @WebMvcTest pasa y el test de integración falla](#SB-J-068)
+
+---
+
 ## Spring Boot básico
 
-**¿Qué es Spring Boot y por qué lo usan las empresas en lugar de Spring puro?** ⭐⭐⭐
+<a id="SB-J-001"></a>
+
+**[SB-J-001] ¿Qué es Spring Boot y por qué lo usan las empresas en lugar de Spring puro?** ⭐⭐⭐
 
 Spring Boot es un framework construido sobre Spring que elimina la configuración manual — auto-configura la aplicación según las dependencias del pom.xml e incluye un servidor Tomcat embebido. Las empresas lo usan porque un proyecto nuevo está listo para ejecutarse en minutos en lugar de días de configuración en XML.
 
@@ -11,7 +173,9 @@ Spring Boot es un framework construido sobre Spring que elimina la configuració
 
 ---
 
-**¿Qué es la auto-configuración en Spring Boot?** ⭐⭐⭐
+<a id="SB-J-002"></a>
+
+**[SB-J-002] ¿Qué es la auto-configuración en Spring Boot?** ⭐⭐⭐
 
 La auto-configuración lee el classpath y configura beans automáticamente. Si spring-boot-starter-data-jpa está en el pom.xml, Spring Boot crea el DataSource, el EntityManagerFactory y el gestor de transacciones sin ningún código extra. Puedes sobreescribir cualquier bean auto-configurado definiendo el tuyo propio.
 
@@ -20,7 +184,9 @@ La auto-configuración lee el classpath y configura beans automáticamente. Si s
 
 ---
 
-**¿Por qué usas inyección por constructor en lugar de @Autowired en un campo?** ⭐⭐⭐
+<a id="SB-J-003"></a>
+
+**[SB-J-003] ¿Por qué usas inyección por constructor en lugar de @Autowired en un campo?** ⭐⭐⭐
 
 Tres razones: el campo puede ser `final` (no se puede cambiar tras la inyección), las dependencias son visibles en la firma del constructor (ves exactamente qué necesita la clase) y la clase es fácil de probar unitariamente (pasas un mock en el constructor sin necesitar contexto Spring). Desde Spring Framework 4.3, si una clase tiene un solo constructor, @Autowired ni siquiera es necesario.
 
@@ -28,7 +194,9 @@ Respuesta de alerta: "Siempre uso @Autowired en campos porque es más sencillo."
 
 ---
 
-**¿Qué es @Transactional y dónde lo pones?** ⭐⭐⭐
+<a id="SB-J-004"></a>
+
+**[SB-J-004] ¿Qué es @Transactional y dónde lo pones?** ⭐⭐⭐
 
 @Transactional envuelve un método de servicio en una transacción de base de datos — o todas las operaciones tienen éxito juntas, o ninguna lo hace y todo se revierte. Va en métodos de servicio, no en controladores ni en repositorios. Los repositorios ya gestionan sus propias transacciones. En el proyecto 07 uso @Transactional en métodos de servicio que hacen más de una escritura en base de datos, para que un fallo parcial no deje la base de datos en un estado inconsistente.
 
@@ -39,7 +207,9 @@ Respuesta de alerta: "Lo pongo en el controlador." Demuestra una mala comprensi�
 
 ---
 
-**¿Qué genera `@Data` de Lombok y qué anotación de Lombok usas en una clase de servicio?** ⭐⭐⭐
+<a id="SB-J-005"></a>
+
+**[SB-J-005] ¿Qué genera `@Data` de Lombok y qué anotación de Lombok usas en una clase de servicio?** ⭐⭐⭐
 
 `@Data` genera getters, setters, `toString()`, `equals()` y `hashCode()` para todos los campos — elimina el código repetitivo de los DTOs. En una clase de servicio uso `@RequiredArgsConstructor` en su lugar: genera un constructor solo con los campos `private final`, que es justo lo que necesita la inyección por constructor — Spring inyecta las dependencias a través de él sin `@Autowired`. También uso `@Slf4j` para tener un campo `log` listo para `log.info()` / `log.error()`. En el proyecto 07 las entidades usan `@Getter`/`@Setter` y los servicios `@RequiredArgsConstructor`.
 
@@ -48,7 +218,9 @@ Respuesta de alerta: "Lo pongo en el controlador." Demuestra una mala comprensi�
 
 ---
 
-**¿Qué hace @SpringBootApplication?** ⭐⭐
+<a id="SB-J-006"></a>
+
+**[SB-J-006] ¿Qué hace @SpringBootApplication?** ⭐⭐
 
 Combina tres anotaciones: @Configuration (marca la clase como fuente de beans de Spring), @EnableAutoConfiguration (activa la auto-configuración según el classpath) y @ComponentScan (escanea el paquete actual y los subpaquetes buscando componentes). Cada aplicación Spring Boot tiene exactamente una clase con esta anotación — es el punto de entrada.
 
@@ -57,7 +229,9 @@ Combina tres anotaciones: @Configuration (marca la clase como fuente de beans de
 
 ---
 
-**¿Para qué sirve application.properties?** ⭐⭐
+<a id="SB-J-007"></a>
+
+**[SB-J-007] ¿Para qué sirve application.properties?** ⭐⭐
 
 Es el fichero de configuración central — URL de base de datos, puerto del servidor, secreto JWT, modo DDL de Hibernate. En el proyecto 07 guardo la conexión a PostgreSQL, el puerto 8080 y la configuración JWT. En producción, los secretos se reemplazan con variables de entorno para que no queden en el repositorio git.
 
@@ -66,7 +240,9 @@ Es el fichero de configuración central — URL de base de datos, puerto del ser
 
 ---
 
-**¿Cuáles son las opciones de spring.jpa.hibernate.ddl-auto y cuál usas en cada entorno?** ⭐⭐
+<a id="SB-J-008"></a>
+
+**[SB-J-008] ¿Cuáles son las opciones de spring.jpa.hibernate.ddl-auto y cuál usas en cada entorno?** ⭐⭐
 
 Las opciones principales son: `update` (añade columnas nuevas, nunca las elimina — seguro para desarrollo), `create` (elimina todas las tablas y las recrea cada vez que arranca la app — destruye todos los datos), `validate` (comprueba que el esquema coincide con las entidades y falla si no — útil en producción para detectar diferencias), y `none` (no hace nada — se usa cuando gestionas el esquema con una herramienta de migración como Flyway). En el proyecto 07 uso `update` durante el desarrollo para que el esquema evolucione al añadir entidades, y cambiaría a `validate` o `none` en producción.
 
@@ -77,7 +253,9 @@ Respuesta de alerta: "Siempre uso `create` — es más fácil para desarrollar."
 
 ---
 
-**¿Por qué elegiste Spring Boot en lugar de Spring puro para el proyecto 07?** ⭐⭐
+<a id="SB-J-009"></a>
+
+**[SB-J-009] ¿Por qué elegiste Spring Boot en lugar de Spring puro para el proyecto 07?** ⭐⭐
 
 Spring puro requiere configuración en XML, declaraciones explícitas de beans y un servidor instalado por separado. Spring Boot elimina todo eso — pude empezar a escribir endpoints REST inmediatamente tras generar el proyecto en start.spring.io. Para un proyecto de portfolio que demuestra habilidades full-stack, eliminar esa ceremonia es la decisión correcta.
 
@@ -85,7 +263,9 @@ Respuesta de alerta: "Porque el tutorial usaba Spring Boot." Demuestra que segui
 
 ---
 
-**¿Qué ocurre cuando accedes a una relación LAZY fuera de una transacción?** ⭐⭐
+<a id="SB-J-010"></a>
+
+**[SB-J-010] ¿Qué ocurre cuando accedes a una relación LAZY fuera de una transacción?** ⭐⭐
 
 Obtienes una LazyInitializationException — la sesión de Hibernate ya está cerrada y no puede ejecutar la consulta extra para cargar la relación. La solución correcta es convertir la entidad a DTO dentro del método @Transactional del servicio, mientras la sesión está aún abierta — no acceder a campos lazy en el controlador después de que la sesión se haya cerrado.
 
@@ -94,7 +274,9 @@ Obtienes una LazyInitializationException — la sesión de Hibernate ya está ce
 
 ---
 
-**¿Qué es un método `@Bean` en una clase `@Configuration` y por qué necesitaste uno para `BCryptPasswordEncoder`?** ⭐⭐
+<a id="SB-J-011"></a>
+
+**[SB-J-011] ¿Qué es un método `@Bean` en una clase `@Configuration` y por qué necesitaste uno para `BCryptPasswordEncoder`?** ⭐⭐
 
 `@Bean` registra un objeto que Spring debe gestionar cuando no puedes poner `@Component` en la clase — normalmente una clase de una librería. `BCryptPasswordEncoder` viene de Spring Security, así que no puedo anotar su código fuente; en su lugar escribo un método que devuelve `new BCryptPasswordEncoder()` y anoto el método con `@Bean` dentro de `SecurityConfig`. Spring inyecta entonces esa única instancia allá donde se necesite un `PasswordEncoder`. Hago lo mismo con el `AuthenticationManager`.
 
@@ -103,7 +285,9 @@ Obtienes una LazyInitializationException — la sesión de Hibernate ya está ce
 
 ---
 
-**¿Cómo mantienes configuración distinta para desarrollo y producción en Spring Boot?** ⭐⭐
+<a id="SB-J-012"></a>
+
+**[SB-J-012] ¿Cómo mantienes configuración distinta para desarrollo y producción en Spring Boot?** ⭐⭐
 
 Con perfiles (profiles): `application.properties` contiene la configuración compartida, y `application-dev.properties` / `application-prod.properties` contienen los ajustes por entorno. Activas uno con `spring.profiles.active=dev`. Los secretos de producción no se escriben en ningún fichero — vienen de variables de entorno referenciadas como `${JWT_SECRET}`, y la app falla rápido al arrancar si la variable falta, lo cual es más seguro que un null silencioso en tiempo de ejecución. Así el mismo jar corre en cualquier entorno sin recompilar.
 
@@ -112,14 +296,18 @@ Con perfiles (profiles): `application.properties` contiene la configuración com
 
 ---
 
-**La aplicación falla al arrancar con "Failed to configure a DataSource" — ¿qué compruebas primero?** ⭐
+<a id="SB-J-013"></a>
+
+**[SB-J-013] La aplicación falla al arrancar con "Failed to configure a DataSource" — ¿qué compruebas primero?** ⭐
 
 Reviso application.properties — la URL de base de datos, el usuario y la contraseña. Si están correctos, compruebo si PostgreSQL está ejecutándose y si la base de datos existe. La causa más común es un spring.datasource.url incorrecto o ausente. Si spring-boot-starter-data-jpa está en el pom.xml pero no hay DataSource configurado, Spring Boot no puede arrancar.
 
 ---
 ## REST controllers
 
-**¿Cuál es la diferencia entre @Controller y @RestController?** ⭐⭐⭐
+<a id="SB-J-014"></a>
+
+**[SB-J-014] ¿Cuál es la diferencia entre @Controller y @RestController?** ⭐⭐⭐
 
 @Controller es para aplicaciones que devuelven vistas HTML. @RestController combina @Controller y @ResponseBody — cada método devuelve datos directamente como JSON sin capa de vistas. En el proyecto 07 uso @RestController en todos los endpoints porque el backend es una API REST pura consumida por Angular.
 
@@ -128,7 +316,9 @@ Reviso application.properties — la URL de base de datos, el usuario y la contr
 
 ---
 
-**¿Cuál es la diferencia entre @PathVariable y @RequestParam?** ⭐⭐⭐
+<a id="SB-J-015"></a>
+
+**[SB-J-015] ¿Cuál es la diferencia entre @PathVariable y @RequestParam?** ⭐⭐⭐
 
 @PathVariable lee un valor del path de la URL: GET /transactions/{id} — el id forma parte de la estructura de la URL. @RequestParam lee de los parámetros de query: GET /transactions?category=food — viene después del ?. La convención: @PathVariable para identificadores de recurso (obligatorio), @RequestParam para filtros opcionales.
 
@@ -137,7 +327,9 @@ Reviso application.properties — la URL de base de datos, el usuario y la contr
 
 ---
 
-**¿Qué es la arquitectura en capas de Spring Boot y por qué importa?** ⭐⭐⭐
+<a id="SB-J-016"></a>
+
+**[SB-J-016] ¿Qué es la arquitectura en capas de Spring Boot y por qué importa?** ⭐⭐⭐
 
 Las tres capas son: controller (gestiona HTTP), service (toda la lógica de negocio) y repository (acceso a base de datos). Cada capa solo llama a la capa directamente por debajo. En el proyecto 07 el TransactionController nunca accede al repositorio — si la lógica de negocio cambia, solo cambio el servicio. Esto es separación de responsabilidades.
 
@@ -148,7 +340,9 @@ Respuesta de alerta: "Pongo todo en el controlador porque es más sencillo." Es 
 
 ---
 
-**¿Por qué usar DTOs en lugar de devolver entidades JPA directamente desde el controlador?** ⭐⭐⭐
+<a id="SB-J-017"></a>
+
+**[SB-J-017] ¿Por qué usar DTOs en lugar de devolver entidades JPA directamente desde el controlador?** ⭐⭐⭐
 
 Las entidades están vinculadas al esquema de base de datos — pueden exponer campos que no debes enviar al cliente (hash de contraseña, claves foráneas internas, colecciones cargadas de forma perezosa). Los DTOs permiten controlar exactamente qué devuelve la API. En el proyecto 07 la entidad Transaction tiene un campo user con el objeto User completo — el TransactionDTO solo expone los campos que Angular necesita.
 
@@ -156,7 +350,9 @@ Respuesta de alerta: "Devuelvo entidades porque hay menos código." Las entidade
 
 ---
 
-**¿Qué es CORS y por qué tu aplicación Angular recibe un error CORS al llamar a la API Spring Boot?** ⭐⭐⭐
+<a id="SB-J-018"></a>
+
+**[SB-J-018] ¿Qué es CORS y por qué tu aplicación Angular recibe un error CORS al llamar a la API Spring Boot?** ⭐⭐⭐
 
 CORS (Cross-Origin Resource Sharing) es una política de seguridad del navegador que bloquea que JavaScript llame a un servidor en un origen diferente. El servidor de desarrollo de Angular corre en localhost:4200 y la API Spring Boot corre en localhost:8080 — puertos diferentes significan orígenes diferentes. La solución es configurar Spring Boot para que acepte peticiones de localhost:4200 usando un bean CorsConfigurationSource en la configuración de SecurityFilterChain.
 
@@ -167,7 +363,9 @@ Respuesta de alerta: "Añadí @CrossOrigin a cada controlador." Funciona pero no
 
 ---
 
-**¿Por qué devuelves ResponseEntity en lugar de devolver el objeto directamente?** ⭐⭐
+<a id="SB-J-019"></a>
+
+**[SB-J-019] ¿Por qué devuelves ResponseEntity en lugar de devolver el objeto directamente?** ⭐⭐
 
 ResponseEntity permite establecer el código de estado HTTP de forma explícita. Devolver solo el objeto siempre da 200. Con ResponseEntity puedo devolver 201 cuando algo se crea, 204 cuando un borrado tiene éxito o 404 cuando algo no existe. En el proyecto 07 cada método del controlador devuelve ResponseEntity para que el frontend Angular sepa exactamente qué ocurrió.
 
@@ -175,7 +373,9 @@ Respuesta de alerta: "Solo devuelvo el objeto — Spring se ocupa del resto." De
 
 ---
 
-**¿Qué es @RequestBody y cómo funciona?** ⭐⭐
+<a id="SB-J-020"></a>
+
+**[SB-J-020] ¿Qué es @RequestBody y cómo funciona?** ⭐⭐
 
 @RequestBody le dice a Spring que lea el cuerpo de la petición HTTP y lo convierta de JSON a un objeto Java usando Jackson, la librería JSON que Spring Boot incluye automáticamente. Los nombres de los campos JSON deben coincidir con los nombres de los campos Java. En el proyecto 07 POST /transactions recibe un TransactionCreateDTO mediante @RequestBody.
 
@@ -184,7 +384,9 @@ Respuesta de alerta: "Solo devuelvo el objeto — Spring se ocupa del resto." De
 
 ---
 
-**¿Por qué usar @Service y @Repository en lugar de @Component para todo?** ⭐⭐
+<a id="SB-J-021"></a>
+
+**[SB-J-021] ¿Por qué usar @Service y @Repository en lugar de @Component para todo?** ⭐⭐
 
 Las tres registran la clase como bean de Spring, pero la diferencia semántica importa. @Repository también traduce las excepciones de JPA a la jerarquía DataAccessException de Spring, de modo que el servicio nunca necesita gestionar errores específicos de Hibernate. Usar la anotación correcta hace el código auto-documentado — cualquier desarrollador identifica la capa inmediatamente.
 
@@ -193,7 +395,9 @@ Las tres registran la clase como bean de Spring, pero la diferencia semántica i
 
 ---
 
-**¿Cuál es la diferencia entre @PatchMapping y @PutMapping, y cuándo usas cada uno?** ⭐⭐
+<a id="SB-J-022"></a>
+
+**[SB-J-022] ¿Cuál es la diferencia entre @PatchMapping y @PutMapping, y cuándo usas cada uno?** ⭐⭐
 
 @PutMapping reemplaza el recurso completo — el cliente envía todos los campos, incluso los que no cambiaron. @PatchMapping actualiza solo los campos proporcionados — el resto permanece sin cambios. En el proyecto 07 uso @PutMapping para ediciones de formulario completo donde el frontend siempre envía el objeto completo, y @PatchMapping para actualizaciones de un solo campo como marcar una transacción como conciliada. La mayoría de apps CRUD usan @PutMapping por defecto; @PatchMapping es correcto cuando solo cambia parte de los datos.
 
@@ -202,7 +406,9 @@ Las tres registran la clase como bean de Spring, pero la diferencia semántica i
 
 ---
 
-**¿Cómo conviertes una entidad JPA a un DTO en la capa de servicio?** ⭐⭐
+<a id="SB-J-023"></a>
+
+**[SB-J-023] ¿Cómo conviertes una entidad JPA a un DTO en la capa de servicio?** ⭐⭐
 
 Creo el DTO directamente en el método del servicio usando el constructor del DTO. En el proyecto 07, como TransactionDTO es un record de Java, llamo a `new TransactionDTO(entity.getId(), entity.getAmount(), entity.getDescription(), entity.getDate(), entity.getCategory())` dentro del servicio. Si la misma conversión se necesita en varios sitios, la extraigo a un método helper privado estático en el servicio. Una clase mapper separada o MapStruct solo tiene sentido cuando las conversiones se comparten entre muchos servicios.
 
@@ -213,7 +419,9 @@ Respuesta de alerta: "Devuelvo la entidad directamente — hay menos código." L
 
 ---
 
-**¿Qué anotaciones de Bean Validation usas en los DTOs de petición y qué activa @Valid?** ⭐⭐
+<a id="SB-J-024"></a>
+
+**[SB-J-024] ¿Qué anotaciones de Bean Validation usas en los DTOs de petición y qué activa @Valid?** ⭐⭐
 
 Anotaciones comunes: @NotNull (el valor no puede ser null), @NotBlank (el string no puede ser null ni vacío — preferida para strings), @Size(min, max) (longitud), @Min/@Max (rango numérico), @Email (formato de email válido). @Valid en un parámetro @RequestBody le dice a Spring que ejecute todas las validaciones antes de que el método del controlador se ejecute — si alguna restricción falla, Spring lanza MethodArgumentNotValidException y @ControllerAdvice lo mapea a 400.
 
@@ -222,7 +430,9 @@ Anotaciones comunes: @NotNull (el valor no puede ser null), @NotBlank (el string
 
 ---
 
-**¿Cómo evitas que tu API devuelva alguna vez el hash de la contraseña en la respuesta JSON?** ⭐⭐
+<a id="SB-J-025"></a>
+
+**[SB-J-025] ¿Cómo evitas que tu API devuelva alguna vez el hash de la contraseña en la respuesta JSON?** ⭐⭐
 
 Dos capas. La principal es usar DTOs — el DTO de respuesta simplemente no tiene campo de contraseña, así que no puede filtrarse. Como respaldo defensivo en la propia entidad, `@JsonIgnore` en el campo `password` le dice a Jackson que nunca lo serialice, aunque una entidad se devuelva por accidente en algún sitio. En el proyecto 07 la contraseña de la entidad User está hasheada con BCrypt y nunca aparece en ningún DTO de respuesta.
 
@@ -231,14 +441,18 @@ Dos capas. La principal es usar DTOs — el DTO de respuesta simplemente no tien
 
 ---
 
-**Un endpoint POST siempre devuelve 200 en lugar de 201 — ¿qué olvidaste?** ⭐
+<a id="SB-J-026"></a>
+
+**[SB-J-026] Un endpoint POST siempre devuelve 200 en lugar de 201 — ¿qué olvidaste?** ⭐
 
 Olvidé devolver ResponseEntity.status(201).body(created). Devolver el objeto directamente o usar ResponseEntity.ok() siempre da 200. La solución es explícita en la sentencia return del controlador.
 
 ---
 ## Spring Data JPA
 
-**¿Cuál es la diferencia entre JPA e Hibernate?** ⭐⭐⭐
+<a id="SB-J-027"></a>
+
+**[SB-J-027] ¿Cuál es la diferencia entre JPA e Hibernate?** ⭐⭐⭐
 
 JPA (Jakarta Persistence API) es la especificación — define las anotaciones estándar (@Entity, @Id, @ManyToOne) y las interfaces. Hibernate es la implementación más común — traduce esas anotaciones a SQL. Spring Boot usa Hibernate por defecto. Tú escribes contra la especificación JPA; Hibernate ejecuta las consultas.
 
@@ -247,7 +461,9 @@ JPA (Jakarta Persistence API) es la especificación — define las anotaciones e
 
 ---
 
-**¿Qué te da JpaRepository de forma gratuita?** ⭐⭐⭐
+<a id="SB-J-028"></a>
+
+**[SB-J-028] ¿Qué te da JpaRepository de forma gratuita?** ⭐⭐⭐
 
 Extender JpaRepository<Transaction, Long> te da save(), findById(), findAll(), findAllById(), deleteById(), count() y existsById() sin escribir ningún código. Spring Data JPA genera la implementación al arrancar. Solo escribes métodos adicionales cuando los incorporados no son suficientes.
 
@@ -256,7 +472,9 @@ Extender JpaRepository<Transaction, Long> te da save(), findById(), findAll(), f
 
 ---
 
-**¿Por qué usas FetchType.LAZY en lugar de FetchType.EAGER?** ⭐⭐⭐
+<a id="SB-J-029"></a>
+
+**[SB-J-029] ¿Por qué usas FetchType.LAZY en lugar de FetchType.EAGER?** ⭐⭐⭐
 
 LAZY carga la entidad relacionada solo cuando accedes al campo en el código. EAGER la carga inmediatamente con la entidad padre, aunque no la necesites. EAGER puede lanzar consultas extra inesperadas y cargar grafos de objetos enormes. En el proyecto 07 uso LAZY en todas las relaciones — al consultar transacciones no cargo automáticamente el objeto User completo con cada fila.
 
@@ -264,13 +482,17 @@ Respuesta de alerta: "Siempre uso EAGER porque es más sencillo." Demuestra que 
 
 ---
 
-**¿Qué es el problema N+1?** ⭐⭐⭐
+<a id="SB-J-030"></a>
+
+**[SB-J-030] ¿Qué es el problema N+1?** ⭐⭐⭐
 
 El problema N+1 ocurre cuando cargas N entidades y luego accedes a una relación lazy en cada una — eso lanza N consultas adicionales. Cargar 100 transacciones y llamar a transaction.getUser().getName() en un bucle envía 100 SELECT extra a la base de datos. La solución es JOIN FETCH en un @Query para cargar ambas entidades en una sola consulta.
 
 ---
 
-**¿Cómo mapeas un campo enum a la base de datos y por qué `@Enumerated(EnumType.STRING)` es la opción segura?** ⭐⭐⭐
+<a id="SB-J-031"></a>
+
+**[SB-J-031] ¿Cómo mapeas un campo enum a la base de datos y por qué `@Enumerated(EnumType.STRING)` es la opción segura?** ⭐⭐⭐
 
 Anotas el campo con `@Enumerated`. El valor por defecto es `EnumType.ORDINAL`, que guarda el número de posición del enum (0, 1, 2). El problema: si más tarde insertas un valor nuevo en medio del enum, el número de cada fila existente ahora apunta a la constante equivocada — los datos se corrompen en silencio. `EnumType.STRING` guarda el nombre (`DRAFT`, `SUBMITTED`), así que reordenar o insertar valores es seguro. Siempre uso `@Enumerated(EnumType.STRING)`.
 
@@ -279,13 +501,17 @@ Anotas el campo con `@Enumerated`. El valor por defecto es `EnumType.ORDINAL`, q
 
 ---
 
-**¿Qué es un derived query method en Spring Data JPA?** ⭐⭐
+<a id="SB-J-032"></a>
+
+**[SB-J-032] ¿Qué es un derived query method en Spring Data JPA?** ⭐⭐
 
 Es un método que declaras en el repositorio cuyo nombre Spring Data JPA analiza para generar el SQL automáticamente. findByCategory(String category) genera SELECT * FROM transactions WHERE category = ?. Puedes combinar condiciones con And/Or, añadir ordenación con OrderBy y contar con countBy. En el proyecto 07 uso findByUserAndDateBetween para obtener las transacciones de un usuario en un rango de fechas.
 
 ---
 
-**¿Cuándo un derived query method no es suficiente y necesitas @Query?** ⭐⭐
+<a id="SB-J-033"></a>
+
+**[SB-J-033] ¿Cuándo un derived query method no es suficiente y necesitas @Query?** ⭐⭐
 
 Cuando la lógica no puede expresarse con el nombre del método — por ejemplo, joins entre múltiples tablas, funciones de agregado o cargar una entidad relacionada con JOIN FETCH para evitar el problema N+1. En el proyecto 07 uso @Query cuando el nombre del método derivado se volvería ilegiblemente largo o cuando necesito controlar exactamente qué relaciones se cargan.
 
@@ -294,7 +520,9 @@ Cuando la lógica no puede expresarse con el nombre del método — por ejemplo,
 
 ---
 
-**¿Cómo sabe save() si debe insertar o actualizar?** ⭐⭐
+<a id="SB-J-034"></a>
+
+**[SB-J-034] ¿Cómo sabe save() si debe insertar o actualizar?** ⭐⭐
 
 save() comprueba el campo @Id. Si es null, JPA inserta una nueva fila. Si tiene un valor existente, JPA hace un merge (actualiza) la fila existente. No necesitas métodos insert() y update() separados.
 
@@ -303,7 +531,9 @@ save() comprueba el campo @Id. Si es null, JPA inserta una nueva fila. Si tiene 
 
 ---
 
-**¿Cuál es la diferencia entre @OneToMany y @ManyToOne, y cómo decides dónde va cada uno?** ⭐⭐
+<a id="SB-J-035"></a>
+
+**[SB-J-035] ¿Cuál es la diferencia entre @OneToMany y @ManyToOne, y cómo decides dónde va cada uno?** ⭐⭐
 
 @ManyToOne va en la entidad cuya tabla de base de datos tiene la columna de clave foránea. En el proyecto 07 la tabla transactions tiene una columna user_id, por lo que la entidad Transaction tiene @ManyToOne apuntando a User. @OneToMany va en el otro lado — User tiene @OneToMany(mappedBy = "user") apuntando a sus transacciones. La columna de clave foránea en la base de datos determina dónde va @ManyToOne.
 
@@ -312,7 +542,9 @@ save() comprueba el campo @Id. Si es null, JPA inserta una nueva fila. Si tiene 
 
 ---
 
-**¿Qué anotaciones necesita una entidad JPA como mínimo?** ⭐⭐
+<a id="SB-J-036"></a>
+
+**[SB-J-036] ¿Qué anotaciones necesita una entidad JPA como mínimo?** ⭐⭐
 
 @Entity en la clase, @Id en el campo de clave primaria y @GeneratedValue(strategy = GenerationType.IDENTITY) para que la base de datos auto-incremente el id usando una columna SERIAL en PostgreSQL. Todo lo demás (@Table, @Column) es configuración opcional.
 
@@ -321,13 +553,17 @@ save() comprueba el campo @Id. Si es null, JPA inserta una nueva fila. Si tiene 
 
 ---
 
-**Tu aplicación registra cientos de SELECT para una sola petición de lista — ¿qué ocurrió?** ⭐⭐
+<a id="SB-J-037"></a>
+
+**[SB-J-037] Tu aplicación registra cientos de SELECT para una sola petición de lista — ¿qué ocurrió?** ⭐⭐
 
 Es el problema N+1. La consulta carga entidades y luego cada acceso a una relación lazy lanza un SELECT separado. Identificaría qué relación es LAZY y lo corregiría con JOIN FETCH en un @Query del repositorio para cargar todo en una sola consulta.
 
 ---
 
-**¿Qué es Pageable en Spring Data JPA y cuándo lo usarías?** ⭐⭐
+<a id="SB-J-038"></a>
+
+**[SB-J-038] ¿Qué es Pageable en Spring Data JPA y cuándo lo usarías?** ⭐⭐
 
 Pageable permite cargar un subconjunto de datos en lugar de la tabla completa — pasas un número de página y un tamaño de página, y el repositorio devuelve un objeto Page<T> con los resultados, el recuento total y metadatos. En el proyecto 07 añado paginación a GET /transactions para que el frontend Angular pueda cargar 20 transacciones a la vez en lugar del historial completo. La firma del método del repositorio cambia a Page<Transaction> findAll(Pageable pageable).
 
@@ -338,7 +574,9 @@ Respuesta de alerta: "Simplemente llamo a findAll() — la lista no es tan larga
 
 ---
 
-**¿Por qué tu entidad `User` necesita `@Table(name = "users")`?** ⭐⭐
+<a id="SB-J-039"></a>
+
+**[SB-J-039] ¿Por qué tu entidad `User` necesita `@Table(name = "users")`?** ⭐⭐
 
 Porque `user` es una palabra reservada en PostgreSQL — una tabla literalmente llamada `user` choca con la palabra clave interna y las consultas fallan. `@Table(name = "users")` establece un nombre de tabla explícito y evita el conflicto. Mi convención son nombres en plural y minúscula para cada tabla (`users`, `projects`, `time_entries`), lo que esquiva las palabras reservadas y se lee de forma consistente.
 
@@ -347,7 +585,9 @@ Porque `user` es una palabra reservada en PostgreSQL — una tabla literalmente 
 
 ---
 
-**¿Cuál es la diferencia entre `cascade = CascadeType.ALL` y `orphanRemoval = true`?** ⭐⭐
+<a id="SB-J-040"></a>
+
+**[SB-J-040] ¿Cuál es la diferencia entre `cascade = CascadeType.ALL` y `orphanRemoval = true`?** ⭐⭐
 
 `cascade` propaga las operaciones del padre al hijo: guardar o borrar el padre también guarda o borra sus hijos automáticamente. `orphanRemoval = true` va más allá — borra un hijo en el momento en que se quita de la colección del padre, aunque el padre no se borre. Así que `cascade` trata de operaciones que fluyen hacia abajo; `orphanRemoval` trata de limpiar hijos que ya no pertenecen a ningún padre. Combinas ambos cuando un hijo no tiene sentido sin su padre — como las entradas de tiempo de un proyecto.
 
@@ -356,7 +596,9 @@ Porque `user` es una palabra reservada en PostgreSQL — una tabla literalmente 
 
 ---
 
-**¿Qué es un soft delete y cuándo lo usarías en lugar de borrar realmente la fila?** ⭐⭐
+<a id="SB-J-041"></a>
+
+**[SB-J-041] ¿Qué es un soft delete y cuándo lo usarías en lugar de borrar realmente la fila?** ⭐⭐
 
 Un soft delete pone un flag — `active = false` — en lugar de ejecutar `DELETE`. La fila permanece en la base de datos pero se filtra de las consultas normales. Lo usas siempre que los datos tengan valor histórico o de auditoría: en el proyecto 07, borrar un proyecto no debe eliminar las entradas de tiempo ya registradas contra él, así que el proyecto se desactiva, no se elimina. Un borrado real rompería las claves foráneas y perdería el historial. El trade-off es que cada consulta debe acordarse de filtrar `active = true`.
 
@@ -365,7 +607,9 @@ Respuesta de alerta: "Siempre uso deleteById()." — En una app de negocio eso d
 ---
 ## Seguridad y JWT
 
-**¿Cómo funciona la autenticación JWT en Spring Boot a alto nivel?** ⭐⭐⭐
+<a id="SB-J-042"></a>
+
+**[SB-J-042] ¿Cómo funciona la autenticación JWT en Spring Boot a alto nivel?** ⭐⭐⭐
 
 El usuario envía credenciales a POST /auth/login. El servicio las verifica y devuelve un token JWT. En cada petición posterior el frontend Angular envía el token en la cabecera Authorization como "Bearer token". Un filtro que extiende OncePerRequestFilter intercepta cada petición, valida el token, extrae el usuario y establece el SecurityContext. Spring Security luego permite o deniega el acceso según las reglas de SecurityFilterChain.
 
@@ -374,7 +618,9 @@ El usuario envía credenciales a POST /auth/login. El servicio las verifica y de
 
 ---
 
-**¿Qué es SecurityFilterChain y qué configuras en él?** ⭐⭐⭐
+<a id="SB-J-043"></a>
+
+**[SB-J-043] ¿Qué es SecurityFilterChain y qué configuras en él?** ⭐⭐⭐
 
 SecurityFilterChain define las reglas de seguridad de la aplicación — qué endpoints son públicos, cuáles requieren autenticación, configuración de CORS, CSRF y qué filtros personalizados añadir. En el proyecto 07 configuro POST /auth/login y POST /auth/register como públicos y todos los demás endpoints como autenticados. También añado el filtro JWT antes del filtro de autenticación por defecto de Spring.
 
@@ -383,7 +629,9 @@ SecurityFilterChain define las reglas de seguridad de la aplicación — qué en
 
 ---
 
-**¿Cuál es la diferencia entre autenticación y autorización?** ⭐⭐⭐
+<a id="SB-J-044"></a>
+
+**[SB-J-044] ¿Cuál es la diferencia entre autenticación y autorización?** ⭐⭐⭐
 
 La autenticación es demostrar quién eres — iniciar sesión con email y contraseña. La autorización es controlar qué puedes hacer — solo los usuarios ADMIN pueden borrar datos de otros usuarios. Spring Security gestiona ambas: la autenticación JWT ocurre en el filtro; la autorización se impone con roles y @PreAuthorize.
 
@@ -392,7 +640,9 @@ La autenticación es demostrar quién eres — iniciar sesión con email y contr
 
 ---
 
-**¿Qué es BCryptPasswordEncoder y por qué no almacenas nunca una contraseña en texto plano?** ⭐⭐⭐
+<a id="SB-J-045"></a>
+
+**[SB-J-045] ¿Qué es BCryptPasswordEncoder y por qué no almacenas nunca una contraseña en texto plano?** ⭐⭐⭐
 
 BCryptPasswordEncoder hashea las contraseñas usando el algoritmo BCrypt antes de almacenarlas. Una contraseña en texto plano en la base de datos es una vulnerabilidad de seguridad crítica — si la base de datos se compromete, todas las cuentas quedan expuestas inmediatamente. Con BCrypt, cada contraseña produce un hash único que no puede revertirse. En el proyecto 07 defino un bean PasswordEncoder y lo uso en el servicio de registro para hashear la contraseña antes de guardarla.
 
@@ -400,7 +650,9 @@ Respuesta de alerta: "Guardo la contraseña directamente — es solo un proyecto
 
 ---
 
-**¿Por qué elegiste JWT en lugar de sesiones del lado del servidor?** ⭐⭐⭐
+<a id="SB-J-046"></a>
+
+**[SB-J-046] ¿Por qué elegiste JWT en lugar de sesiones del lado del servidor?** ⭐⭐⭐
 
 Una sesión guarda el estado de autenticación en el servidor y entrega al cliente un id de sesión en una cookie; un JWT guarda el estado dentro del token en el cliente y el servidor no guarda nada. JWT encaja en una API REST porque es sin estado (stateless) — cualquier instancia del backend puede validar el token sin un almacén de sesiones compartido, lo que escala horizontalmente y respeta el principio stateless de REST. Las sesiones son más fáciles de revocar al instante pero atan al usuario a un servidor o necesitan una caché de sesiones compartida. Para la separación Angular + Spring Boot del proyecto 07, JWT es la opción natural.
 
@@ -408,7 +660,9 @@ Respuesta de alerta: "JWT es más moderno." — Eso es moda, no un argumento. El
 
 ---
 
-**¿Por qué deshabilitas CSRF en una API REST?** ⭐⭐
+<a id="SB-J-047"></a>
+
+**[SB-J-047] ¿Por qué deshabilitas CSRF en una API REST?** ⭐⭐
 
 La protección CSRF está diseñada para aplicaciones HTML renderizadas en el servidor que usan cookies para las sesiones. Una API REST con JWT no usa cookies — cada petición lleva el token en una cabecera. Activar CSRF rechazaría todas las peticiones no-GET sin un token CSRF coincidente, rompiendo la API. Por eso se deshabilita en APIs sin estado basadas en tokens.
 
@@ -416,13 +670,17 @@ Respuesta de alerta: "Lo deshabilité porque estaba en el tutorial." Necesitas s
 
 ---
 
-**¿Qué es @PreAuthorize y cuándo lo usarías?** ⭐⭐
+<a id="SB-J-048"></a>
+
+**[SB-J-048] ¿Qué es @PreAuthorize y cuándo lo usarías?** ⭐⭐
 
 @PreAuthorize añade autorización a nivel de método. @PreAuthorize("hasRole('ADMIN')") bloquea a los usuarios no administradores antes de que el método se ejecute. En el proyecto 07 lo uso en endpoints solo de administrador como DELETE /users/{id}. Requiere @EnableMethodSecurity en la clase de configuración de seguridad.
 
 ---
 
-**¿Por qué guardar el secreto JWT en application.properties o una variable de entorno en lugar de hardcodearlo?** ⭐⭐
+<a id="SB-J-049"></a>
+
+**[SB-J-049] ¿Por qué guardar el secreto JWT en application.properties o una variable de entorno en lugar de hardcodearlo?** ⭐⭐
 
 Un secreto hardcodeado en el código fuente se sube a git y es visible para cualquiera con acceso al repositorio. application.properties no se sube en producción — el secreto viene de una variable de entorno configurada en el servidor. Si el secreto se filtra, cualquier JWT firmado con él puede ser verificado por atacantes. En el proyecto 07 uso @Value("${app.jwt.secret}") para leerlo del fichero de configuración.
 
@@ -430,7 +688,9 @@ Respuesta de alerta: "Lo puse en el código porque es más fácil." Eso es una v
 
 ---
 
-**¿Qué hay dentro de un token JWT y cómo lo construye JwtUtil.generateToken()?** ⭐⭐
+<a id="SB-J-050"></a>
+
+**[SB-J-050] ¿Qué hay dentro de un token JWT y cómo lo construye JwtUtil.generateToken()?** ⭐⭐
 
 Un JWT tiene tres partes: header (algoritmo de firma), payload (los datos) y signature (la prueba de que no ha sido modificado). El payload en el proyecto 07 contiene tres campos estándar: `sub` (el email del usuario), `iat` (cuándo se creó el token) y `exp` (cuándo caduca). `generateToken()` usa el builder de JJWT para establecer esos tres campos, firma el resultado con la clave secreta y llama a `.compact()` para producir el string final `header.payload.signature`. La expiración se calcula como `System.currentTimeMillis() + expiration`, donde `expiration` es 86400000 (24 horas en milisegundos) leído de `application.properties`.
 
@@ -438,7 +698,9 @@ Un JWT tiene tres partes: header (algoritmo de firma), payload (los datos) y sig
 
 ---
 
-**¿Cuál es la diferencia entre 401 Unauthorized y 403 Forbidden, y cuándo devuelve cada uno Spring Security?** ⭐⭐
+<a id="SB-J-051"></a>
+
+**[SB-J-051] ¿Cuál es la diferencia entre 401 Unauthorized y 403 Forbidden, y cuándo devuelve cada uno Spring Security?** ⭐⭐
 
 401 significa que la petición no tiene autenticación válida — no hay token, el token ha caducado o la firma es inválida. 403 significa que el usuario está autenticado (el token es válido) pero no tiene permiso para acceder a ese recurso. En el proyecto 07, una petición sin JWT a un endpoint protegido devuelve 401. Un USER que intenta acceder a un endpoint anotado con @PreAuthorize("hasRole('ADMIN')") devuelve 403. Spring Security puede devolver 403 para peticiones no autenticadas por defecto — esto se sobreescribe con un AuthenticationEntryPoint personalizado que devuelve 401.
 
@@ -447,7 +709,9 @@ Un JWT tiene tres partes: header (algoritmo de firma), payload (los datos) y sig
 
 ---
 
-**¿Qué es UserDetailsService y por qué lo implementas?** ⭐⭐
+<a id="SB-J-052"></a>
+
+**[SB-J-052] ¿Qué es UserDetailsService y por qué lo implementas?** ⭐⭐
 
 UserDetailsService es una interfaz de Spring Security con un solo método — loadUserByUsername(String username). La implementas para decirle a Spring Security cómo encontrar un usuario en tu base de datos durante la autenticación. En el proyecto 07 UserDetailsServiceImpl llama al UserRepository, carga el usuario por email y devuelve un objeto UserDetails con el email, la contraseña hasheada y los roles. Sin esto, Spring Security no sabe cómo verificar las credenciales.
 
@@ -456,7 +720,9 @@ UserDetailsService es una interfaz de Spring Security con un solo método — lo
 
 ---
 
-**¿Qué significa gestión de sesión sin estado (stateless) en SecurityFilterChain?** ⭐⭐
+<a id="SB-J-053"></a>
+
+**[SB-J-053] ¿Qué significa gestión de sesión sin estado (stateless) en SecurityFilterChain?** ⭐⭐
 
 Sin estado significa que Spring Security no crea ni usa una sesión HTTP para recordar usuarios autenticados entre peticiones. Cada petición debe llevar su propio token JWT y validarse de forma independiente. La configuración es SessionCreationPolicy.STATELESS. Sin esto, Spring crea sesiones por defecto, lo que entra en conflicto con la autenticación JWT y consume memoria del servidor innecesariamente.
 
@@ -465,7 +731,9 @@ Sin estado significa que Spring Security no crea ni usa una sesión HTTP para re
 
 ---
 
-**Una vez que has emitido un JWT, ¿puedes invalidarlo antes de que caduque?** ⭐⭐
+<a id="SB-J-054"></a>
+
+**[SB-J-054] Una vez que has emitido un JWT, ¿puedes invalidarlo antes de que caduque?** ⭐⭐
 
 No directamente — un JWT es válido hasta que pasa su claim `exp`, porque el servidor no guarda ningún estado sobre él; solo verifica la firma. Así que un "logout" en el cliente solo borra el token localmente; el token en sí seguiría pasando la validación hasta caducar. Las mitigaciones prácticas son una expiración corta (15–60 minutos) y, si de verdad necesitas revocación instantánea, una blacklist en el servidor (por ejemplo en Redis) — pero eso reintroduce el estado de servidor que JWT pretendía evitar. En el proyecto 07 confío en una expiración corta.
 
@@ -473,14 +741,18 @@ Respuesta de alerta: "Sí, lo borro en el logout." — Borrar la copia del clien
 
 ---
 
-**Tu filtro JWT rechaza tokens válidos — ¿qué compruebas primero?** ⭐
+<a id="SB-J-055"></a>
+
+**[SB-J-055] Tu filtro JWT rechaza tokens válidos — ¿qué compruebas primero?** ⭐
 
 Compruebo tres cosas: la clave secreta (¿es la misma que se usó para firmar el token?), la expiración del token (¿ha caducado?) y el formato de la cabecera Authorization (debe ser exactamente "Bearer token" con un espacio). También reviso la configuración de SecurityFilterChain para confirmar que el endpoint no está marcado accidentalmente como que requiere un rol que el usuario no tiene.
 
 ---
 ## Gestión de excepciones
 
-**¿Qué es @ControllerAdvice y cuándo lo usas?** ⭐⭐⭐
+<a id="SB-J-056"></a>
+
+**[SB-J-056] ¿Qué es @ControllerAdvice y cuándo lo usas?** ⭐⭐⭐
 
 @ControllerAdvice es un manejador global de excepciones. Defines métodos @ExceptionHandler dentro de él y Spring los llama automáticamente cuando esas excepciones se lanzan desde cualquier controlador. En el proyecto 07 tengo un GlobalExceptionHandler que mapea ResourceNotFoundException a 404, IllegalArgumentException a 400 y un manejador fallback de Exception a 500.
 
@@ -489,7 +761,9 @@ Compruebo tres cosas: la clave secreta (¿es la misma que se usó para firmar el
 
 ---
 
-**¿Por qué extender RuntimeException para excepciones personalizadas en Spring Boot en lugar de extender Exception?** ⭐⭐
+<a id="SB-J-057"></a>
+
+**[SB-J-057] ¿Por qué extender RuntimeException para excepciones personalizadas en Spring Boot en lugar de extender Exception?** ⭐⭐
 
 RuntimeException es no comprobada — los llamadores no necesitan declararla con throws. Las excepciones comprobadas (que extienden Exception) obligan a cada método en la pila de llamadas a gestionarlas o re-declararlas, lo que contamina el código del servicio con gestión de errores para problemas que no puede resolver. La convención en Spring Boot es: lanza excepciones no comprobadas desde el servicio, captúralas globalmente con @ControllerAdvice.
 
@@ -498,13 +772,17 @@ RuntimeException es no comprobada — los llamadores no necesitan declararla con
 
 ---
 
-**Un compañero junior tiene un bloque try/catch en cada método del controlador — ¿qué le dices?** ⭐⭐
+<a id="SB-J-058"></a>
+
+**[SB-J-058] Un compañero junior tiene un bloque try/catch en cada método del controlador — ¿qué le dices?** ⭐⭐
 
 Le explicaría que Spring Boot tiene @ControllerAdvice para esto — defines toda la gestión de errores en una clase y Spring enruta las excepciones allí automáticamente. Elimina la duplicación, mantiene los controladores enfocados en el camino feliz y hace que las respuestas de error sean consistentes en toda la API. Le mostraría el GlobalExceptionHandler del proyecto 07 como ejemplo.
 
 ---
 
-**¿Cuál es la diferencia entre MethodArgumentNotValidException y ConstraintViolationException?** ⭐
+<a id="SB-J-059"></a>
+
+**[SB-J-059] ¿Cuál es la diferencia entre MethodArgumentNotValidException y ConstraintViolationException?** ⭐
 
 MethodArgumentNotValidException se lanza cuando @Valid en un objeto @RequestBody falla — un campo del DTO viola una restricción como @NotBlank o @Positive. ConstraintViolationException se lanza cuando @Validated en la clase del controlador activa la validación en parámetros @PathVariable o @RequestParam individuales. Ambas deben gestionarse en @ControllerAdvice, pero con métodos @ExceptionHandler separados porque son tipos de excepción diferentes.
 
@@ -514,7 +792,9 @@ MethodArgumentNotValidException se lanza cuando @Valid en un objeto @RequestBody
 ---
 ## Transacciones
 
-**¿Qué hace @Transactional(readOnly = true) y por qué deberías usarlo en métodos de lectura?** ⭐⭐
+<a id="SB-J-060"></a>
+
+**[SB-J-060] ¿Qué hace @Transactional(readOnly = true) y por qué deberías usarlo en métodos de lectura?** ⭐⭐
 
 Le dice a Hibernate que omita el dirty checking al final de la transacción — Hibernate no compara el estado de cada entidad cargada para detectar cambios, porque has declarado que no habrá cambios. Esto hace que las operaciones de lectura sean más rápidas. En el proyecto 07 anoto cada método de servicio que solo lee datos con @Transactional(readOnly = true), y cada método de escritura con @Transactional.
 
@@ -523,7 +803,9 @@ Le dice a Hibernate que omita el dirty checking al final de la transacción — 
 
 ---
 
-**¿Por qué @Transactional no funciona en métodos privados?** ⭐⭐
+<a id="SB-J-061"></a>
+
+**[SB-J-061] ¿Por qué @Transactional no funciona en métodos privados?** ⭐⭐
 
 @Transactional funciona a través de un proxy de Spring — Spring envuelve el bean en un objeto wrapper que intercepta las llamadas a métodos y gestiona la transacción. Un proxy solo puede interceptar métodos públicos. Cuando llamas a un método privado, lo llamas directamente en el objeto real — el proxy se omite y la anotación se ignora silenciosamente sin ningún error al arrancar. En el proyecto 07 siempre hago públicos los métodos de servicio que necesitan transacciones.
 
@@ -531,7 +813,9 @@ Respuesta de alerta: "Lo probé y funciona." Puede parecer que funciona si el m�
 
 ---
 
-**¿Qué ocurre si capturas una `RuntimeException` dentro de un método `@Transactional` y no la vuelves a lanzar?** ⭐⭐
+<a id="SB-J-062"></a>
+
+**[SB-J-062] ¿Qué ocurre si capturas una `RuntimeException` dentro de un método `@Transactional` y no la vuelves a lanzar?** ⭐⭐
 
 La transacción hace commit. `@Transactional` solo revierte cuando una excepción no comprobada se propaga FUERA del método — si la capturas y la tragas, Spring ve un retorno normal y hace commit de lo que se escribió antes del fallo. Así que la operación "falló" pero los datos a medias quedan persistidos. Si necesito gestionar la excepción pero igualmente revertir, o la vuelvo a lanzar, o llamo a `TransactionAspectSupport.currentTransactionStatus().setRollbackOnly()`. En el proyecto 07 dejo que las excepciones del servicio se propaguen al `@RestControllerAdvice` en lugar de capturarlas localmente.
 
@@ -540,7 +824,9 @@ Respuesta de alerta: "Capturarla es más seguro." — Hace commit de datos parci
 ---
 ## Testing
 
-**¿Qué es @SpringBootTest y cuándo lo usas?** ⭐⭐⭐
+<a id="SB-J-063"></a>
+
+**[SB-J-063] ¿Qué es @SpringBootTest y cuándo lo usas?** ⭐⭐⭐
 
 @SpringBootTest carga el contexto de aplicación completo — todos los beans, la auto-configuración y la conexión a base de datos. Úsalo para tests de integración que verifican el flujo completo desde la petición HTTP hasta la escritura en base de datos. Es lento, así que úsalo solo para los caminos críticos, no para cada método.
 
@@ -549,19 +835,25 @@ Respuesta de alerta: "Capturarla es más seguro." — Hace commit de datos parci
 
 ---
 
-**¿Qué es Mockito y cómo usas @MockBean en un test de Spring Boot?** ⭐⭐⭐
+<a id="SB-J-064"></a>
+
+**[SB-J-064] ¿Qué es Mockito y cómo usas @MockBean en un test de Spring Boot?** ⭐⭐⭐
 
 Mockito crea implementaciones falsas de tus dependencias. when(service.getAll()).thenReturn(List.of(transaction)) le dice a Mockito qué devolver cuando se llama a ese método. @MockBean reemplaza el bean real en el contexto Spring por un mock de Mockito, permitiéndote probar el controlador de forma aislada sin servicio ni base de datos reales.
 
 ---
 
-**¿Qué es @WebMvcTest y qué problema resuelve?** ⭐⭐
+<a id="SB-J-065"></a>
+
+**[SB-J-065] ¿Qué es @WebMvcTest y qué problema resuelve?** ⭐⭐
 
 @WebMvcTest carga solo la capa web — controladores, filtros y @ControllerAdvice. Los servicios y repositorios no se cargan; los simulas con @MockBean. Los tests se ejecutan mucho más rápido que con @SpringBootTest y se centran exclusivamente en la capa HTTP: códigos de estado correctos, mapeo de rutas y forma de la respuesta JSON. En el proyecto 07 uso @WebMvcTest para probar TransactionController sin base de datos real.
 
 ---
 
-**¿Por qué usar @WebMvcTest en lugar de @SpringBootTest para probar un controlador?** ⭐⭐
+<a id="SB-J-066"></a>
+
+**[SB-J-066] ¿Por qué usar @WebMvcTest en lugar de @SpringBootTest para probar un controlador?** ⭐⭐
 
 @WebMvcTest es más rápido (carga solo la capa web), más enfocado (los fallos apuntan directamente al controlador o filtro) y no requiere una base de datos en ejecución. Si un test de controlador falla con @WebMvcTest, el problema está en la capa HTTP. @SpringBootTest también fallaría o pasaría por razones del servicio y el repositorio, dificultando localizar el error. Menos alcance significa retroalimentación más rápida.
 
@@ -569,7 +861,9 @@ Respuesta de alerta: "Siempre uso @SpringBootTest porque prueba todo." Demuestra
 
 ---
 
-**¿Qué es @DataJpaTest y cuándo lo usarías?** ⭐⭐
+<a id="SB-J-067"></a>
+
+**[SB-J-067] ¿Qué es @DataJpaTest y cuándo lo usarías?** ⭐⭐
 
 @DataJpaTest carga solo la capa de persistencia — entidades JPA, repositorios y una base de datos H2 en memoria por defecto. No carga controladores ni servicios. Úsalo para probar métodos de repositorio y derived queries de forma aislada — por ejemplo, verificar que findByUserAndDateBetween devuelve los resultados correctos para un rango de fechas. Es más rápido que @SpringBootTest porque carga mucho menos de la aplicación.
 
@@ -578,14 +872,18 @@ Respuesta de alerta: "Siempre uso @SpringBootTest porque prueba todo." Demuestra
 
 ---
 
-**Tu @WebMvcTest pasa pero el mismo flujo falla en el test de integración completo — ¿qué te dice eso?** ⭐
+<a id="SB-J-068"></a>
+
+**[SB-J-068] Tu @WebMvcTest pasa pero el mismo flujo falla en el test de integración completo — ¿qué te dice eso?** ⭐
 
 La capa HTTP es correcta — el controlador, el mapeo de rutas y el formato de respuesta están bien. El problema está en la capa de servicio o de repositorio, o en la interacción entre ellas. El mock en el test unitario ocultó el error real. Por eso se necesitan tanto tests unitarios como tests de integración — detectan tipos diferentes de errores.
 
 ---
 ## Tooling
 
-**¿Cómo containerizas una aplicación Spring Boot y cómo ejecuta alguien tu proyecto sin instalar PostgreSQL?** ⭐⭐⭐
+<a id="SB-J-069"></a>
+
+**[SB-J-069] ¿Cómo containerizas una aplicación Spring Boot y cómo ejecuta alguien tu proyecto sin instalar PostgreSQL?** ⭐⭐⭐
 
 Escribo un `Dockerfile` que parte de una imagen base con JDK (`FROM eclipse-temurin:25-jdk`), copia el jar construido (`COPY target/*.jar app.jar`) y define `ENTRYPOINT ["java","-jar","app.jar"]`. Luego un `docker-compose.yml` ejecuta dos servicios juntos — el contenedor de Spring Boot y un contenedor `postgres` — en una red compartida, de modo que `docker compose up` levanta todo el stack con un solo comando. Nadie necesita PostgreSQL instalado localmente; la base de datos corre en su propio contenedor. En el proyecto 07 así es como el backend y la base de datos se ejecutan juntos.
 
@@ -594,7 +892,9 @@ Escribo un `Dockerfile` que parte de una imagen base con JDK (`FROM eclipse-temu
 
 ---
 
-**¿Por qué un equipo usaría Flyway en lugar de `spring.jpa.hibernate.ddl-auto=update`?** ⭐⭐
+<a id="SB-J-070"></a>
+
+**[SB-J-070] ¿Por qué un equipo usaría Flyway en lugar de `spring.jpa.hibernate.ddl-auto=update`?** ⭐⭐
 
 `ddl-auto=update` deja que Hibernate altere el esquema automáticamente comparando las entidades con las tablas — cómodo en desarrollo, pero peligroso en producción porque los cambios son implícitos, no revisables y pueden alterar o bloquear en silencio una tabla en uso. Flyway convierte cada cambio de esquema en un script SQL explícito y versionado (`V1__init.sql`, `V2__add_status.sql`) que vive en git, se revisa en un PR y se ejecuta en orden exactamente una vez. El equipo controla y audita cada migración. En producción pones `ddl-auto=validate` y dejas que Flyway sea el dueño del esquema.
 
