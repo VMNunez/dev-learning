@@ -73,7 +73,9 @@ the bank's prose, and it carries **no model answer at all** — the answer is wh
 on, and no answer of any project reaches you through it. **The one leak is named rather than denied:**
 that example is a near-verbatim copy of a real bold line of `01-todo-list`'s bank, so on that one
 project you will have met one question's English wording before opening the twin. Audit that question's
-Spanish exactly as if you had not, and say in your report that you saw it.
+Spanish exactly as if you had not, and say in your report that you saw it. The standard also quotes the
+project overview question's fixed bold text in both languages (`REC-336`) — a line each bank carries once
+its next run on that lane writes it, and one outside your hand anyway.
 `notes/interview-prep/projects/en/{PROJECT_NAME}.md` is the one file you must not open.
 
 **Verifiable read (the shared session rules non-negotiable):** run `wc -l` on the `es/` file before
@@ -97,7 +99,9 @@ the wording:
 - **Never add or remove a question**, never move one between headings, never reorder them, and never add
   or remove a section or sub-heading.
 - **Never touch a question ID.** `[01-todo-list-004]` is what ties a Spanish block to its English twin
-  once a rewrite has changed every word around it.
+  once a rewrite has changed every word around it. **Nor the project overview question's bold line**,
+  whose Spanish text the standard fixes (its identity section, `REC-336`); its answer is prose like any
+  other.
 - **Never write, remove or move a state marker** — `[refined]`, or the ` [studied]` that may follow it
   since 2026-09-06 — in either language, for any reason. Both are written outside this pipeline, by
   Victor and by `study-block-close`.

@@ -92,12 +92,20 @@ Before starting, read:
   **Both sides of that ratio are scoped**: count the decisions in the columns `{SCOPE}` names against the
   questions under its sub-headings only. Counting a whole section's questions against one tier's decisions
   inflates the ratio with another run's work and hides exactly the thin tier this number exists to catch.
-- **Question type.** Each targets a decision / pattern / gotcha, not "what is X". Rewrite any generic
-  "what is JWT"-style question into one about *this* project's choice.
+- **The project overview question** (`REC-336`). On the Architecture & Patterns lane that reaches the
+  `global` column — `full` or `global`, or any scope on an Angular-only project — the bank holds the
+  standard's **"The project overview question"**, found by its fixed bold text: add it where it is
+  missing, with the next unused ID, and hold it to that section's text, `⭐⭐⭐` and three-part answer. The
+  stack its answer names is settled against the project's build files (`pom.xml`, `package.json`), which
+  you open for that answer alone. It counts on neither side of your ratio. On every other lane it is not yours to add or to miss.
+- **Question type.** Each targets a decision / pattern / gotcha, not "what is X" — the project overview
+  question is the one exception. Rewrite any generic "what is JWT"-style question into one about *this*
+  project's choice.
 - **Answerability.** Each is answerable only by someone who wrote this code. Cut or sharpen anything a
   candidate could answer from a tutorial.
-- **Model answer.** 2–4 sentences, references the **actual implementation**, uses "I chose" / "I
-  decided" — not "it is used". Fix passive, textbook, or code-free answers.
+- **Model answer.** 2–4 sentences — the project overview question's three parts excepted —
+  references the **actual implementation**, uses "I chose" / "I decided" — not "it is used". Fix
+  passive, textbook, or code-free answers.
 - **Claims about the code.** Settle every statement a question or its answer makes about this project's
   code against the source — a count, a name, which file or class holds what, what calls what, what a
   method does or returns. **Count what it counts and open what it names**: an answer in the right voice,
@@ -110,7 +118,7 @@ Before starting, read:
   shows**, and where a question or answer asserts something about this project's code that the source
   does not hold at all — a class, a call, a test that is not there — take the assertion out. Where a
   question in your lane names code outside the area you walked — another section's files, another
-  tier's — **open the file it names, for that one claim**. It is the one read of the project's
+  tier's — **open the file it names, for that one claim**. It is, with the build files the project overview answer names, the only read of the project's
   code this prompt allows outside the area you walked, and it settles the claim and nothing else: it
   adds no decision to your ratio and licenses no new question. **This check reaches what a file of this project settles and promises
   nothing past it**: what a library, the framework, the browser or a tool does, where no file here
@@ -137,10 +145,11 @@ Before starting, read:
   the project is *for*, not every decision worth a question). **The whole-file proportion is not yours**:
   it is a property of the bank, the orchestrator's cross-section scan owns it, and a section judging it
   from its own share would downgrade against a denominator it cannot see. Report your final split.
+  The project overview question is `⭐⭐⭐` by rule and is never the one you downgrade.
   A frozen block's markers — the `⭐`, the `[refined]` and any ` [studied]` after it — are frozen with
   the rest of it.
 - **No duplication within the section.** No two questions in `{SECTION}` cover the same decision or code
-  path.
+  path. The project overview question is never one of such a pair; only a second copy of it is.
 
 ## Fix, don't just report
 
@@ -178,6 +187,8 @@ working tree. Report your **verdict** for `{SECTION}`:
 - **Only if that ratio is still below 1:** the list of decisions you found but left uncovered. The
   orchestrator's acceptance gate re-dispatches you once with exactly that list, so a ratio below 1
   reported without it makes the gate unenforceable.
+- **On the lane that owes it, the project overview question**: `overview: present «ID»` or
+  `overview: added «ID»`.
 - **This section's marker split** (`⭐⭐⭐` / `⭐⭐` / `⭐`) and how many markers you added or downgraded,
   plus any question you had to leave unmarked because it sits outside your lane. The scan that owns the
   whole-file proportion counts the finished file itself; your split is what lets it see which section a

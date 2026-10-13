@@ -134,7 +134,9 @@ without obliging a rebuild.
    never enter the route to fill a quota.
 2. Deduplicate by tested decision or mechanism, not wording — **across projects as well as within one**.
    Two projects that made the same choice are asked about it once, in the project whose code defends it
-   best; name the dropped ID in the report.
+   best; name the dropped ID in the report. **Each bank's project overview question is the exception**
+   (`_portfolio-standard.md` → "Priority markers", `REC-336`): its bold text is the same in every bank,
+   but each pitches its own project, so none is ever dropped for another's.
 3. **No dedupe against the levelled CORE route** (Victor's ruling, 2026-09-05). The same decision asked
    from the topic side and from the project side is two rehearsals, and both are worth having: one
    answers "what does Angular do", the other "what did *you* do". Neither route reads the other, and
@@ -156,7 +158,8 @@ scope: the deterministic ID, count and fingerprint checks are rerun here after c
 It must return:
 
 - `N questions reviewed` and the selected count;
-- duplicate-decision verdict, **including across projects**;
+- duplicate-decision verdict, **including across projects** — each bank's project overview question
+  exempt, under step 2;
 - per-project balance verdict — a project contributing one question when it has fifteen `⭐⭐⭐` is a
   selection defect, not a small project;
 - every question it would remove, and every `⭐⭐⭐` it would have expected and did not find;

@@ -90,7 +90,7 @@ what the scope exists for.
 
 | Section | `backend` | `frontend` | `global` (cross-tier) |
 |---|---|---|---|
-| Architecture & Patterns | structure + layered architecture; controllers/services | angular routes/config/components | the API contract itself — the DTO ↔ interface pair, and how one request crosses the boundary |
+| Architecture & Patterns | structure + layered architecture; controllers/services | angular routes/config/components | the API contract itself — the DTO ↔ interface pair, and how one request crosses the boundary — and the bank's one project overview question ("The project overview question" below) |
 | Security & Auth | security folder + JWT filter — **skip if the project has no auth** | angular guards/interceptors — same skip | the auth flow end to end, as one story: login, token storage, expiry, what each side trusts |
 | Business Rules | service logic + validation | form validation, UI state rules, what the screen forbids | the PLANNING.md §8 rules **both** sides enforce, and what happens where they disagree |
 | Technical Decisions | DTOs, HTTP status choices, `application.properties` | Angular tradeoffs — state, routing strategy, change detection | PLANNING.md §20 tradeoffs that span the tiers, the shared error format, `docker-compose.yml` and hosted deployment configuration — Render / Neon / Netlify on `07-timetrack`, including per-environment variables and the frontend API URL. These stay in `global` because the decisions connect the API, database and browser across local and hosted environments; source the actual compose file, backend `Dockerfile` + properties, frontend environment files + build configuration, and the hosted settings recorded in PLANNING.md's deployment step (provider dashboards are not repository config files) |
@@ -374,6 +374,10 @@ context walking Java.
 **Model answer:** 2–4 sentences, references the **actual implementation** (not a textbook
 definition), and uses "I chose" / "I decided" — not "it is used".
 
+**One question is exempt from the first bullet above and from the 2–4 sentences**: the project overview
+question below, which asks for the project rather than a decision in it and whose answer has a shape of
+its own.
+
 **What a question or its answer says about the code is true, and the source is what settles it.** A
 count, a name, which file or class holds what, what calls what, what a method does — each is a claim
 about this project's code, and an answer can reference the actual implementation, in the right voice,
@@ -404,6 +408,46 @@ over unchanged code and unchanged prompts, no section of either pass failing its
 half of what two banks held and three times what one tier held — 103 questions, 4 of them `⭐⭐⭐`. **So no role and no report
 calls a section or a bank exhaustive or complete.** What a run states is what it added, on the bank's
 `Last banked` line below, and a re-walk is how the `⭐⭐` and `⭐` tail a first pass leaves is mined.
+
+### The project overview question
+
+**Every bank carries exactly one question about the project as a whole** — the one a technical
+interview opens with (`REC-336`, ruled by Victor 2026-10-13). Each code area above owns a part of the
+project and none owns the whole, and the bar's first rule and its 2–4 sentences shut it out: measured that
+day, none of the 948 questions across the seven banks asked it. It is the bar's one exception, and
+everything about it is fixed here so that no role has to infer it.
+
+- **Its bold text is fixed in both languages**, ID and markers aside — `en/`: `Can you walk me through
+  this project in two minutes: what it does, who uses it, which stack you chose and why, and which
+  decisions you would defend?` · `es/`: `¿Me cuentas este proyecto en dos minutos: qué hace, quién lo usa,
+  qué stack elegiste y por qué, y qué decisiones defenderías?` That text is how a reader and a command
+  both find it, which is why nobody's repair rewords it ("Question identity, the refined freeze and the
+  TODO channel" below).
+- **Where it lives.** Under `## Architecture & Patterns` — in `### Cross-tier` on a full-stack project,
+  since the whole project is the seam no tier owns, and directly under the heading on an Angular-only
+  one. Where it stands in the file carries no meaning; its index entry is placed by rule ("Study index
+  and question anchors").
+- **`⭐⭐⭐` by rule** — a candidate who cannot answer it fails the project — and "Priority markers" keeps
+  every role of this pipeline from lowering it.
+- **Its answer has three parts, in this order**: what the project does and who uses it; the stack, and
+  why each part of it; the one or two decisions worth defending, each named so the interviewer can pull
+  on it — one to three sentences per part, in Victor's voice ("I built", "I chose"). It is sourced like
+  any answer, from `PLANNING.md` and the code, and its claims about the code are settled like any other:
+  the stack it names is read off the project's build files (`pom.xml`, `package.json`), never off
+  `PLANNING.md` alone.
+- **Who writes it.** The Architecture & Patterns author whose scope reaches the `global` column — `full`
+  or `global` on a full-stack project, every scope on an Angular-only one — writes it when the bank holds
+  none, with the next unused ID like any question, and that lane's reviewer adds it where the author did
+  not. No `backend` or `frontend` lane writes it or owes it.
+- **It is outside the ratio and outside every dedupe between questions.** It answers no decision of a
+  code area, so it counts on neither side of the reviewer's questions-vs-decisions ratio. It duplicates
+  no other question and no other duplicates it — every other one asks about one decision, this one about
+  the project — so no dedupe, in a section, across sections or across banks, drops it or drops another
+  question for it; seven banks carry seven of them, each about its own project. A **second copy of it**
+  in one bank is the one duplicate it can have, and the later unrefined copy goes.
+- **A bank written before this rule gains it on its next run whose scope reaches that lane** — an append,
+  never a rebuild: no existing question, ID, freeze, label or study mark moves, the new question takes the
+  next unused ID, and the index rebuild puts its entry first.
 
 ### Question identity, the refined freeze and the TODO channel
 
@@ -510,6 +554,14 @@ run started for another reason; the translator stops outright rather than overwr
 TODO is resolved in a daily session by `study-content-writer`, which reads this section for a
 project-bank pair, and the reopening is its write.
 
+**One bold line is fixed text: the project overview question's** ("The project overview question"
+above, `REC-336`), in both languages — `Can you walk me through this project in two minutes: …` in
+`en/`, `¿Me cuentas este proyecto en dos minutos: …` in `es/`, whole in that section — because that text
+is how every role and every command finds it. No
+role of this pipeline rewords it — stage T writes the Spanish line exactly as that section gives it, and
+stage C leaves it as it leaves an ID — and a `TODO:` on that question, a first-class reopen like any
+other, is resolved in its **answer**: the bold line stays byte-for-byte in both languages.
+
 **A priority marker is not a state marker, and the freeze covers it.** Every question this pipeline has
 written since 2026-09-05 also carries `⭐⭐⭐`, `⭐⭐` or `⭐` ahead of its state marker — an older bank
 carries none until its next run, and neither you nor a TODO adds one — the rule and its calibration are "Priority markers"
@@ -529,7 +581,7 @@ header, whose entries repeat each ID as a link target.
 ```
 **[{PROJECT_NAME}-NNN] Question as an interviewer would ask it?** ⭐⭐ [refined]
 
-[Model answer — 2–4 sentences, references the real code, uses "I chose"/"I decided".]
+[Model answer — 2–4 sentences (the project overview question: its three parts), references the real code, uses "I chose"/"I decided".]
 ```
 The priority marker is on **every** question, written before the state marker. The `[refined]` marker is
 present only on a question Victor has frozen, and ` [studied]` only after it, on a frozen question
@@ -691,6 +743,11 @@ that proportion, for the same reason it owns the duplicate-ID renumber. Victor m
 any time; a marker he set is his, and this pipeline treats a `[refined]` block's marker as frozen with
 the rest of the block.
 
+**The project overview question is `⭐⭐⭐` by rule** ("The project overview question" above, `REC-336`):
+the author writes it so, no section reviewer downgrades it, the cross-section scan never takes it as the
+excess, and a dedupe across banks never drops one bank's for another's, since each is about its own
+project. Victor may change it like any marker.
+
 **A bank written before this rule carries no marker, and that is declared debt rather than hand work.**
 The author and the reviewer mark what they touch on the next run over that project, exactly as the IDs
 are backfilled. So the orchestrator counts the unmarked questions, reports the number by section, and
@@ -773,7 +830,9 @@ line carries a priority marker has exactly one entry, in the index **of the file
 line**: under the pass of its marker; inside a pass, under the bold name of its `##` bank section, the
 sections in the file's own order and a section with no question in that pass left out; inside a section,
 by **ascending ID** — the tier sub-headings play no part, and neither does the order the questions stand
-in. The three passes are always present, a pass with no question reading `0` in the table with nothing
+in. **One entry is placed by rule rather than by ID**: the project overview question's stands first in its
+section group, ahead of every ascending ID — which, its section being the bank's first and its marker
+`⭐⭐⭐`, opens the first pass (`REC-336`). The three passes are always present, a pass with no question reading `0` in the table with nothing
 under its heading, and each `Questions` cell is the number of entries under that pass. A question with no
 priority marker has no entry until it gains one — the proportion scan already reports it. An ID one
 language does not carry — a section stage T was told to skip, a tier the twin has not been rendered for

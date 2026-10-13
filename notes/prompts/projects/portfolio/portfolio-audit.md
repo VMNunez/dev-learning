@@ -299,11 +299,11 @@ would read as a run that failed to reach a verdict rather than one that was neve
 to 5 sections × 2 subagents, plus one translator and one Spanish reviewer), full decision-by-decision traces returned to you
 would saturate your own
 context. In `all` mode, hold each subagent to its own return contract below and nothing more — the
-author to its **question count, its allocated ID range, its marker split and any decision it could not
-cover**, the
+author to its **question count, its allocated ID range, its marker split, its `overview:` line on the
+lane that owes it and any decision it could not cover**, the
 reviewer to its **question count, its questions-vs-decisions ratio, its marker split and the markers it
-added or downgraded, the IDs it allocated or repaired, the IDs of the questions whose claims about the
-code it corrected,
+added or downgraded, its `overview:` line on the lane that owes it, the IDs it allocated or repaired,
+the IDs of the questions whose claims about the code it corrected,
 and the uncovered decisions if that ratio is below 1**, the
 translator to its **verdict, its per-section counts including the frozen-kept ones, its total, its
 one-line study-index count and any English question it believes is wrong, by ID with its reason**, and
@@ -359,8 +359,9 @@ project there are no sub-headings**: every scope resolves to the same bare secti
 > standard's "Priority markers"), and never touching a block that carries `[refined]`.
 > **Do NOT commit.** Build a
 > decision-by-decision trace in your own context to drive exhaustiveness, but return only the
-> **question count, the ID range you allocated, your `⭐⭐⭐`/`⭐⭐`/`⭐` split, any defect you found in a
-> refined block, and any decision you could not cover** — the reviewer re-walks the code itself.
+> **question count, the ID range you allocated, your `⭐⭐⭐`/`⭐⭐`/`⭐` split, your `overview:` line on
+> the lane that owes the project overview question, any defect you found in a refined block, and any
+> decision you could not cover** — the reviewer re-walks the code itself.
 
 Wait for A. **If A returns `BLOCKED`** — it could not complete the section — that section gets no
 reviewer: note it and move to the next. Skipping B is not the whole disposition, because A has already
@@ -404,7 +405,8 @@ the wrong place to save):
 > proportion is mine, not yours, and a section cannot see its own denominator.
 > **Do NOT commit.** Return your verdict (PASS/FIXED), the
 > **questions-vs-decisions ratio for this section**, your final `⭐⭐⭐`/`⭐⭐`/`⭐` split and how many
-> markers you added or downgraded, the IDs you allocated or repaired, the IDs of the questions whose
+> markers you added or downgraded, your `overview:` line on the lane that owes the project overview
+> question, the IDs you allocated or repaired, the IDs of the questions whose
 > claims about the code you corrected (or `claims: none corrected`), every defect you
 > left standing inside a refined block, and — only if that ratio is still below 1 — the
 > **list of decisions you left uncovered**, which is what the acceptance gate below re-dispatches on.
@@ -458,6 +460,14 @@ sections is one only a whole-file pass is guaranteed to catch. Renumber the late
 the two to the next unused number in the file, never a frozen one (its ID is part of what is frozen —
 report that pair instead), and never renumber to close a gap a deletion left.
 
+**The project overview question is outside the scan's pairs** (the standard's "The project overview
+question", `REC-336`): it is never one of two questions you judge duplicates, and only a second copy of it
+is a duplicate of it — the later unrefined copy goes. **Where this run's scope reaches its lane**
+(Architecture & Patterns → `global`: `full` or `global`, any scope on an Angular-only project), **count
+its fixed bold text in the `en/` bank by command**: exactly one is the expected state and its ID goes in
+the final report; none means its author and reviewer both missed it, which the report states as
+`overview: missing` — the bank's next run on that lane owes it — and you never write it yourself.
+
 **Own the whole-file priority proportion — no per-section role can.** Read the bank's bold lines you are
 already reading for the dedupe and count its `⭐⭐⭐` / `⭐⭐` / `⭐`. The standard's **"Priority markers"**
 sets the band over the **file**: `⭐⭐⭐` about a fifth to a quarter, `⭐⭐` the largest group, `⭐` the
@@ -467,7 +477,8 @@ ten fewer stars and the ceiling under-fires on exactly the bank the exclusion wa
 **no `⭐⭐⭐` at all**. Where the ceiling fails, **downgrade the excess to `⭐⭐`** — the weakest `⭐⭐⭐` first,
 keeping the marker for the decisions the project is *for* — one token on a bold line, the same register
 as the renumber above and bounded the same way: **never on a `[refined]` block** (its marker is frozen
-with the rest of it — report the pressure instead) and, on a partial scope, **never outside the
+with the rest of it — report the pressure instead), **never on the project overview question**, `⭐⭐⭐`
+by rule, and, on a partial scope, **never outside the
 sub-headings `{PORTFOLIO_SCOPE}` covers** (report the imbalance and leave it to a later `full` run, which
 has read both tiers). Where the floor fails, you may not invent a `⭐⭐⭐`: report it, because promoting one
 is a judgement about code you did not read.
@@ -602,7 +613,7 @@ above the first bank section's `##` heading, so it holds the study index** (`REC
 heading added, dropped or renamed moves none of their numbers. **(e)** on every scope, by command over
 the `es/` alone (`REC-333`): its study index agrees with **its own** bold question lines under the
 standard's order rule — every marked ID exactly once, under its marker's pass and its section, in
-ascending ID order, each table count equal to the entries under its pass, no label empty — and every
+ascending ID order but for the project overview question's entry, first in its group (`REC-336`), each table count equal to the entries under its pass, no label empty — and every
 in-lane bold question line has its anchor. **Against the snapshot `es/` too, where it holds one** (`REC-335`): every study
 mark its index carried — whatever followed an entry's link — ends the same ID's entry now, byte-for-byte, wherever the rebuild placed it; a
 marked ID with no bold line left in the `es/` is the one exception, and it is reported by ID with its mark
@@ -889,7 +900,9 @@ Otherwise print, in this order:
    twin lost — a parity gate that failed, a `BLOCKED` twin, checked against the snapshot `es/` by the mark
    half of test (e) — with the mark verbatim, so Victor can write it back (`REC-335`). **Also print
    the bank's `Last banked` line or lines as they now stand**, so what this walk added, and a tier still
-   reading `never`, are visible at the moment the run ends rather than only inside the file.
+   reading `never`, are visible at the moment the run ends rather than only inside the file. **And,
+   where the scope reached its lane, the project overview question's state** (`REC-336`): its ID, written
+   or present, or `overview: missing`.
 2. **Final verdict: ✅ Ready / ⚠️ Almost / ❌ Not ready** (with the checkbox list if ⚠️/❌). **Where
    Check 1 resolved on its markerless-plan branch, the line the standard mandates goes here**, under the
    verdict — "PLANNING.md carries no step markers; completeness read from `PROGRESS.md`'s projects table

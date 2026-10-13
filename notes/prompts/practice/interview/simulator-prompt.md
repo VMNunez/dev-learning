@@ -154,6 +154,11 @@ logging it and before matching it** against SESSION-LOG. The markers are what th
 the log is keyed on, and reading them aloud turns an interview question into a file listing — which is
 what an unstripped line does the moment a bank carries identifiers, as the project banks have since
 2026-08-31 and the levelled ones will after their first `interview-prep-audit` migration.
+**One project question names no project once stripped: the project overview question**, whose text is
+the same in every project bank (`_portfolio-standard.md` → "The project overview question",
+`REC-336`). Ask, log and match it with its project's name — the one its bank's H1 carries — in place
+of "this project" / "este proyecto", so its first 80 characters say which project it was and seven
+banks never collapse into one log entry — and its Step 5 concept names that project too.
 Before asking questions, require every selected topic file's stored coverage fingerprint(s) to match
 the current selected-level coverage. If any is missing or stale, stop and name the exact
 `interview-prep-audit LEVEL={LEVEL} FILE=<topic> MODE=full` run required.

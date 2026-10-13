@@ -63,7 +63,9 @@ an identifier, not prose, so it is never translated (the levelled banks keep `an
 - `notes/prompts/projects/portfolio/_internal/_portfolio-standard.md` — the file template and the five
   fixed bank sections, including the Spanish heading names, the tier sub-headings
   (`Backend` · `Frontend` · `Transversal`), the `**Último banco — «capa»:**` header lines and
-  **"Study index and question anchors"**, the index you render with the header.
+  **"Study index and question anchors"**, the index you render with the header — and **"The project
+  overview question"** (`REC-336`), whose Spanish bold line you write exactly as that section gives it,
+  never translated afresh; its answer you render like any other.
 - `notes/interview-prep/junior/es/architecture.md` — the reference for what finished, native Spanish
   Q&A reads like. It is a levelled bank, not a project one; read it for the register, not the content.
 

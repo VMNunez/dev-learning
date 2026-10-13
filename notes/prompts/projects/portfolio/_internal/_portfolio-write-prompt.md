@@ -111,7 +111,8 @@ lands in `en/` and stage T brings the twin into line.
 `{PROJECT_PATH}/PLANNING.md`, `notes/prompts/_internal/_shared-context.md` (the target companies and
 the interview context — the source for both, per the standard's quality bar), and **only your
 section's code area, in the columns `{SCOPE}` names,** from the standard's canonical table, **and the bank file
-`notes/interview-prep/projects/en/{PROJECT_NAME}.md` itself** — nothing else. Do not read the other
+`notes/interview-prep/projects/en/{PROJECT_NAME}.md` itself** — nothing else, but for the build files
+the project overview question's answer names, on the one lane that owes it (Step 2). Do not read the other
 READMEs, the other layers, or files outside your area: the per-section split exists precisely so each
 subagent's context stays on one area. The bank file is named here because two of your rules need it and
 neither is satisfiable from your section alone: the ID counter runs over the whole file, and the
@@ -174,6 +175,15 @@ exist, append only what is not already there and never duplicate a decision or c
 covered. **Never write, reword or delete a line under another sub-heading**, even one inside your own
 section: a tier you were not asked to read is a tier you may not touch.
 
+**One question is not mined from a decision: the project overview question** (`REC-336`). When
+`{SECTION}` is Architecture & Patterns and `{SCOPE}` reaches the `global` column — `full` or `global`, or
+any scope on an Angular-only project — look for it in the bank by its fixed bold text and, if the bank
+holds none, write it, with the next unused ID. The standard's **"The project overview question"** fixes
+its text, its place, its `⭐⭐⭐` and its three-part answer, and it is the one exception to the question
+type and the answer length above. The stack its answer names is read off the project's build files
+(`pom.xml`, `package.json`), which you open for that answer alone. It is in addition to your decisions,
+never one of them. Under any other section or scope, never write it.
+
 These questions are saved **regardless of the eventual verdict** — they are useful prep even for an
 unfinished project.
 
@@ -191,6 +201,8 @@ Do not commit. Leave the question file in the working tree. Report:
 - **Your section's marker split** — how many `⭐⭐⭐`, `⭐⭐` and `⭐` you wrote. The scan that owns the
   whole-file proportion counts the finished file itself; your split is what lets it see which section a
   correction came from without re-reading your work.
+- **On the lane that owes it, the project overview question**: `overview: written «ID»` or
+  `overview: present «ID»`.
 - Any **refined** question in your section you believe is wrong — which you did not change.
 - Any decision you found but could not cover with a question (with why).
 
