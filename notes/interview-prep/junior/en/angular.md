@@ -1,35 +1,337 @@
 # Angular — Interview Questions
 
+<a id="study-index"></a>
+
+## Study index
+
+Start with the first pass. Within each pass, follow the topics from top to bottom and work through a small group of questions at a time. If a question needs a concept from another pass, consult that question and then return to where you were.
+
+| Pass | Priority | Questions |
+|---|---|---:|
+| [1. Essentials](#study-pass-1) | ⭐⭐⭐ | 37 |
+| [2. Deeper understanding](#study-pass-2) | ⭐⭐ | 94 |
+| [3. Details](#study-pass-3) | ⭐ | 13 |
+
+Read the question, try to answer without looking, check your answer against the written one and explain it again in your own words. In the next block, recall an earlier question without consulting its answer.
+
+Links lead to the original questions. The numbers are their identifiers, not the study order. This index supports independent study. Record your progress in the Spanish index: ✅ and the date at the end of the line of each question you have worked on, then · PASS and the date when you pass it in a recall exam.
+
+<a id="study-pass-1"></a>
+
+### First pass — Essentials — ⭐⭐⭐
+
+**Angular basics**
+
+- [001 — What Angular is](#ANG-J-001)
+- [003 — What a component is](#ANG-J-003)
+- [005 — Dependency injection in Angular](#ANG-J-005)
+- [007 — Standalone components and the imports array](#ANG-J-007)
+- [011 — Types of data binding](#ANG-J-011)
+
+**Signals and reactivity**
+
+- [013 — What a signal is](#ANG-J-013)
+- [015 — signal() versus computed()](#ANG-J-015)
+- [016 — effect() and when to use it](#ANG-J-016)
+- [020 — signal.set() versus signal.update()](#ANG-J-020)
+
+**Template syntax**
+
+- [022 — The @if block](#ANG-J-022)
+- [023 — @for and track](#ANG-J-023)
+
+**HTTP and observables**
+
+- [038 — What HttpClient is](#ANG-J-038)
+- [039 — Observable versus Promise](#ANG-J-039)
+- [040 — subscribe() and when to unsubscribe](#ANG-J-040)
+- [048 — Subject versus BehaviorSubject](#ANG-J-048)
+
+**Routing**
+
+- [050 — How Angular routing works](#ANG-J-050)
+- [051 — What a route guard is](#ANG-J-051)
+- [056 — Route params versus query params](#ANG-J-056)
+
+**Lazy loading**
+
+- [061 — What lazy loading is](#ANG-J-061)
+
+**HTTP interceptors**
+
+- [065 — What an HTTP interceptor is](#ANG-J-065)
+
+**Reactive forms**
+
+- [070 — Reactive versus template-driven forms](#ANG-J-070)
+
+**Lifecycle hooks**
+
+- [080 — ngOnInit and when to use it](#ANG-J-080)
+- [081 — API calls in ngOnInit versus the constructor](#ANG-J-081)
+
+**Pipes**
+
+- [086 — What a pipe is](#ANG-J-086)
+- [089 — The async pipe](#ANG-J-089)
+
+**Angular Material**
+
+- [092 — What Angular Material is](#ANG-J-092)
+- [097 — MatTableDataSource versus a plain array](#ANG-J-097)
+
+**Component styles**
+
+- [110 — What view encapsulation is](#ANG-J-110)
+
+**Unit testing**
+
+- [115 — Your unit-testing experience in Angular](#ANG-J-115)
+- [116 — What TestBed is](#ANG-J-116)
+
+**Change detection**
+
+- [123 — What change detection is](#ANG-J-123)
+- [124 — Default versus OnPush](#ANG-J-124)
+
+**Architecture and patterns**
+
+- [128 — Core/Feature/Shared architecture](#ANG-J-128)
+- [129 — The coordinator pattern](#ANG-J-129)
+- [131 — State in a service versus in the component](#ANG-J-131)
+
+**Project-specific questions**
+
+- [136 — HR portal walkthrough](#ANG-J-136)
+- [144 — JWT in an Angular + Spring Boot app](#ANG-J-144)
+
+<a id="study-pass-2"></a>
+
+### Second pass — Deeper understanding — ⭐⭐
+
+**Angular basics**
+
+- [002 — Angular versus React](#ANG-J-002)
+- [004 — Input and output: decorators versus functions](#ANG-J-004)
+- [006 — What a service is](#ANG-J-006)
+- [008 — input.required() and when to use it](#ANG-J-008)
+- [009 — provideRouter() versus RouterModule](#ANG-J-009)
+- [012 — ng serve versus ng build](#ANG-J-012)
+
+**Signals and reactivity**
+
+- [014 — computed() versus a method in the template](#ANG-J-014)
+- [017 — toSignal() and why use it](#ANG-J-017)
+- [019 — Signals versus RxJS subjects for local state](#ANG-J-019)
+- [021 — Reading a signal: service.data versus service.data()](#ANG-J-021)
+
+**Template syntax**
+
+- [024 — Class binding versus ngClass](#ANG-J-024)
+- [026 — Template reference variables](#ANG-J-026)
+- [027 — Template reference variable versus @ViewChild](#ANG-J-027)
+- [028 — ngModel and when to use it](#ANG-J-028)
+- [030 — ng-container versus a div](#ANG-J-030)
+- [031 — ng-template and when to use it](#ANG-J-031)
+- [032 — @HostListener and @HostBinding in a directive](#ANG-J-032)
+- [033 — Custom directives](#ANG-J-033)
+- [034 — Content projection with ng-content](#ANG-J-034)
+- [035 — routerLinkActive and how to use it](#ANG-J-035)
+- [036 — @switch versus multiple @if blocks](#ANG-J-036)
+
+**HTTP and observables**
+
+- [041 — What takeUntilDestroyed() is](#ANG-J-041)
+- [042 — forkJoin() and when to use it](#ANG-J-042)
+- [043 — switchMap and when to use it](#ANG-J-043)
+- [044 — debounceTime and when to use it](#ANG-J-044)
+- [045 — catchError and how to use it](#ANG-J-045)
+- [046 — subscribe() with takeUntilDestroyed() versus the async pipe](#ANG-J-046)
+- [047 — catchError versus the subscribe() error callback](#ANG-J-047)
+- [049 — Query parameters on an HTTP request](#ANG-J-049)
+
+**Routing**
+
+- [052 — CanActivate versus CanDeactivate](#ANG-J-052)
+- [053 — Redirecting from a guard](#ANG-J-053)
+- [054 — Stacking several guards on a route](#ANG-J-054)
+- [055 — noAuthGuard and why it is needed](#ANG-J-055)
+- [057 — pathMatch full on a redirect route](#ANG-J-057)
+- [058 — Route params: snapshot versus paramMap](#ANG-J-058)
+- [059 — An admin route missing its guard](#ANG-J-059)
+- [060 — Route resolvers and when to use them](#ANG-J-060)
+
+**Lazy loading**
+
+- [062 — Setting up lazy loading](#ANG-J-062)
+- [063 — Lazy loading and the user experience](#ANG-J-063)
+- [064 — Lazy loading only the admin routes](#ANG-J-064)
+
+**HTTP interceptors**
+
+- [066 — Interceptor versus adding the token per service](#ANG-J-066)
+- [067 — What req.clone() does](#ANG-J-067)
+- [068 — Handling a 401 globally](#ANG-J-068)
+- [069 — A global loading indicator with an interceptor](#ANG-J-069)
+
+**Reactive forms**
+
+- [071 — markAllAsTouched() on submit](#ANG-J-071)
+- [072 — patchValue() and when to use it](#ANG-J-072)
+- [073 — form.dirty and how to use it](#ANG-J-073)
+- [074 — Setting a validation error from a service](#ANG-J-074)
+- [076 — FormArray and when to use it](#ANG-J-076)
+- [077 — Creating a custom validator](#ANG-J-077)
+- [078 — Async validators and when to use them](#ANG-J-078)
+
+**Lifecycle hooks**
+
+- [082 — ngAfterViewInit and when to use it](#ANG-J-082)
+- [083 — @ViewChild and how to use it](#ANG-J-083)
+- [084 — ngOnChanges and when it fires](#ANG-J-084)
+- [085 — ngOnDestroy and when to use it](#ANG-J-085)
+
+**Pipes**
+
+- [087 — Pipes you have used](#ANG-J-087)
+- [088 — Creating a custom pipe](#ANG-J-088)
+- [090 — Handling API keys in Angular](#ANG-J-090)
+- [091 — Custom pipe versus computed() or a template method](#ANG-J-091)
+
+**Angular Material**
+
+- [093 — Material button variants](#ANG-J-093)
+- [095 — MatSelect inside a reactive form](#ANG-J-095)
+- [096 — MatSidenav and when to use it](#ANG-J-096)
+- [098 — How MatSort works](#ANG-J-098)
+- [099 — MAT_DIALOG_DATA and how it works](#ANG-J-099)
+- [100 — Getting data back from a dialog](#ANG-J-100)
+- [101 — The dual-mode dialog pattern](#ANG-J-101)
+- [103 — What MatSnackBar is for](#ANG-J-103)
+- [107 — Pagination on a Material table](#ANG-J-107)
+- [108 — mat-error and when it shows](#ANG-J-108)
+- [109 — mat.theme() versus CSS class overrides](#ANG-J-109)
+
+**Component styles**
+
+- [111 — Component CSS versus global styles.css](#ANG-J-111)
+- [112 — The :host selector](#ANG-J-112)
+- [113 — ViewEncapsulation options and None](#ANG-J-113)
+- [114 — ::ng-deep and why it is bad practice](#ANG-J-114)
+
+**Unit testing**
+
+- [117 — Vitest versus Jasmine and Karma](#ANG-J-117)
+- [118 — Testing a service that makes HTTP calls](#ANG-J-118)
+- [119 — Spies and when to use one](#ANG-J-119)
+- [120 — provideHttpClientTesting() versus spying on HttpClient](#ANG-J-120)
+- [121 — Component test versus service test](#ANG-J-121)
+
+**Change detection**
+
+- [125 — Signals with OnPush](#ANG-J-125)
+- [126 — Choosing OnPush or Default per component](#ANG-J-126)
+- [127 — Zone.js and change detection](#ANG-J-127)
+
+**Architecture and patterns**
+
+- [130 — Smart/dumb versus coordinator](#ANG-J-130)
+- [132 — providedIn root versus component-level providers](#ANG-J-132)
+- [133 — Omit and when to use it](#ANG-J-133)
+- [134 — Never having used NgModules](#ANG-J-134)
+- [135 — Role-based UI versus a route guard](#ANG-J-135)
+
+**Project-specific questions**
+
+- [137 — Most complex part of the HR portal](#ANG-J-137)
+- [138 — What you would change in the HR portal](#ANG-J-138)
+- [139 — The hardest bug you fixed](#ANG-J-139)
+- [140 — Handling HTTP errors in Angular](#ANG-J-140)
+- [141 — Explaining the coordinator pattern to a teammate](#ANG-J-141)
+- [142 — localStorage instead of a real backend](#ANG-J-142)
+- [143 — From solo projects to a five-developer team](#ANG-J-143)
+
+<a id="study-pass-3"></a>
+
+### Third pass — Details — ⭐
+
+**Angular basics**
+
+- [010 — Defending Angular against a switch to React](#ANG-J-010)
+
+**Signals and reactivity**
+
+- [018 — The localStorage + effect() pattern](#ANG-J-018)
+
+**Template syntax**
+
+- [025 — The disabled binding](#ANG-J-025)
+- [029 — ngStyle and when to use it](#ANG-J-029)
+- [037 — @let and the problem it solves](#ANG-J-037)
+
+**Reactive forms**
+
+- [075 — markAsPristine() and when to use it](#ANG-J-075)
+- [079 — ErrorStateMatcher and when to use it](#ANG-J-079)
+
+**Angular Material**
+
+- [094 — App shell with MatToolbar](#ANG-J-094)
+- [102 — Guarding a dialog with a dirty form](#ANG-J-102)
+- [104 — MatStepper and when it is useful](#ANG-J-104)
+- [105 — Manual validation before stepper.next()](#ANG-J-105)
+- [106 — MatDatepicker and what it needs](#ANG-J-106)
+
+**Unit testing**
+
+- [122 — httpMock.verify() in afterEach](#ANG-J-122)
+
+---
+
 ## Angular basics
 
-**What is Angular?** ⭐⭐⭐
+<a id="ANG-J-001"></a>
+
+**[ANG-J-001] What is Angular?** ⭐⭐⭐
 
 A TypeScript-based frontend framework by Google for building web applications. It includes everything built-in: routing, forms, HTTP client, and a component system — unlike React, which is just a UI library.
 
-**What is the difference between Angular and React?** ⭐⭐
+<a id="ANG-J-002"></a>
+
+**[ANG-J-002] What is the difference between Angular and React?** ⭐⭐
 
 Angular is a full framework with opinions on how to structure everything. React is a UI library that lets you choose your own tools for routing, state, and HTTP. In Spanish companies, Angular is more common in large enterprise projects — which is why I chose to focus on it.
 
-**What is a component in Angular?** ⭐⭐⭐
+<a id="ANG-J-003"></a>
+
+**[ANG-J-003] What is a component in Angular?** ⭐⭐⭐
 
 The basic building block of the UI. Each component is a TypeScript class with a template (HTML), styles (CSS), and a selector. In Angular 17+, components are standalone by default — they declare their own imports instead of belonging to a module. Components communicate with each other through `input()` and `output()`.
 
-**What is the difference between `@Input()`/`@Output()` decorators and `input()`/`output()` functions?** ⭐⭐
+<a id="ANG-J-004"></a>
+
+**[ANG-J-004] What is the difference between `@Input()`/`@Output()` decorators and `input()`/`output()` functions?** ⭐⭐
 
 `@Input()` and `@Output()` are the classic decorator-based API — you declare properties and Angular maps data to them. `input()` and `output()` are the signal-based API from Angular 17+ — `input()` returns a signal you can use directly in `computed()` and `effect()`. In all my projects I use `input()` and `output()` because they integrate naturally with the signals system and the code is cleaner. Both work — you will see the decorator style in older codebases.
 
-**What is dependency injection in Angular?** ⭐⭐⭐
+<a id="ANG-J-005"></a>
+
+**[ANG-J-005] What is dependency injection in Angular?** ⭐⭐⭐
 
 A design pattern where a class receives its dependencies from outside instead of creating them itself. In Angular, you use `inject(ServiceClass)` to get a singleton instance — Angular creates it once and shares it across the whole app.
 
 > **Junior tip:** Don't define it abstractly. Say: "Instead of my component creating a `new EmployeeService()` itself, I call `inject(EmployeeService)` and Angular gives me the same instance that every other component uses. This is how all components share the same data without passing it manually."
 > **Consejo de entrevista:** No la definas de forma abstracta. Di: "En vez de que mi componente cree un `new EmployeeService()` él mismo, llamo a `inject(EmployeeService)` y Angular me da la misma instancia que usan todos los demás componentes."
 
-**What is a service in Angular?** ⭐⭐
+<a id="ANG-J-006"></a>
+
+**[ANG-J-006] What is a service in Angular?** ⭐⭐
 
 A class decorated with `@Injectable` that holds shared logic or state. I use services in all my projects to separate business logic from the component — for example, the `EmployeeService` in the HR portal handles all API calls and the employee list.
 
-**What is a standalone component in Angular and what does the `imports` array on `@Component` do?** ⭐⭐⭐
+<a id="ANG-J-007"></a>
+
+**[ANG-J-007] What is a standalone component in Angular and what does the `imports` array on `@Component` do?** ⭐⭐⭐
 
 A standalone component declares its own dependencies directly in its `imports` array instead of relying on a NgModule. Before Angular 14, every component had to belong to a module — the module imported everything the component needed. With standalone (the default from Angular 17+), the component is self-contained: if you use `MatButtonModule` in the template, you import it in the component's `imports`. All my projects use standalone. This makes it obvious at a glance what a component depends on.
 
@@ -38,35 +340,45 @@ A standalone component declares its own dependencies directly in its `imports` a
 
 Red flag answer: "I don't know what NgModules are." — A junior who only knows the modern API must still understand what came before. Enterprise codebases use modules. You will encounter them.
 
-**What is `input.required()` and when do you use it?** ⭐⭐
+<a id="ANG-J-008"></a>
+
+**[ANG-J-008] What is `input.required()` and when do you use it?** ⭐⭐
 
 `input.required<T>()` creates a required signal input — if the parent does not bind it, Angular throws a compile-time error. Compare: `input<string>()` with no default is technically optional and fails silently at runtime. `input.required<Employee>()` will fail at build time if the parent forgets the binding. I use it for child components where omitting the input would break the display — like an employee card that always needs an employee object to render.
 
 > **Junior tip:** Be precise: "It is a compile-time guarantee, not just a convention." This shows you understand why the API exists, not just how to use it.
 > **Consejo de entrevista:** Sé preciso: "Es una garantía en tiempo de compilación, no solo una convención." Demuestra que entiendes por qué existe la API, no solo cómo usarla.
 
-**What is `provideRouter()` and why do you use it instead of importing `RouterModule`?** ⭐⭐
+<a id="ANG-J-009"></a>
+
+**[ANG-J-009] What is `provideRouter()` and why do you use it instead of importing `RouterModule`?** ⭐⭐
 
 `provideRouter()` is the modern functional way to configure routing in Angular 17+. You add it to the `providers` array in `app.config.ts`. In older Angular apps, you imported `RouterModule.forRoot(routes)` in the root `NgModule` — the same result but more boilerplate. With standalone apps there is no root module, so `provideRouter()` in `app.config.ts` is the standard. In all my projects I bootstrap the app through `bootstrapApplication(AppComponent, appConfig)` with `provideRouter(routes)` inside.
 
 > **Junior tip:** If an interviewer asks "how do you set up routing?", mention `app.config.ts` and `provideRouter()` — not `RouterModule`. Showing the modern approach signals you know current Angular.
 > **Consejo de entrevista:** Si el entrevistador pregunta "¿cómo configuras el routing?", menciona `app.config.ts` y `provideRouter()` — no `RouterModule`. Usar el enfoque moderno demuestra que conoces Angular actual.
 
-**What would you say to a senior developer who argues "Angular is too complex — we should switch to React"?** ⭐
+<a id="ANG-J-010"></a>
+
+**[ANG-J-010] What would you say to a senior developer who argues "Angular is too complex — we should switch to React"?** ⭐
 
 What they really want to know: Can you defend a technical choice with reasoning, not preference?
 A: I would acknowledge that Angular has more setup overhead — stricter structure, more boilerplate, TypeScript everywhere. But at a consultancy running multiple enterprise projects, that structure is the advantage. React leaves too many decisions open: which router, which state library, which HTTP tool — every team ends up with a different stack. Angular's opinions mean any Angular developer can pick up any Angular project with minimal ramp-up. If the project were a small marketing site, I might agree. For a CRUD-heavy business app with guards, interceptors, and shared services, Angular's structure pays for itself.
 
 Red flag answer: "Angular is just better than React." — That is a preference, not an argument. Show you can reason about trade-offs.
 
-**What are the types of data binding in Angular, and what is the difference between `{{ }}` and `[ ]`?** ⭐⭐⭐
+<a id="ANG-J-011"></a>
+
+**[ANG-J-011] What are the types of data binding in Angular, and what is the difference between `{{ }}` and `[ ]`?** ⭐⭐⭐
 
 Four types: interpolation `{{ value }}` (writes a value into text as a string), property binding `[src]="url"` (binds to a DOM property and keeps the real type — boolean, object, number), event binding `(click)="save()"` (listens to an event), and two-way binding `[(ngModel)]="name"` (combines property and event). The key difference: `{{ }}` always produces a string, so `[disabled]="true"` actually disables a button but `disabled="{{ true }}"` passes the string `"true"` — which is also truthy and can hide bugs. I use property binding for anything that is not plain text.
 
 > **Junior tip:** The trap is `[disabled]` vs `disabled="{{}}"`. Mention it — it shows you understand that interpolation stringifies everything, which is exactly what the interviewer is probing.
 > **Consejo de entrevista:** La trampa es `[disabled]` vs `disabled="{{}}"`. Menciónala — demuestra que entiendes que la interpolación convierte todo en string.
 
-**What is the difference between `ng serve` and `ng build`?** ⭐⭐
+<a id="ANG-J-012"></a>
+
+**[ANG-J-012] What is the difference between `ng serve` and `ng build`?** ⭐⭐
 
 `ng serve` starts a local development server with live reload — it compiles in memory, watches your files, and refreshes the browser on every change. You use it while developing. `ng build` produces an optimized production bundle in the `dist/` folder — minified, tree-shaken, ahead-of-time compiled — which is what you actually deploy. `ng build` does not serve anything; a real web server (or a Docker container) hosts the output. I scaffold features with `ng generate component/service/guard` and run `ng serve` to develop them.
 
@@ -77,29 +389,39 @@ Four types: interpolation `{{ value }}` (writes a value into text as a string), 
 
 ## Signals and reactivity
 
-**What is a signal in Angular?** ⭐⭐⭐
+<a id="ANG-J-013"></a>
+
+**[ANG-J-013] What is a signal in Angular?** ⭐⭐⭐
 
 A reactive value that automatically updates the template when it changes. In all my projects I use signals for local state — they are simpler and more predictable than RxJS subjects for UI state.
 
 > **Junior tip:** Don't say "it's like a reactive variable." Say: "When its value changes, Angular automatically updates the template — I don't need to trigger anything manually." Then give a project example like the filtered employee list.
 > **Consejo de entrevista:** No digas "es como una variable reactiva." Di: "Cuando su valor cambia, Angular actualiza la plantilla automáticamente — no necesito disparar nada manualmente." Luego da un ejemplo de proyecto.
 
-**Why did you use `computed()` for filtered lists instead of calling a filtering method in the template?** ⭐⭐
+<a id="ANG-J-014"></a>
+
+**[ANG-J-014] Why did you use `computed()` for filtered lists instead of calling a filtering method in the template?** ⭐⭐
 
 What they really want to know: Do you understand the performance cost of template method calls?
 A: A method call in the template re-runs on every change detection cycle — even for events completely unrelated to that data. `computed()` only recalculates when one of its signal dependencies actually changes. In the HR portal, the filtered employee list depends on three signals: search term, status filter, and department filter. `computed()` runs the filter logic only when those signals change, not on every click anywhere in the app.
 
 Red flag answer: "computed() is cleaner." — The interviewer wants the performance reason, not a style preference.
 
-**What is the difference between `signal()` and `computed()`?** ⭐⭐⭐
+<a id="ANG-J-015"></a>
+
+**[ANG-J-015] What is the difference between `signal()` and `computed()`?** ⭐⭐⭐
 
 `signal()` holds a value you can set manually. `computed()` derives a value from one or more signals and recalculates automatically when they change. In the HR portal I use `computed()` for the filtered employee list — it updates automatically whenever the filter signals change.
 
-**What is `effect()` and when do you use it?** ⭐⭐⭐
+<a id="ANG-J-016"></a>
+
+**[ANG-J-016] What is `effect()` and when do you use it?** ⭐⭐⭐
 
 A function that runs automatically when any signal it reads changes. The key difference from `computed()` is that `effect()` performs an action — it does not return a value. In the meal finder I use `effect()` to save favourites to `localStorage` every time the list changes — that is a side effect, not a derived value.
 
-**What is `toSignal()` and why would you use it?** ⭐⭐
+<a id="ANG-J-017"></a>
+
+**[ANG-J-017] What is `toSignal()` and why would you use it?** ⭐⭐
 
 `toSignal()` converts an RxJS Observable into a signal. Angular subscribes to the Observable and keeps the signal updated every time it emits. It also unsubscribes automatically when the context is destroyed — no `takeUntilDestroyed` needed.
 
@@ -115,22 +437,30 @@ Use it when you have an Observable from a service (an HTTP stream, a store) and 
 > **Junior tip:** This becomes important in project 07 where the Spring Boot service methods return Observables but the Angular templates use signals. `toSignal()` is the bridge between the two worlds.
 > **Consejo de entrevista:** Esto se vuelve importante en el proyecto 07 donde los métodos del servicio Spring Boot devuelven Observables pero las plantillas Angular usan signals. `toSignal()` es el puente entre los dos mundos.
 
-**What is the `localStorage + effect()` pattern?** ⭐
+<a id="ANG-J-018"></a>
+
+**[ANG-J-018] What is the `localStorage + effect()` pattern?** ⭐
 
 Initialize a signal from `localStorage` so the data persists across page refreshes, then use `effect()` to save it again every time the signal changes. This keeps `localStorage` in sync automatically without manual save calls.
 
-**Why use signals instead of RxJS subjects for local component state?** ⭐⭐
+<a id="ANG-J-019"></a>
+
+**[ANG-J-019] Why use signals instead of RxJS subjects for local component state?** ⭐⭐
 
 Signals are simpler to read, write, and debug — you do not need to subscribe, unsubscribe, or manage memory. In the HR portal, all filter state (status, department, search text) uses signals — I never wrote a single `unsubscribe()` call for any of them. RxJS is still the right choice for HTTP calls and async streams.
 
-**What is the difference between `signal.set()` and `signal.update()`?** ⭐⭐⭐
+<a id="ANG-J-020"></a>
+
+**[ANG-J-020] What is the difference between `signal.set()` and `signal.update()`?** ⭐⭐⭐
 
 `set()` replaces the value completely; `update()` derives the new value from the current one. When adding an item to an array you need the current value, so `update()` is correct: `this.items.update(list => [...list, newItem])`. The important detail with signals and OnPush: you must return a NEW array or object reference — mutating the existing one with `.push()` will not trigger an update because the reference did not change.
 
 > **Junior tip:** Tie it to immutability: "`update(list => [...list, item])`, never `list.push(item)`." That one line shows you understand why signals re-render and why OnPush stays correct.
 > **Consejo de entrevista:** Conéctalo con la inmutabilidad: "`update(list => [...list, item])`, nunca `list.push(item)`."
 
-**What is the difference between `service.data` and `service.data()` when reading a signal?** ⭐⭐
+<a id="ANG-J-021"></a>
+
+**[ANG-J-021] What is the difference between `service.data` and `service.data()` when reading a signal?** ⭐⭐
 
 `service.data` (no parentheses) is the signal itself — a live reference that stays reactive. `service.data()` (with parentheses) reads the value once at that moment. If you store the snapshot in a component property — `items = this.service.data()` — it never updates again, because you captured a value, not the signal. To stay reactive you keep the reference: `items = this.service.data` and call `items()` in the template. This is a classic bug: the data loads but the UI never refreshes.
 
@@ -140,88 +470,120 @@ Red flag answer: "They are the same." — They are not. Storing `data()` in a pr
 
 ## Template syntax
 
-**What does `@if` do in Angular templates?** ⭐⭐⭐
+<a id="ANG-J-022"></a>
+
+**[ANG-J-022] What does `@if` do in Angular templates?** ⭐⭐⭐
 
 Conditionally renders a block of HTML. It replaces the old `*ngIf` directive and is cleaner because it does not require a structural directive on the element — it wraps the block like a standard control flow syntax.
 
-**What does `@for` do and what is `track` for?** ⭐⭐⭐
+<a id="ANG-J-023"></a>
+
+**[ANG-J-023] What does `@for` do and what is `track` for?** ⭐⭐⭐
 
 Loops over an array and renders a block for each item. `track` tells Angular how to identify each item — usually `track item.id` — so it can update only the items that changed instead of re-rendering the whole list.
 
 > **Junior tip:** Always use `track item.id` when your items have a unique id — never `track $index`. Using `$index` means Angular cannot track items across reorders and re-renders everything. `track item.id` is the correct default for any list of objects with an id field.
 > **Consejo de entrevista:** Usa siempre `track item.id` cuando los elementos tienen id único — nunca `track $index`. Usar `$index` significa que Angular no puede rastrear elementos en reordenamientos y vuelve a renderizar todo.
 
-**What is the difference between `[class.active]` and `[ngClass]`?** ⭐⭐
+<a id="ANG-J-024"></a>
+
+**[ANG-J-024] What is the difference between `[class.active]` and `[ngClass]`?** ⭐⭐
 
 `[class.active]="condition"` adds or removes one specific class. `[ngClass]="value"` adds the value as a class name dynamically, which is useful when the class name itself comes from a signal or variable — like status badges in the task manager.
 
-**What is `[disabled]` binding used for?** ⭐
+<a id="ANG-J-025"></a>
+
+**[ANG-J-025] What is `[disabled]` binding used for?** ⭐
 
 It disables a button or input reactively based on a signal or condition. For example, I use it to disable a Submit button while a form is loading so the user cannot submit twice.
 
-**What is a template reference variable and when do you use it?** ⭐⭐
+<a id="ANG-J-026"></a>
+
+**[ANG-J-026] What is a template reference variable and when do you use it?** ⭐⭐
 
 A template reference variable (`#ref`) is a local alias that gives you direct access to a DOM element or directive from inside the template. For example, `<input #nameInput>` lets you pass `nameInput.value` to a method. In the HR portal I use `#stepper` to reference the `MatStepper` and call `stepper.next()` from the dialog buttons — because the buttons are outside `<mat-stepper>`, the `matStepperNext` directive cannot find it automatically. The same element can also be accessed in TypeScript with `@ViewChild`.
 
-**When would you use a template reference variable instead of `@ViewChild`?** ⭐⭐
+<a id="ANG-J-027"></a>
+
+**[ANG-J-027] When would you use a template reference variable instead of `@ViewChild`?** ⭐⭐
 
 Template reference variables are for template-only access — pass a value to a method, call a directive inline in HTML. `@ViewChild` is for TypeScript-level access — run logic in a lifecycle hook, connect a directive to a data source. In the HR portal, `#stepper` lets me call `stepper.next()` directly in the button click handler in the template. If I needed to advance the stepper from inside `ngAfterViewInit` or from a TypeScript method, I would use `@ViewChild(MatStepper)`.
 
 > **Junior tip:** Show you know both and can choose. Key distinction: do you need the reference in HTML only? Use `#ref`. Do you need it in TypeScript too? Use `@ViewChild`.
 > **Consejo de entrevista:** Demuestra que conoces ambas herramientas y sabes elegir. La diferencia clave: ¿necesitas la referencia solo en el HTML? Usa `#ref`. ¿La necesitas también en TypeScript? Usa `@ViewChild`.
 
-**What is `[(ngModel)]` and when do you use it?** ⭐⭐
+<a id="ANG-J-028"></a>
+
+**[ANG-J-028] What is `[(ngModel)]` and when do you use it?** ⭐⭐
 
 Two-way binding — it reads the input value into a variable AND writes it back when the user types. The syntax is called "banana in a box" because of the `[()]` shape. I know the concept, but in my own projects I use signals for search fields — `(input)` bound to a signal does the same job without importing `FormsModule`. For forms with validation I always use reactive forms.
 
-**What is `[ngStyle]` and when do you use it?** ⭐
+<a id="ANG-J-029"></a>
+
+**[ANG-J-029] What is `[ngStyle]` and when do you use it?** ⭐
 
 It applies inline styles dynamically: `[ngStyle]="{ 'color': isAdmin ? 'red' : 'black' }"`. For a single property I prefer the shorter `[style.color]="condition ? 'red' : 'black'"`. `[ngStyle]` is useful when you need to apply several dynamic styles at once from an object.
 
-**What is `ng-container` and when do you use it instead of a `div`?** ⭐⭐
+<a id="ANG-J-030"></a>
+
+**[ANG-J-030] What is `ng-container` and when do you use it instead of a `div`?** ⭐⭐
 
 `ng-container` is a grouping element that renders no actual DOM element. Use it when you need a structural directive on a group of elements but a real `div` would break the CSS layout. For example, `formArrayName="phones"` needs a host element in the DOM — but adding a `<div>` would create an extra flex child or grid cell. `ng-container` gives the directive something to attach to without touching the DOM. Another common use: applying `@if` to a group of sibling elements without wrapping them.
 
 > **Junior tip:** If the interviewer asks "when would you need this?" — mention the reactive forms `formArrayName` case or wrapping multiple elements with `@if` without a container div. One concrete case beats a theoretical explanation.
 > **Consejo de entrevista:** Si el entrevistador pregunta "¿cuándo lo necesitarías?" — menciona el caso de `formArrayName` en formularios reactivos o envolver varios elementos con `@if` sin un div contenedor.
 
-**What is `ng-template` and when do you use it?** ⭐⭐
+<a id="ANG-J-031"></a>
+
+**[ANG-J-031] What is `ng-template` and when do you use it?** ⭐⭐
 
 `ng-template` defines a block of HTML that is not rendered immediately — it is a blueprint Angular can instantiate conditionally or in multiple places. You use it when you need a reusable template reference, or when you want to define the else/loading block for an `@if`. You can give it a reference variable and pass it to a component as a content parameter. Angular uses `ng-template` internally for all structural directives. In practice you use it most often for custom else blocks or for defining reusable template fragments passed into Material components.
 
-**What are `@HostListener` and `@HostBinding` used for in a directive?** ⭐⭐
+<a id="ANG-J-032"></a>
+
+**[ANG-J-032] What are `@HostListener` and `@HostBinding` used for in a directive?** ⭐⭐
 
 Both are decorators for custom directives. `@HostListener` attaches an event listener to the host element — the element the directive is applied to. `@HostBinding` binds a class, attribute, or style directly to the host element without using `ElementRef`. In my custom highlight directive from the notes, `@HostListener('mouseenter')` changes the background color and `@HostListener('mouseleave')` resets it. As an alternative, `@HostBinding('style.backgroundColor')` would bind the property declaratively — cleaner when you only need to set one property.
 
 > **Junior tip:** Show both approaches: "I can either listen to events with `@HostListener` and update via `ElementRef`, or I can bind the property directly with `@HostBinding`. `@HostBinding` is cleaner when there is only one property to control."
 > **Consejo de entrevista:** Muestra los dos enfoques: "Puedo escuchar eventos con `@HostListener` y actualizar vía `ElementRef`, o puedo enlazar la propiedad directamente con `@HostBinding`. `@HostBinding` es más limpio cuando solo hay una propiedad."
 
-**What is a custom directive and when is it useful?** ⭐⭐
+<a id="ANG-J-033"></a>
+
+**[ANG-J-033] What is a custom directive and when is it useful?** ⭐⭐
 
 A class decorated with `@Directive` that adds behavior to a host element without creating a new component. It is useful when the same DOM behavior needs to be applied to many elements — for example, auto-focusing an input or highlighting on hover. The directive uses `ElementRef` to access the element and `@HostListener` to react to events.
 
-**What is content projection (`ng-content`) and when do you use it?** ⭐⭐
+<a id="ANG-J-034"></a>
+
+**[ANG-J-034] What is content projection (`ng-content`) and when do you use it?** ⭐⭐
 
 `ng-content` lets a parent component inject HTML into a child component's template. The child defines where the content goes with `<ng-content />`, and the parent decides what goes there. You use it for reusable wrapper components — cards, panels, layout containers — where the interior changes depending on who uses the component. For example, a `<app-card>` wrapper that always applies the same border and shadow, but lets the parent control what is displayed inside.
 
 > **Junior tip:** The key idea to communicate: the child controls the WRAPPER, the parent controls the CONTENT. Contrast it with `@Input()`: with `@Input()` you pass data, with `ng-content` you pass entire HTML blocks. If the interviewer asks "have you used it?", be honest — mention it is a pattern you know from reading enterprise codebases and that the HR portal dashboard card headers use a similar layout pattern.
 > **Consejo de entrevista:** La idea clave: el hijo controla el CONTENEDOR, el padre controla el CONTENIDO. Con `@Input()` pasas datos, con `ng-content` pasas bloques HTML enteros.
 
-**What is `routerLinkActive` and how do you use it?** ⭐⭐
+<a id="ANG-J-035"></a>
+
+**[ANG-J-035] What is `routerLinkActive` and how do you use it?** ⭐⭐
 
 `routerLinkActive` is a directive that adds a CSS class to the element when its `routerLink` matches the current URL. The most common pattern is `routerLinkActive="active"` — it adds the `active` class automatically when the route is active. In the HR portal sidebar I use it to highlight the current nav link. One gotcha: `routerLinkActive` uses prefix matching by default — if you have a link to `/employees`, it also matches `/employees/123`. Add `[routerLinkActiveOptions]="{ exact: true }"` to prevent this on the home route.
 
 > **Junior tip:** Interviewers sometimes ask "how do you show which nav link is active?" — this is the answer. Mention the prefix matching gotcha — it shows real experience, not just tutorial knowledge.
 > **Consejo de entrevista:** Los entrevistadores preguntan "¿cómo muestras qué enlace de navegación está activo?" — esta es la respuesta. Menciona el comportamiento de prefix matching — demuestra experiencia real.
 
-**What is `@switch` and when do you use it instead of multiple `@if` blocks?** ⭐⭐
+<a id="ANG-J-036"></a>
+
+**[ANG-J-036] What is `@switch` and when do you use it instead of multiple `@if` blocks?** ⭐⭐
 
 `@switch` checks one value against several fixed options, like a status field: `@switch (status()) { @case ('active') {...} @case ('pending') {...} @default {...} }`. It replaces a chain of `@if`/`@else if` and reads more clearly once there are three or more branches. I would use it for an employee status badge that renders differently for active, on-leave, and terminated states.
 
 > **Junior tip:** The decision rule is readability: "Two states, an `@if`. Three or more fixed options on one value, `@switch`." That shows you choose for clarity, not habit.
 > **Consejo de entrevista:** La regla es la legibilidad: "Dos estados, un `@if`. Tres o más opciones fijas sobre un valor, `@switch`."
 
-**What is `@let` and what problem does it solve?** ⭐
+<a id="ANG-J-037"></a>
+
+**[ANG-J-037] What is `@let` and what problem does it solve?** ⭐
 
 `@let` declares a local variable inside a template: `@let total = price() * quantity();`. You then reuse `total` across that template block without recalculating the expression each time. Before `@let`, calling the same `computed()` or method several times in one template repeated the work; `@let` names the result once. It is read-only and scoped to the template where it is declared.
 
@@ -232,63 +594,87 @@ A class decorated with `@Directive` that adds behavior to a host element without
 
 ## HTTP and observables
 
-**What is `HttpClient` in Angular?** ⭐⭐⭐
+<a id="ANG-J-038"></a>
+
+**[ANG-J-038] What is `HttpClient` in Angular?** ⭐⭐⭐
 
 The built-in service for making HTTP requests. It returns Observables, which you subscribe to in order to get the response. I use it in every project that fetches data from an external API.
 
-**What is an Observable and how is it different from a Promise?** ⭐⭐⭐
+<a id="ANG-J-039"></a>
+
+**[ANG-J-039] What is an Observable and how is it different from a Promise?** ⭐⭐⭐
 
 Both handle async operations, but Observables are more powerful — they can emit multiple values over time, be cancelled, and composed with operators. Promises resolve once and cannot be cancelled. In the weather app I use `forkJoin` to fetch current weather and a 5-day forecast in parallel — with Promises you would need `Promise.all` and lose the ability to cancel if the component is destroyed.
 
-**What is `subscribe()` and when do you unsubscribe?** ⭐⭐⭐
+<a id="ANG-J-040"></a>
+
+**[ANG-J-040] What is `subscribe()` and when do you unsubscribe?** ⭐⭐⭐
 
 `subscribe()` starts the Observable and receives values through `next` and `error` callbacks. You need to unsubscribe when the component is destroyed, otherwise the subscription stays alive and causes memory leaks. I use `takeUntilDestroyed()` to handle this automatically.
 
-**What is `takeUntilDestroyed()`?** ⭐⭐
+<a id="ANG-J-041"></a>
+
+**[ANG-J-041] What is `takeUntilDestroyed()`?** ⭐⭐
 
 An RxJS operator that automatically cancels a subscription when the component is destroyed. I use it in the weather app and meal finder where HTTP calls happen inside subscriptions — it avoids the manual unsubscribe pattern.
 
 > **Junior tip:** If you say "avoids memory leaks", be ready to explain what actually leaks. Say: "The component is destroyed but the subscription stays alive. When the HTTP response arrives, it tries to update a signal on a component that no longer exists — Angular throws an error or wastes resources." That shows real understanding, not just a memorized phrase.
 > **Consejo de entrevista:** Si dices "evita fugas de memoria", prepárate para explicar qué se filtra. Di: "El componente se destruye pero la suscripción sigue viva. Cuando llega la respuesta HTTP, intenta actualizar un signal en un componente que ya no existe."
 
-**What is `forkJoin()` and when do you use it?** ⭐⭐
+<a id="ANG-J-042"></a>
+
+**[ANG-J-042] What is `forkJoin()` and when do you use it?** ⭐⭐
 
 An RxJS operator that runs multiple Observables in parallel and waits for all of them to complete before emitting the combined results. I use it in the weather app to fetch current weather and a 5-day forecast in one go.
 
-**What is `switchMap` and when do you use it?** ⭐⭐
+<a id="ANG-J-043"></a>
+
+**[ANG-J-043] What is `switchMap` and when do you use it?** ⭐⭐
 
 An operator that cancels the previous inner Observable and starts a new one every time the source emits. The classic case is search-as-you-type — if the user types fast, you only want the result for the last keystroke, not all the intermediate ones. Without `switchMap`, multiple HTTP requests could race and the UI could show an older result last.
 
-**What is `debounceTime` and when do you use it?** ⭐⭐
+<a id="ANG-J-044"></a>
+
+**[ANG-J-044] What is `debounceTime` and when do you use it?** ⭐⭐
 
 An operator that delays emitting a value until a set time has passed with no new values. Combined with `switchMap`, it prevents a new HTTP request on every keystroke — `debounceTime(300)` means the request only fires 300ms after the user stops typing.
 
-**What is `catchError` and how do you use it?** ⭐⭐
+<a id="ANG-J-045"></a>
+
+**[ANG-J-045] What is `catchError` and how do you use it?** ⭐⭐
 
 An operator that intercepts an error in a stream and lets you return a safe fallback instead of crashing the Observable. I use it with `of([])` to return an empty array when an HTTP call fails — the template then shows an empty state instead of nothing.
 
-**Why did you use subscribe() with takeUntilDestroyed() instead of the async pipe in the weather app?** ⭐⭐
+<a id="ANG-J-046"></a>
+
+**[ANG-J-046] Why did you use subscribe() with takeUntilDestroyed() instead of the async pipe in the weather app?** ⭐⭐
 
 What they really want to know: Do you understand when subscribe() is the right choice over the async pipe?
 A: The async pipe works well when you want to display a single Observable value directly in the template. In the weather app I use forkJoin to fetch weather and forecast in parallel and store both in separate signals that I use in computed() values. The async pipe cannot update two signals from one subscription, and it returns null until data arrives — which means extra null checks in the template. subscribe() with takeUntilDestroyed() gives me full control over the loading and error state signals.
 
 Red flag answer: "async pipe is always better because it auto-unsubscribes." — That is a feature, not a reason. async pipe and subscribe() solve different problems. Saying "always" shows you have not thought about the trade-off.
 
-**When would you use catchError in the pipe chain instead of the error callback in subscribe()?** ⭐⭐
+<a id="ANG-J-047"></a>
+
+**[ANG-J-047] When would you use catchError in the pipe chain instead of the error callback in subscribe()?** ⭐⭐
 
 What they really want to know: Do you understand the difference between recovering a stream and reacting to an error?
 A: I use catchError inside pipe() when I want the Observable to complete normally after an error — returning of([]) so the template renders an empty state instead of breaking. I use the error callback in subscribe() when I just need to react to the error and there is no stream to recover. In the weather app I use catchError so a failed forecast call does not crash the whole page — the component shows an error message but stays functional. In the login page I use the error callback because the operation either succeeds or fails — there is no fallback value, I just set hasError to true.
 
 Red flag answer: "I always handle errors in subscribe()." — That shows you never used catchError for stream recovery. A senior developer will ask what happens to the Observable after an error if you do not handle it in the pipe.
 
-**What is the difference between `Subject` and `BehaviorSubject`?** ⭐⭐⭐
+<a id="ANG-J-048"></a>
+
+**[ANG-J-048] What is the difference between `Subject` and `BehaviorSubject`?** ⭐⭐⭐
 
 Both are RxJS multicast streams you push values into with `.next()`. The difference is the current value: a `BehaviorSubject` needs an initial value and always replays the latest value immediately to any new subscriber; a plain `Subject` has no current value and only delivers values emitted AFTER you subscribe — late subscribers miss earlier emissions. So `BehaviorSubject` is the classic choice for shared state (a current user, a cart) where a component subscribing later still needs the current value; `Subject` fits one-time events (a "saved" notification). Signals replaced most `BehaviorSubject` state in my projects, but every enterprise codebase still uses it.
 
 > **Junior tip:** The one-liner that lands: "`BehaviorSubject` has a current value and replays it; `Subject` does not." Then add "signals do the same job for state now" to show you know the modern equivalent.
 > **Consejo de entrevista:** La frase que funciona: "`BehaviorSubject` tiene un valor actual y lo reemite; `Subject` no." Luego añade que los signals hacen ese trabajo hoy.
 
-**How do you add query parameters to an HTTP request in Angular?** ⭐⭐
+<a id="ANG-J-049"></a>
+
+**[ANG-J-049] How do you add query parameters to an HTTP request in Angular?** ⭐⭐
 
 With `HttpParams`, built up immutably and passed in the options object: `new HttpParams().set('month', '2025-05').set('status', 'SUBMITTED')`. Each `.set()` returns a new instance, so you chain them. Angular serializes it to `?month=2025-05&status=SUBMITTED` and encodes the values for you — safer than concatenating the URL by hand. In TimeTrack I use it on the entries endpoint to filter by month and status.
 
@@ -299,53 +685,75 @@ With `HttpParams`, built up immutably and passed in the options object: `new Htt
 
 ## Routing
 
-**How does Angular routing work?** ⭐⭐⭐
+<a id="ANG-J-050"></a>
+
+**[ANG-J-050] How does Angular routing work?** ⭐⭐⭐
 
 You define routes in `app.routes.ts` as an array of path-component pairs. `RouterOutlet` in the template is where Angular renders the active component. Navigation can be declarative with `routerLink` or programmatic with `router.navigate()`.
 
-**What is a route guard?** ⭐⭐⭐
+<a id="ANG-J-051"></a>
+
+**[ANG-J-051] What is a route guard?** ⭐⭐⭐
 
 A function that runs before a route is activated and can block or redirect navigation. In the HR portal I use `authGuard` to redirect unauthenticated users to login, and `adminGuard` to block employees from admin routes.
 
-**What is the difference between `CanActivate` and `CanDeactivate`?** ⭐⭐
+<a id="ANG-J-052"></a>
+
+**[ANG-J-052] What is the difference between `CanActivate` and `CanDeactivate`?** ⭐⭐
 
 `CanActivate` runs before entering a route — used to check authentication or role. `CanDeactivate` runs before leaving — used in the HR portal department form to warn the user if they have unsaved changes before navigating away.
 
-**How do you redirect from a guard?** ⭐⭐
+<a id="ANG-J-053"></a>
+
+**[ANG-J-053] How do you redirect from a guard?** ⭐⭐
 
 Return `router.createUrlTree(['/login'])` instead of `false`. This is cleaner because it tells Angular exactly where to go, rather than just blocking the navigation.
 
-**How do you stack multiple guards on a route?** ⭐⭐
+<a id="ANG-J-054"></a>
+
+**[ANG-J-054] How do you stack multiple guards on a route?** ⭐⭐
 
 Add them to the `canActivate` array: `canActivate: [authGuard, adminGuard]`. Angular runs them in order and stops at the first one that returns false or a redirect.
 
-**What is `noAuthGuard` and why do you need it?** ⭐⭐
+<a id="ANG-J-055"></a>
+
+**[ANG-J-055] What is `noAuthGuard` and why do you need it?** ⭐⭐
 
 A guard that redirects already-authenticated users away from the login page. Without it, a logged-in user can press the browser back button and land on the login page — a confusing experience. It is the mirror of `authGuard`: `authGuard` blocks unauthenticated users from protected routes; `noAuthGuard` blocks authenticated users from the login route. In the HR portal I apply it to the login route so that logged-in users always go straight to the dashboard.
 
-**What is the difference between route params and query params?** ⭐⭐⭐
+<a id="ANG-J-056"></a>
+
+**[ANG-J-056] What is the difference between route params and query params?** ⭐⭐⭐
 
 Route params are part of the URL path (`/employees/123`) and identify a specific resource. Query params are optional extras (`/employees?status=active`) used for filters or temporary state. In the HR portal, clicking a dashboard stat card passes a status query param that the employee page reads on load to pre-apply a filter.
 
-**What is `pathMatch: 'full'` and why is it required on a redirect route?** ⭐⭐
+<a id="ANG-J-057"></a>
+
+**[ANG-J-057] What is `pathMatch: 'full'` and why is it required on a redirect route?** ⭐⭐
 
 It tells Angular to only match the route if the entire URL matches the path, not just the beginning. Without it, the empty path `''` would match every URL, so every route would redirect.
 
-**Why did you read route params with snapshot instead of subscribing to paramMap in the meal finder?** ⭐⭐
+<a id="ANG-J-058"></a>
+
+**[ANG-J-058] Why did you read route params with snapshot instead of subscribing to paramMap in the meal finder?** ⭐⭐
 
 What they really want to know: Do you know when a one-time read is sufficient and when you need to react to param changes?
 A: In the meal finder, navigating to a different meal always creates a fresh MealDetailPage component — the id never changes while the component is alive. snapshot reads the URL once and is the correct choice. I would subscribe to paramMap only if the same component could display different items without being destroyed — for example a "next/previous" button that changes the id in the URL while keeping the component alive. Using subscribe() where snapshot is enough adds unnecessary complexity and a subscription to manage.
 
 Red flag answer: "snapshot is simpler so I always use it." — The interviewer wants to hear that you understand when subscription is needed, not that you defaulted to the easier option.
 
-**A teammate added a new admin route but forgot the route guard. How do you find it and what do you do?** ⭐⭐
+<a id="ANG-J-059"></a>
+
+**[ANG-J-059] A teammate added a new admin route but forgot the route guard. How do you find it and what do you do?** ⭐⭐
 
 What they really want to know: Can you audit a codebase for security gaps and think beyond just fixing the immediate problem?
 A: I check app.routes.ts for any admin route missing canActivate: [authGuard, adminGuard] — it is a quick scan. In the HR portal I review the route file whenever a new page is added because it is easy to forget the guard when focused on the feature. The fix is adding the guards to the route. The harder question is what already happened — if the route was live without a guard, I would check if anyone accessed it and decide whether to notify the team. Frontend guards are a UX layer, not the real security layer — the backend must validate permissions on every request regardless.
 
 Red flag answer: "I would just add the guard." — Shows you only think about the fix, not the impact. The interviewer wants to see that you consider what already happened.
 
-**What is a route resolver and when would you use it?** ⭐⭐
+<a id="ANG-J-060"></a>
+
+**[ANG-J-060] What is a route resolver and when would you use it?** ⭐⭐
 
 A resolver is a function that runs before a route activates and fetches data — the component only loads after the data is ready. You use it when a component always needs specific data to render and showing a skeleton or empty state is not acceptable. The resolver returns an Observable or Promise; the router waits for it to complete before loading the component. In my projects I load data inside `ngOnInit` and show a spinner — that is simpler and more transparent for the user. A resolver is the right choice when the data is required for the page title, breadcrumbs, or when showing a blank page before data arrives is a bad experience.
 
@@ -356,19 +764,27 @@ A resolver is a function that runs before a route activates and fetches data —
 
 ## Lazy loading
 
-**What is lazy loading in Angular?** ⭐⭐⭐
+<a id="ANG-J-061"></a>
+
+**[ANG-J-061] What is lazy loading in Angular?** ⭐⭐⭐
 
 Loading a component only when the user navigates to that route, instead of bundling everything at startup. In the HR portal, admin and employee routes are lazy loaded because most users are employees who never visit admin pages — the initial bundle is smaller.
 
-**How do you set up lazy loading in Angular 17+?** ⭐⭐
+<a id="ANG-J-062"></a>
+
+**[ANG-J-062] How do you set up lazy loading in Angular 17+?** ⭐⭐
 
 Use `loadComponent` in the route definition with a dynamic import: `loadComponent: () => import('./path').then(m => m.Component)`. Angular only downloads that code when the user first navigates to the route.
 
-**How does lazy loading affect the user experience?** ⭐⭐
+<a id="ANG-J-063"></a>
+
+**[ANG-J-063] How does lazy loading affect the user experience?** ⭐⭐
 
 The first visit to a lazy route has a small delay while the code downloads. After that it is cached. For most business apps the delay is imperceptible, and the faster initial load is worth it.
 
-**Why did you lazy load the admin routes specifically, and not all routes?** ⭐⭐
+<a id="ANG-J-064"></a>
+
+**[ANG-J-064] Why did you lazy load the admin routes specifically, and not all routes?** ⭐⭐
 
 What they really want to know: Did you make a deliberate decision, or did you apply the pattern mechanically?
 A: Most users of the HR portal are employees — they never visit the admin area. Lazy loading admin routes means their initial bundle does not include that code at all. The login page and dashboard are NOT lazy loaded because every user lands there on every session — making them wait for a dynamic import would add a delay with no benefit. The rule is: lazy load pages the majority of users never visit. Eager load the pages every user sees first.
@@ -379,19 +795,27 @@ Red flag answer: "I lazy loaded everything." — That shows the pattern was appl
 
 ## HTTP interceptors
 
-**What is an HTTP interceptor?** ⭐⭐⭐
+<a id="ANG-J-065"></a>
+
+**[ANG-J-065] What is an HTTP interceptor?** ⭐⭐⭐
 
 A function that runs before every HTTP request, letting you add headers, handle errors, or log requests globally. In the HR portal, the auth interceptor adds the Bearer token to every request so each service does not need to do it manually.
 
-**Why use an interceptor instead of adding the token in each service?** ⭐⭐
+<a id="ANG-J-066"></a>
+
+**[ANG-J-066] Why use an interceptor instead of adding the token in each service?** ⭐⭐
 
 A single interceptor handles all requests in one place. If the token format changes, you only update one file. In the HR portal, doing it in each service would mean touching six separate files.
 
-**What does `req.clone()` do in an interceptor?** ⭐⭐
+<a id="ANG-J-067"></a>
+
+**[ANG-J-067] What does `req.clone()` do in an interceptor?** ⭐⭐
 
 HTTP requests are immutable, so you cannot modify them directly. `req.clone({ setHeaders: { Authorization: '...' } })` creates a copy with the new headers, which you then pass to `next()`.
 
-**How would you handle a 401 response globally in an interceptor?** ⭐⭐
+<a id="ANG-J-068"></a>
+
+**[ANG-J-068] How would you handle a 401 response globally in an interceptor?** ⭐⭐
 
 What they really want to know: Do you think about authentication failure paths, not just outgoing requests?
 A: The interceptor can pipe the response Observable with `catchError` to intercept a 401 before it reaches any service:
@@ -417,7 +841,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
 Red flag answer: "I handle 401 in each service." — Repetitive and fragile. If one service misses the check, a user can stay on a page after their session expires. One interceptor handles all calls.
 
-**How would you add a global loading indicator using an interceptor?** ⭐⭐
+<a id="ANG-J-069"></a>
+
+**[ANG-J-069] How would you add a global loading indicator using an interceptor?** ⭐⭐
 
 Inject a `LoadingService` and toggle a signal before the request and after it completes. `finalize()` is the right operator — it runs regardless of success or error:
 
@@ -440,35 +866,51 @@ The loading service exposes a signal that the app shell reads to show or hide a 
 
 ## Reactive forms
 
-**What is the difference between reactive forms and template-driven forms?** ⭐⭐⭐
+<a id="ANG-J-070"></a>
+
+**[ANG-J-070] What is the difference between reactive forms and template-driven forms?** ⭐⭐⭐
 
 Reactive forms are defined in TypeScript — more predictable, easier to test, better for complex validation. Template-driven forms live mostly in the HTML — simpler for basic cases. I use reactive forms in all my projects because they scale better with Angular Material.
 
-**What does `markAllAsTouched()` do and why do you call it on submit?** ⭐⭐
+<a id="ANG-J-071"></a>
+
+**[ANG-J-071] What does `markAllAsTouched()` do and why do you call it on submit?** ⭐⭐
 
 It marks every field as touched so validation error messages appear even if the user never clicked on a field. Without it, a user who clicks Submit immediately would see no errors — the form would silently fail.
 
-**What is `patchValue()` and when do you use it?** ⭐⭐
+<a id="ANG-J-072"></a>
+
+**[ANG-J-072] What is `patchValue()` and when do you use it?** ⭐⭐
 
 It updates only the fields you provide, leaving the rest unchanged. I use it in edit mode to pre-fill the form with existing data — unlike `setValue()`, it does not require you to provide every field.
 
-**What is `form.dirty` and how do you use it?** ⭐⭐
+<a id="ANG-J-073"></a>
+
+**[ANG-J-073] What is `form.dirty` and how do you use it?** ⭐⭐
 
 It is `true` when the user has changed at least one field. In the HR portal, I check `form.dirty` in `onCancel()` — if the form is dirty, I open a confirm dialog before closing. If not, I close directly.
 
-**How do you set a custom validation error from a service?** ⭐⭐
+<a id="ANG-J-074"></a>
+
+**[ANG-J-074] How do you set a custom validation error from a service?** ⭐⭐
 
 With `control.setErrors({ customKey: true })`. In the HR portal, after checking for a duplicate department name, I call `setErrors({ duplicate: true })` on the name field — `mat-error` then shows the error message automatically.
 
-**What is `markAsPristine()` and when do you use it?** ⭐
+<a id="ANG-J-075"></a>
+
+**[ANG-J-075] What is `markAsPristine()` and when do you use it?** ⭐
 
 It resets `form.dirty` to false programmatically. I call it after a successful save so the `CanDeactivate` guard does not trigger when Angular navigates away after the save.
 
-**What is `FormArray` and when do you use it?** ⭐⭐
+<a id="ANG-J-076"></a>
+
+**[ANG-J-076] What is `FormArray` and when do you use it?** ⭐⭐
 
 A `FormGroup` holds a fixed set of named fields. A `FormArray` holds a dynamic list of controls — you add and remove them at runtime. The most common case is a form where the user can add multiple items: phone numbers, addresses, skills. You access items by index, not by name. In my projects I use `FormGroup` for employee and department forms where the fields are fixed. `FormArray` is the right choice when the number of fields is not known upfront.
 
-**How do you create a custom validator in Angular?** ⭐⭐
+<a id="ANG-J-077"></a>
+
+**[ANG-J-077] How do you create a custom validator in Angular?** ⭐⭐
 
 A custom validator is a plain function that takes an `AbstractControl` and returns `{ errorKey: true }` if invalid, or `null` if valid. You pass it to `FormControl` the same way as built-in validators.
 
@@ -493,7 +935,9 @@ In the template, check it the same way as built-in errors: `control.hasError('no
 
 Red flag answer: "I use `setErrors()` for custom errors." — `setErrors()` is called manually in `onSubmit()`. A validator runs automatically on every value change. They solve different problems — a validator prevents invalid submission, `setErrors()` sets an error after a duplicate check.
 
-**What is an async validator and when would you use it?** ⭐⭐
+<a id="ANG-J-078"></a>
+
+**[ANG-J-078] What is an async validator and when would you use it?** ⭐⭐
 
 An async validator returns an `Observable<ValidationErrors | null>` or `Promise<ValidationErrors | null>` instead of a plain object. Angular waits for the result before marking the control valid or invalid. The classic case is checking uniqueness — "is this email already registered?" — which requires an HTTP call to the backend.
 
@@ -507,7 +951,9 @@ Angular shows a `PENDING` state while waiting and only applies the error when th
 > **Junior tip:** The three arguments to `FormControl` are: `(initialValue, syncValidators, asyncValidators)`. If you put an async validator in position 2, it will not work and Angular won't warn you — it just silently fails. Knowing the correct position shows real experience.
 > **Consejo de entrevista:** Los tres argumentos de `FormControl` son: `(valorInicial, validadoresSync, validadoresAsync)`. Si pones un validador asíncrono en la posición 2, no funcionará y Angular no te avisará — falla en silencio.
 
-**What is `ErrorStateMatcher` and when would you use it?** ⭐
+<a id="ANG-J-079"></a>
+
+**[ANG-J-079] What is `ErrorStateMatcher` and when would you use it?** ⭐
 
 `ErrorStateMatcher` is a class that controls when Angular Material shows a `mat-error`. By default, `mat-error` only appears when the control is invalid AND touched. Sometimes you want different behaviour — for example, show errors on every keystroke (dirty instead of touched), or force all errors to show immediately after a failed submit. You implement `isErrorState(control, form)` and return `true` when you want the error to appear. Then apply it with `[errorStateMatcher]="myMatcher"` on the `mat-form-field`. In the HR portal I use it in the employee dialog to show errors immediately on the first step before moving to the second.
 
@@ -518,11 +964,15 @@ Angular shows a `PENDING` state while waiting and only applies the error when th
 
 ## Lifecycle hooks
 
-**What is `ngOnInit` and when do you use it?** ⭐⭐⭐
+<a id="ANG-J-080"></a>
+
+**[ANG-J-080] What is `ngOnInit` and when do you use it?** ⭐⭐⭐
 
 A lifecycle hook that runs once when the component loads. I use it to fetch initial data, read route params, or apply query param filters — anything that needs to happen once on startup.
 
-**Why do you call API methods in ngOnInit instead of the constructor?** ⭐⭐⭐
+<a id="ANG-J-081"></a>
+
+**[ANG-J-081] Why do you call API methods in ngOnInit instead of the constructor?** ⭐⭐⭐
 
 What they really want to know: Do you understand what Angular has and has not set up at construction time?
 A: The constructor runs when Angular creates the class — at that point routing has not attached URL data, inputs are not set, and the template does not exist. ngOnInit runs after Angular finishes setting up the component: route params are readable, inputs are available, and the component is ready to display data. In the meal finder, I read the meal id from ActivatedRoute in ngOnInit — in the constructor it would be undefined and the API call would fail silently with no error visible to the user.
@@ -530,22 +980,30 @@ A: The constructor runs when Angular creates the class — at that point routing
 > **Junior tip:** Connect the timing to a concrete consequence: "If I call the API in the constructor, the route param is undefined — I send a bad request and nothing renders." That is more convincing than saying "ngOnInit is the standard."
 > **Consejo de entrevista:** Conecta el momento con una consecuencia concreta: "Si llamo a la API en el constructor, el route param es undefined — envío una petición incorrecta y no se renderiza nada."
 
-**What is `ngAfterViewInit` and when do you use it?** ⭐⭐
+<a id="ANG-J-082"></a>
+
+**[ANG-J-082] What is `ngAfterViewInit` and when do you use it?** ⭐⭐
 
 A lifecycle hook that runs after the template is fully built. It is the earliest safe moment to use `@ViewChild` references. In the task manager I connect `MatSort` to `MatTableDataSource` here, because before this point the sort directive does not exist yet.
 
-**What is `@ViewChild` and how do you use it?** ⭐⭐
+<a id="ANG-J-083"></a>
+
+**[ANG-J-083] What is `@ViewChild` and how do you use it?** ⭐⭐
 
 A decorator that gets a reference to a child component or directive from the template. I use `@ViewChild(MatSort)` to access the sort directive and connect it to `MatTableDataSource` in `ngAfterViewInit`.
 
-**What is `ngOnChanges` and when does it fire?** ⭐⭐
+<a id="ANG-J-084"></a>
+
+**[ANG-J-084] What is `ngOnChanges` and when does it fire?** ⭐⭐
 
 A lifecycle hook that runs every time a parent updates an `@Input()` decorated property. It receives a `SimpleChanges` object with the previous and current values so you can react to specific property changes. In modern Angular (17+) with the `input()` signal API, you use `effect()` for the same purpose — it fires whenever the signal changes. `ngOnChanges` is still important because you will see it in any existing enterprise codebase built before the signals API.
 
 > **Junior tip:** Interviewers ask this to see if you know only the modern API or understand the history. Mention both: "Old pattern: `@Input()` + `ngOnChanges`. Modern pattern: `input()` signal + `effect()`." This shows you can read legacy code and write modern code.
 > **Consejo de entrevista:** Los entrevistadores hacen esta pregunta para ver si conoces solo la API moderna o también entiendes la historia. Menciona ambas: "Patrón antiguo: `@Input()` + `ngOnChanges`. Patrón moderno: signal `input()` + `effect()`."
 
-**What is `ngOnDestroy` and when do you use it?** ⭐⭐
+<a id="ANG-J-085"></a>
+
+**[ANG-J-085] What is `ngOnDestroy` and when do you use it?** ⭐⭐
 
 A lifecycle hook that runs just before Angular removes the component. You use it for cleanup — cancel subscriptions, clear timers, release external resources. In practice, `takeUntilDestroyed()` handles subscription cleanup automatically so I rarely need `ngOnDestroy` for HTTP calls. I would use it for third-party library cleanup or a `setInterval` that needs to stop when the component is gone.
 
@@ -556,27 +1014,39 @@ A lifecycle hook that runs just before Angular removes the component. You use it
 
 ## Pipes
 
-**What is a pipe in Angular?** ⭐⭐⭐
+<a id="ANG-J-086"></a>
+
+**[ANG-J-086] What is a pipe in Angular?** ⭐⭐⭐
 
 A template function that transforms a value before displaying it. `{{ date | date }}` formats a date, `{{ price | number:'1.2-2' }}` formats a number. They keep transformation logic out of the component.
 
-**What pipes have you used?** ⭐⭐
+<a id="ANG-J-087"></a>
+
+**[ANG-J-087] What pipes have you used?** ⭐⭐
 
 `date` to format ISO dates, `number` with format `'1.0-1'` to show one decimal, and `SlicePipe` to cut strings in the template. In the HR portal I use `date` on leave request dates and employee hire dates.
 
-**How do you create a custom pipe?** ⭐⭐
+<a id="ANG-J-088"></a>
+
+**[ANG-J-088] How do you create a custom pipe?** ⭐⭐
 
 You create a class decorated with `@Pipe({ name: 'myPipe' })` that implements `PipeTransform`. The `transform()` method receives the value and any arguments, and returns the transformed result. For example, a `truncate` pipe that cuts long text to a max length and adds `...`. You generate it with `ng generate pipe` and import it in the component's `imports` array like any other standalone pipe.
 
-**What is the `async` pipe and when do you use it?** ⭐⭐⭐
+<a id="ANG-J-089"></a>
+
+**[ANG-J-089] What is the `async` pipe and when do you use it?** ⭐⭐⭐
 
 It subscribes to an Observable directly in the template and automatically unsubscribes when the component is destroyed — no `subscribe()`, no `takeUntilDestroyed()`. `{{ employees$ | async }}` displays the value as soon as it arrives. I use signals for my own state, but I use the `async` pipe when working with Observables I did not create — for example, route data or streams from a shared service. You will see it everywhere in existing enterprise codebases.
 
-**How do you handle API keys in Angular?** ⭐⭐
+<a id="ANG-J-090"></a>
+
+**[ANG-J-090] How do you handle API keys in Angular?** ⭐⭐
 
 Never hardcode them in the component or service — they end up committed to git. I use Angular's environment files: `ng generate environments` creates `environment.ts` which is added to `.gitignore`. The service imports from there: `import { environment } from '../../environments/environment'`. Important caveat: any value in the frontend bundle is visible in the browser DevTools. For truly sensitive keys, the correct solution is to proxy the call through a backend — the key lives on the server, never in the browser.
 
-**When would you create a custom pipe instead of a computed() signal or a method in the template?** ⭐⭐
+<a id="ANG-J-091"></a>
+
+**[ANG-J-091] When would you create a custom pipe instead of a computed() signal or a method in the template?** ⭐⭐
 
 What they really want to know: Do you understand when reusability and performance justify a pipe versus simpler alternatives?
 A: A custom pipe is the right choice when the same transformation is needed across multiple components — it is imported once per component and reusable in any template. A computed() signal is better when the transformation is specific to one component and depends on other signals. A template method re-runs on every change detection cycle — a pure pipe, like computed(), only re-runs when its input changes. In a project where three different components all display truncated descriptions, a TruncatePipe is the correct call. In the HR portal I used the built-in DatePipe for leave request dates across the table and dialog — it was already available, so no custom pipe was needed.
@@ -588,75 +1058,111 @@ A: A custom pipe is the right choice when the same transformation is needed acro
 
 ## Angular Material
 
-**What is Angular Material?** ⭐⭐⭐
+<a id="ANG-J-092"></a>
+
+**[ANG-J-092] What is Angular Material?** ⭐⭐⭐
 
 Google's official component library for Angular based on Material Design. It provides ready-made, accessible components — tables, dialogs, forms, buttons — that follow a consistent design system. It is the standard in Spanish enterprise Angular projects.
 
-**What button variants does Angular Material have and when do you use each?** ⭐⭐
+<a id="ANG-J-093"></a>
+
+**[ANG-J-093] What button variants does Angular Material have and when do you use each?** ⭐⭐
 
 Six variants: `mat-button` (plain text, no background — low-emphasis actions like Cancel), `mat-raised-button` (filled with shadow — primary actions), `mat-flat-button` (filled without shadow — primary actions in flat designs), `mat-stroked-button` (outlined — secondary actions that need more presence than plain text), `mat-icon-button` (icon only, no label — toolbar actions like delete or close), `mat-fab` (floating action button — the single main action on a page). The `color` attribute (`primary`, `accent`, `warn`) applies the theme colour. In the HR portal I use `mat-flat-button` for confirm actions and `mat-stroked-button` for cancel.
 
-**How do you build an app shell with `MatToolbar`?** ⭐
+<a id="ANG-J-094"></a>
+
+**[ANG-J-094] How do you build an app shell with `MatToolbar`?** ⭐
 
 `mat-toolbar` is a fixed-height header bar. I place it inside `mat-sidenav-content` so it stays at the top of the content area while the sidenav stays on the left. Material does not push toolbar items apart automatically — I add `display: flex; justify-content: space-between` to push the title left and the logout button right. The whole shell is wrapped in `@if (isLoggedIn())` so it only renders when the user is authenticated.
 
-**How does `MatSelect` work inside a reactive form?** ⭐⭐
+<a id="ANG-J-095"></a>
+
+**[ANG-J-095] How does `MatSelect` work inside a reactive form?** ⭐⭐
 
 You use `<mat-select>` inside a `mat-form-field` and bind it to a `FormControl` with `formControlName`. The options go inside `<mat-option>` elements — you loop over them with `@for`. When you need the options to come from a service, you load them in `ngOnInit` and store them in a signal. `mat-error` works the same way as with any other Material input.
 
-**What is `MatSidenav` and when do you use it?** ⭐⭐
+<a id="ANG-J-096"></a>
+
+**[ANG-J-096] What is `MatSidenav` and when do you use it?** ⭐⭐
 
 A side navigation panel that can be permanent, toggled, or overlaid. In enterprise apps it replaces top-level tab navigation — the sidenav holds the main nav links and stays visible while `<mat-sidenav-content>` holds the active page. The standard pattern is `mat-sidenav-container` wrapping both the sidenav and the content, with a toolbar inside the content area. You wrap the whole structure in `@if (isLoggedIn())` so it only shows when the user is authenticated.
 
-**What is `MatTableDataSource` and why use it over a plain array?** ⭐⭐⭐
+<a id="ANG-J-097"></a>
+
+**[ANG-J-097] What is `MatTableDataSource` and why use it over a plain array?** ⭐⭐⭐
 
 A wrapper that automatically handles sorting, filtering, and pagination for a Material table. In the task manager I use it because the table needed sorting from day one — it removes the need to write that logic manually.
 
-**How does `MatSort` work?** ⭐⭐
+<a id="ANG-J-098"></a>
+
+**[ANG-J-098] How does `MatSort` work?** ⭐⭐
 
 You add `mat-sort-header` to each `<th>`, connect `@ViewChild(MatSort)` to `dataSource.sort` in `ngAfterViewInit`, and the table handles sorting automatically. The directive goes on `<th>`, not on `ng-container`.
 
-**What is `MAT_DIALOG_DATA` and how does it work?** ⭐⭐
+<a id="ANG-J-099"></a>
+
+**[ANG-J-099] What is `MAT_DIALOG_DATA` and how does it work?** ⭐⭐
 
 A token that lets you pass data from the parent into a dialog at the time it opens. Inside the dialog you inject it with `inject(MAT_DIALOG_DATA)`. In the HR portal, the employee dialog receives the existing employee data this way when opened in edit mode.
 
-**How do you get data back from a dialog?** ⭐⭐
+<a id="ANG-J-100"></a>
+
+**[ANG-J-100] How do you get data back from a dialog?** ⭐⭐
 
 The dialog calls `dialogRef.close(value)` and the parent reads it in `afterClosed().subscribe(result => { if (result) { ... } })`. In the HR portal, the confirm dialog returns `true` on confirm and `undefined` on cancel — the parent always checks `if (result)` before proceeding.
 
-**What is the dual-mode dialog pattern?** ⭐⭐
+<a id="ANG-J-101"></a>
+
+**[ANG-J-101] What is the dual-mode dialog pattern?** ⭐⭐
 
 Using one dialog component for both add and edit. The dialog checks if `MAT_DIALOG_DATA` is present to decide the mode — if data exists, it patches the form with existing values. This avoids maintaining two near-identical templates. I use it in the task manager and HR portal.
 
-**How do you protect a dialog from closing accidentally when the form is dirty?** ⭐
+<a id="ANG-J-102"></a>
+
+**[ANG-J-102] How do you protect a dialog from closing accidentally when the form is dirty?** ⭐
 
 Two steps. First, set `disableClose: true` when opening the dialog — this prevents Material from closing automatically on backdrop click or Escape. Second, subscribe to `dialogRef.backdropClick()` in the dialog constructor and route it through `onCancel()` — the same method the Cancel button calls. This way all three close paths (Cancel button, backdrop click, Escape) go through the dirty check. In the HR portal, the employee dialog uses this pattern because the form has two stepper steps and losing data mid-way would be frustrating.
 
-**What is `MatSnackBar` used for?** ⭐⭐
+<a id="ANG-J-103"></a>
+
+**[ANG-J-103] What is `MatSnackBar` used for?** ⭐⭐
 
 Short toast notifications after user actions — saves, deletes, errors. I inject it in the page coordinator and call `snackBar.open(message, 'Close', { duration: 3000 })` after each service operation. Only one snackbar shows at a time.
 
-**What is `MatStepper` and when is it useful?** ⭐
+<a id="ANG-J-104"></a>
+
+**[ANG-J-104] What is `MatStepper` and when is it useful?** ⭐
 
 A component that splits a form into sequential steps, each with its own validation. I use it in the HR portal employee dialog — the form had too many fields for one screen, so I split it into "Personal info" and "Job details" to make it clearer.
 
-**Why does `stepper.next()` need manual validation?** ⭐
+<a id="ANG-J-105"></a>
+
+**[ANG-J-105] Why does `stepper.next()` need manual validation?** ⭐
 
 `stepper.next()` moves to the next step unconditionally — it does not check `[stepControl]`. When the buttons are outside the `<mat-stepper>` element (like in `mat-dialog-actions`), `matStepperNext` directive cannot find the stepper either. So I validate manually in `onNext()` before calling `stepper.next()`.
 
-**What is `MatDatepicker` and what does it need to work?** ⭐
+<a id="ANG-J-106"></a>
+
+**[ANG-J-106] What is `MatDatepicker` and what does it need to work?** ⭐
 
 A calendar popup for date inputs. It needs `MatDatepickerModule` in the component imports and `provideNativeDateAdapter()` in `app.config.ts` — this tells Angular Material to use the native JavaScript `Date` object. The form value comes out as a `Date`, so I cast it and call `.toISOString().split('T')[0]` to store it as a `YYYY-MM-DD` string.
 
-**How do you add pagination to a Material table?** ⭐⭐
+<a id="ANG-J-107"></a>
+
+**[ANG-J-107] How do you add pagination to a Material table?** ⭐⭐
 
 Add `<mat-paginator>` below the table, get a reference with `@ViewChild(MatPaginator)`, and connect it to `dataSource.paginator` in `ngAfterViewInit` — the same pattern as `MatSort`. `MatTableDataSource` handles slicing the data automatically. One detail: when the user applies a filter, call `paginator.firstPage()` so they always land on page 1 instead of seeing an empty page 3.
 
-**What is `mat-error` and when does it show?** ⭐⭐
+<a id="ANG-J-108"></a>
+
+**[ANG-J-108] What is `mat-error` and when does it show?** ⭐⭐
 
 A Material component that displays validation error messages inside a `mat-form-field`. By default it shows when the control is invalid AND touched. For more control over when it appears, you use `ErrorStateMatcher`.
 
-**Why did you use `mat.theme()` in SCSS instead of CSS class overrides to customize the Material theme?** ⭐⭐
+<a id="ANG-J-109"></a>
+
+**[ANG-J-109] Why did you use `mat.theme()` in SCSS instead of CSS class overrides to customize the Material theme?** ⭐⭐
 
 What they really want to know: Do you understand the Material theming system, or did you find a hack that worked?
 A: `mat.theme()` is the official API — it sets color, typography, and density through Material's design token system. Every component in the app picks up the theme automatically through `--mat-sys-*` CSS variables. CSS overrides are fragile: they break when Angular Material updates internal class names across versions, and they bypass the token system so components that generate their own internal styles ignore them. In the task manager and HR portal I define the theme once in `material-theme.scss` using a built-in palette — `mat.$blue-palette` in 05, `mat.$azure-palette` in 06 — and all Material components use the same palette with no per-component overrides needed.
@@ -670,15 +1176,21 @@ Red flag answer: "I overrode the CSS classes." — The interviewer knows it work
 
 ## Component styles
 
-**What is view encapsulation in Angular?** ⭐⭐⭐
+<a id="ANG-J-110"></a>
+
+**[ANG-J-110] What is view encapsulation in Angular?** ⭐⭐⭐
 
 Angular adds a unique attribute to every element in a component's template and transforms the CSS selectors to only match elements with that attribute. This means component CSS is scoped — it only affects elements you wrote in your own template, not other components. The practical consequence: if a Material component renders internal HTML, your component CSS cannot reach it — you have to put that rule in the global `styles.css`.
 
-**When do you use component CSS versus global `styles.css`?** ⭐⭐
+<a id="ANG-J-111"></a>
+
+**[ANG-J-111] When do you use component CSS versus global `styles.css`?** ⭐⭐
 
 Component CSS for elements you wrote in your own template — `form`, `mat-form-field`, `mat-card`. Global `styles.css` for internal elements rendered by Material directives — like `.mat-sort-header-container` or `.mat-mdc-form-field-infix`. If a style is not working in your component CSS, the first thing to check is whether the element is rendered by Angular or by a Material component internally.
 
-**What is the `:host` selector in Angular component CSS?** ⭐⭐
+<a id="ANG-J-112"></a>
+
+**[ANG-J-112] What is the `:host` selector in Angular component CSS?** ⭐⭐
 
 `:host` targets the component's own host element — the element Angular inserts into the DOM using the component's selector. For example, `app-card` elements are `display: inline` by default (all custom elements are). Adding `:host { display: block }` makes the component behave like a normal block element. Without `:host`, you cannot style the outer wrapper from inside the component — you would have to do it from the parent.
 
@@ -697,14 +1209,18 @@ Component CSS for elements you wrote in your own template — `form`, `mat-form-
 > **Junior tip:** `display: block` on `:host` is the most common use. Mention it as a concrete example — it shows you have actually run into the issue.
 > **Consejo de entrevista:** `display: block` en `:host` es el uso más común. Menciónalo como ejemplo concreto — demuestra que lo has encontrado en la práctica.
 
-**What are the ViewEncapsulation options in Angular, and when would you use `ViewEncapsulation.None`?** ⭐⭐
+<a id="ANG-J-113"></a>
+
+**[ANG-J-113] What are the ViewEncapsulation options in Angular, and when would you use `ViewEncapsulation.None`?** ⭐⭐
 
 What they really want to know: Do you understand the implications of removing style isolation?
 A: Angular has three modes. `Emulated` is the default — it adds unique attributes so CSS is scoped to the component. `ShadowDom` uses the browser's real Shadow DOM for true isolation. `None` removes all scoping — the component's CSS becomes global. I would only reach for `None` as a last resort because it leaks all the component's CSS into the global scope, which can cause unexpected style conflicts. In practice, when I need to override Material internals that I cannot reach otherwise, I put those rules in `styles.css` instead — same effect, no leakage risk, and it is explicit.
 
 Red flag answer: "I use ViewEncapsulation.None when my CSS does not work." — This shows you reached for the nuclear option without understanding why the style was not working or what damage it could cause.
 
-**What is `::ng-deep` and why is it considered bad practice?** ⭐⭐
+<a id="ANG-J-114"></a>
+
+**[ANG-J-114] What is `::ng-deep` and why is it considered bad practice?** ⭐⭐
 
 `::ng-deep` was a CSS combinator that made a rule ignore Angular's view encapsulation — it could reach inside child components and Material internals. It was unofficial, widely used, and Angular officially deprecated it. It still works in browsers but can break when Angular updates internal class names, and it leaks styles globally just like `ViewEncapsulation.None`. You will see it in almost every enterprise Angular codebase built before 2022. When you see it: leave it alone if it is working. When you write new code: put global Material overrides in `styles.css` instead.
 
@@ -715,29 +1231,39 @@ Red flag answer: "I use ViewEncapsulation.None when my CSS does not work." — T
 
 ## Unit testing
 
-**Have you written unit tests in Angular?** ⭐⭐⭐
+<a id="ANG-J-115"></a>
+
+**[ANG-J-115] Have you written unit tests in Angular?** ⭐⭐⭐
 
 Yes — component tests, with Vitest and TestBed, which is what Angular 21 scaffolds by default. In `05-task-manager` I mount the confirm dialog with a fake `MatDialogRef`, call `confirm()` and assert it closed with `true`; service tests are Step 9 of the project I am building now.
 
 > **Junior tip:** Name the kind of test you have written instead of answering yes or no — and where one kind is still missing, say when it lands and show you know how it works. That reads as someone who knows his own codebase; "yes, I write tests" invites the follow-up you cannot answer.
 > **Consejo de entrevista:** Di qué tipo de test has escrito en vez de contestar sí o no — y donde te falte uno, di cuándo llega y demuestra que sabes cómo funciona. Eso suena a alguien que conoce su propio código; "sí, escribo tests" invita a la repregunta que no puedes responder.
 
-**What is TestBed?** ⭐⭐⭐
+<a id="ANG-J-116"></a>
+
+**[ANG-J-116] What is TestBed?** ⭐⭐⭐
 
 Angular's testing module — it builds a miniature Angular environment for the test, configured with the same providers and imports the real app uses. It is the same API whatever the runner is, so a Karma project and a Vitest project configure it identically; without it, Angular's dependency injection does not work in a test.
 
-**Why does your project run Vitest instead of Jasmine and Karma?** ⭐⭐
+<a id="ANG-J-117"></a>
+
+**[ANG-J-117] Why does your project run Vitest instead of Jasmine and Karma?** ⭐⭐
 
 What they really want to know: Did you choose your tooling, or did you accept whatever was there?
 A: Because it is what `ng new` produces from Angular 21 — Karma is deprecated and its builder is announced for removal, so picking Jasmine and Karma for a new project means configuring against the CLI default in order to build on something on its way out. I can still read a Jasmine suite: the spec API is the same `describe` / `it` / `expect`, `TestBed` is identical, and only the spy changes.
 
 Red flag answer: "Vitest is faster." — Speed is not why the default moved, and it is what someone says who did not choose it. The reason is that Karma is deprecated and Vitest is what the CLI now scaffolds.
 
-**How do you test a service that makes HTTP calls?** ⭐⭐
+<a id="ANG-J-118"></a>
+
+**[ANG-J-118] How do you test a service that makes HTTP calls?** ⭐⭐
 
 You put `provideHttpClient()` and `provideHttpClientTesting()` in the test module, then assert the request with `HttpTestingController.expectOne(url)` and flush a fake response with `req.flush(mockData)` — the same `TestBed` setup as the component tests I have written, with the network swapped for a controller I can inspect. Mine land at Step 9 of my current project; in older suites you will see `HttpClientTestingModule` doing that job, deprecated in Angular 20 in favour of those two providers.
 
-**What is a spy and when do you use one?** ⭐⭐
+<a id="ANG-J-119"></a>
+
+**[ANG-J-119] What is a spy and when do you use one?** ⭐⭐
 
 A fake that stands in for a real function so I can control what it returns and check how it was called. In `05-task-manager` the dialog's `close` is a `vi.fn()` and the test asserts it was called with `true`; a Jasmine suite writes the same thing as `spyOn()` or `jasmine.createSpyObj()`.
 
@@ -752,21 +1278,27 @@ it('should close with true when confirmed', () => {
 });
 ```
 
-**Why use `provideHttpClientTesting()` instead of spying on the HttpClient methods directly?** ⭐⭐
+<a id="ANG-J-120"></a>
+
+**[ANG-J-120] Why use `provideHttpClientTesting()` instead of spying on the HttpClient methods directly?** ⭐⭐
 
 What they really want to know: Do you understand what you are actually testing and what you are bypassing?
 A: Spying on HttpClient methods mocks the entire HTTP layer before it reaches your service — you would be testing that a method calls the spy, not that it builds the correct URL, uses the right HTTP verb, or maps the response correctly. `provideHttpClientTesting()` lets the real service code run but intercepts at the network level. In an employee service test, expectOne('/api/employees') verifies the exact URL was requested, req.request.method verifies it is a GET, and flush(mockData) tests how the service handles the response. All the real logic runs — only the network is replaced.
 
 Red flag answer: "It is the Angular way." — That is a convention, not a reason. Show that you understand what you are actually testing.
 
-**What is a component test and how is it different from a service test?** ⭐⭐
+<a id="ANG-J-121"></a>
+
+**[ANG-J-121] What is a component test and how is it different from a service test?** ⭐⭐
 
 A service test calls methods and asserts results; a component test needs the template rendered, so I build it with `TestBed.createComponent()`, await `fixture.whenStable()`, and then read the DOM through `fixture.nativeElement`. In `04-meal-finder` I push a new `selected` input with `componentRef.setInput()` and assert which button comes back carrying `aria-pressed="true"`.
 
 > **Junior tip:** If the interviewer asks which tests you have written, say component tests and describe one — mine mount a component with fake dependencies and assert what the user would actually see. Service tests arrive with my backend project, and saying that is stronger than claiming both.
 > **Consejo de entrevista:** Si el entrevistador pregunta qué tests has escrito, di tests de componente y describe uno — los míos montan un componente con dependencias falsas y verifican lo que el usuario vería. Los tests de servicio llegan con mi proyecto de backend, y decirlo es más fuerte que afirmar los dos.
 
-**What is `afterEach(() => httpMock.verify())` for?** ⭐
+<a id="ANG-J-122"></a>
+
+**[ANG-J-122] What is `afterEach(() => httpMock.verify())` for?** ⭐
 
 It checks that no unexpected HTTP requests were made during the test. If a method fires a request you did not account for in your test, `verify()` fails the test — this prevents silent bugs where extra requests go unnoticed.
 
@@ -774,26 +1306,36 @@ It checks that no unexpected HTTP requests were made during the test. If a metho
 
 ## Change detection
 
-**What is change detection in Angular?** ⭐⭐⭐
+<a id="ANG-J-123"></a>
+
+**[ANG-J-123] What is change detection in Angular?** ⭐⭐⭐
 
 The process Angular uses to decide when to update the DOM. After every browser event, Angular checks if any component data changed and re-renders the affected parts. By default it checks every component in the tree, even ones that did not change.
 
-**What is the difference between Default and OnPush change detection?** ⭐⭐⭐
+<a id="ANG-J-124"></a>
+
+**[ANG-J-124] What is the difference between Default and OnPush change detection?** ⭐⭐⭐
 
 Default checks the component on every browser event regardless of whether its data changed. OnPush only checks when an `input()` reference changes, an event fires inside the component, or a signal it reads changes. OnPush is more performant but requires immutable data — if you mutate an array directly instead of replacing it, the template will not update because the reference did not change.
 
-**How do signals work with OnPush?** ⭐⭐
+<a id="ANG-J-125"></a>
+
+**[ANG-J-125] How do signals work with OnPush?** ⭐⭐
 
 Signals and OnPush are designed to work together. When a signal inside an OnPush component changes, Angular marks that component for checking automatically — you do not need to call `ChangeDetectorRef` manually. This means you get the performance benefit of OnPush without any extra work when you use signals for all your state.
 
-**How did you decide which components should use `OnPush` and which should use `Default`?** ⭐⭐
+<a id="ANG-J-126"></a>
+
+**[ANG-J-126] How did you decide which components should use `OnPush` and which should use `Default`?** ⭐⭐
 
 What they really want to know: Did you apply OnPush thoughtfully, or did you add it everywhere hoping for a performance win?
 A: I apply `OnPush` to pure presentational components — ones that only receive `input()` signals and emit events. In the HR portal, the table, filters, and dialog child components are good candidates because their renders depend entirely on `input()` changes. The coordinator page uses `Default` — it manages service state, opens dialogs, and has many moving parts where simplicity matters more than the check reduction. With signals, `OnPush` is safe because signal changes always trigger a re-check automatically.
 
 Red flag answer: "I use OnPush everywhere for better performance." — Applying it without understanding the signal/immutable-data contract can cause components to miss updates when you mutate objects directly instead of replacing them.
 
-**What is Zone.js and how does it relate to change detection?** ⭐⭐
+<a id="ANG-J-127"></a>
+
+**[ANG-J-127] What is Zone.js and how does it relate to change detection?** ⭐⭐
 
 Zone.js is a library Angular uses to know when something might have changed. It patches async APIs — `setTimeout`, event listeners, HTTP calls — so that after any of them runs, Angular automatically triggers change detection across the component tree. That is convenient but wasteful: it re-checks every component even when nothing relevant changed. Signals and `OnPush` reduce this — with signals, Angular knows exactly which component depends on the value that changed and checks only that one. Newer Angular is moving toward "zoneless" change detection driven entirely by signals.
 
@@ -804,41 +1346,57 @@ Zone.js is a library Angular uses to know when something might have changed. It 
 
 ## Architecture and patterns
 
-**What is Core/Feature/Shared architecture?** ⭐⭐⭐
+<a id="ANG-J-128"></a>
+
+**[ANG-J-128] What is Core/Feature/Shared architecture?** ⭐⭐⭐
 
 A folder structure where `core/` holds singletons used across the whole app (guards, interceptors, services), `pages/` holds feature areas, and `shared/` holds reusable components. It is the standard in enterprise Angular projects at companies like NTT Data and Capgemini.
 
-**What is the coordinator pattern and why do you use it?** ⭐⭐⭐
+<a id="ANG-J-129"></a>
+
+**[ANG-J-129] What is the coordinator pattern and why do you use it?** ⭐⭐⭐
 
 The page component owns all state and handles all events. Child components only receive data via `input()` and emit events via `output()` — they never touch the service directly. In the HR portal, the employee page coordinates the table, filters, and dialog. This keeps the children reusable and avoids keeping multiple copies of the same data in sync.
 
-**What is the difference between smart/dumb and coordinator pattern?** ⭐⭐
+<a id="ANG-J-130"></a>
+
+**[ANG-J-130] What is the difference between smart/dumb and coordinator pattern?** ⭐⭐
 
 Smart/dumb works well with one or two child components. Coordinator is the same idea but formalized for pages that manage many children sharing the same state. I used smart/dumb in the expense tracker and moved to coordinator in projects 05 and 06 as the complexity grew.
 
-**Why use a service for state instead of keeping it in the component?** ⭐⭐⭐
+<a id="ANG-J-131"></a>
+
+**[ANG-J-131] Why use a service for state instead of keeping it in the component?** ⭐⭐⭐
 
 Services are singletons — if two pages need the same data, the service keeps one copy and both stay in sync automatically. In the HR portal, the leave request page and the dashboard both depend on the employee list — without a service, they would each need their own copy and a way to stay in sync.
 
-**What is the difference between `providedIn: 'root'` and providing a service at the component level?** ⭐⭐
+<a id="ANG-J-132"></a>
+
+**[ANG-J-132] What is the difference between `providedIn: 'root'` and providing a service at the component level?** ⭐⭐
 
 `providedIn: 'root'` creates one shared instance for the whole app — every component that injects the service gets the same object. This is correct for services like `EmployeeService` or `AuthService` where you want one shared state. Component-level providers (`providers: [MyService]` in `@Component`) create a new instance for that component and all its children — the instance is destroyed when the component is destroyed. Use component-level providers when each route needs its own isolated state — for example, a wizard where each page manages independent form state. In all my projects I use `providedIn: 'root'` because the whole app shares the same employee and leave request data.
 
 > **Junior tip:** If asked "why NOT use `providedIn: 'root'`?" — answer with isolated state. Shows you understand the singleton lifecycle, not just the default.
 > **Consejo de entrevista:** Si te preguntan "¿por qué NO usarías `providedIn: 'root'`?" — responde con el caso del estado aislado. Demuestra que entiendes el ciclo de vida del singleton.
 
-**What is `Omit<T, 'field'>` and when do you use it?** ⭐⭐
+<a id="ANG-J-133"></a>
+
+**[ANG-J-133] What is `Omit<T, 'field'>` and when do you use it?** ⭐⭐
 
 A TypeScript utility type that creates a new type from an existing one, removing specific fields. I use it when creating a new entity that does not have an ID yet — `Omit<Employee, 'id'>` lets me type the "create" form data without the `id` field.
 
-**You have never used NgModules. Is that a problem?** ⭐⭐
+<a id="ANG-J-134"></a>
+
+**[ANG-J-134] You have never used NgModules. Is that a problem?** ⭐⭐
 
 What they really want to know: Are you aware that NgModules exist and can you work with legacy code?
 A: NgModules were the standard before Angular 14. Every module declared components, imported other modules, and provided services. Standalone components, which became the default in Angular 17+, remove most of that boilerplate — each component declares its own imports. New projects use standalone. But existing enterprise codebases still use modules heavily, and I understand the pattern. I would need time to get productive in a large module-based codebase, but the concepts are not new to me — I know what a module does and why it existed.
 
 Red flag answer: "I don't know what NgModules are." — A junior who has only read modern docs can say this. Show that you know the history and can read old code.
 
-**How do you show or hide UI elements based on the user's role, and how is that different from a route guard?** ⭐⭐
+<a id="ANG-J-135"></a>
+
+**[ANG-J-135] How do you show or hide UI elements based on the user's role, and how is that different from a route guard?** ⭐⭐
 
 I expose a computed signal — `isAdmin = computed(() => this.auth.currentUser()?.role === 'admin')` — and gate elements in the template with `@if (isAdmin())`. In the HR portal the "Add employee" button and admin nav links are wrapped this way. The key difference from a guard: a route guard blocks navigation to a whole page, while role-aware UI cleans up the interface inside a page the user is allowed to see. They work together — the guard stops an employee reaching the admin route, the computed signal hides admin-only buttons on shared pages. Neither is real security: the backend must still authorize every request.
 
@@ -848,51 +1406,69 @@ Red flag answer: "I use a guard for that." — A guard protects routes, not indi
 
 ## Project-specific questions
 
-**Walk me through the HR portal.** ⭐⭐⭐
+<a id="ANG-J-136"></a>
+
+**[ANG-J-136] Walk me through the HR portal.** ⭐⭐⭐
 
 It is a role-based HR management app that simulates a real enterprise tool — the kind of internal app you would find at a consultancy. The core problem it solves is that not everyone should see or do everything: admins manage employees and departments, employees only see their own data and request leave. The most interesting technical decision was the guard system — stacking `authGuard` and `adminGuard` on the same route, and then dealing with `CanDeactivate` without it blocking navigation after a successful save. That is where `markAsPristine()` became important. If I were to improve it, the first thing I would do is connect it to a real Spring Boot backend with proper JWT authentication instead of the simulated localStorage approach.
 
-**What is the most complex part of the HR portal?** ⭐⭐
+<a id="ANG-J-137"></a>
+
+**[ANG-J-137] What is the most complex part of the HR portal?** ⭐⭐
 
 The route guard system — stacking `authGuard` and `adminGuard` together, making sure guards run in the right order, and handling the `CanDeactivate` guard on forms without it interfering with programmatic navigation after a save. The `markAsPristine()` call after a successful save was the key to making that work correctly.
 
-**What would you change in the HR portal if you had more time?** ⭐⭐
+<a id="ANG-J-138"></a>
+
+**[ANG-J-138] What would you change in the HR portal if you had more time?** ⭐⭐
 
 I would add unit tests to the services — the duplicate check logic and the guard functions are good first candidates. I would also connect it to a real Spring Boot backend with proper JWT authentication instead of the simulated localStorage approach.
 
-**What was the hardest bug you fixed in your projects?** ⭐⭐
+<a id="ANG-J-139"></a>
+
+**[ANG-J-139] What was the hardest bug you fixed in your projects?** ⭐⭐
 
 In the HR portal stepper, I set `[linear]="false"` by mistake and could not understand why validation was not working. Then I realized `stepper.next()` also does not check `[stepControl]` — it moves unconditionally. I had to move the validation logic into `onNext()` and call `markAllAsTouched()` manually before deciding whether to advance. That was a good lesson: always read what a method actually does, not just what you expect it to do.
 
-**How do you handle HTTP errors in Angular?** ⭐⭐
+<a id="ANG-J-140"></a>
+
+**[ANG-J-140] How do you handle HTTP errors in Angular?** ⭐⭐
 
 What they really want to know: Do you think about failure cases, not just happy paths?
 A: In the weather app I handle errors in the `subscribe()` error callback — I set a `hasError` signal to true and show a message in the template. For global errors like 401, an interceptor is the right place — it can redirect to login without touching each service individually.
 
 Red flag answer: "I use try/catch." — That is for synchronous code. Saying this about Observables means you have not actually handled an HTTP error in Angular.
 
-**How would you explain the coordinator pattern to a teammate who has never heard of it?** ⭐⭐
+<a id="ANG-J-141"></a>
+
+**[ANG-J-141] How would you explain the coordinator pattern to a teammate who has never heard of it?** ⭐⭐
 
 What they really want to know: Do you understand the pattern well enough to teach it, or did you just copy it?
 A: The page is the coordinator — it owns the data and decides what happens. The child components are like display screens — they show what you give them and tell you when the user does something, but they never make decisions themselves. In the HR portal, the employee page is the coordinator: the table, filters, and dialog all report to it.
 
 Red flag answer: "It is like smart/dumb components." — That is not wrong but it shows you learned the label without understanding the reason.
 
-**Why did you use localStorage instead of a real backend for the HR portal?** ⭐⭐
+<a id="ANG-J-142"></a>
+
+**[ANG-J-142] Why did you use localStorage instead of a real backend for the HR portal?** ⭐⭐
 
 What they really want to know: Do you understand the trade-off, or did you just follow a tutorial?
 A: The focus of this project was Angular patterns — guards, lazy loading, interceptors, role-based access. Building a Spring Boot backend at the same time would have split the focus and slowed everything down. Each service uses `signal()` + `effect()` to persist to localStorage automatically. The HTTP interceptor is designed to work identically with a real API — swapping localStorage for Spring Boot in project 07 requires no changes to the Angular layer.
 
 Red flag answer: "Because it is easy." — The interviewer knows that. They want to hear that you understand what you sacrificed and that the architecture is ready for the real backend.
 
-**You built six Angular projects solo. How would your workflow change in a team of five developers?** ⭐⭐
+<a id="ANG-J-143"></a>
+
+**[ANG-J-143] You built six Angular projects solo. How would your workflow change in a team of five developers?** ⭐⭐
 
 What they really want to know: Are you ready for professional collaboration, or do you only know solo work?
 A: The biggest change is discipline around git — PR reviews, never merging your own code, keeping commits atomic so teammates can follow the history. I already use Conventional Commits and feature branches in my personal projects. The harder part is agreeing on architecture upfront so the codebase stays consistent — that is exactly what Core/Feature/Shared solves.
 
 Red flag answer: "I would just communicate more." — Too vague. The interviewer wants to hear specific practices.
 
-**What is a JWT and how does it work in an Angular + Spring Boot app?** ⭐⭐⭐
+<a id="ANG-J-144"></a>
+
+**[ANG-J-144] What is a JWT and how does it work in an Angular + Spring Boot app?** ⭐⭐⭐
 
 What they really want to know: Do you understand the auth flow end to end, or just the Angular side?
 A: JWT is a token the server sends after login — it contains encoded user data and a signature. The Angular client stores it and sends it in every request as a Bearer token in the `Authorization` header via an interceptor. The Spring Boot backend validates the signature on each request without needing a database session lookup. In the HR portal I simulate this — the interceptor adds the token, but the backend is replaced by localStorage so there is no server to validate it.
