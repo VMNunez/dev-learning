@@ -878,6 +878,8 @@ first**; a session is owed once roughly 20–25 sit in it. A `FAIL` or `BORDERLI
 writes nothing, so the miss stays at the head of the pool; a `PASS` writes or overwrites the `PASS` date.
 Each session also re-asks 2–3 questions whose last `PASS` is at least about two weeks old; one that now
 scores `FAIL` or `BORDERLINE` loses its ` · PASS …`, which puts it back in the pool under its old ✅ date.
+`_interview-prep-standard.md` points at this one paragraph for the study marks of the levelled banks
+(`REC-340`), so a ruling changed here changes both.
 
 **Every question has an anchor: one `<a id="{PROJECT_NAME}-NNN"></a>` line above its bold line, one blank
 line between them**, which is what its entry links to. The anchor is **not part of the question block**

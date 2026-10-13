@@ -49,7 +49,10 @@ bank and never gets a duplicate route entry.
 
 ## Inventory fingerprint
 
-Build the ordered inventory from every English bold question line, topic by topic and file order.
+Build the ordered inventory from every English bold question line, topic by topic and file order — a
+line opening `**[` and the question's ID, below the bank's header: the study index's bold section names
+are not question lines, and neither its entries nor the anchor lines are (`_interview-prep-standard.md`
+→ "Study index and question anchors", `REC-340`).
 Strip only the trailing state markers ` [refined]` and ` [studied]`; keep the stable ID, wording and
 priority. Join the resulting lines with LF and calculate lowercase SHA-256 over the UTF-8 bytes.
 
@@ -119,7 +122,8 @@ CORE questions: 68
 | 1 | ANG-J-001 | Angular | What is Angular? |
 ```
 
-IDs are unique, every ID resolves to exactly one selected-level bilingual question, and table order is
+IDs are unique, every ID resolves to exactly one selected-level bilingual question — on its bold question
+line, never on the anchor or index entry that repeats it — and table order is
 the study order. The question text is a navigation label only; the Q&A bank remains the content source.
 
 ## Write, commit and close out

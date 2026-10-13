@@ -53,6 +53,12 @@ that gains one more bullet becomes ` · ⚠ stale 2026-07-30 (+5 bullets)` — t
 first: what the cell has to answer is "how far has this plan drifted", and a list of dated increments
 makes the reader do arithmetic to find out.
 
+**One more suffix, on the `Interview J|M|S` cells alone** (`REC-340`): ` · index YYYY-MM-DD`, written by
+an `interview-prep-audit MODE = index` run — with ` dry-run` after the date on `DRY_RUN = true`, or
+` blocked — «condition»` when its step 1 stopped the topic. It is an annotation, never a record: it
+carries no `completed` and satisfies no prerequisite, a cell holding nothing else is still **pending**
+its audit, a later index run replaces it, and the next `full` or `correct` run rewrites the whole cell.
+
 **Tracking baseline reset:** 2026-07-24. Earlier execution records were cleared after the prompt
 system changed. Only runs recorded from this baseline onward are valid; the Java Junior coverage run
 is the first retained execution.

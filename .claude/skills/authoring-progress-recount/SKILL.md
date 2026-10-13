@@ -94,11 +94,15 @@ correct for every plan that exists.
   topic bank exists, has current coverage fingerprints, valid IDs/lifecycle and exact bilingual parity.
   Angular Material shares Angular's bank; every other registered topic owns its own topic file. Like the
   other read-only counters of the bank, this ritual reads those states off the files themselves and does
-  not open the interview standard.
+  not open the interview standard. **Both rows read an ID off its bold question line —
+  `**[{TOPIC}-{LEVEL}-NNN] …**` — and nowhere else**: since `REC-340` a migrated bank's study index and
+  the anchor above each question repeat every ID, so a count or a resolution over the file's text sees
+  each question three times.
 
 These two rows keep the strict `—` gate rather than step 1's `*`, because a question bank has no
 denominator at all until its stable IDs exist: there is nothing to mark provisional. Both rows read `—`
-until the first `interview-prep-audit` migration lands, and that is the correct reading, not a defect.
+until the first `interview-prep-audit` migration lands **and the bank carries a current fingerprint** —
+`MODE = index` gives the IDs alone (`REC-340`) — and that is the correct reading, not a defect.
 
 **The per-project table — one row per project bank.** Victor ruled 2026-09-06 that the project banks are
 counted in a table of their own rather than inside the levelled cells, so those columns keep meaning what

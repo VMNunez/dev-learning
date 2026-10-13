@@ -107,6 +107,16 @@ topic and audit both twins — never just the one handed to you.
 If `{SECTION}` is not "all", operate only on that heading's content. If the section is missing in one
 or both files, create it as an empty section before proceeding.
 
+**The study index and the anchor lines are not yours** (standard → *Study index and question anchors*).
+`## Study index` (`## Índice de estudio` in `es/`) is header, never a section in scope; the
+`<a id="…"></a>` line above each bold question line is not part of its block. Never write, edit or delete an anchor, an index entry, a label or a study
+mark — the orchestrator rebuilds them after you. When you move a block, its anchor line moves with it.
+**One exception, on a standalone run only**: there no orchestrator follows you, so when a `TODO:` reopens a
+`[refined]` question you clear its study mark yourself — everything after the link on that ID's line in
+the `es/` index — and say so in your report.
+Read every ID off the bold question lines alone, the next free number included: the anchors and the
+index repeat each one.
+
 ## Mode — full vs correct
 
 Check `{MODE}` first. In **correct** mode run ONLY, in order: Step 1 (sync), Step 2 (TODOs), Step 4
@@ -261,7 +271,8 @@ Then report:
 - **Weak answers found** (from 6.2) — question + what is missing.
 - **Coverage gaps found** — concepts added that are not in coverage/{LEVEL}.md.
 - **TODOs resolved** — each one with the side it was repaired on and the twin re-translated from it,
-  plus any `[refined]` block a marker of his reopened.
+  plus any `[refined]` block a marker of his reopened, by ID — the orchestrator clears that question's
+  study mark from the `es/` index on this list.
 - **TODO patterns detected** — recommended one-sentence rule additions for the standard.
 - The one-line commit message you would use (the orchestrator — or the reviewer on a standalone run — will run it):
   `docs: audit {FILE} interview prep — <one-line summary of main fixes>`.

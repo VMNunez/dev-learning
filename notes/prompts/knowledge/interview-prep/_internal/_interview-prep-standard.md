@@ -10,7 +10,8 @@ exception. Read-only judges are not required to: `/simulator` grades Victor *aga
 
 - `_interview-prep-write-prompt.md` (author) reads it to **build/audit one topic's** Q&A to this bar.
 - `_interview-prep-review-prompt.md` (reviewer) reads it to **audit the authored Q&A** against this bar.
-- `interview-prep-audit.md` (orchestrator) reads it to enforce fingerprints, parity and section gates.
+- `interview-prep-audit.md` (orchestrator) reads it to enforce fingerprints, parity and section gates,
+  and to rebuild each bank's study index and anchors.
 
 **`interview-prep-route-prompt.md`**, which writes no Q&A file at all — it reads the ID, priority and
 lifecycle sections to resolve stable question identities and build the selected level's CORE study
@@ -153,7 +154,8 @@ Every question has one stable bilingual identifier inside the bold text:
 The identifier is immutable and identical in `en/` and `es/`. Format:
 `{TOPIC}-{LEVEL}-{NNN}`, with level `J`, `M`, or `S` and these topic prefixes:
 `ANG`, `SPR`, `SB`, `JAVA`, `ARC`, `SEC`, `TS`, `SQL`, `JS`, `CSS`, `GIT`, `GEN`.
-Allocate the next unused number within that topic and level; never recycle an ID after deletion.
+Allocate the next unused number within that topic and level, read off the bold question lines alone
+(the study index and the anchors repeat every ID); never recycle an ID after deletion.
 
 Question state has exactly three valid forms:
 
@@ -181,11 +183,155 @@ problem and leaves the block untouched.
 
 Only Victor can reopen a refined question, either by explicitly saying so or by adding a TODO to that
 question. Reopening removes both state markers in both languages before any edit: the previously
-studied version no longer exists, so its study evidence cannot survive. The corrected question must be
+studied version no longer exists, so its study evidence cannot survive — and neither can the study mark on
+its `es/` index entry ("Study index and question anchors" below). The corrected question must be
 refined and studied again. The repair itself obeys the direction rule above, and the twin's
 re-translation is **part of the same reopening**: the markers are already gone from both languages, so
 a writer never leaves the twin stale on the grounds that the block was frozen. Adding a new question is
 always allowed; it is born unrefined.
+
+**The one-time legacy migration runs on `interview-prep-audit`'s `MODE = full` or its `MODE = index`**,
+whichever reaches the bank first (`REC-340`). `index` performs the migration, the `es/` order and
+priority-marker parity its own steps name, and the study index — nothing else — so a bank can carry
+IDs, anchors and an index long before its first full audit; the full run that follows keeps every ID it
+finds.
+
+---
+
+## Study index and question anchors
+
+**Every ID-migrated bank opens with a study index, and it is derived: nothing in it is authored but one
+short label per question — and, in the `es/` index alone, the study mark Victor writes at the end of an
+entry.** Ruled by Victor 2026-10-13 (`REC-340`), on the index the project banks gained the same day —
+`07-timetrack`'s is the model. It sits after every other header line and directly above the first bank
+section, and it is **header**: a bank's header runs from its H1 to the line above its first bank
+section's `##` heading, the `Coverage SHA-256` lines included. `## Study index` — `## Índice de estudio`
+in the `es/` file — is **not a bank section**: it holds no question, it is never a `SECTION` value, it
+is left out of every work list,
+section count, ratio and priority-order check, and no role's trace has a row for it. A bank in which
+any bold question line still lacks an ID carries no index and no anchor: its entries would have nothing
+to link to.
+
+The `en/` index, with its fixed strings — nothing in it varies but the three counts, the section groups
+and the entries:
+
+```markdown
+<a id="study-index"></a>
+
+## Study index
+
+Start with the first pass. Within each pass, follow the topics from top to bottom and work through a small group of questions at a time. If a question needs a concept from another pass, consult that question and then return to where you were.
+
+| Pass | Priority | Questions |
+|---|---|---:|
+| [1. Essentials](#study-pass-1) | ⭐⭐⭐ | N |
+| [2. Deeper understanding](#study-pass-2) | ⭐⭐ | N |
+| [3. Details](#study-pass-3) | ⭐ | N |
+
+Read the question, try to answer without looking, check your answer against the written one and explain it again in your own words. In the next block, recall an earlier question without consulting its answer.
+
+Links lead to the original questions. The numbers are their identifiers, not the study order. This index supports independent study. Record your progress in the Spanish index: ✅ and the date at the end of the line of each question you have worked on, then · PASS and the date when you pass it in a recall exam.
+
+<a id="study-pass-1"></a>
+
+### First pass — Essentials — ⭐⭐⭐
+
+**Angular basics**
+
+- [001 — What Angular is](#ANG-J-001)
+
+<a id="study-pass-2"></a>
+
+### Second pass — Deeper understanding — ⭐⭐
+
+<a id="study-pass-3"></a>
+
+### Third pass — Details — ⭐
+
+---
+```
+
+The `es/` index is the same structure with these strings, the three anchor lines and every link target
+left verbatim: `## Índice de estudio` · `Empieza por la primera vuelta. Dentro de cada vuelta, sigue los
+temas de arriba abajo y trabaja un grupo pequeño de preguntas cada vez. Si una pregunta requiere un
+concepto de otra vuelta, consulta esa pregunta y vuelve al punto donde estabas.` · the table header
+`| Vuelta | Prioridad | Preguntas |` with rows `1. Imprescindibles` / `2. Profundización` /
+`3. Detalles` · `Lee la pregunta, intenta responder sin mirar, contrasta tu respuesta con la escrita y
+vuelve a explicarla con tus palabras. En el siguiente bloque, recupera alguna pregunta anterior sin
+consultar la respuesta.` · `Los enlaces llevan a las preguntas originales. Los números son sus
+identificadores, no el orden de estudio. Este índice sirve para estudiar por tu cuenta. Registra aquí tu
+progreso: ✅ y la fecha al final de la línea de cada pregunta que hayas trabajado, y después · PASS y la
+fecha cuando la superes en un examen de repaso.` · `### Primera vuelta — Imprescindibles — ⭐⭐⭐` ·
+`### Segunda vuelta — Profundización — ⭐⭐` · `### Tercera vuelta — Detalles — ⭐`. The bold group names
+are each language's own `##` section headings, without the `##`.
+
+**What it lists, and in what order — one rule, read off the file it sits in.** Every question whose bold
+line carries a priority marker has exactly one entry, in the index **of the file that holds that bold
+line**: under the pass of its marker; inside a pass, under the bold name of its `##` bank section, the
+sections in the file's own order and a section with no question in that pass left out; inside a section,
+by **ascending ID** — not by the order the questions stand in, which the ⭐⭐⭐ → ⭐⭐ → ⭐ rule moves. The
+three passes are always present, a pass with no question reading `0` in the table with nothing under its
+heading, and each `Questions` cell is the number of entries under that pass. A question with no priority
+marker has no entry until it gains one.
+
+**An entry is `- [NNN — label](#{ID})`**, `NNN` the ID's counter alone and `{ID}` the whole
+`{TOPIC}-{LEVEL}-{NNN}` — followed, in the `es/` index, by the study mark below wherever Victor has
+written one: for every run, **whatever follows the link's closing `)` on that line**, kept byte-for-byte,
+and never part of the label. **The label is a short name for the concept the question asks about — a
+handful of words, two to nine** — read off the question's own bold line in that language, never the
+answer. **It is written once, when its ID enters the index, and kept byte-for-byte by every later run, in
+both languages**: the ID stays with the concept however the question is reworded, so the label does too,
+and a label Victor edits by hand survives every rebuild. It leaves the index only when its question
+leaves the bank or loses its marker.
+
+**The index carries no question-state marker and gates nothing.** No `[refined]` and no `[studied]` is
+ever written into it, and no route, skill, counter, fingerprint or verdict reads it. It is **as current
+as the last `interview-prep-audit` run on that topic**: a question a practice prompt or
+`study-content-writer` adds, or a marker Victor changes by hand, moves nothing in it until that run
+rebuilds it — except that a reopening clears that question's study mark at once.
+
+**The study mark is Victor's: no run writes or changes it, and none drops it while its question stays in
+the bank.** An `es/` entry line may end with ` ✅ YYYY-MM-DD` — he worked the question on his own — and
+then, once he has passed it in a recall exam, ` · PASS YYYY-MM-DD`, the date of the last such pass, which
+the next one overwrites. He writes it, or an agent does on his say-so; it lives in the `es/` index alone,
+the side he studies, and the `en/` index carries none. **It is bound to its ID, not to its line**: a
+rebuild that moves the entry to another pass or section carries the mark to the end of the same ID's
+entry byte-for-byte, the way it keeps the label. It leaves on two events only. **A reopening** of a
+`[refined]` question clears it in the same edit that removes the state markers, since the frozen answer
+he worked is the one being replaced; a `TODO:` on an unrefined question leaves it, as every rewrite of
+an unrefined answer does. **The question leaving the bank** takes its entry and the mark with it, and
+the run that removed it reports the ID with the mark verbatim. A `PASS` here is not `[studied]` and never
+becomes one: `[studied]` stays `study-block-close`'s, from the routed recall block.
+
+**How the marks are used is a conversation, not a component**, and the rulings are the ones Victor gave
+for the project banks the same day, stated once in `_portfolio-standard.md` → "Study index and question
+anchors", its paragraph "How the marks are used" — read that paragraph alone; the rest of that standard
+does not govern this bank. It is a pointer to six lines of his rulings, kept in one place so they cannot
+fork, and not the cross-chain reach `REC-180` ruled against. Exam 2's *"in his own words from his code"*
+reads here as in his own words
+from what he knows. No skill serves, counts or gates on the marks.
+
+**Every question has an anchor: one `<a id="{ID}"></a>` line above its bold line, one blank line between
+them**, which is what its entry links to. The anchor is **not part of the question block**: a block ends
+at an anchor line, so setting one above a `[refined]` question changes no frozen byte. **A writer that
+moves a block moves its anchor with it** — the author's and a practice insertion's ⭐⭐⭐ → ⭐⭐ → ⭐
+reorder included — and an anchor line left anywhere but directly above the bold line of the ID it names
+is deleted by the next rebuild.
+
+**An ID is counted on its bold question line and nowhere else.** An anchor line and an index entry each
+repeat it, so every count and every identity read of this bank — allocating the next unused number, the
+parity counts, a duplicate test, the route's inventory and its resolution of an ID, the recounts of both
+progress sections — is taken over bold question lines.
+
+**Who writes them.** `interview-prep-audit`'s orchestrator, at the end of every topic it finishes —
+committed, or left in the tree on `DRY_RUN = true` — on every `MODE`: it rebuilds the index whole in
+both languages and re-sets every anchor in both, whatever
+the run's `SECTION`, since all of it is read off the bold lines by command except the label of an ID
+entering the index, which the orchestrator writes in each language. It clears the study mark of every ID
+the run's author or reviewer reports reopened, and reports every ID that left the bank with its mark.
+**No author, reviewer, practice prompt or skill writes an anchor, an entry, a label or a study mark** —
+with one write excepted, clearing a reopened question's mark where no orchestrator follows:
+`study-content-writer` in session, and the author or reviewer on a standalone run.
 
 ---
 
@@ -345,6 +491,10 @@ what it may not do is change a single byte *inside* a refined block while doing 
   handoff, so this line does not prevent a failure — it moves the handoff to the run that caused it,
   where the level is already resolved.
 - **Priority marker** per the "Priority markers" section above (⭐⭐⭐ filter-level, ⭐⭐ deeper, ⭐ niche).
+- **No anchor and no index entry.** The new question has neither until the next `interview-prep-audit`
+  run on that topic rebuilds them; the insertion never writes into `## Study index`, which is header and
+  never a section to place a question under, and when it reorders a section each anchor line moves with
+  the bold line below it ("Study index and question anchors").
 
 ---
 

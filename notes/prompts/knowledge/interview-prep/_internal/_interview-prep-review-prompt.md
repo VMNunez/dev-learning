@@ -100,7 +100,13 @@ file worth studying:
 - **Priority markers** — every question has one; the proportion check holds (not more than half a
   section is ⭐⭐⭐); each section runs ⭐⭐⭐ → ⭐⭐ → ⭐.
 - **Stable identity** — every question has one valid selected-level topic ID, identical in both
-  languages and not reused anywhere in the bank.
+  languages and not reused anywhere in the bank — counted on bold question lines alone, since the
+  anchor above each one and the study index repeat it. Those two are the orchestrator's, header and
+  derived structure: never write, edit or delete an anchor, an index entry, a label or a study mark, and
+  when you move a block, move its anchor line with it (standard → *Study index and question anchors*).
+  **One exception, on a standalone run only**: no orchestrator follows you there, so when a `TODO:`
+  reopens a `[refined]` question you clear its study mark yourself — everything after the link on that
+  ID's line in the `es/` index — and say so in your verdict.
 - **Format** — blank line between question and answer; the level-appropriate tip on every Conceptual question; Red flag
   on Decision-based/Pressure where warranted.
 - **Real code where warranted** — every question an interviewer would pose with code (Pressure
@@ -186,6 +192,9 @@ Then report your **verdict**:
   you changed nothing in **but filed report-only findings against** is `PASS (with findings)`, never a
   bare `PASS`, which claims the section is at bar.
 - The coverage status (✅/🔧/➕), the files touched, and — if committed — the commit hash.
+- Every `[refined]` block a `TODO:` of Victor's reopened in your pass, by ID (and the author's where its
+  report was handed to you) — the orchestrator clears each one's study mark from the `es/` index from
+  your list and the author's.
 - **Your own report-only findings**, each with the check it failed and what a passing version would
   need. In `MODE = correct` this is most of your output and it is the run's product, not a footnote:
   the mode exists so Victor decides which of these become rewrites, next run, by marking them with a TODO.

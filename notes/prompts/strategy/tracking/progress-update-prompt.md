@@ -420,6 +420,8 @@ same contract the ritual uses:
   languages over all English master question identities. Count only when every required topic bank
   exists, both languages carry current coverage fingerprints, stable-ID parity passes, and no duplicate
   ID exists. Angular Material shares Angular's bank; all other registered topics own their file.
+  Both levelled interview rows read an ID off its bold question line alone: a migrated bank's study
+  index and the anchor above each question repeat it (`REC-340`).
 
 - Project banks, one row per project: stable question IDs carrying both `[refined]` and `[studied]` in
   both languages over that project's IDs **on `notes/interview-prep/routes/projects.md`** — its route,

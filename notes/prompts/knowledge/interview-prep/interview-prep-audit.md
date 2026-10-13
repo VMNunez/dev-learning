@@ -28,6 +28,7 @@ everything.
 > learned and accepted the answer.
 > Angular also requires the Angular Material plan at the selected level because both topics share
 > `angular.md`. Optional: `evidence-intake` to refresh `_job-market-evidence.md`, which Stage M reads.
+> **`MODE = index` needs none of this** — it writes no question, so it has no coverage or plan gate.
 
 > **Run-start check (step 0):** before anything else, execute the decision table in `notes/prompts/_internal/_pipeline-self-report.md` against `_internal/_last-run-report-interview-prep-audit.md`; never restate the shared `Status:` meanings here.
 
@@ -71,6 +72,14 @@ MODE    = full
 DRY_RUN = false
 ```
 
+**D · Give one topic its study index now, before its full audit** (cheap — no subagent)
+```
+FILE    = angular
+SECTION = all
+MODE    = index
+DRY_RUN = false
+```
+
 **Rules of thumb:**
 - **First time on any topic → `DRY_RUN = true`.** It writes and reviews everything but commits nothing;
   you read the diff, then re-run with `DRY_RUN = false` (or paste the commit it printed).
@@ -94,7 +103,7 @@ FILE = [angular | css | javascript | typescript | sql | java | spring | spring-b
 SECTION = [all | ## Routing | ## Forms | ...]   ← "all" for the whole file, or one exact heading
           (ignored when FILE = all — a batch run always uses SECTION = all)
 
-MODE = [full | correct]
+MODE = [full | correct | index]
        → full (default): the complete audit — sync, TODOs, market relevance, priority markers, stable
          IDs, format, and all
          four audit sections (missing topics, weak answers, imbalances, missing questions).
@@ -102,6 +111,10 @@ MODE = [full | correct]
          priority tidy + weak-answer report only; adds no new questions). It binds **both** per-section
          subagents: the author and the reviewer each fix the mechanical/parity half and report the
          quality bar, so nothing rewrites what Victor just wrote.
+       → index: the study index alone (`REC-340`) — on a legacy bank the one-time ID migration first,
+         then the anchors and the index the standard's "Study index and question anchors" defines. No
+         subagent, no coverage or plan gate, no question, answer or fingerprint written. "Index mode"
+         below owns it; `SECTION` is ignored.
 
 DRY_RUN = [false | true]
 
@@ -173,9 +186,14 @@ Before market analysis, verify the planning prerequisite:
    practical recall must be consolidated.
 5. If the plan/fingerprint or an accepted file is broken, stop and report the exact stale/missing item.
 
-On the first successful `MODE = full` migration of a legacy bank, allocate stable IDs in existing order
-and convert every legacy `[x]` to `[refined] [studied]`; the old marker already meant both frozen and
-studied. Questions without `[x]` remain unrefined. Never infer `[refined]` from prose quality.
+On the first successful `MODE = full` or `MODE = index` migration of a legacy bank, allocate stable IDs
+in existing order and convert every legacy `[x]` to `[refined] [studied]`; the old marker already meant
+both frozen and studied. Questions without `[x]` remain unrefined. Never infer `[refined]` from prose
+quality.
+
+**`MODE = index` skips this whole block** — the fingerprint comparison is reported, never acted on, and
+the plan prerequisite is not read — and takes "Decide the topic list" for the list alone, then "Index
+mode" below.
 
 ## Decide the topic list
 
@@ -186,7 +204,8 @@ studied. Questions without `[x]` remain unrefined. Never infer `[refined]` from 
 Process topics **one at a time, sequentially** — never overlap them, because the orchestrator commits
 once per topic and parallel commits race the git index.
 
-If the selected-level EN/ES pair does not exist, create an empty bilingual skeleton for that topic.
+Except on `MODE = index`, which never creates a file — its step 1 stops that topic — if the
+selected-level EN/ES pair does not exist, create an empty bilingual skeleton for that topic.
 Derive its initial `##` work list from the selected coverage sections plus the M/G classifications;
 do not borrow headings or questions from another level. Write fingerprints only after the new pair
 passes the complete audit.
@@ -207,10 +226,61 @@ Which parts run depends on `{MODE}`:
   market list and gap hunt would have nothing to feed). The light en/es sync check still runs first.
   **B runs under the same `correct` as A** — the mode narrows what each of them may rewrite; it never
   drops the reviewer.
+- **`index`** → no detection and no section work: "Index mode" below, then commit.
+
+`## Study index` — `## Índice de estudio` in the `es/` file — is header and never a section: it is left
+out of every work list, sync count and scan below, whatever `{MODE}`.
 
 M and G write nothing; A and B leave their work in the tree; **only the orchestrator commits, once per
 topic**, after all sections are done. Everything is sequential — never overlap sections or the two
 subagents of a section, because they edit the same two files.
+
+---
+
+### Index mode (`MODE = index` only — the orchestrator alone)
+
+It rewords no question, changes no answer and judges no priority or state, which is why it dispatches
+nobody and needs no gate: everything it writes is the migration the standard already licenses (IDs, and
+`[x]` read as the two markers it always meant), an `es/` block moved to its `en/` twin's position, an
+`en/` priority marker copied onto its `es/` twin, or the derived structure of "Study index and question
+anchors". Per topic:
+
+1. **The pair must be indexable.** Both files exist — this mode never creates one; both carry the same
+   `##` bank sections in the same order; each section holds the same number of bold question lines in
+   both; **each section holds the same questions in both** — read every section's bold lines side by
+   side before anything is written, since equal counts do not prove it (`junior/angular` →
+   `## Lifecycle hooks`, 2026-10-13: six and six, four out of order); and no bold line carries an ID, or
+   every one does. Any failure stops that topic — nothing written, outcome `blocked`, the section and
+   the lines named, `MODE = full` named as what closes it — because the migration below pairs the two
+   languages by position, and a count or a question that differs would give one question the other's ID.
+2. **Order parity.** Where a section holds the same questions in another order, move the `es/` blocks
+   into the `en/` order — whole blocks, not a byte inside one changed, a frozen block included: position
+   is structural (standard → "Adding questions from outside the audit") and `en/` is its master of
+   record. Report the section and each block moved, quoting its `es/` bold line beside the `en/` line it
+   was matched to — in a bank that already carries IDs the ID is the match. A block runs from its bold
+   line to the line before the next bold line, anchor line, `---` or `##`. Before step 3, confirm by
+   command that the `es/` file holds exactly the lines it held, in another order; a move that dropped or
+   changed a line is undone and the topic stopped. A pair you cannot match one-to-one is step 1's stop,
+   never a guess.
+3. **The migration, where no ID exists yet:** `{TOPIC}-{LEVEL}-{NNN}` from `001` in `en/` file order,
+   the same ID at the same position in `es/`, and every `[x]` converted to `[refined] [studied]`.
+4. **Priority parity.** Where an unrefined `es/` bold line lacks the marker its `en/` twin carries, or
+   carries a different one, write the `en/` marker on it and report the ID. A `[refined]` line is never
+   touched: report it, and its entry follows its own file's marker. An `en/` line with no marker gets no
+   entry; report it.
+5. **The study index and the anchors**, exactly as "Finish the topic" below rebuilds them — on a bank
+   with no index yet every label is new, and you write each in its own language from its own bold line.
+6. **Leave everything else byte-for-byte**: no `TODO:` resolved, no fingerprint written or deleted (state
+   it in the report), no question moved but under step 2.
+
+Then commit per `{DRY_RUN}` as below — `docs(interview-prep): {LEVEL} {FILE} — stable IDs + study index`,
+or `— study index` when the bank already carried IDs — with the same `git status` safety check. **An index
+run never records `completed` in the topic's `Interview {L}` cell of `_run-tracker.md`**: that cell
+records the audit, and a `completed` there satisfies the progression gate a full run has not met. It
+writes one suffix, the record before it untouched and an earlier index suffix replaced —
+` · index YYYY-MM-DD` when the topic committed, ` · index YYYY-MM-DD dry-run` on `DRY_RUN = true`,
+` · index YYYY-MM-DD blocked — «condition»` when step 1 stopped it — the form that file's "How to read
+it" defines. It invokes no `authoring-progress-recount` — nothing it writes moves an authored count.
 
 ---
 
@@ -407,6 +477,19 @@ the cross-section view, so it belongs here, not in a per-section subagent:
 - **Lifecycle validity** — only unmarked, `[refined]`, or `[refined] [studied]`; never mutate a refined
   block, and never accept `[studied]` alone.
 - **Global priority sanity** — no section is more than half ⭐⭐⭐.
+- **Study index and anchors** (`REC-340`) — on an ID-migrated bank, where every bold question line
+  carries an ID (one where only some do gets no index and no anchor this run, and is reported), rebuild
+  both under the standard's "Study index and question anchors", in both languages and over the whole
+  file whatever `{SECTION}`:
+  delete every anchor line, set one above each bold question line, and rewrite each index whole from its
+  own file's bold lines — every existing label and every `es/` study mark kept on its ID, a label written
+  only for an ID entering, and the mark cleared on every ID the author or reviewer reported reopened this
+  run and whose bold line no longer carries `[refined]` at the rebuild — a `blocked — partial` section
+  restored from `{BASELINE}` took its reopening back. Report each ID that left the bank carrying a mark,
+  with the mark verbatim. Count IDs on bold
+  question lines only, in this scan and in every count above. A topic left with a `blocked — partial`
+  section is rebuilt all the same, over whatever bold lines it holds, and so is a `DRY_RUN = true` topic,
+  exactly as a committed one; a topic stopped without a commit because a role died is not.
 - **Coverage fingerprint** — after all substantive and parity gates pass, write the exact current
   coverage SHA-256 value required by the standard to both language files. For Angular, write both
   the Angular and Angular Material coverage fingerprints. A stale fingerprint is expected at run
@@ -501,11 +584,15 @@ to run `interview-prep-route` after every required bank for the level is current
 - Never skip the `es/` mirror or the per-section reviewer pass. In `MODE = full`, never skip market
   analysis or the gap-hunt; `MODE = correct` deliberately omits those two read-only discovery stages
   and narrows what **both** per-section subagents may rewrite — it never drops the reviewer, and it is
-  passed to it.
+  passed to it. **`MODE = index` has no section pass to skip**: it writes no question content, which is
+  the whole reason it may run without one, and the moment it would need to — a section whose count or
+  questions differ between the languages, a partial migration, a missing file — it stops the topic and
+  names `MODE = full`.
 
 ### Recount authoring progress
 
-After the last topic of the run has committed, **invoke the `authoring-progress-recount` skill**,
+After the last topic of the run has committed — on `full` and `correct`; a `MODE = index` run skips this
+section, since nothing it writes moves an authored count — **invoke the `authoring-progress-recount` skill**,
 passing the level this run audited. It owns the `## Authoring progress` rows of `PROGRESS.md` end to
 end: it recounts refined CORE and full-bank questions from the bilingual `[refined]` markers, decides
 the `—` gate when a bank still lacks stable IDs or a current fingerprint, and commits `PROGRESS.md`

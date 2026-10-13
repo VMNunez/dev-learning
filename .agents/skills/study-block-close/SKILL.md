@@ -76,8 +76,9 @@ For every exact question whose final verdict in this block was `PASS`:
 
 1. Resolve its bilingual pair: the selected level's English/Spanish topic pair, or — for a project
    question — `notes/interview-prep/projects/en|es/«project».md`.
-2. Resolve it by stable ID and require both files and exact bilingual parity for the complete question
-   block. **The freshness gate is the one thing that differs by bank.** A levelled pair requires current
+2. Resolve it by stable ID — on its bold question line, never on the anchor or the study-index entry
+   that repeats it, in either bank — and require both files and exact bilingual parity for the complete
+   question block. **The freshness gate is the one thing that differs by bank.** A levelled pair requires current
    coverage fingerprints in both according to `_interview-prep-standard.md` (Angular requires both Angular
    and Angular Material). A **project** pair has no coverage fingerprint by design, so its gate is the
    substitute `interview-prep-block-open` already applied when it served the question:
@@ -114,6 +115,10 @@ Recount from primary sources after the marks:
   `—` until every required topic bank exists, has current coverage fingerprints, valid IDs/lifecycle
   and exact bilingual parity. Angular Material shares Angular's bank; every other registered topic owns
   its own topic file.
+- **Both rows read an ID off its bold question line — `**[{TOPIC}-{LEVEL}-NNN] …**` — and nowhere
+  else**: a migrated bank's study index and the anchor above each question repeat every ID (`REC-340`,
+  `_interview-prep-standard.md` → "Study index and question anchors"), so a count or a resolution taken
+  over the file's text sees each question three times.
 - Cell format when valid: `X/Y (P%)`, whole-number percentage. A level with no admitted route is
   `—`.
 

@@ -32,7 +32,8 @@ professional level. Read:
 4. `PROGRESS.md` `## Study progress` for orientation.
 
 Require `Route status: current`, a question-inventory fingerprint matching the current English bank
-question lines under the route prompt's algorithm, unique resolvable IDs, current bank coverage
+question lines under the route prompt's algorithm, unique resolvable IDs — read off bold question lines
+alone, the study index and the anchors repeating each one (`REC-340`) — current bank coverage
 fingerprints, and exact EN/ES ID/state parity. If any gate fails, name it and hand off to
 `/interview-prep-route LEVEL={LEVEL} MODE=update`; never improvise a question outside the route.
 

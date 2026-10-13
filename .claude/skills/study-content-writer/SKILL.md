@@ -254,10 +254,16 @@ entry in `notes/{topic}/coverage/notes-plan-{LEVEL}.md`.
 Interview-prep has no per-file plan. Existing topic banks may receive inline Q&A under the interview
 standard. **Allocate the next stable bilingual ID only in an ID-migrated bank.** In a legacy bank with
 no IDs, add or repair the question without one; cite its quoted bold line in reports and hand the ID
-migration to `/interview-prep-audit`. Never assign IDs to that bank here. Every new question is unrefined.
+migration to `/interview-prep-audit` — `MODE = index` performs it alone, without a full audit (`REC-340`).
+Never assign IDs to that bank here. Read an ID off the bold question lines alone: in a migrated bank the
+anchor above each question and the study index repeat it. Never write an anchor, an index entry or a
+label — a question you add has none until that prompt's next run on the topic. Every new question is unrefined.
 Only Victor's explicit confirmation may append `[refined]` in both languages; the whole bilingual block
 then freezes. A TODO or explicit reopen removes `[refined]` and `[studied]` from both languages before
-the edit; follow Step 3's repair direction and re-translate the twin from the repaired side. The changed
+the edit — **and the question's study mark from its `es/` index entry**, everything after the entry's
+link (`_interview-prep-standard.md` → "Study index and question anchors"), the one index write this route
+makes; say in your report whether one came off. A TODO on an unrefined question leaves the mark. Follow
+Step 3's repair direction and re-translate the twin from the repaired side. The changed
 version must be refined and studied again; `study-block-close` alone writes `[studied]` after a final
 active-recall PASS.
 
@@ -320,7 +326,8 @@ up. It owns the interview rows and the project table end to end,
 it commits `PROGRESS.md`, and you neither count nor edit them here. Do not reproduce its counting. One
 thing to pass it explicitly, because it is this route's context and not the skill's: the exact question IDs (or quoted bold lines where no IDs exist) whose `[refined]` state changed in this session and in which direction, so it can say whether its
 gate or your write is the reason a cell did not move. The two **levelled** rows read `—` until the first
-`interview-prep-audit` migration gives those banks stable IDs, so expect a reported no-op rather than a
+`interview-prep-audit` migration gives those banks stable IDs and a full run gives them a current
+fingerprint — `MODE = index` gives the IDs alone — so expect a reported no-op rather than a
 moved cell there; the project table has real denominators from its first run. Fold its report row into your own
 report.
 
