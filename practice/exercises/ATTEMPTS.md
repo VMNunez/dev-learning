@@ -8,3 +8,8 @@ no row is ever deleted. Every figure in `PROGRESS.md` → `### Short exercises` 
 
 | ID | Date | Route | Block | Concept | Batch | Ex | Kind | First result | Why | Help | Fix verified | Plan ID |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
+| ATT-0001 | 2026-10-13 | java:junior | 00 | Source, bytecode, and JVM execution | 01-execution-and-values | 1 | first | ✅ | — | — | — | JJ001 |
+| ATT-0002 | 2026-10-13 | java:junior | 00 | Compile-time vs runtime failure | 01-execution-and-values | 2 | first | ✅ | — | — | — | JJ002 |
+| ATT-0003 | 2026-10-13 | java:junior | 01 | Variables, declared types, initialization, and scope | 01-execution-and-values | 3 | first | ✅ | — | — | — | JJ006 |
+| ATT-0004 | 2026-10-13 | java:junior | 01 | Primitive vs reference types | 01-execution-and-values | 4 | first | ✅ | — | — | — | JJ007 |
+| ATT-0005 | 2026-10-13 | java:junior | 01 | `int` vs `long` | 01-execution-and-values | 5 | first | ✅ | — | — | — | JJ008 |
