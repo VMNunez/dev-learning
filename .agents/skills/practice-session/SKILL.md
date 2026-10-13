@@ -102,8 +102,9 @@ which replaces all of these but the size and the objective. If a concept is owin
 
 ### 1d — Write the batch
 
-One new folder, `practice/exercises/{topic}/{level}/{YYYY-MM-DD}-{slug}/` (a second batch the same day
-takes a different slug): the `README.md` in the exact shape standard §C gives, and one exercise file per
+One new folder, `practice/exercises/{topic}/{level}/{NN}-{slug}/` (`NN` is one above the highest number in that
+level folder, `01` for the first, a third digit after `99`; the date goes in the README's `Date:`,
+never in the name): the `README.md` in the exact shape standard §C gives, and one exercise file per
 row in the shape the topic's §H section gives, using the planned basename, or §H's unplanned one. Copy its ID, task,
 criteria and concept heads into the batch snapshot; unplanned rows (adaptive, extra, reinforce) use `Plan ID: —`. Statements are written in English, like all code and
 technical files. Nothing else is written, and no earlier batch is named in it.
@@ -119,7 +120,7 @@ topic's §H says he runs a file. Then stop: he answers on his own, and says when
 
 ### 2a — Resolve the batch and the mode
 
-`{BATCH}` is the folder he means; with none named, the most recent one holding an exercise with no row
+`{BATCH}` is the folder he means; with none named, the highest-numbered one in its route's level folder holding an exercise with no row
 in `ATTEMPTS.md`, or with a `pending` fix. Quote it back in one line. `{MODE}` is `verify` when he says
 he corrected the failures and the batch has `pending` rows, else `grade`. `{HELP}` is what he said he
 used, per exercise where he said it ("en el 3 miré la nota"), else `none declared`.
@@ -188,7 +189,7 @@ Route 1 includes the plan path and `Plan: passed/active tasks` alongside:
 Práctica: java junior · bloque 10 — Collections, hashing, and ordering · 30 min · 5 ejercicios
 Por qué: es el primer bloque sin primer pase cuyos prerrequisitos ya tienen intentos
 Objetivo: elegir entre `List`, `Set` y `Map` y recorrerlos sin abrir la nota
-Lote: practice/exercises/java/junior/2026-10-06-collections/
+Lote: practice/exercises/java/junior/03-collections/
 Nota: notes/java/junior/es/10-colecciones.md (pending)
 ```
 
@@ -198,7 +199,7 @@ Route 2:
 
 | Target | Result |
 |---|---|
-| Lote | `practice/exercises/java/junior/2026-10-06-collections/` — modo `grade` |
+| Lote | `practice/exercises/java/junior/03-collections/` — modo `grade` |
 | Resultado | 4/5 ✅ · 1 ❌ (`HashMap` iteration order, por `concept`) |
 | Histórico | `ATT-0012`–`ATT-0016` |
 | PROGRESS.md | java junior: bloques 2/17 → 2/17 · conceptos 14/125 → 18/125 · consolidados 3 → 3 · pendientes de corregir 0 → 1 |

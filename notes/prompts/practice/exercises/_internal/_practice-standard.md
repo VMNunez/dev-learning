@@ -27,7 +27,7 @@ bullet, and never reads a missing `✅` as "never practised" or as a reason to p
 | `practice/exercises/{topic}/{level}/PLANNING-{level}.md` | `practice-session` planning route (§B) | persistent reviewed tasks; no exercise source files |
 | `practice/exercises/INDEX.md` | `practice-session` planning route (§B) | navigation projected from the plans, each block linked to its note |
 | `practice/exercises/ATTEMPTS.md` | the cold grader only (§D) | the per-attempt history; every count anywhere is derived from it |
-| `practice/exercises/{topic}/{level}/{YYYY-MM-DD}-{slug}/` | `practice-session` writes the batch `README.md` and each exercise file's statement and skeleton; **Victor writes the answers** | one folder per batch, never reused |
+| `practice/exercises/{topic}/{level}/{NN}-{slug}/` | `practice-session` writes the batch `README.md` and each exercise file's statement and skeleton; **Victor writes the answers** | one folder per batch, never reused; `NN` is one above the highest number in that level folder (`01` first; a third digit after `99`), the date lives in the batch `README.md`, and a folder is never renamed once graded — the history cites it by name |
 | `PROGRESS.md` → `### Short exercises` | the cold grader (§G) | cells only, recounted from the history |
 
 Nothing is written into a note: a `refined` pair is frozen, and the index is what links a block to it.
@@ -74,7 +74,7 @@ copy junior tasks into another level or pre-create empty trees. SQL retains its 
   prior exercise IDs or `none`. Tasks state a concrete coding, diagnosis or API-use problem;
   "practise concept X" is not a task. Pass conditions specify observable evidence and edge cases,
   never a worked solution. Quantity follows the tasks, not a uniform quota per block.
-- `File` reserves an exact basename inside a future batch folder, matching §H. The batch date and
+- `File` reserves an exact basename inside a future batch folder, matching §H. The batch number and
   slug are allocated when Victor sits down to answer. No source files or full statements are
   generated during planning. The first plan must show all intended tasks, including transfers
   and integrations, not just a list of headings or totals. `State` is `active` or `retired` only;
@@ -205,7 +205,7 @@ nothing else. It is the track's only primary state.
 | `Route` | `{topic}:{level}` — `java:junior` |
 | `Block` | copied from the batch table: the block number, or `—` for an `extra` outside any block |
 | `Concept` | the bullet head(s), verbatim from the batch table |
-| `Batch` | the batch folder name |
+| `Batch` | the batch folder name — unique only inside its level folder, so a batch is always matched as `Route` + `Batch` |
 | `Ex` | the exercise number in that batch |
 | `Kind` | `first` · `variant` · `integration` · `extra` · `reinforce` |
 | `First result` | `✅` · `⚠️` (works, with a real defect) · `❌` · `void` |
