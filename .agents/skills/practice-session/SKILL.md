@@ -40,8 +40,9 @@ each step executes. Do not reconstruct a rule from the examples below.
 Time, topic and help are taken from what Victor already said; where he said nothing the standard states
 the default. **Never comment on what he chooses to practise or for how long.**
 
-**Never write his answers and never run his code.** The exercise files are his from the moment they are
-generated: the statement and the skeleton are written once, at generation, and never touched again.
+**Never write his answers and never run his code.** The exercise files are his from the moment the
+generated batch is committed: the statement and the skeleton are written once, at generation, committed
+in that same step, and never touched again.
 
 Take the route matching his request. A planning-only request uses Route 0. A practice request uses
 Route 1, which plans first if necessary. A grading request uses Route 2.
@@ -107,12 +108,19 @@ level folder, `01` for the first, a third digit after `99`; the date goes in the
 never in the name): the `README.md` in the exact shape standard §C gives, and one exercise file per
 row in the shape the topic's §H section gives, using the planned basename, or §H's unplanned one. Copy its ID, task,
 criteria and concept heads into the batch snapshot; unplanned rows (adaptive, extra, reinforce) use `Plan ID: —`. Statements are written in English, like all code and
-technical files. Nothing else is written, and no earlier batch is named in it.
+technical files. The README's `## Study notes` section is part of that shape: one linked Spanish note
+per block the table names, its path and live `Status:` read from the notes plan, listed even when the
+note is not written yet. Nothing else is written, and no earlier batch is named in it.
+
+**Then commit the batch as generated** — that folder and nothing else, under `## Commits` — before
+handing over. From that commit on its files are his.
 
 ### 1e — Hand over
 
 Print the plan path, passed/active planned tasks, the objective, the table, the block's Spanish note path with its live `Status:`, and how the
-topic's §H says he runs a file. Then stop: he answers on his own, and says when it is ready.
+topic's §H says he runs a file. Say once that the batch has no deadline — he may answer it over several
+sittings and days — and give him the message his answer commits take (`## Commits`). Then stop: he
+answers on his own, and says when it is ready.
 
 ---
 
@@ -170,12 +178,19 @@ each `git commit`, so no file of a batch folder is staged alongside a system fil
   `docs(practice): grade {batch} — n/m`, or `docs(practice): verify the fixes of {batch} — n/m` on a
   `verify` run — or `PROGRESS.md` alone after a planner-triggered `recount` that changed the row:
   `docs(practice): recount {topic} {level}`
+- the batch folder **as generated** — its `README.md` and the statement-and-skeleton files, before he
+  has written a line (authorized 2026-10-13, `REC-332`) —
+  `docs(practice): generate {topic} {level} batch {NN}-{slug}`. At generation only: once that commit
+  exists, no file of that folder is ever staged by you again.
 
-**Victor commits himself** — the whole batch folder, statements and answers together. Hand him the two
-blocks (`git add`, then `git commit`), one command per block, **after a `grade` run and again after a
-`verify` run that dated a fix** (his corrected answers are a new change to the same files), never at
-generation: `docs(practice): {topic} {slug} — n/m`, then `docs(practice): fix {topic} {slug}`. No
-`Co-Authored-By`.
+**Victor commits himself** — every change to a batch folder after its generation commit, which is his
+answers and nothing else. He commits them whenever he likes, in one sitting or across several days, and
+grading never waits for it; the message, given at hand-over (1e), is
+`docs(practice): {topic} {slug} — answers`. **After a `grade` run, and again after a `verify` run that
+dated a fix** (his corrected answers are a new change to the same files), take `git status` on the
+batch folder and hand him the two blocks (`git add`, then `git commit`), one command per block, **only
+when it shows changes he has not committed**: `docs(practice): {topic} {slug} — n/m` after a grade,
+`docs(practice): fix {topic} {slug}` after a verify. No `Co-Authored-By`.
 
 ---
 
@@ -191,6 +206,7 @@ Por qué: es el primer bloque sin primer pase cuyos prerrequisitos ya tienen int
 Objetivo: elegir entre `List`, `Set` y `Map` y recorrerlos sin abrir la nota
 Lote: practice/exercises/java/junior/03-collections/
 Nota: notes/java/junior/es/10-colecciones.md (pending)
+Commit: lote generado — <hash> · tus respuestas: `docs(practice): java collections — answers`
 ```
 
 (`Por qué:` only on the proposal path.) Then the batch table.
@@ -204,4 +220,4 @@ Route 2:
 | Histórico | `ATT-0012`–`ATT-0016` |
 | PROGRESS.md | java junior: bloques 2/17 → 2/17 · conceptos 14/125 → 18/125 · consolidados 3 → 3 · pendientes de corregir 0 → 1 |
 | Siguiente | corrige el 4 en su archivo y di que está corregido |
-| Commits | míos: ATTEMPTS.md + PROGRESS.md · tuyos: la carpeta del lote (comandos abajo) |
+| Commits | míos: ATTEMPTS.md + PROGRESS.md · tuyos: las respuestas que queden sin comitear (comandos abajo), o ninguno |

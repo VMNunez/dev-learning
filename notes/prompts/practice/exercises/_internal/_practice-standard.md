@@ -32,8 +32,12 @@ bullet, and never reads a missing `✅` as "never practised" or as a reason to p
 
 Nothing is written into a note: a `refined` pair is frozen, and the index is what links a block to it.
 
-**Commits follow authorship.** Everything inside a batch folder is Victor's commit — statement and
-answer share a file, as in the SQL track — and is never staged by the agent or co-authored. The per-level exercise plans, `INDEX.md`,
+**Commits follow authorship, inside a batch folder too.** The batch as generated — its `README.md` and
+every exercise file while it holds only its statement and skeleton — is system-written, and the agent
+commits it at generation, before Victor has written a line (authorized by Victor 2026-10-13,
+`REC-332`). From that commit on, every change inside the folder is his answer and his commit: never
+staged by the agent, never co-authored, and made whenever he likes — so each of his commits holds
+answers alone. The per-level exercise plans, `INDEX.md`,
 `ATTEMPTS.md` and `PROGRESS.md` are system-written and the agent commits them directly (authorized by
 Victor 2026-10-05, the plans 2026-10-06; `_session-rules.md` carries the boundary).
 
@@ -124,8 +128,9 @@ target; an attempt without a Plan ID remains concept evidence but never fulfils 
 
 ## C — A batch
 
-**Generated on the day it is answered, never in advance** (the SQL rule of 2026-08-04). Declaring a note
-refined generates nothing.
+**Generated when Victor sits down to start it, never in advance** (the SQL rule of 2026-08-04). Declaring a note
+refined generates nothing. Once generated it has no deadline: he may answer it over several sittings
+and days, and it is graded once, when he says it is finished (`REC-332`).
 
 **Three entries, one component.** Called **with** a topic, a block or a single concept, the batch is that —
 no proposal first, no reason asked for, no counter-suggestion; wanting to is sufficient. Called
@@ -187,6 +192,17 @@ the row's concept — a batch routinely mixes blocks, since variants return from
 highest-numbered of them on an integration row, and `—` on an `extra` outside any block; `Concept` is
 the bullet head (several, `+`-joined, on an integration row). The header's `Block:` is the target
 block only. The grader copies `Plan ID`, `Kind`, `Block` and `Concept` from this table into the history.
+
+**The `README.md` names what to study, for every block it serves** (`REC-332`). Between the table and
+the `Plan snapshot`, a `## Study notes` section holds one line per distinct block in the table's
+`Block` column, in block order: the block's number and title, its Spanish note — the exact path the
+notes plan assigns that entry — as a Markdown link relative to the batch folder, and that entry's live
+`Status:`. The notes plan decides the path, never the disk: an entry whose file does not exist at that path yet is
+listed and linked all the same, marked `not written yet` — the one thing this section reads from the
+disk, and never inferred from `Status:` — because the plan entry is what says it will exist.
+An `extra` row outside any block adds no line. The section is navigation for Victor and nothing reads
+it back — the grader works from the table and the snapshot, and a note he opens while answering is
+`Help: notes` only when he says so (§D).
 
 **Earlier solutions stay out of the way by construction**: each batch is its own folder, the new batch
 never names an earlier one, and the no-repeat rule above is what makes looking back useless.

@@ -980,8 +980,10 @@ bank inventory. Authoring, refinement and study are deliberately separate states
    task in coverage and notes-plan prerequisites and publishing after cold review. Java junior is
    enabled first; other environments remain REC-275's scope. No exercise source is created yet.
 2. Ask to practise: the skill validates the saved plan, selects eligible tasks and generates only
-   the current batch. Missing/stale plans are reconciled first; missing/stale sources are reported.
-3. Answer, ask for correction, repair failures and later solve different variants. Planned task
+   the current batch, which it commits as generated — statements and skeletons, with the notes to
+   study linked in its `README.md` (`REC-332`). Missing/stale plans are reconciled first; missing/stale sources are reported.
+3. Answer over as many sittings as it takes, committing answers whenever you like; when the batch is
+   finished, ask for correction, repair failures and later solve different variants. Planned task
    completion is reported separately from concept exposure and unaided consolidation.
 4. Unsure of something? Ask for reinforcement ("refuerzo de X"): a batch on that concept alone,
    graded cold, never spending or counting a planned task (`REC-278`).
