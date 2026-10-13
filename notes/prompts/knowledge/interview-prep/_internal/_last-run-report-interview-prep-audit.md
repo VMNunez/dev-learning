@@ -19,7 +19,10 @@
    sighting): the `css` and `general` runs were closing out in the same tree; this run's blob-staged
    tracker cell was replaced in the shared index by the `css` run's staging, and that run's report
    overwrote this file before this run wrote it. The run waited for `7d4d7074`, confirmed the tracker's
-   working copy differed from `HEAD` by its Git cell alone, and staged then. No cost to the output.
+   working copy differed from `HEAD` by its Git cell alone, and staged then. **And one breach,
+   `BRCH-0011`** (same REC): that check counted diff lines without reading them, and the `general` run's
+   cell, written in between, rode into `4db1a894` under this run's message — true content, wrong
+   attribution; left in history rather than rewritten in a shared tree.
 5. **Verdict** — pipeline clean; the deviation is `REC-341`'s, already open and Victor's to rule. The
    prompt is 611 lines, over the ~500 alarm; its largest section is `### Per-section deep work` at 118
    lines. No step was skipped, so the count is noted, not acted on.
