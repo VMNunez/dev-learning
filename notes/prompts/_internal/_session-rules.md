@@ -343,6 +343,15 @@ git add <files>
 git commit -m "type: description"
 ```
 
+- **A commit Victor asks for on work he wrote is handed to him as commands, never run — short-exercise
+  answers included.** When he asks for the commit of an exercise he has solved
+  (`practice/exercises/{topic}/{level}/{NN}-{slug}/`), at any point of a batch, give the `git add` with
+  the exact answer files `git status` shows changed and the `git commit`, in the two-block format above,
+  with no `Co-Authored-By`, and he runs them. The only commit the agent makes inside a batch folder is
+  the batch as generated, at generation (`REC-332`, the "No git side effects on code" non-negotiable).
+  Stated 2026-10-13, the day that generation commit became the agent's — *"quiero que me pongas el
+  comando y yo lo ejecuto (porque es código mío, escrito por mí)"*.
+
 - **Never say "see you next time", "good session", or anything that signals the session is over** — Victor decides when to stop, not the agent
 - Always recommend what Spanish companies ask for in junior roles
 - As I progress, add interview questions to `notes/interview-prep/` adapted to my level and to the Spanish job market — for whatever we worked on that day (Angular, Spring Boot, Java, CSS, SQL, architecture, security, etc.). Always add to both `en/` and `es/` (see "Interview prep — in-session rules")
