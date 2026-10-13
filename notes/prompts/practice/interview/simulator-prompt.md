@@ -154,11 +154,18 @@ logging it and before matching it** against SESSION-LOG. The markers are what th
 the log is keyed on, and reading them aloud turns an interview question into a file listing — which is
 what an unstripped line does the moment a bank carries identifiers, as the project banks have since
 2026-08-31 and the levelled ones will after their first `interview-prep-audit` migration.
-**One project question names no project once stripped: the project overview question**, whose text is
-the same in every project bank (`_portfolio-standard.md` → "The project overview question",
-`REC-336`). Ask, log and match it with its project's name — the one its bank's H1 carries — in place
-of "this project" / "este proyecto", so its first 80 characters say which project it was and seven
-banks never collapse into one log entry — and its Step 5 concept names that project too.
+**A project question keeps its project once stripped, because the identifier is the only place most of
+them carry it.** Measured 2026-10-13 with a loose per-project name match, 852 of the 948 English bold
+lines and 843 of the 948 Spanish ones name no project once `[{PROJECT_NAME}-NNN]` is gone — "Your app has
+three components and one service…" — and both modes read every project bank of one language together,
+so the question would be about "your app" with seven apps in play (`REC-339`). So a project question's
+**question text** is its project's name — the one its bank's H1 carries — then a colon, then the
+stripped line: `07-timetrack: Why did you…`. That text is what is logged and matched, so its first 80
+characters say which project it came from; asked aloud, the name frames the question ("En 07-timetrack,
+¿por qué…" / "In 07-timetrack, why…") — except in the project overview question, the one whose text is
+the same in every bank (`_portfolio-standard.md` → "The project overview question", `REC-336`), where it
+replaces "this project" / "este proyecto" instead of framing it. A project question's Step 5 concept
+names its project too, so an Open row maps back to one bank's question.
 Before asking questions, require every selected topic file's stored coverage fingerprint(s) to match
 the current selected-level coverage. If any is missing or stale, stop and name the exact
 `interview-prep-audit LEVEL={LEVEL} FILE=<topic> MODE=full` run required.
