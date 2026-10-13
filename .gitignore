@@ -1,5 +1,9 @@
 # IntelliJ IDEA — personal IDE settings, never commit these
 **/.idea/
+*.iml
+
+# Java bytecode — javac output, rebuilt from the .java source, never committed
+*.class
 
 # Resumable /system-check evidence — local runtime state, never committed
 /.system-check/
