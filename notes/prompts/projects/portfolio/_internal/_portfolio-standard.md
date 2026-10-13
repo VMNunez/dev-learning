@@ -6,8 +6,9 @@ All five pieces of the portfolio pipeline read it:
 
 - `_portfolio-write-prompt.md` (the **author**) reads it for the interview-question quality bar.
 - `_portfolio-review-prompt.md` (the **reviewer**) reads it to audit the question bank against that bar.
-- `_portfolio-translate-prompt.md` (the **translator**) reads it for the file template and the bank's
-  section list; the Spanish rules themselves are not here, they are in that prompt.
+- `_portfolio-translate-prompt.md` (the **translator**) reads it for the file template, the bank's
+  section list and the study index it renders with the header; the Spanish rules themselves are not
+  here, they are in that prompt.
 - `_portfolio-review-es-prompt.md` (the **Spanish reviewer**, stage C) reads it for the Spanish section
   and sub-heading names, the per-question format, and the identity/freeze section that makes an ID and a
   state marker untouchable in its hands. It never opens the `en/` bank; the template's English
@@ -515,6 +516,12 @@ below. That marker is part of a frozen block exactly as the ID is: no role of th
 one, and **reopening a question removes its state markers and never the `⭐`**. A `TODO:` about voice or
 phrasing is about the answer, not about how often the question is asked.
 
+**The block is the bold line and its answer — the `<a id="{PROJECT_NAME}-NNN"></a>` line a bank carries
+above each bold line is outside it** (`REC-333`). It is derived structure owned by "Study index and
+question anchors" below: no state marker sits on it, the freeze does not cover it, and whoever serves,
+counts or fingerprints questions reads bold question lines and never it — nor the study index in the
+header, whose entries repeat each ID as a link target.
+
 ---
 
 **Format per question:**
@@ -561,6 +568,8 @@ and the count rendered `+N de M`):
 
 Questions specific to the implementation decisions made in this project.
 Use these alongside the topic-based files in `interview-prep/{LEVEL}/en/` and `es/`.
+
+[the study index, closed by its `---` line — "Study index and question anchors" below owns every line of it]
 
 ## Architecture & Patterns
 
@@ -612,15 +621,15 @@ slices belonging to one; and **no stamp at all** where none of the scope's secti
 the line left exactly as it was, a header that does not exist yet being created with every line `never`. Every tier outside the scope keeps its line untouched, so a partial run
 can never make an unbanked tier look current. **The count after the date, `· +N of M`, is what that run
 added**: `M` the question IDs under that tier's sub-headings when it finished — the whole file on an
-Angular-only project — and `N` those of them the bank did not hold when the run started, counted by the
+Angular-only project, and counted on bold question lines as every count of this bank is — and `N` those of them the bank did not hold when the run started, counted by the
 orchestrator from the `en/` bank and the copy of it taken before the run, never from a role's return. A first bank reads `+M of M`; a re-walk
 that still adds a third says how much the walk before it had left unasked, which is the one thing a ratio
 cannot say. A line carrying a date and no count was stamped before this rule and gains one the next time
 that tier is banked. **They gate nothing.** No run refuses on them, no
 prerequisite reads them; they exist so a reader — and the run's own closing report — can see which half
 of the bank is older than the code it describes. They are header prose and do not enter the translator's
-parity count, which is why stage T renders them on every scope even though it writes no other
-out-of-scope byte.
+parity count, which is why stage T renders them on every scope even though, the header aside, it writes
+no out-of-scope byte.
 
 **Angular-only projects take one untiered line rather than `n/a — Angular-only`**, which is where this
 deliberately parts from the rule it borrows. `_review-standard.md` keeps a per-tier line and marks the
@@ -690,6 +699,116 @@ of a `[refined]` block, so an unmarked frozen question can be marked by nobody �
 would disable the test on that bank for ever. It is excluded from the count, listed by ID in the report,
 and marked when Victor writes the marker himself or reopens the block. Until a bank is fully
 marked, `/simulator` reads unmarked questions and its own Step 3 says how it ranks them.
+
+---
+
+### Study index and question anchors
+
+**Every bank opens with a study index, and it is derived: nothing in it is authored but one short label
+per question.** Ruled by Victor 2026-10-13 (`REC-333`) on the index `07-timetrack`'s pair had gained by
+hand (`57e7463e`), which is the model for every line below. It sits between the header's two intro lines
+and the first bank section, and it is **header**: a bank's header runs from its H1 to the line above its
+first bank section's `##` heading. So whatever this file says of the header — rendered on every scope,
+outside the translator's parity count, outside stage C's hand — it says of the index. `## Study index` is
+not a sixth bank section: it holds no question, it is dispatched to nobody and it has no row in any
+role's trace.
+
+The `en/` index, with its fixed strings — nothing in it varies but the three counts, the section groups
+and the entries:
+
+```markdown
+<a id="study-index"></a>
+
+## Study index
+
+Start with the first pass. Within each pass, follow the topics from top to bottom and work through a small group of questions at a time. If a question needs a concept from another pass, consult that question and then return to where you were.
+
+| Pass | Priority | Questions |
+|---|---|---:|
+| [1. Essentials](#study-pass-1) | ⭐⭐⭐ | N |
+| [2. Deeper understanding](#study-pass-2) | ⭐⭐ | N |
+| [3. Details](#study-pass-3) | ⭐ | N |
+
+Read the question, try to answer without looking, check the answer against your code and explain it again in your own words. In the next block, recall an earlier question without consulting its answer.
+
+Links lead to the original questions. The numbers are their identifiers, not the study order. This index supports independent study; it does not record passed questions.
+
+<a id="study-pass-1"></a>
+
+### First pass — Essentials — ⭐⭐⭐
+
+**Architecture & Patterns**
+
+- [001 — JSON API and Angular separation](#{PROJECT_NAME}-001)
+
+<a id="study-pass-2"></a>
+
+### Second pass — Deeper understanding — ⭐⭐
+
+<a id="study-pass-3"></a>
+
+### Third pass — Details — ⭐
+
+---
+```
+
+The `es/` index is the same structure with these strings, the three anchor lines and every link target
+left verbatim: `## Índice de estudio` · `Empieza por la primera vuelta. Dentro de cada vuelta, sigue los
+temas de arriba abajo y trabaja un grupo pequeño de preguntas cada vez. Si una pregunta requiere un
+concepto de otra vuelta, consulta esa pregunta y vuelve al punto donde estabas.` · the table header
+`| Vuelta | Prioridad | Preguntas |` with rows `1. Imprescindibles` / `2. Profundización` /
+`3. Detalles` · `Lee la pregunta, intenta responder sin mirar, contrasta la respuesta con tu código y
+vuelve a explicarla con tus palabras. En el siguiente bloque, recupera alguna pregunta anterior sin
+consultar la respuesta.` · `Los enlaces llevan a las preguntas originales. Los números son sus
+identificadores, no el orden de estudio. Este índice sirve para estudiar por tu cuenta; no registra
+preguntas superadas.` · `### Primera vuelta — Imprescindibles — ⭐⭐⭐` · `### Segunda vuelta —
+Profundización — ⭐⭐` · `### Tercera vuelta — Detalles — ⭐`. The bold group names are the bank's own
+Spanish section names.
+
+**What it lists, and in what order — one rule, read off the file it sits in.** Every question whose bold
+line carries a priority marker has exactly one entry, in the index **of the file that holds that bold
+line**: under the pass of its marker; inside a pass, under the bold name of its `##` bank section, the
+sections in the file's own order and a section with no question in that pass left out; inside a section,
+by **ascending ID** — the tier sub-headings play no part, and neither does the order the questions stand
+in. The three passes are always present, a pass with no question reading `0` in the table with nothing
+under its heading, and each `Questions` cell is the number of entries under that pass. A question with no
+priority marker has no entry until it gains one — the proportion scan already reports it. An ID one
+language does not carry — a section stage T was told to skip, a tier the twin has not been rendered for
+yet — has no entry in that language's index, since its link would lead nowhere.
+
+**An entry is `- [NNN — label](#{PROJECT_NAME}-NNN)`**, `NNN` the ID's counter alone. **The label is a
+short name for the decision the question asks about — a handful of words, two to nine in the model** — a
+name read off the question's own bold line, never a claim about the code and never the answer. **It is written once, when its ID enters
+the index, and kept byte-for-byte by every later run, in both languages**: the ID stays with the decision
+however the question is reworded, so the label does too, and a label Victor edits by hand survives every
+rebuild. It leaves the index only when its question leaves the bank or loses its marker.
+
+**The index carries no state and gates nothing.** No `[refined]` and no `[studied]` is ever written into
+it — its own last sentence says so to the reader — and no route, recall block, counter or verdict reads
+it. It is **as current as the last run**: a marker Victor changes by hand, or a question a `TODO:` repair
+rewrites, moves nothing in it until the next run rebuilds it.
+
+**Every question has an anchor: one `<a id="{PROJECT_NAME}-NNN"></a>` line above its bold line, one blank
+line between them**, which is what its entry links to. The anchor is **not part of the question block**
+(the identity section above), so setting one above a `[refined]` question changes no frozen byte. It
+**is** a byte of the sub-heading it stands in, so the lane rule reaches it: a partial run sets the
+anchors inside its own sub-headings and no others, and an out-of-lane question found without one is
+reported by ID for a later `full` run. An anchor line that does not stand directly above the bold line of
+the ID it names is deleted, under that same lane rule.
+
+**An ID is counted on its bold question line and nowhere else.** An anchor line and an index entry each
+repeat it, so every count and every identity read of this bank — the stamp's `M` and `N`, the parity
+counts, an ID allocation, the route's inventory fingerprint — is taken over bold question lines.
+
+**Who writes them.** The orchestrator rebuilds the `en/` index whole and sets the in-lane `en/` anchors
+at the end of Phase 1a, beside the header stamp and for the same reason — stage T must render a header
+that is already current. Everything in the rebuild is read off the bold lines by command except the label
+of an ID entering the index, which is the one thing the orchestrator writes there. Stage T renders the
+`es/` index on every scope, over the questions the `es/` carries, keeping every Spanish label the twin
+already holds and rendering only a new one, and mirrors the anchors inside its lane. **No author, section
+reviewer or Spanish reviewer writes an anchor, an entry or a label**, and `study-content-writer`'s TODO
+repair touches neither. A bank written before this rule carries no index and no anchor, and gains both on
+its next run under it.
 
 ---
 

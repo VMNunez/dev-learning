@@ -91,6 +91,12 @@ sections, the Spanish twin and Victor's own TODOs address questions by that numb
 state marker yourself, in either language, for any reason: `[refined]` is Victor's and the ` [studied]`
 that may follow it is `study-block-close`'s.
 
+**You write no anchor and no index entry** (`REC-333`). The `<a id="…"></a>` line above each bold
+question line and the study index in the bank's header are derived structure the orchestrator sets once
+every section is finished — the standard's "Study index and question anchors". Add a question with no
+anchor, leave every existing anchor and the whole index exactly as they stand, and read IDs off **bold
+question lines only**: an anchor and an index entry each repeat one.
+
 **You write English, and only into `en/`.** The bank is a bilingual pair and the Spanish twin at
 `notes/interview-prep/projects/es/{PROJECT_NAME}.md` belongs to stage **T**
 (`_portfolio-translate-prompt.md`), which runs after every section is finished. Never create it, never

@@ -305,8 +305,8 @@ reviewer to its **question count, its questions-vs-decisions ratio, its marker s
 added or downgraded, the IDs it allocated or repaired, the IDs of the questions whose claims about the
 code it corrected,
 and the uncovered decisions if that ratio is below 1**, the
-translator to its **verdict, its per-section counts including the frozen-kept ones, its total and any
-English question it believes is wrong, by ID with its reason**, and
+translator to its **verdict, its per-section counts including the frozen-kept ones, its total, its
+one-line study-index count and any English question it believes is wrong, by ID with its reason**, and
 the Spanish reviewer to its **verdict, its frozen defects and its suspected translation errors by ID, and
 its suspected factual errors by ID with the contradicting sentence** —
 not the full trace (the trace still drives their own work; it just stays in their context).
@@ -508,6 +508,9 @@ header that is already current rather than the previous run's dates. **Three bra
 **`+N of M` is what this walk added, counted by command and never taken from a return**: `M` is the
 question IDs now under that tier's sub-headings in the `en/` bank (the whole file on an Angular-only
 project), `N` those of them absent from the step-0 comparison snapshot — `N = M` on a first bank.
+**Count an ID on its bold question line and nowhere else**: an anchor line and a study-index entry each
+repeat it (`REC-333`), so a pattern matched over the file's text counts every question two or three
+times.
 
 **Every other tier's line is left exactly as it was**, a dated line or `never` — which is what keeps a
 partial run from making an unbanked tier look current. On an Angular-only project the same three branches
@@ -515,6 +518,26 @@ apply to the single untiered `**Last banked:**` line. A bank with no header gain
 under branch 3**, with every line reading `never`, since an absent header is indistinguishable from a bank
 written before this rule existed. **The stamp gates nothing**: no run refuses on it, and Finishing item 1
 is what puts it in front of Victor.
+
+**Then set the anchors and rebuild the study index — here, for the stamp's second reason** (`REC-333`):
+stage T renders the header, and the index is header. The standard's **"Study index and question
+anchors"** owns the format, the fixed strings, the order rule and the label; read them there and restate
+none here. Both are derived, so they are yours and not a subagent's:
+
+1. **Anchors, inside the sub-headings `{PORTFOLIO_SCOPE}` covers** — the whole file on an Angular-only
+   project. Every bold question line there carries its own anchor line above it, one blank line between;
+   an anchor line that does not stand directly above the bold line of the ID it names is deleted. An out-of-lane question with no anchor is
+   **reported by ID and left**, like every other out-of-lane byte.
+2. **The index, whole, on every scope.** Read the `en/` bank's bold question lines by command — ID,
+   priority marker, `##` section — and rebuild the three passes, their section groups, their entries and
+   the table's counts from them. **Keep the label of every ID the existing index lists, byte-for-byte**;
+   write a label only for an ID entering it, from that question's own bold line. A bank with no index
+   gains the whole of it here, which is a label for every question: the one run on which this step is not
+   small, and still names read off bold lines — never open the code or an answer for one.
+
+It runs on all three stamp branches, the third included: a run that banked nothing may still have
+deduped, renumbered or downgraded. **Check it by command before Phase 1b, with test (e) of the parity
+gate below run over the `en/`.**
 
 ### Phase 1b — Spanish twin (one translator per PROJECT, after every section)
 
@@ -539,11 +562,16 @@ substitution):
 > re-rendering it. Return `TRANSLATED`,
 > `RE-SYNCED`, `TODO-STOPPED` or `BLOCKED`, the per-section English/Spanish question counts **and their
 > frozen-kept counts**, the
-> totals, and any English question you believe is wrong — which you did not change.
+> totals, and any English question you believe is wrong — which you did not change. **Render the study
+> index with the header, on every scope, and mirror the anchor line above every bold question line
+> inside `SCOPE`, kept ones included** — the standard's "Study index and question anchors"; return, on
+> one line, the index's entries per pass and how many labels you rendered new against how many you kept.
 
 **The changed-ID list is yours, computed by command before the dispatch** — only where the snapshot holds
 an `es/`, since a first translation has no stale Spanish. A **block** is a bold question line and every
-line up to the next bold question line or heading, keyed by its ID, compared with trailing whitespace
+line up to the next bold question line, anchor line or heading — the anchor above the question after it
+belongs to no block, or a question appended behind an unchanged one would list it as changed
+(`REC-333`) — keyed by its ID, compared with trailing whitespace
 ignored; the list is every ID under an **in-lane** sub-heading — one `{PORTFOLIO_SCOPE}` covers and not
 named to T as skipped — whose `en/` block is absent from the snapshot `en/` or differs from it. Never take it from a return:
 B names its corrections in prose, and your own dedupe, renumber and downgrade edits are in none.
@@ -554,7 +582,8 @@ shipped stale Spanish before (`REC-236`). **Its parity tests run over the sub-he
 is reported as behind, never retried and never repaired here, because this run did not write it and a
 retry would only send T back into Spanish it may not touch. **What the gate does check outside the lane
 is that T left it alone** — test (d). Three tests by command over the two files and over the in-lane
-sub-headings only, since T omits a skipped one, and a fourth over the bytes they leave out: **(a)** every in-lane
+sub-headings only, since T omits a skipped one, a fourth over the bytes they leave out, and a fifth over
+the twin's study index: **(a)** every in-lane
 sub-heading's Spanish question count equals its English one, and none is missing that was not named as
 skipped; **(b)** the ordered sequence of ID + priority marker on the in-lane bold lines is identical in
 both files — a dropped, reordered or renumbered question or a lost `⭐` moves no count; **(c)** on a
@@ -565,8 +594,16 @@ This proves a re-render happened, not that it is faithful; that is T's and stage
 partial scope of a full-stack project, by command over the `es/` and the snapshot `es/` (`REC-316`): where the snapshot holds
 one, every byte outside the in-lane sub-headings and the header is identical to it — the `##` and `###`
 lines included, a `##` line being new only as the home of an in-lane sub-heading; where it holds none,
-the `es/` carries no `###` line outside the in-lane set. (a)–(c) cannot see this, since an out-of-lane
-heading added, dropped or renamed moves none of their numbers. Any failure
+the `es/` carries no `###` line below its header outside the in-lane set. **The header runs to the line
+above the first bank section's `##` heading, so it holds the study index** (`REC-333`), whose `##` and
+`###` lines are therefore none of this test's. (a)–(c) cannot see this, since an out-of-lane
+heading added, dropped or renamed moves none of their numbers. **(e)** on every scope, by command over
+the `es/` alone (`REC-333`): its study index agrees with **its own** bold question lines under the
+standard's order rule — every marked ID exactly once, under its marker's pass and its section, in
+ascending ID order, each table count equal to the entries under its pass, no label empty — and every
+in-lane bold question line has its anchor. The index half is whole-file on every scope, the index being
+header; it is tested against the file it sits in and never against the English one, since a twin
+legitimately lacks a section T was told to skip. Any failure
 means the twin is not done: re-dispatch T **once**, naming the exact sections or IDs that fail — or,
 for (d), the out-of-lane lines, with the snapshot's text for them. One retry maximum; if parity still
 fails, **this content acceptance gate has failed** — name the failing sections or IDs in the final report
@@ -838,7 +875,10 @@ Otherwise print, in this order:
    this line is the only place the difference is stated. On its own line too, **every suspected factual
    error C returned and every English question T reported wrong, outside a frozen block, by ID with its
    evidence, labelled `owed a correction`** — or `factual errors: none reported` — and, beside each, the
-   backlog task it was raised as or the reason it was dropped. **Also print
+   backlog task it was raised as or the reason it was dropped. On its own line too, **the study index as
+   rebuilt** (`REC-333`) — its entries per pass in the `en/`, and in the `es/` where T rendered it (on
+   `TODO-STOPPED`, or a `BLOCKED` that did not reach it, say the twin's index was not rebuilt), how many labels this run wrote, and any
+   out-of-lane ID left without an anchor. **Also print
    the bank's `Last banked` line or lines as they now stand**, so what this walk added, and a tier still
    reading `never`, are visible at the moment the run ends rather than only inside the file.
 2. **Final verdict: ✅ Ready / ⚠️ Almost / ❌ Not ready** (with the checkbox list if ⚠️/❌). **Where
@@ -972,7 +1012,8 @@ the diff.
   whole bank but write only their own `###` sub-headings, in both languages; every other sub-heading is
   left byte-for-byte, the cross-section scan reports a boundary-straddling duplicate instead of removing
   it, and the header stamp moves only for the tiers actually banked. A run must never overwrite the half
-  it did not read.
+  it did not read. **The study index is header and is rebuilt whole on every scope; an anchor is a byte
+  of its sub-heading and is set in-lane only** (`REC-333`).
 - **Only `full` computes a verdict, and only a verdict signs G7.** A bank-only run prints no ✅/⚠️/❌,
   drafts no CV bullet or GitHub description, never touches the profile README, and never stages
   `notes/cv/cv-bullets.md`. It needs none of §23's chain, and it closes no gate.

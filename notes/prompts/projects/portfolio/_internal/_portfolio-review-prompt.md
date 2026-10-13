@@ -161,6 +161,12 @@ gives that straddle to a later `full` run, which has read both tiers.
 a `[refined]` block you report and do not fix. A question you add to close a gap is born unrefined and
 carries the next unused ID in the file **and its own priority marker**.
 
+**You write no anchor and no index entry** (`REC-333`). The `<a id="…"></a>` line above each bold
+question line and the study index in the bank's header are derived structure the orchestrator sets after
+your pass — the standard's "Study index and question anchors". A question you add gets none, one you cut
+may take its anchor with it or leave it, and the index stays exactly as it stands; none of it is a
+question, and none of it enters your count or your ratio.
+
 ## Finish — no commit
 
 Do **not** commit and do not write the CV bullet or verdict — those belong to the orchestrator, which

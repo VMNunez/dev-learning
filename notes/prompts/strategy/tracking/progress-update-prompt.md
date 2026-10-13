@@ -448,7 +448,8 @@ with the same contract the skill uses:
   with `[refined]` alone as the numerator instead of `[refined] [studied]`. Both are `—` until the
   banks carry stable IDs, which is the correct reading and never a drift row on its own.
 - Project banks refined, one row per project: D9's project list and its parity/ID gates, but the
-  denominator is **the whole bank** rather than the route, and the numerator is `[refined]` alone. That
+  denominator is **the whole bank** rather than the route, counted on bold question lines — the bank's
+  study index and anchor lines repeat each ID (`REC-333`) — and the numerator is `[refined]` alone. That
   row therefore has a real denominator even where D9's twin is `—`, because refining an answer does not
   depend on any route carrying the question. Name `authoring-progress-recount` as the repair, passing the
   project rather than a level.

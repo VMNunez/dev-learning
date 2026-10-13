@@ -105,7 +105,10 @@ the wording:
   which is a judgement about the English source's code and not about its Spanish; stage T copied it and
   a question that reaches you unmarked stays unmarked.
 - **Never touch the header** — the `**Último banco — «capa»:**` lines are a copy of the English record
-  and stage T owns them.
+  and stage T owns them. **The header runs to the line above the first bank section's `##` heading, so it
+  holds the study index** (`## Índice de estudio`, `REC-333`): its entries are links, not questions, it
+  is not a bank section, and its labels are names stage T rendered — outside your checklist and outside
+  your hand, like every `<a id="…"></a>` line in the file.
 - **Never touch a code block, identifier, class or method name**: `WeatherService`, `takeUntilDestroyed`,
   `@Transactional`, `HttpParams`, `signal()` are never translated, accented or re-cased.
 
@@ -179,8 +182,8 @@ claim is most likely in the English too.
 List **every `##` section and, on a full-stack project, every `###` sub-heading in order**, and under
 each the ID of every question with `PASS`, the specific Spanish fix you made, `frozen — reported` for a
 `[refined]` block you judged and left, or **`out of scope — unchanged`** for a lane `{SCOPE}` did not
-cover. A report without this trace is not accepted — it is your proof you reached the last question
-instead of stopping in the middle of a long bank.
+cover. The study index is header and has no row in it. A report without this trace is not accepted — it
+is your proof you reached the last question instead of stopping in the middle of a long bank.
 
 ## Finish — no commit
 

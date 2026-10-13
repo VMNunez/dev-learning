@@ -62,7 +62,8 @@ an identifier, not prose, so it is never translated (the levelled banks keep `an
   bank, and reading it is the point.*
 - `notes/prompts/projects/portfolio/_internal/_portfolio-standard.md` — the file template and the five
   fixed bank sections, including the Spanish heading names, the tier sub-headings
-  (`Backend` · `Frontend` · `Transversal`) and the `**Último banco — «capa»:**` header lines.
+  (`Backend` · `Frontend` · `Transversal`), the `**Último banco — «capa»:**` header lines and
+  **"Study index and question anchors"**, the index you render with the header.
 - `notes/interview-prep/junior/es/architecture.md` — the reference for what finished, native Spanish
   Q&A reads like. It is a levelled bank, not a project one; read it for the register, not the content.
 
@@ -150,6 +151,24 @@ lives in the run report, which is where a reader looks for it. Copy the line any
 frozen at the previous run's dates would misreport the English too, which is worse. The orchestrator
 stamps the English at the end of Phase 1a, before you run, so what you find is already current.
 
+**The header runs to the line above the first bank section's `##` heading, so it holds the study index —
+and you render that on every scope too** (`REC-333`). `_portfolio-standard.md` → "Study index and
+question anchors" owns its structure, its fixed Spanish strings and its order rule; `## Índice de estudio`
+is not a bank section, holds no question and is in no parity count. Build it **over the questions your
+`es/` carries when you finish** — one entry per marked bold question line of the Spanish file, under the
+standard's order rule, each table count equal to the entries under its pass — so an ID the twin lacks (a
+section you were told to skip, a tier not rendered yet) has no entry: its link would lead nowhere. **The
+label is the only prose in it.** Where the existing `es/` index already holds a label for an ID, keep it
+byte-for-byte, whatever the English one reads now; otherwise render the English label as a short Spanish
+name for the same decision, identifiers verbatim. The three `study-…` anchor lines and every link target
+are copied, never translated.
+
+**Mirror the anchor above every bold question line inside `{SCOPE}` — rendered, re-synced or kept
+byte-for-byte alike** — the `<a id="…"></a>` line, verbatim, one blank line between it and the bold line. It is not part of the question block, so writing one above a
+`[refined]` question you keep byte-for-byte breaks no freeze; it **is** a byte of its sub-heading, so
+outside `{SCOPE}` you add none and remove none, and an out-of-scope question with no anchor is reported
+by ID.
+
 ---
 
 ## A refined question is frozen — in your file too
@@ -208,7 +227,10 @@ Spanish.
   Spanish you left as it was is stale, and the orchestrator checks each listed ID against the file, so a
   `RE-SYNCED` over one fails its gate.
 - **The header is translated too**, per the standard's file template — on every scope, including the
-  `**Último banco — «capa»:**` lines, per the header exception above.
+  `**Último banco — «capa»:**` lines **and the study index**, per the header exception above.
+- **Every bold question line inside `{SCOPE}` has its anchor above it**, copied from the `en/` — kept and
+  frozen blocks included. The orchestrator
+  tests your index against your own file's bold lines, and the anchors inside `{SCOPE}`, by command.
 - **Questions are rendered as an interviewer would ask them in Spanish** — not word for word. A
   question that sounds like a translation sounds like a test, and Victor is preparing to hear these in
   a room. Same question, same emphasis, different words where Spanish needs them.
@@ -238,7 +260,8 @@ existed and you updated it), or **`out of scope — unchanged`** for a row `{SCO
 counts you still report because a mismatch there is the one signal that half of the twin has fallen
 behind. The two counts must be equal for every row you wrote, and the frozen count is
 part of the trace because a frozen block you silently re-rendered is invisible in a count that only
-compares totals. A report without this trace is not accepted — it is your proof
+compares totals. **The study index is header, not a section, and has no row here**: report it on one line
+of its own — entries per pass, and how many labels you rendered new against how many you kept. A report without this trace is not accepted — it is your proof
 you reached the last question instead of stopping in the middle of a long bank.
 
 ---

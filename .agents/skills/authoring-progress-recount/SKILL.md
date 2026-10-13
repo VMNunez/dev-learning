@@ -120,6 +120,10 @@ they say. Its twin under `## Study progress` is `study-block-close`'s and never 
   whether or not they also carry `[studied]`; denominator = **its whole bank**, not its route. Refining an
   answer does not depend on the route carrying the question, which is exactly where this row and its
   study twin differ.
+  **An ID is read off its bold question line — `**[{PROJECT_NAME}-NNN] …**` — and nowhere else**: since
+  `REC-333` a bank's study index and the anchor line above each question repeat every ID, so a count or
+  a duplicate test taken over the file's text sees each question three times (`_portfolio-standard.md`
+  → "Study index and question anchors").
 - Print `—` for a project whose pair fails EN/ES parity or whose bank holds a missing, malformed or
   duplicated `{PROJECT_NAME}-{NNN}` ID, and name the gate. **An unmarked question is not one of those
   states**: `_portfolio-standard.md` designs for a bank whose `⭐` backfill is still owed, and priority has
