@@ -18,7 +18,7 @@ session generates its statement. No solution or exercise source file is generate
 ## How to use this plan
 
 Ask to practise Java junior, a block or a concept. The skill selects eligible rows, allocates a
-dated batch folder under this directory and creates only that session's files. `File` is relative
+numbered batch folder under this directory and creates only that session's files. `File` is relative
 to that folder. The statement carries the task and pass condition, with concrete input/output
 cases chosen on the day. First tasks introduce application; transfer tasks change the problem;
 integration tasks combine two or three concepts. Adaptive reviews are additional and uncounted.
