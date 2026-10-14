@@ -199,7 +199,7 @@ since its grading door runs no close-out.
 | code-review-prompt | | | pending | |
 | cover-letter-prompt | | | pending | |
 | cv-prompt | 2026-10-03 | `create` · `PROJECTS = auto` → `07-timetrack`, `06-hr-portal` | completed | one-page Spanish master CV saved to `job-search/master/cv-2026-10.md` (outside the repo); two projects featured; no sourced bullet fails the Project-bullet spec |
-| evidence-intake-prompt | | | pending | |
+| evidence-intake-prompt | 2026-10-14 | `search` · FOCUS blank | completed | 8 junior + 6 `## Techo` postings added (Tecnoempleo, 2026-10); Synthesis re-tallied to /22; footer 14+5 → 22+11 (`e5a05b49`) |
 | hr-screen-prompt | | | pending | |
 | interview-prep-route-prompt | | | pending | |
 | interview-prep-route-projects-prompt | | | pending | |
