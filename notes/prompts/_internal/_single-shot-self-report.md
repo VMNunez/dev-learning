@@ -129,7 +129,8 @@ The report and `_run-tracker.md` update are prompt-system machinery under `notes
 them directly**, together and on their own, never bundled into the run's content commit: `git status`
 → stage only the report, `_run-tracker.md`, and this prompt's `_breach-log-<prompt-name>.md` when this
 run wrote a row or moved a disposition in it → `git status` again → `docs: self-report for <prompt>
-run on <target>`. Then print the three bullets in chat.
+run on <target>`. Then print the three bullets in chat. A change in either file this run did not make is
+handled as `_pipeline-self-report.md` → "How to commit it" states, bullet 2 naming it.
 
 ## Step 4 — Refine the prompt, but only when the run earned it
 

@@ -282,6 +282,14 @@ prompt's `_breach-log-<prompt-name>.md` when this run wrote a row or moved a dis
 `git status` again → commit
 `docs: pipeline self-report for <orchestrator> run on <target>`. Never bundle them into the
 pipeline's content commit. Also print the five bullets in chat.
+Staging the report and the tracker whole assumes neither carries an uncommitted change this run did not
+make. For the report that rests on one run of a prompt holding this tree at a time (`_session-rules.md` →
+"The study system (prompts)", its paragraph "One run of a prompt at a time in this working tree") —
+Victor's rule, not something this step checks; the tracker also has other writers, other prompts'
+close-outs and in-session skills among them. So read `git diff HEAD` on both before staging and
+`git diff --cached` before committing: a change this run did not make never enters this run's commit —
+stage `HEAD`'s file plus this run's own edit as an index blob and leave the working copy alone — and
+bullet 4 names it.
 
 **Verify the commit before declaring the run finished — `git show --stat HEAD`, not memory.** This
 rules on the commit this section just instructed, never on `HEAD` after the refinement step below. The

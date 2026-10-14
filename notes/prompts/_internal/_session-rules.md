@@ -1235,6 +1235,15 @@ component with no launcher is not one of these: it runs wherever the skill or pr
 runs — `practice-session` executes `practice/exercises/_internal/_practice-plan-prompt.md` inside the
 daily session, with its route reviewer and its grader dispatched cold.
 
+**One run of a prompt at a time in this working tree** (ruled by Victor 2026-10-14, `REC-341`). A prompt
+is never launched in a second conversation while a run of the same prompt is still open here: both runs
+write that prompt's one `_last-run-report*.md`, `_run-tracker.md` and the shared git index, so each
+close-out commits or overwrites the other's text — the parallel `/interview-prep-audit MODE = index` runs
+of 2026-10-13, one topic per conversation, did both. Several targets go through the prompt's own `all`,
+which runs them in order (`_batch-mode.md`), or through one conversation after another has closed out. It
+is a rule for Victor and for any session suggesting how to launch a prompt, not a check a prompt runs —
+the same shape as `_interview-prep-standard.md`'s rule against a practice prompt over an open audit.
+
 **Full map of every prompt, how they connect, and the order to run them → `notes/prompts/README.md`.**
 
 **Prompts *and* the in-session rituals in one wiring diagram, with the per-file writer registry and

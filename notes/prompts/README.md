@@ -1077,6 +1077,9 @@ bank inventory. Authoring, refinement and study are deliberately separate states
 Per-target prompts (one topic / file / project / type at a time) also accept **`all`** in their
 target field, so you don't have to run them folder by folder. Set the field to `all` and the prompt
 processes every target in order, one commit per target. Full rules: `notes/prompts/_internal/_batch-mode.md`.
+It is also how one prompt covers several targets at once — never two conversations running the same
+prompt in this tree, which collide on its report, the tracker and the git index
+(`_internal/_session-rules.md` → "The study system (prompts)", `REC-341`).
 
 - **Supports `all`:** `interview-prep-audit` (`FILE = all`); `readme-audit`, `review-audit`,
   `portfolio-audit` (`PROJECT_PATH = all`); `plan-audit` (`PROJECT = all`, **review mode only**);
