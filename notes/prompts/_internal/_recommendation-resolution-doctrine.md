@@ -1605,7 +1605,7 @@ the only path is Victor's own hands, so it is a rule for Victor and no gate is b
 a rule, name the actor that will read it and the state it can actually observe; if that actor is a
 person, say so out loud rather than dressing the rule as a check. The corollary the same row paid for
 four times: a *check* that cannot fail closed is worse than an admitted rule, because it reads as
-protection.
+protection. **Also `REC-341`: where Victor rules a way of launching unsupported, the rule goes where every run reads it at step 0 (`_session-rules.md`), and the contract it protects states only the assumption it now rests on — and where that assumption covers one of its files and not another, it guards the other by a diff against `HEAD`, never by inferring a breach: the first draft read any foreign tracker cell as the rule broken, and the tracker has writers the rule does not reach.**
 
 **A summary line that drops a noun becomes a rule about the wrong thing, and its readers are the record
 of how it was read.** From `REC-100`. Two files promised that `readme-audit` "hands Victor the commit
