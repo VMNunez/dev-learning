@@ -241,8 +241,8 @@ Rules, all of which exist because this cell already holds something worth keepin
   `study-block-close` and the notes pipeline also write; a cell recording no run has no baseline, so its
   flag's own count is the one to raise.
 - **A cell an earlier run left carrying two flags is folded into one**, dated today, their counts summed
-  with this run's, every enumeration and any `fingerprint only` clause kept inside the parenthetical.
-  Say in the report that you merged flags you did not write.
+  with this run's, the parenthetical holding the count alone — `_run-tracker.md` keeps enumerations out
+  of it. Say in the report that you merged flags you did not write.
 - **Never clear a flag.** `notes-plan` rewrites the whole cell when it runs, which removes it. A flag
   cleared by anything else is a debt hidden rather than paid.
 - **A bullet routed to `_cross-topic-inbox.md` flags nothing.** No bullet landed in that topic's file, so

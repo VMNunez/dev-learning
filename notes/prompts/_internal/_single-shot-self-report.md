@@ -56,7 +56,8 @@ three times, and leave Step 5 below reading the report this same run had just wr
 Update `notes/prompts/_internal/_run-tracker.md` in the same close-out. Every invocation gets a
 tracker record once its configuration is resolved, including `completed`, `blocked`, and `dry-run`
 outcomes. Update this prompt's row in `## Single-shot prompt executions` with the date, resolved
-target/mode, outcome, and a concise result. A blocked run records the blocking gate; a dry run records
+target/mode, outcome, and a `Result` within the record bound `_run-tracker.md` → "How to read it"
+sets — the detail belongs in this report, never in the cell. A blocked run records the blocking gate; a dry run records
 what was inspected without implying that outputs were written. Never turn a failed run into
 `completed` merely because its report and tracker update succeeded.
 

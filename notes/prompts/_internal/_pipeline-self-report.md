@@ -131,7 +131,8 @@ orchestrator's own cell or row**, in whichever of the tracker's tables holds it 
 says which, and this contract names no heading on purpose: the one it carried until 2026-08-18 matched
 no heading the tracker has ever had. Never invent a heading and never fall back to the nearest table,
 which reports `completed` while the real row stays `pending`. Record the date, resolved target/mode,
-outcome, and a concise result. A blocked run names
+outcome, and a result within the record bound `_run-tracker.md` → "How to read it" sets — the detail
+belongs in this report, never in the cell. A blocked run names
 the failed gate, and a dry run never looks completed. If the orchestrator is `notes-audit`, its cell
 is the matching Notes J/M/S summary, recalculated as `complete entries / total entries` plus the
 selected note and its outcome; the notes plan remains the authority for which entries exist, and no
@@ -268,7 +269,8 @@ and before committing, as everywhere else.
 After writing the report, update `notes/prompts/_internal/_run-tracker.md` — the permanent ledger of which
 targets each prompt has covered. Find your orchestrator's own cell or row and set it for this run's
 target to today's date, with a short parenthetical if the run was partial
-(e.g. "backend only", "scoped to `notes/spring-boot/`"). Overwrite the cell's previous date — the
+(e.g. "backend only", "scoped to `notes/spring-boot/`"), the whole record within that file's bound
+(see "Tracker outcome" above). Overwrite the cell's previous date — the
 tracker records the *last* run per target, not a history. If the run covered several targets (a
 `TOPIC = all` batch), update every cell it actually finished — never a cell for a target that was
 planned but not completed.
