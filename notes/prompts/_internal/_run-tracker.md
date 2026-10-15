@@ -185,7 +185,7 @@ consumer reads freshness from the file itself.
 | system-check · knowledge |  |
 | system-check · projects |  |
 | system-check · practice |  |
-| system-check · strategy |  |
+| system-check · strategy | 2026-10-15 — completed — 24 paths, 12/12 dispatches; 10 map cells corrected, REC-344/345 opened; reviewer approve-with-tightening (`1fa31ce5`) |
 | system-check · system |  |
 | system-check · cross |  |
 
