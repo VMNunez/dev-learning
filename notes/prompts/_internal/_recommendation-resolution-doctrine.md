@@ -1426,7 +1426,7 @@ ledger's preamble forbids — evidence is promoted by the count, never by arriva
 **Also `REC-256`, which names the ruling the count must also reach: a store that counts only *breaches*
 leaves the close-out's **dismissal** as the one ruling made alone — the cold reviewer guards an approval,
 nothing guards a drop — so a worked-around silence is counted too (a *deviation*), and once counted a
-finding may be applied or routed, never dropped.**
+finding may be applied or routed, never dropped.** **Also `REC-347`, which says where the rewrite goes: find the act the breached gate guards and state the gate at that act — a gate written one step after the instruction that performs its act is read after the act — and a remedy that both the executor and its own reviewer replaced with the same other remedy is evidence about the remedy, so weigh theirs before restoring the written one.**
 
 ### Row dispositions — `absence` and `contradiction`
 
