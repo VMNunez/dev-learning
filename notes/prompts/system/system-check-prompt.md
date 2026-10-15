@@ -260,8 +260,8 @@ preserved and never invalidate it.
 Every dispatch carries `notes/prompts/system/_internal/_system-check-reconcile-prompt.md` as its
 mandate, its own scratch return path, both map paths, and the machinery boundary repeated in the payload:
 do not open active-project `PLANNING.md`, `PROJECT-BACKLOG.md`, `PROGRESS.md`, or any other live artifact.
-Dispatch in parallel waves bounded by the runtime's concurrency limit, persisting each accepted return
-before the next wave.
+Dispatch in parallel waves bounded by the runtime's concurrency limit, running Step 3's gate on each
+return as it arrives and persisting only one that passes, before the next wave.
 
 - **One `analyst`, tier `standard`, per inventory file of the flow** — prompt, internal component,
   standard, root contract, the validator — and **one per paired skill**, reading the `.claude/skills/`
@@ -274,17 +274,23 @@ before the next wave.
 
 ## Step 3 — the acceptance gate
 
-Accept a return only when it:
+Run this gate on each return the moment it arrives, before it is copied into `accepted/`: the copy is
+the acceptance, so no file in `accepted/` may fail an item below. Accept a return only when it:
 
 1. opens with an `N lines, read to EOF` line for its file — every file, for `launchers` and `cross`;
 2. rules every map row its licence names for that file, each with one disposition from the mandate's
-   vocabulary — and outside that licence, only a positive contradiction, never an absence;
-3. quotes, for every `incorrect` and `missing` disposition, the source line that proves it and the exact
-   replacement or addition, no broader than that line proves;
+   vocabulary;
+3. quotes, for every `incorrect` and `missing` disposition not struck below, the source's own words that
+   prove it — a line number or a paraphrase is not a quote — and the exact replacement or addition, no
+   broader than those words prove;
 4. quotes, for every `source-contradiction`, both clauses and names the owning path;
 5. ends with the mandate's `concern complete` line.
 
-Re-dispatch a failed concern cold, once; a second failure blocks the run. **Two accepted returns that
+Re-dispatch a failed concern cold, once; a second failure blocks the run. **An absence ruled outside the
+return's licence is struck, never re-dispatched** — outside it a return may rule only a positive
+contradiction, and its in-licence rows stand on their own quotes: record each struck row, with its
+concern and the licence it falls outside, in `state.md` and the draft report, and keep it out of the
+draft patch. **Two accepted returns that
 propose different wording for the same map cell are a conflict**, and the orchestrator never settles it
 by choosing: both go to Step 4's reviewer with both cited sources. When every concern is accepted, write
 the draft patch — every proposed correction applied to scratch copies of the maps, never to the files —
@@ -302,8 +308,9 @@ accepted return, `snapshot.tsv`, and the machinery boundary. The reviewer:
 - greps both maps for every changed claim and checks each occurrence was updated or is named;
 - checks no correction creates or keeps a rule fork — a rule the other map owns, restated instead of
   linked (`REC-064`);
-- checks every flow file has an accepted return, and that no return ruled an absence outside its
-  licence;
+- checks every flow file has an accepted return, that every row Step 3 struck lies outside its return's
+  licence — ruling one that does not as it rules any proposed correction — and that no absence outside a
+  licence reached the patch;
 - checks no authoritative machinery file and no live artifact was edited or entered the record.
 
 It returns `approve`, `approve-with-tightening` (each tightening named), or `reject`. Apply only an
@@ -330,7 +337,8 @@ Overwrite `_system-check-report-{FLOW}.md` with:
    claim marked `path-set-level`;
 3. the validator baseline and final result;
 4. every map correction applied, as `map · row or line · was · now · source line`;
-5. every row ruled `correct` — counted per file, never as a section-level "verified";
+5. every row ruled `correct` — counted per file, never as a section-level "verified" — and every row
+   Step 3 struck, with its concern;
 6. findings with their ledger IDs;
 7. the final-review state: `approve`, `approve-with-tightening`, `reject`, or `not completed — reviewer
    unavailable`;
@@ -372,9 +380,8 @@ A run is `completed` only when all of these are true:
 
 - every inventory file of the flow — or every `cross` cluster — has an accepted return with its
   `N lines, read to EOF` declarations;
-- every return ruled every row its licence names and no absence outside it, every row carries one
-  disposition, and every
-  `source-contradiction` carries both clauses and one ledger ID;
+- every return ruled every row its licence names, every row carries one disposition, no absence outside
+  a licence reached the patch, and every `source-contradiction` carries both clauses and one ledger ID;
 - every applied correction survived the cold final review;
 - no live project, learning, practice, application or debt state entered the audit, and no
   active-project `PLANNING.md`, `PROJECT-BACKLOG.md` or `PROGRESS.md` was opened even for orientation;

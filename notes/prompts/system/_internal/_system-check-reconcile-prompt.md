@@ -113,6 +113,9 @@ fence.
 - **Write every row to `OUT` as you reach it**, never holding the return in context to the end: a role
   that dies mid-flight is read from its scratch path (`_agent-runtime-standard.md`).
 - One row per ruled cell: `map · section or row · column · disposition · source line · proposed wording`.
+  For `incorrect`, `missing` and `source-contradiction`, `source line` is the source's own words in
+  quotation marks beside their line number: a line number or a paraphrase alone fails the
+  orchestrator's acceptance gate.
 - Close with the counts: rows ruled, then per disposition.
 - End with the line the orchestrator gates on: `concern complete — <PATH or cluster> · <counts>`, or
   `concern incomplete — <what is missing>`. An incomplete return is re-dispatched cold and never merged in
