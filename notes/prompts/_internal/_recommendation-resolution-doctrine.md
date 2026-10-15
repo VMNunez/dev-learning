@@ -1548,7 +1548,7 @@ stay rare, so nothing may trigger it merely to ask whether a map is current. The
 `validate-prompt-system.ps1` first — it costs no tokens and its invariant 5 catches the one failure
 `map-sync` cannot, a prompt or skill that exists and no map registered — then take as the **suspect set**
 every commit touching `notes/prompts/`, either skill tree or either launcher catalogue since the last
-`_system-check-report.md` baseline that carries **no** map edit, because `map-sync`'s contract puts the map
+`Status: complete` `_system-check-report-{FLOW}.md` of the flow that owns the file, a baseline that carries **no** map edit, because `map-sync`'s contract puts the map
 edit in the same commit as the machinery change or declares `maps unaffected` out loud. Read only that
 subset from disk and trust the rest of the map as written. This is also the only thing that makes a
 `maps unaffected` declaration falsifiable, which today is a sentence in a report that nothing checks.

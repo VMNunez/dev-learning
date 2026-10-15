@@ -1435,9 +1435,10 @@ for the same reason: afterwards a skip and a genuine no-op are indistinguishable
 **It never blocks and it never sweeps.** A verification that stops the work stops being run — the
 zero-questions rule that skills are built on, applied to the map. And it only ever reaches files a
 session happened to open: rows about prompts nobody runs stay unverified, and this rule cannot say which
-ones those are. The explicit, token-intensive `/system-check` now owns that global sweep **only when
-Victor launches it**, normally after substantial machinery changes; it is never inferred, scheduled or
-run per commit. `REC-054` remains a different question: whether the machinery adds up to a
+ones those are. The explicit `/system-check` owns that sweep **only when Victor launches it**, normally
+after substantial machinery changes, and one flow per run — its first output is the table of which flows
+were last verified against their current blob ids, which is the list this rule cannot produce; it is never
+inferred, scheduled or run per commit. `REC-054` remains a different question: whether the machinery adds up to a
 workable day, not whether the two maps describe it truthfully. It is a verdict that **accrues from use**,
 not a review that is scheduled — reshaped 2026-08-10, because waiting for the machinery to settle never
 produces the one thing that review needs, which is days actually lived with the rituals in place.

@@ -1,20 +1,17 @@
-# System-check reconciliation — one bounded map concern
+# System-check reconciliation — one file, or one cross-flow cluster
 
-**Internal component. Not runnable.** `system/system-check-prompt.md` Step 4 dispatches one cold
-`analyst`, tier `standard`, per concern with this file as its mandate. A dispatch is exactly one of two
-kinds: `DIRECTION = claim` rules one contiguous span of one map against the accepted manifests;
-`DIRECTION = evidence` rules one manifest concern's facts against both maps. Neither authors, edits or
-commits anything — every return is cited evidence the orchestrator merges and the cold final reviewer
-re-gates.
+**Internal component. Not runnable.** `system/system-check-prompt.md` Step 2 dispatches one cold
+`analyst` per concern with this file as its mandate: one inventory file of the flow, one paired skill,
+the flow's launcher pairs together, or — on `FLOW = cross` — one cluster. You author, edit and commit
+nothing. Every return is cited evidence the orchestrator gates and a cold final reviewer re-checks.
 
-**Why the ruling is divided, and what the division must never become.** Two consecutive admitted runs
-(2026-08-12, 2026-08-13) closed the 168-file manifest gate and then failed to disposition 1,959 claim rows
-against 4,988 manifest facts in one orchestrator context — `REC-109`. What is divided is the **ruling**;
-the **source** is never divided. No agent extracts, summarises or paraphrases a map for another agent to
-rule on: that was `REC-079`'s deleted `2C`, whose 434-line extraction of 1,101 map lines could omit a claim
-in a way nothing downstream could see. You read the map file itself and the accepted manifests themselves,
-and what you return is checked against the physical-line denominator of your own span — the completeness
-property an extraction can never have.
+**What you rule on, and why it is cut this way.** The global method this replaced ruled every map line
+against a census of the whole machinery and never finished (`REC-109`, `REC-245`). The licence below is
+`_session-rules.md` → "What a read licenses a ruling on" — the rows a whole read of one file can falsify
+— applied to this audit, narrowed for skills (§13 goes whole to the `day` cluster) and extended to three
+kinds that table does not cover: the validator, launcher pairs and `cross` clusters. You read your file
+and rule on the rows **about it**, nothing wider. What no single file can settle
+is a `cross` cluster's.
 
 ## Boundary
 
@@ -22,7 +19,7 @@ property an extraction can never have.
   copy, carried here because a cold concern will not follow a pointer. Do not open the active project's
   `PLANNING.md`, `PROJECT-BACKLOG.md` or `PROGRESS.md`, SQL doctrine or routes, coverage or notes-plan
   state, practice trackers, simulation specs, application/job-search state, or their debt counts — not
-  even for orientation, and not even when a source prompt names one as its own input or output. A path
+  even for orientation, and not even when your file names one as its own input or output. A path
   pattern, schema, ownership rule or gate **declared** by a prompt or skill is in scope as machinery; the
   live artifact governed by it is not.
 - **You edit nothing** — not the maps, not a prompt, skill, standard, launcher or report. You propose
@@ -37,137 +34,86 @@ property an extraction can never have.
 
 ## Received input
 
-Both directions receive `MANIFEST_DIR` (the Step 3 accepted manifests, one file per concern), `OUT` (your
-own scratch return path), and this boundary repeated in the payload. Then:
+`KIND`, both map paths (`notes/prompts/README.md`, `notes/prompts/_internal/_system-map.md`), `OUT` (your
+own scratch return path) and the boundary repeated. Then `PATH` for a file concern, the flow's launcher
+pairs for `KIND = launchers`, or the cluster's name for `KIND = cross`.
 
-- `DIRECTION = claim` — `MAP` (one of the two map paths), `SPAN` (first and last physical line of your
-  concern, inclusive), and that map's total physical-line count.
-- `DIRECTION = evidence` — `MANIFEST` (exactly one accepted concern manifest), `CLAIM_LEDGER_DIR` (every
-  accepted `DIRECTION = claim` return), and both map paths.
+## The licence, by kind
 
-## `DIRECTION = claim` — claim → evidence
+| `KIND` | Rows you rule on |
+|---|---|
+| `prompt` (a runnable prompt) | `_system-map.md`: the §7 `Written by` / `Read by` cells for every file the prompt reads or writes, its own step in §3–§6, its §10 debt, its §11 symptom row. `README.md`: its family-catalogue row's *reads* / *generates* cells, its prerequisite as "How the prompts feed each other" states it, and its whole "Public interface index" row. Not §9 |
+| `component` (a family-internal prompt, SQL branch or seed file, or `validate-practice-plan.py`) | the §7 row of a file it states it writes, **only where it states that ownership itself**, and within that same fence its own `README.md` catalogue row — what the component itself states it reads, writes and is read by |
+| `standard` (a standard, rationale, `_topic-ownership.md`, or a root contract) | the §7 row for the file it governs, **only where it states that ownership itself** — never the writer *list*, which names several writers for some files and is a claim about all of them — and, within that same fence, its own `README.md` catalogue row |
+| `validator` | its §7 row, and in `README.md` → "Platform adapters" every paragraph describing what the script checks, skips or reports, the `-MachineryOnly` paragraph included |
+| `skill` | its `_system-map.md` §9 row **column by column**, its cells in §7, and every `README.md` → "The five hub files" `Written by` cell that names it, scope parenthetical included. **Not §13** — this audit gives §13 whole to the `day` cluster, so its counts are measured once for every row — and not a chain step, a §10 debt or a §11 row |
+| `launchers` | each pair's `README.md` → "Public interface index" `Command → canonical prompt` cell, and the launcher pair itself: both files name the same canonical prompt, the command is the filename, and the `Rules` points at the prompt's commit or gate rule without restating it (`_session-rules.md` → "A launcher points at a commit or gate rule") |
+| `cross` | the cluster's row in `system-check-prompt.md` → "The flows", and nothing else |
 
-1. Count the map's lines, read the **whole map** to EOF, and declare it. The whole read is mandatory and
-   costs little — each map is under 800 lines — but you **rule only inside `SPAN`**. A claim about a line
-   outside it belongs to another concern: report it as `out of span` and never disposition it. (The budget
-   this protects is the *disposition* count, not the read; do not read this as
-   `_plan-review-prompt.md`'s bounded-scope-plus-whole-file pattern, where the whole read defeated the
-   budget the bounded scope promised.)
-2. Classify **every physical line in `SPAN` exactly once** as `claim-bearing`, `context/syntax`, or
-   `out of scope`; the latter two carry a reason. A multi-line assertion marks every participating line
-   `claim-bearing`; a table separator, heading, fence marker or blank line is `context/syntax`. Historical
-   narrative carrying no current contract may be `out of scope`, with that stated as its reason.
-3. Split every claim-bearing line's factual assertions into **atomic claim rows**. One row asserts one
-   fact, carries the stable ID `<map-path>::CNNNN`, and cites one or more `<map-path>::LNNNN` physical-line
-   IDs plus table row/column coordinates where applicable. Assign `NNNN` in ascending order of the claim's
-   first cited line, then table row/column position, then left-to-right order inside that line. Several
-   claims may cite one line and one claim may span several lines; the line's classification stays singular.
-   **Every claim-bearing line reaches at least one claim, and every claim reaches at least one
-   claim-bearing line inside `SPAN`.**
-4. Read from `MANIFEST_DIR` the concern files your claims need — start from the inventory path the claim is
-   about and open further concerns when a claim spans several. Declare each one read. **Two rules bound
-   this.** A claim asserting **exclusivity or completeness** — `only`, `no other`, `nothing else`, `never`,
-   or any closed enumeration — cannot be settled from a subset at all, because its falsifier lives in a
-   manifest the claim does not name: open the whole directory for it and say so. And an unopened manifest
-   is **never** grounds for `unverifiable`; widen your reads until the corpus is exhausted, and only then
-   take that disposition's own bounded attempt below.
-5. Give every claim row exactly one disposition from the vocabulary below.
+**A positive contradiction is ruled wherever you see it; an absence only inside your licence.** If a map
+row outside your licence states something your file positively contradicts, rule it `incorrect` — a
+contradiction survives any slice. A claim the map **omits** is a finding only in a row your licence names,
+and only after your whole read.
 
-**What counts as a claim, by map.** `README.md` owns per-prompt facts and run order; `_system-map.md` owns
-per-skill facts and cross-system wiring. (`system-check-prompt.md`'s `Purpose` owns that split; these are
-the fields it resolves to.)
+**Read the fences before ruling any absence.** Four sites say that an absence in them is delegation, not a
+defect, and each states its own exceptions: the "Public interface index" `Run-first / handoff / explicit
+boundary` column (`README.md`, the paragraph opening "But an absence in the `handoff`"); the `Reads`
+column of the five family catalogues (`README.md` → "The prompts — what each one reads and generates",
+its two opening paragraphs); and §9's `Handoffs, gates + explicit exclusions` and `Primary reads` cells
+(`_system-map.md`, the two paragraphs above its table). An absence a fence covers is `fenced`, citing the
+fence.
 
-- `notes/prompts/README.md` — every current-machinery claim in the span: counts and group lists; the nine
-  per-prompt facts under the three-owner split its own two intros state — the file intro naming the
-  three owners and the nine fields, from its "its family catalogue row and the run-order sections
-  together own" clause, and the `Public interface index` intro assigning them,
-  from its "The family row remains the owner of exact reads and writes" sentence — both quoted rather
-  than numbered, because a line anchor into a file this audit may itself edit rots —
-  the **index** row's public command, run-first prerequisite, configuration/modes and received inputs,
-  dispatched roles and isolation, commit owner, handoffs/gates and explicit exclusions, the **catalogue
-  row**'s reads and writes/returns, and the run-order sections' restatement of the prerequisite (this
-  names where a fact is *owed*, never where a claim may be ruled — step 2 still governs that: a gate or
-  commit fact written into a catalogue row's prose is classified and dispositioned where it physically
-  sits inside `SPAN`);
-  internal-component rows; launcher naming and parity; orchestrator/single-shot classification; the
-  hub/writer tables; producer/consumer edges and diagrams; batch/global status; runtime tiers; and every
-  typical run order.
-- `notes/prompts/_internal/_system-map.md` — every current-machinery claim in the span: the opening system
-  properties; every chain step in §§2–6; every applicable writer/reader row in §7; all `PROGRESS.md`
-  ownership claims in §8; every skill row in §9 — trigger, received inputs, reads, writes/returns,
-  isolation, commit owner, handoffs/gates, exclusions; every machinery debt in §10; every symptom route in
-  §11; the improvement/validation loop in §12; and every block/trigger/load claim in §13. Never load
-  operational state to verify a structural claim: verify the prompt or skill contract that declares the
-  path, schema, owner or gate.
+## Steps — a file concern
 
-Where the span carries a rule the *other* map owns, the duplicate is itself the finding: propose replacing
-the non-owning text with a link to its owner rather than reconciling two wordings (`REC-064` — a rule
-restated is a rule forked).
+1. Count `PATH`'s lines, read it to EOF, and declare it. For a skill, read the `.claude/skills/` copy.
+2. List the facts your licence's rows own, each with its source line: for a prompt every configuration
+   key, prerequisite, dispatched role, read, write, commit owner, gate and exclusion; for a skill its
+   trigger, received input, reads, writes/returns, commit owner and isolation, handoffs and exclusions;
+   for a component or standard what it states it is read by, reads, writes and owns.
+3. Find every row your licence names: `grep -n` both maps for the file's name, its command (`/name`) and
+   bare name, and for every path in step 2's reads and writes; open each hit with enough context to read
+   the whole row or paragraph.
+4. Rule every licensed cell — and every row outside the licence your file positively contradicts — with
+   one disposition. **A rule the other map owns, restated in a cell instead of linked, is `incorrect`**,
+   with a link to its owner as the proposed wording (`REC-064` — a rule restated is a rule forked).
+   **A cell asserting exclusivity, completeness or a count over several files** — "only", "every",
+   "never", a writer list called exhaustive — is ruled by you for your own file's membership alone (is
+   your file in it, and should it be); whether the whole set is right is the `catalogue` cluster's, so
+   say `whole-population half: catalogue` beside your disposition.
 
-### The four dispositions
+## Steps — a `cross` cluster
 
-- `correct` — the manifests **positively support** the cell as written. Only these may later be covered by
-  a `verified — no change` section.
-- `incorrect` — the manifests contradict it. Draft the exact replacement wording, no broader than the
-  manifests prove, and name every occurrence of the claim you can see inside your span.
-- `source-contradiction` — the manifests **both support and contradict** it, because the owning machinery
-  file states two mutually exclusive clauses. A derived map can be no truer than its source, so this is
-  neither a map defect nor yours to settle. **Its bar:** quote **both** clauses with their manifest fact
-  IDs and name the one owning inventory path. A row without that is incomplete and your concern is
-  re-dispatched. This state exists because two runs had to force this evidence into `unverifiable` and so
-  blocked a whole global audit on source defects the run was forbidden to repair.
-- `unverifiable` — the accepted manifests **neither** support nor contradict it. **This is a finding, not
-  a pass, and it is blocking.** Record it only after one bounded attempt failed: either ask the
-  orchestrator to re-dispatch the owning manifest concern, or read the single named source file yourself
-  — it is frozen in the run's snapshot — declaring `N lines, read to EOF`. State which was tried.
+1. Read both maps to EOF and declare them; rule only the content your cluster names.
+2. Split that content into atomic claims, one fact each, cited by map and line.
+3. Settle each claim from source: open to EOF, and declare, every inventory file a claim names; settle a
+   count, exclusivity or completeness claim — "only", "every", "never", a total — over the whole
+   inventory by grep, state the command, and list every file it matched as opened. A claim settled
+   wholly or partly by an **absence** of matches — every count, exclusivity or completeness claim — is
+   marked `path-set-level` in your row, since no file list can hold it. On the `day` cluster, re-measure every `Declared steps ·
+   contract size` cell in one pass by the rule §13 states under its table, and report each row's old and
+   new value.
+4. Rule every claim with one disposition, ruling a restated rule the other map owns `incorrect` exactly
+   as a file concern does.
 
-## `DIRECTION = evidence` — evidence → claim
+## Dispositions
 
-Direction 1 catches a **false** claim; only this direction catches an **incomplete** one — a cell naming
-two of five items agrees with every manifest fact about those two.
+- `correct` — the source positively supports the cell as written.
+- `incorrect` — the source contradicts it. Quote the source line and give the exact replacement wording,
+  no broader than that line proves, and name every other occurrence of the claim you saw.
+- `missing` — a fact your licence's row owes is absent. Name the map, the row and the wording it would
+  take, and quote the source line.
+- `fenced` — an absence a fence covers. Cite the fence.
+- `source-contradiction` — your file states two mutually exclusive clauses, so no wording can be true.
+  Quote both, with their lines, and name the file. It is a machinery defect for the ledger, never a map
+  correction.
 
-1. Read `MANIFEST` whole and declare it. Its accepted stable fact IDs are your **complete denominator**:
-   exactly one disposition per ID, none missing, none invented. Silence is not a state.
-2. Walk **every** atomic fact, not only file access — for a runnable prompt its command, prerequisite,
-   every configuration key/value or received input, each role/dispatch/isolation fact, every read and
-   write/return, commit owner, handoff/gate, exclusion and close-out fact; for an internal component every
-   `read by`, purpose/authority, read, write/return and ownership fact; for a skill its trigger and
-   received inputs, every read and write/return, isolation, commit owner, handoff/gate and exclusion; for
-   root contracts, launchers and the validator every system-wide fact either map owns.
-3. Search `CLAIM_LEDGER_DIR` for the fact, and where the ledger is silent search **both maps themselves** —
-   the map is the source and the ledger is only what another concern ruled on it.
-4. Give every fact ID exactly one disposition:
-   - `documented → <claim ID>`;
-   - `source-only by ownership split → <the rule that keeps it out, quoted>`, either per fact or inherited
-     from a class ruling under step 5;
-   - `missing claim` — with the map that owes it, the section it belongs in, and the wording it would
-     take. A manifest fact with no home in either map is corrected exactly like a false claim.
-5. Where a whole `<path class> × <field>` pair is outside both maps by rule rather than one fact at a time,
-   return it once as a **class ruling** — a stable `<manifest>::CLASS::NN` ID, the pair it covers, the
-   ownership rule quoted verbatim from the source that states it, and the count of facts inheriting it —
-   instead of restating that rule against every member. State the class's **membership** — every
-   inventory path it covers — and confirm you examined each covered fact for `documented` or
-   `missing claim` before inheriting it. A class you cannot enumerate is not a class.
-   Every covered fact still carries its own
-   `source-only by ownership split → <class ruling ID>` line and still counts once in the denominator.
-   A class ruling may carry **no other disposition**: a fact you would call `documented` or `missing claim`
-   is ruled individually, whatever class it sits in. Never issue one for a field the `What counts as a
-   claim, by map` split above assigns to either map for that path class — that pair is exactly what this
-   direction exists to check.
-
-## Return contract — both directions
+## Return contract
 
 - Open with your `N lines, read to EOF` declarations.
-- **Write every row to `OUT` as you reach it**, never holding your return in context to the end: a role
-  that dies mid-flight is read from its scratch path, and a return held in context is lost work
-  (`_agent-runtime-standard.md`).
-- Close with the counts your concern owns:
-  - `claim` — `span length · claim-bearing · context/syntax · out of scope · atomic claims · unclassified ·
-    conflicting classifications · claim-bearing lines with no claim`, the **three classification counts**
-    summing to the span length, plus the disposition counts;
-  - `evidence` — `facts · documented · source-only · missing claim`, summing to the manifest's accepted
-    denominator, reported per manifest field class, plus `class rulings` and the facts each one covered —
-    a number that changes no sum, only how much of it you had to write out.
-- End with the one line the orchestrator gates on: `concern complete — <span or manifest> · <counts>`, or
-  `concern incomplete — <what is missing>`. An incomplete return is re-dispatched cold, exactly like a
-  failed Step 3 concern, and is never merged in part.
+- **Write every row to `OUT` as you reach it**, never holding the return in context to the end: a role
+  that dies mid-flight is read from its scratch path (`_agent-runtime-standard.md`).
+- One row per ruled cell: `map · section or row · column · disposition · source line · proposed wording`.
+- Close with the counts: rows ruled, then per disposition.
+- End with the line the orchestrator gates on: `concern complete — <PATH or cluster> · <counts>`, or
+  `concern incomplete — <what is missing>`. An incomplete return is re-dispatched cold and never merged in
+  part.

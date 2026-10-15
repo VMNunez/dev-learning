@@ -58,7 +58,8 @@ two alike, and `REC-159` widened the licence and left this paragraph a scope beh
 read of any depth rules on a **contradiction**; only a whole read rules on an absence. A correction lands
 in **its own commit** and the verdict is said out loud: `map: verified — {rows}` / `map: corrected —
 {row}` / `map: not verified — partial read`. It never blocks and never sweeps, so rows about prompts
-nobody opens stay unverified between explicit global audits. `/system-check` is that on-demand sweep;
+nobody opens stay unverified between explicit audits. `/system-check` is that on-demand sweep, one flow
+per run;
 `REC-054` is the separate question of whether the machinery adds up to a workable day — a verdict that
 accrues from use, never a scheduled review.
 
@@ -77,7 +78,7 @@ Everything in the repo is written by one of two things, and they are built on op
 |---|---|---|
 | Where it runs | a separate, **cold** conversation | inside the **daily session**, with full context |
 | How it starts | you launch it — `/name` or paste the config block | it **fires on an event**; you never launch it |
-| Unit of work | one topic+level, one project, one note pair — or the whole machinery for explicit `/system-check` | one step, one task, one file, one block |
+| Unit of work | one topic+level, one project, one note pair — or one flow of the machinery for explicit `/system-check` | one step, one task, one file, one block |
 | Questions | config up front, then hands-off to the end — **no orchestrator declares a human ownership gate**, `portfolio-audit`'s ✅/⚠️ non-dry one-bullet choice having been retired 2026-08-31 in favour of `_application-standard.md`'s checkable Project-bullet spec; what still pauses a run for Victor is a leftover, not a gate (a `cv-bullets.md` section a pre-retirement run left holding two options) — and one refusal that is neither: a `cv-bullets.md` section carrying `[refined]` is Victor's frozen bullet, which `portfolio-audit` reports and leaves rather than pausing on. Single-shot prompts are the other case and always were: some ask on their normal path (`tracker`'s `update` mode, and the ones that need something pasted) | **zero, by design** — a ritual that asks stops being run |
 | Depth | fans out cold subagents, one per concern | one pass down a mechanical checklist |
 | Trace it leaves | `_last-run-report*.md` + a row in `_run-tracker.md` | only the ritual's files on success / expected paths; one `_skill-friction.md` row when a declared step observably fails |
@@ -156,10 +157,13 @@ plans, mistake logs, tracker, and generated test specs — and the short-exercis
                                    PROGRESS ◄─ ATTEMPTS ◄┴──── cold grader ◄──────────┘
 ```
 
-`/system-check` sits outside Chains A–D. It consumes the canonical machinery, both launcher catalogues,
-mirrored skills, the validator and both maps as one explicit global audit after substantial changes; it
-persists each accepted concern under Git-ignored `.system-check/` evidence so another session or agent
-product resumes the same frozen run, and never becomes a prerequisite of ordinary runs or commits. Its machinery-only boundary — declared
+`/system-check` sits outside Chains A–D and audits them one at a time. Its flows follow this diagram —
+`knowledge` is Chain A, `projects` B, `practice` C with C2 and C3, `strategy` D, `system` the root
+contracts and §12's machinery — plus `cross` for what joins them, and a flow stays `fresh` while
+every file its last run read keeps the git blob id its report records — both ledger files excepted —
+and the prompt and its mandate are unchanged. It persists each accepted concern under
+Git-ignored `.system-check/flows/` so another session or agent product resumes the same run, and never
+becomes a prerequisite of ordinary runs or commits. Its machinery-only boundary — declared
 path patterns in, the live artifacts governed by them out — is stated by
 [its README catalogue row](../README.md#system--audit-the-machinery-system) and owned by the prompt's own
 `Boundaries` section. `_session-rules.md`'s machinery-only exception means the run does not open active
@@ -308,8 +312,8 @@ files: the system that describes and checks the system, which has writers like e
 | `notes/prompts/knowledge/notes/_internal/_note-todo-harvest.md` | **`study-content-writer` at the moment it resolves a TODO Victor wrote or a correction he states in chat** (primary — the reason is known only then, and the in-chat correction is visible to no one else) · **`/notes-audit`** for the markers it reports and may not resolve (secondary). `_session-rules.md` → "When Victor corrects the prose of a note" owns the trigger. **Two mutable fields, the only sink with a second**: `Disposition`, and `Quote`, which a writer meeting an `open` `Pair` + `Category` extends instead of duplicating the row — *at most one `open` row per key* is the invariant that matters. `Count` is **frozen** since 2026-09-15 (`REC-171`): the values on `NTH-0001`–`0047` stay as evidence, later rows carry `—` · **the harvest pass writes the `## Harvested pairs` table and the `harvested` dispositions**, one pass per refined pair, by hand — and first repairs the rows it reads: a duplicated `open` key merged into the row with the lower ID, a raw newline or unescaped `\|` in a `Quote` written back — words appended inside a split quote moved after it, in the order written — never adding, dropping or rewording a word | **the harvest pass, once per refined pair** — done by hand and not itself a ledger item: it reads that pair's completed→refined `es/` diff with its rows, and only an edit it makes to `_note-quality-standard.md` or a notes prompt becomes a `REC-NNN`, opened by the session doing the pass and resolved under the ledger's four steps with the mandatory cold reviewer — **never a skill and never a run**. `study-content-writer`'s freeze-sync close-out reads the table and prints `cosecha: ninguna pendiente` / `cosecha: pasada pendiente — {pair}` on every run. Not a work queue and not a machinery sink: it measures **Victor's prose bar**, not what a ritual did |
 | `notes/prompts/_internal/_interview-voice-spec.md` | **Victor, or a session acting on his explicit instruction, by hand** — the target flow he stated, held in one place because the four rows that implement it may not restate each other. A resolution that changes the target updates it in the same commit; no run writes it | a session resolving `REC-184`, at **step 1**, before editing its own corner (`REC-183`, its step 4, closed 2026-08-29; `REC-180`, closed 2026-09-06) — and, until it closed on 2026-09-15, a session resolving `REC-171`'s harvest, which was not one of the rows the target is sliced across but ruled the approval gate `REC-184` must take, the cold reviewer alone, so the notes harvest and the voice harvest do not diverge. **It is a target and not a contract**: it grants no authority, binds no run, and loses to any standard it contradicts — which makes it the file to correct, never the standard |
 | `notes/prompts/README.md` **and this file** | whoever changes the machinery, **in the same commit** (including an approved prompt self-refinement) · the `map-sync` ritual, which walks both triggers · `/system-check`, the only prompt whose primary work is auditing both maps · never a build step. **`/system-gaps` reads both and writes neither** — it is the one prompt that takes these two files as its whole evidence, which is exactly why it is forbidden to correct them | anyone orienting in the system — which is why a wrong row is worse than a missing one; `/system-check` (as the object it audits) and `/system-gaps` (as the only evidence it has) |
-| `notes/prompts/system/_internal/_system-check-report.md` | `/system-check` only, overwritten on each explicit run | Victor; the next `/system-check`; later whole-system refinement work |
-| `.system-check/runs/{run-id}/` | `/system-check` only, outside Git: accepted manifests and reconciliation/review evidence are written verbatim before its atomic `state.md` pointer advances; a continuity migration reuses only concerns whose owned source hashes remain unchanged, and `MODE = carry-forward` reuses a **completed** run's accepted artifacts on its own stricter test — every input that concern was given, including both maps in full for a Direction 2 concern | the same or a later Codex, Claude, or conforming runtime resuming that explicitly selected run, or anchoring a `carry-forward` run on the most recent completed one; orchestration only — never audit evidence, inventory, live state, report substitute, or commit candidate, except an anchor's accepted artifact carried under `MODE = carry-forward`, which is re-gated as this run's own |
+| `notes/prompts/system/_internal/_system-check-report-{FLOW}.md` | `/system-check` only — one file per flow, overwritten only by a run of that flow, so no flow's record erases another's | Victor; **every later `/system-check`, whatever its flow**, whose Step 0 flow table compares each report's recorded git blob ids with disk to say which flows are `fresh`; later whole-system refinement work |
+| `.system-check/flows/{FLOW}/{run-id}/` | `/system-check` only, outside Git: each accepted concern's return is written verbatim before the atomic `state.md` pointer advances; on resume an accepted concern is reused only while its source file and both maps still hash as recorded | the same or a later Codex, Claude, or conforming runtime resuming that in-progress run; orchestration only — never audit evidence, inventory, live state, report substitute, or commit candidate. The older `.system-check/runs/` holds the retired global method's evidence, closed as abandoned by Victor on 2026-10-15, and nothing reads it |
 | `notes/prompts/system/_internal/_system-gaps-report.md` | `/system-gaps` only, overwritten on each explicit run — including a blocked or dry run | Victor; **the next `/system-gaps`, which is not optional**: the candidates deferred over the five-row promotion cap keep their rank there and nowhere else, so an unread report silently drops the queue it exists to carry |
 | `notes/prompts/_internal/_session-rules.md` (+ the two thin platform adapters that delegate to it) | **whoever changes the session contract, by hand** — §1's commit boundary names the session-rule files themselves, so it commits directly. Never a prompt, never a skill, never a build step | every session at start, through the platform adapter that delegates to it — **and every runnable prompt's run-start check, to EOF, before that run's first write** (`REC-232`; the adapter only points at the file); its machinery-only exception replaces project-state orientation with branch + two-map orientation for an explicitly bounded machinery task. 19 of the 32 prompts also name it directly (`/system-check` audits its contract as machinery while obeying that exception). It **outranks this map** |
 | `.claude/settings.local.json` | the `.claude/` adapter accumulates local command permissions; **every repository session** owns the close-out check. If dirty, the active agent validates the JSON and commits it in its own `chore(claude): ...` commit even when the change predates the task — Victor's explicit standing exception to preserve-unrelated-changes | the `.claude/` adapter's local permission gate; humans and other agents only preserve/version the ledger and never treat it as task output |
@@ -378,9 +382,9 @@ below the table, the rest to cite where a rule they already obey comes from (`ma
 follow every change to the machinery", `step-complete`'s active-branch rule, `study-content-writer`'s
 `notes/ folder` → `Detail standard`) — and in neither shape is it an input the row's own product depends
 on: the shared session contract reaches every skill through the platform adapter, not through this
-column. A background or provenance mention of it, found in a manifest and absent from the cell, is
-disposed **`source-only by ownership split`** against this paragraph; it is not a fact with no home in
-either map, so it never becomes `missing claim`. **Two cases are owed, and there the absence *is* a
+column. A background or provenance mention of it, found in the source and absent from the cell, is
+ruled **`fenced`** against this paragraph; it is not a fact with no home in either map, so it never
+becomes `missing`. **Two cases are owed, and there the absence *is* a
 finding**: a skill that takes a **named section** of it as the authority for one concern, and one that
 **works on** the file rather than reading it for context — `step-complete`'s whole-project reminder to
 update `Current study progress`, which its `Handoffs` cell carries. The licence reaches
@@ -544,8 +548,8 @@ The things a run leaves behind that are easy to miss.
   (2026-07-30 → 2026-08-01) and Codex ran a ritual two revisions old. `diff` the pair before committing.
 - **Machinery paths are contracts, not an invitation to traverse live state.** `/system-check` verifies
   that prompts and skills declare the right path patterns, schemas, owners and gates, but excludes the
-  governed project, learning, SQL, practice and application artifacts from its inventory, denominator,
-  report and blocking conditions. Under `_session-rules.md`'s machinery-only exception, the exclusion
+  governed project, learning, SQL, practice and application artifacts from its inventory, report and
+  blocking conditions. Under `_session-rules.md`'s machinery-only exception, the exclusion
   begins before Step 0: active-project planning, backlog and progress state are not opened for orientation.
   Their existing task/step/block rituals own operational truth.
 - **A timed verdict is immutable evidence.** Corrections close learning gaps but never turn a historical
@@ -596,7 +600,7 @@ The things a run leaves behind that are easy to miss.
 | you are about to commit a ledger row — a new one in `## Open`, or the collapse of one | `_internal/validate-prompt-system.ps1` **before** that commit — invariant 9 reads the very line the collapse writes, and nothing fires the script on its own, so a dropped field is otherwise found by a later session doing something else. `REC-190` was found a day late, by which time its `cold reviewer:` token was unrecoverable (`REC-195`). Since `REC-239` the same invariant also refuses two rows carrying one ID |
 | you have just merged a branch that touched either ledger | the same script — a collision is invisible while each ID sits on its own branch, so the merge is the first tree that holds both rows and the only run that can see it (`REC-239`). `REC-231` and `REC-232` were each allocated twice and survived several merges unreported |
 | a `_last-run-report*.md` says `applied in <hash>` and carries no `cold reviewer:` verdict, or its `Status:` field is missing or outside `clean` · `open` · `rejected` · `applied in <hash>` | `_internal/validate-prompt-system.ps1` — the applied edit is read as a **self-approval** and stays that way; the only other way out is correcting the `Status` to the truthful value **when the hash it names is not a prompt edit**, which is a claim `git show` settles, never a way to make the red go away |
-| after substantial machinery changes, you need every prompt/skill contract and both derived maps checked together | `/system-check` — explicit machinery audit; never an ordinary-commit gate and never an operational-status sweep |
+| after substantial machinery changes, you need the prompt/skill contracts and both derived maps checked against each other | `/system-check` — explicit machinery audit, one flow per run; a bare run opens with the table of which flows are `fresh` and audits the first that is not. Never an ordinary-commit gate and never an operational-status sweep |
 | the suspicion is not that a row is **wrong** but that something is **missing** — a file nothing writes, a block with no closer, a debt nothing clears, a gate nobody runs | `/system-gaps` — reads only these two maps, so it is cheap enough to re-run as the system grows; it registers findings and corrects nothing, and an absence it reports still has two branches until `/system-check` or `map-sync` opens the file |
 
 ---
@@ -718,26 +722,26 @@ records only that the two-map invariant above is **not** among them.
 
 ### The explicit semantic sweep
 
-`/system-check` complements the validator and `map-sync`; it replaces neither. When Victor launches it
-after substantial machinery changes, cold family manifests read the complete canonical prompt/skill
-machinery to EOF, and the README-owned prompt contracts and this map's wiring and skill contracts are
-reconciled through a physical-line-backed claim ledger and the stable-ID reverse ledger of every atomic
-manifest fact. **Both directions are ruled by bounded cold concerns** — one per map span, one per manifest
-concern, after two runs blocked proving one context cannot disposition them all (`REC-109`) — and each
-concern reads the map itself, since dividing the *source* into a paraphrase is what `REC-079` deleted. A
-cold final reviewer independently reproduces the partition and the line denominator before gating the
-global verdict. Every accepted bounded concern first lands in the Git-ignored `.system-check/` run
-directory, whose atomic state pointer makes the frozen analysis resumable across sessions and agent
-products; it never replaces the final report or enters the audit denominator. Its default
-`MODE = carry-forward` extends that reuse across runs — a completed run's accepted artifact stands for a
-concern whose own inputs still hash identically — because a full derivation costs more sessions than the
-interval between machinery commits. The durable report proves the inventory boundary and
-the reconciliation. It may correct the two derived maps and file machinery recommendations, but never
-opens or reports live project, learning, SQL, practice or application state — including the active
-project's orientation files. **A map claim its own source contradicts is a ledger row, not a blocked
-verdict**: the audit rules on the maps, and a source stating two mutually exclusive clauses is a defect it
-is forbidden to repair. Because it is token-intensive, it is **explicit only** — never scheduled,
-inferred, or run per commit.
+`/system-check` complements the validator and `map-sync`; it replaces neither. It is `map-sync`'s read
+licence run deliberately, over files nobody happened to open: **one flow per run**, one cold analyst per
+file of that flow reading it to EOF and ruling on exactly the rows `_session-rules.md`'s licence gives a
+whole read of it, then one cold final reviewer over every proposed correction. What no single file can
+settle — §1, the chains' order, §8, this section, §13, the catalogue's totals — is a sixth flow, `cross`,
+ruled in clusters, together with the producer→consumer list in `README.md` and every other map line no
+file licence names. Each flow's report records the git blob id of every file it read and of the prompt and
+mandate it ran under, so the flow stays `fresh` until one of them changes; the maps and both ledger files
+are deliberately outside that digest, since nearly every machinery commit or close-out edits them, and
+the change rule above keeps the maps true between audits. The whole system
+reads verified only when all six flows are `fresh` and no path is left out of the flow table.
+
+It replaced, on 2026-10-15, a global method that admitted no partial verdict and never completed a run:
+two runs blocked on 1,959 claim rows one context could not disposition (`REC-109`), the third stalled
+across sessions while the machinery it had frozen moved on, and its cross-run reuse could anchor only on
+a completed run, which never existed (`REC-245`). It may correct the two derived maps and file machinery
+recommendations, but never opens or reports live project, learning, SQL, practice or application state —
+including the active project's orientation files. **A map claim its own source contradicts is a ledger
+row, not a correction**: a source stating two mutually exclusive clauses is a defect it is forbidden to
+repair. It stays **explicit only** — never scheduled, inferred, or run per commit.
 
 ### The cheap sweep for what is missing
 

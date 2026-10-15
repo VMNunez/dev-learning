@@ -182,7 +182,12 @@ consumer reads freshness from the file itself.
 | progress-update | 2026-10-09 — completed — MODE=active; 2/2 dispatches; 2 drift rows (`Authoring progress` denominator, `Study progress` missing 06); matrix refreshed in 4 rows (`176ebdc4`) |
 | roadmap-review | 2026-10-09 — completed — parity PASS (14 topics x 3 levels); 4/4 roles, both reviewers passed after fixes; Steps 8–10 reflected; no new candidate; `2d6f911f` |
 | system-gaps | 2026-08-11 — completed — `MODE = update`; 23 subjects reconciled, 5 promoted (`REC-094`–`REC-098`); cold reviewer `approve-with-tightening` |
-| system-check | 2026-08-13 — blocked — Step 4 claim and reverse dispositions did not close; no map correction or final review; report `76b5f35c`; opened `REC-109` |
+| system-check · knowledge |  |
+| system-check · projects |  |
+| system-check · practice |  |
+| system-check · strategy |  |
+| system-check · system |  |
+| system-check · cross |  |
 
 ## Single-shot prompt executions
 

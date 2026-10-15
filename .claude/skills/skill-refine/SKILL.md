@@ -13,8 +13,8 @@ description: >
   the draft to one cold reviewer that reads the whole file, applies only what is approved, and writes
   both adapter mirrors in one commit. Do NOT use it to write a new skill, to fix a skill's behaviour on a
   hunch with no `SBRC` row behind it, to edit a shared contract a skill merely executes (that routes to
-  `_recommendation-ledger.md`), to delete a ritual, or inside the `/system-check` audit — that pass owns
-  the whole inventory and must not be second-guessed one file at a time.
+  `_recommendation-ledger.md`), to delete a ritual, or inside a `/system-check` audit — that pass owns
+  its flow's whole inventory and must not be second-guessed one file at a time.
 ---
 
 # Skill refine — the skills refine themselves from their own runs

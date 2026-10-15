@@ -245,8 +245,10 @@ $canonicalFiles = Get-ChildItem -LiteralPath $promptRoot -Recurse -File -Filter 
         # they read like canonical prose and sat here unexempted: a report quoting a `/system-gaps`
         # candidate about runtime dispatch, or a `/system-check` finding about a model mapping, is the
         # run's transcript of a defect and not a canonical instruction. Neither trips the pattern
-        # today; latent is how REC-172 (i) sat for months.
-        $_.Name -notin @('_system-check-report.md', '_system-gaps-report.md') -and
+        # today; latent is how REC-172 (i) sat for months. Since REC-245 (2026-10-15) `/system-check`
+        # writes one report per flow, `_system-check-report-{FLOW}.md`, so its half is a pattern.
+        $_.Name -notlike '_system-check-report*.md' -and
+        $_.Name -ne '_system-gaps-report.md' -and
         # `_skill-runs.md`, added with them, is the only member written by NO agent at all: the
         # `PostToolUse` hook appends a row straight from raw tool-call input, so its `Args` column can
         # hold whatever was typed. It is also the only member git ignores - which is not a reason to
