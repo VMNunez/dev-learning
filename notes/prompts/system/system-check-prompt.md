@@ -216,8 +216,8 @@ them. On resume, an accepted concern is reused only when its source file **and b
 blob ids recorded in `snapshot.tsv`; any other concern is re-dispatched cold. A session or platform change is not
 drift: Codex, Claude or another conforming runtime continues from the same files.
 
-`.system-check/runs/` holds evidence from the retired global method. It is never read, resumed or
-anchored on.
+A `.system-check/runs/` directory belongs to the retired global method; Victor deleted it on 2026-10-15.
+Should one reappear, it is never read, resumed or anchored on.
 
 ## Step 0 — preflight and the flow table
 
