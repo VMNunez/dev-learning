@@ -588,9 +588,11 @@ padding around the explanation he was looking for.
 - **Explain before the code.** Give 1–3 sentences of context before any code block — what the concept
   is, why it exists, when you reach for it. Do not open a section with a code block and no explanation.
 - **Call out gotchas and "why not X" moments.** When there is a common mistake or a tempting shortcut
-  that is wrong, name it explicitly. Use a **Why not X?** subheading or a `> blockquote`. Example:
-  "Why not just return the object directly? Because you always get 200, even when you created
-  something (which should be 201)."
+  that is wrong, name it explicitly. Use a `> blockquote` with **Why not X?** as its bold lead-in;
+  section headings stay descriptive, never literal questions (`HR-9`). Example:
+
+  > **Why not just return the object directly?** Because you always get 200, even when you created
+  > something (which should be 201).
 - **Write in learning order — start with the problem, not the concept.** The concept exists because
   something was painful without it. Lead with that pain. "Before Spring Boot, you had to configure
   Tomcat separately and write XML to wire beans. Spring Boot removes all of that." Not: "Spring Boot
