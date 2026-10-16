@@ -182,7 +182,7 @@ consumer reads freshness from the file itself.
 | progress-update | 2026-10-09 — completed — MODE=active; 2/2 dispatches; 2 drift rows (`Authoring progress` denominator, `Study progress` missing 06); matrix refreshed in 4 rows (`176ebdc4`) |
 | roadmap-review | 2026-10-09 — completed — parity PASS (14 topics x 3 levels); 4/4 roles, both reviewers passed after fixes; Steps 8–10 reflected; no new candidate; `2d6f911f` |
 | system-gaps | 2026-08-11 — completed — `MODE = update`; 23 subjects reconciled, 5 promoted (`REC-094`–`REC-098`); cold reviewer `approve-with-tightening` |
-| system-check · knowledge | 2026-10-16 — blocked — Step 3 second cold return lacked EOF declaration; 9 concerns accepted; `REC-348`; no map verdict (`00b0fd64`) |
+| system-check · knowledge | 2026-10-16 — completed — 44 paths, 28/28 dispatches; 44 map cells corrected, REC-349…353 opened; reviewer approve-with-tightening; BRCH-0003 → REC-354 (`2a3b8250`) |
 | system-check · projects |  |
 | system-check · practice |  |
 | system-check · strategy | 2026-10-15 — completed — 24 paths, 12/12 dispatches; 10 map cells corrected, REC-344/345 opened; reviewer approve-with-tightening (`1fa31ce5`) |
