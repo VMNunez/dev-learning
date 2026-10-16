@@ -1,37 +1,41 @@
 # System-check report — knowledge
 
-Date: 2026-10-15 · Flow: knowledge · Starting commit: `7c60e840baa3967bf81d0399bea8ccf55aef9f5a` · Branch: `projects/07-timetrack`
+Date: 2026-10-16 · Flow: knowledge · Starting commit: `b2ac5e192d306be3ecbd733b2c0b4b02e1ee1974` · Branch: `projects/07-timetrack`
 Status: blocked
 
 ## 1. Frozen inventory and accepted concerns
 
-The frozen inventory contains 44 paths: 20 knowledge-family prompt/component files, six paired skills (the `.claude/skills/` copies), and nine launcher pairs. All were clean at admission. The two maps were also clean and recorded in the snapshot. This run accepted six file concerns; the other 20 file/skill concerns and the launcher concern received no accepted ruling. **No verdict on the knowledge flow or either map is published.**
+The inventory contains 44 paths: 20 knowledge-family prompt/component files, six paired skills (the `.claude/skills/` copies), and nine launcher pairs. All were clean at admission and matched `snapshot.tsv` on resume. Nine file concerns passed Step 3; the other 11 file concerns, six skill concerns and launcher concern have no accepted ruling. **No knowledge-flow or map verdict is published.**
 
-Prompt `notes/prompts/system/system-check-prompt.md` blob `31ff7f33ebadeb25a35ca588fee32ea08a5e4736`; mandate `notes/prompts/system/_internal/_system-check-reconcile-prompt.md` blob `397e27d6a1e60ee152f66a33db56346431b51652`. The exact 44-path snapshot and six verbatim accepted returns are in `.system-check/flows/knowledge/20261015-174036-7c60e840/`.
+Prompt blob `c8337184e21becab43d00177fac9b4e4813dc11e`; mandate blob `cd60ab694e617051255f7962a6b6e17fc551d522`. The 44-path blob list and accepted returns are in `.system-check/flows/knowledge/20261015-190000-b2ac5e19/`.
 
 | Accepted path | Blob id | Lines | correct / incorrect / missing / fenced / source-contradiction |
 |---|---|---:|---|
-| `knowledge/coverage/_internal/_coverage-standard.md` | `2342f6a1ce2fbd19ca0d3791ce91fc68eb748413` | 427 | 5 / 0 / 0 / 0 / 0 |
-| `knowledge/coverage/_internal/_coverage-prompt-rationale.md` | `3db536a5763e8ae900801d2c3e2313157731c43d` | 308 | 3 / 0 / 0 / 0 / 0 |
-| `knowledge/coverage/_internal/_topic-ownership.md` | `4fde7a60fde1965bfdd2c46abaab6885fd6ec764` | 88 | 6 / 0 / 0 / 0 / 0 |
-| `knowledge/interview-prep/_internal/_interview-prep-standard.md` | `3586736e5642dcbc39be261592f562c65effe5cc` | 586 | 5 / 0 / 0 / 0 / 0 |
-| `knowledge/notes/_internal/_note-quality-standard.md` | `7b77d94437eba02dd813a0f33f9302405ae84461` | 1247 | 6 / 0 / 0 / 0 / 1 |
-| `knowledge/interview-prep/_internal/_interview-prep-review-prompt.md` | `90beb374ed2932e3dccb6ca3923f7eaa18533af1` | 204 | 2 / 1 / 3 / 1 / 0 |
+| `knowledge/coverage/coverage-audit-prompt.md` | `d0e260befc4aa3a7d80c9a0f20b8fdeea0159206` | 206 | 30 / 2 / 4 / 1 / 0 |
+| `knowledge/coverage/coverage-prompt.md` | `ce2cc5dad19537aebbd4c560990f46a510aa68af` | 416 | 35 / 3 / 2 / 2 / 0 |
+| `knowledge/coverage/coverage-verify-prompt.md` | `02ac6d1680575ea9b1a71cd484c7f38e01ae90e0` | 278 | 23 / 2 / 4 / 1 / 0 |
+| `knowledge/coverage/evidence-intake-prompt.md` | `4334b3ec388eed8b1201823d6c135c25ed653083` | 178 | 18 / 0 / 1 / 0 / 0 |
+| `knowledge/interview-prep/interview-prep-audit.md` | `a0865c7eb10b4cbfa1482e208a3ec90708949dbc` | 611 | 18 / 1 / 8 / 1 / 0 |
+| `knowledge/interview-prep/interview-prep-route-projects-prompt.md` | `5605efdfb4b6d05b09d2cc61300cf3b7f6c9cffb` | 208 | 17 / 0 / 3 / 0 / 0 |
+| `knowledge/interview-prep/interview-prep-route-prompt.md` | `6f33cc715ab993b2722672d5e0177354d62c1dd3` | 144 | 18 / 0 / 1 / 0 / 0 |
+| `knowledge/notes/notes-audit.md` | `c851a4e93e04184e7dc36e3ddf546200921865be` | 484 | 23 / 1 / 6 / 1 / 0 |
+| `knowledge/notes/notes-plan-prompt.md` | `b66d6ce8efa2fa39494a2bf4520b8545d3a263da` | 579 | 24 / 2 / 2 / 1 / 0 |
 
-## 2. Validator
+Three proposed `missing` rows were struck: `notes-audit`'s report/tracker row and `interview-prep-audit`'s two report/tracker rows. `README.md` lines 428–433 explicitly declare these universal outputs and say they are not repeated in family rows. The verbatim returns retain those raw counts; none of the struck rows enters a patch.
 
-Baseline `validate-prompt-system.ps1 -MachineryOnly`: exit 0; all checks passed, with one `REPORT` for a proposed ledger path and one live-state `SKIP`. After the ledger finding, the same command exited 0; the open-ledger uniqueness check compared 43 distinct rows instead of 42. No live state was checked.
+## 2. Validator and corrections
 
-## 3. Corrections and rulings
+Baseline and final `validate-prompt-system.ps1 -MachineryOnly` exited 0, with one proposed ledger path reported and live state skipped. The final run compared 44 distinct open ledger rows.
 
-Map corrections applied: **none**. The accepted returns ruled 27 cells `correct`, one `incorrect`, three `missing`, one `fenced`, and one `source-contradiction`. Those are partial concern results, not a flow verdict. No draft patch was applied and no cold final reviewer was dispatched.
+Map corrections: **none**. No draft patch or cold final review was reached. Final-review state: `not completed — reviewer unavailable`.
 
-## 4. Machinery finding
+## 3. Machinery findings
 
-- `REC-346`: `_note-quality-standard.md` lines 100–103 allow an unmarked bullet to mean a missing marker in a tier not yet backfilled; line 112 says categorically that no marker means no project covers the concept. The accepted concern quoted both clauses. The source standard was not edited.
+- `REC-346` remains open from the prior blocked run: the note standard's unmarked-coverage exception conflicts with its unconditional no-marker instruction.
+- `REC-348` records a distinct source contradiction checked at `_note-quality-standard.md` lines 405, 591 and 798: a `Why not X?` subheading is recommended where question-shaped section headings are forbidden. The source standard was not edited.
 
-## 5. Blocking gate and next action
+## 4. Blocking gate and next action
 
-Step 3 failed on `_notes-review-prompt.md`. Its first return did not open with an `N lines, read to EOF` declaration. The one cold re-dispatch opened correctly but failed to rule every licensed claim: its `README.md` `Reads` disposition did not address the row's forward-reference assertion against the source's separate `LINK_TARGETS` authority, and it did not rule the row's moved-out-section assertion. The mandate allows one re-dispatch; a second failed return blocks this run. The incomplete return was not accepted. Other running concerns were stopped. The final-review state is `not completed — reviewer unavailable` because the acceptance gate never closed.
+Step 3 failed on `_note-quality-standard.md`. Its first completed return omitted the previously documented unmarked-coverage contradiction. The one cold re-dispatch identified that and the heading contradiction but began with a heading instead of the required `N lines, read to EOF` declaration. The second failed return blocks the run. The other unfinished concerns were stopped without acceptance.
 
-Next action: start a new explicit `/system-check FLOW=knowledge` run. Its fresh concerns must rule each licensed cell, including every claim within a cell, and quote exact source text for every proposed correction.
+Next action: start a new explicit `/system-check FLOW=knowledge` run. Its concerns must put the EOF declaration on the first line, rule every assertion in each licensed cell, and quote both clauses of a source contradiction.
