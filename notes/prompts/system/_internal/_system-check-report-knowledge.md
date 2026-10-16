@@ -58,7 +58,7 @@ notes-plan `b2f1d833…` · `23d6edee…`; notes-audit `5310ac09…` · `ce6795c
 ## 2. Validator
 
 Baseline (`-MachineryOnly`, before Step 1): every check `PASS`; one `REPORT` (a ledger-proposed path
-`notes/git/git-workflow.md` that does not exist — a proposal, not a typo); `SKIP` live coverage/plan/route
+a path one closed ledger line proposes that does not exist — a proposal, not a typo); `SKIP` live coverage/plan/route
 state by design. Final (`-MachineryOnly`, after the approved patch and the ledger rows): every check `PASS`, the same one `REPORT` and the same `SKIP`; 48 distinct open ledger IDs compared.
 
 ## 3. Map corrections applied
