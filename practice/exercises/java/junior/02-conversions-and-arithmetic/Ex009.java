@@ -34,6 +34,13 @@ public class Ex009 {
         int incoming = 8;
 
         // Your answer:
+        int stock = storedStock; // unboxing: Integer -> int happens here
+        System.out.printf("Stock after delivery: " +  (stock + incoming));
+
+         // Integer missingStock = null;                    // A
+         // Integer copy = missingStock;                    // B
+         // boolean isMissing = missingStock == null;       // C
+         // int total = copy + 8;                           // D
 
     }
 }
@@ -46,15 +53,21 @@ public class Ex009 {
 
 // Your answer (diagnosis):
 // The line that throws, and the exact expression:
+// Line D throws NullPointerException at `copy + 8`. copy holds the same null
+// as missingStock, and the + forces Java to unbox it to an int, but there is
+// no number inside to extract.
 //
 // Why the other three do not throw:
-//
+// A and B only store or copy a null reference in an Integer variable, which
+// is legal. C compares the reference with null without unboxing it, so it
+// just evaluates to true.
 
 // Error seen (optional):
-//
+// Exception in thread "main" java.lang.NullPointerException: Cannot invoke "java.lang.Integer.intValue()" because "<local5>" is null
+//        at Ex009.main(Ex009.java:43)
 
 // Expected output:
 // Stock after delivery: 50
 
 // My output:
-//
+// Stock after delivery: 50

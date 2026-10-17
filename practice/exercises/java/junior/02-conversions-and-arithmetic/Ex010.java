@@ -36,6 +36,20 @@ public class Ex010 {
         // int noCast = lengthCm;
 
         // Your answer:
+        long boxesLong = boxes;
+        System.out.println("boxes as long: " + boxesLong);
+        double boxesDouble = boxes;
+        System.out.println("boxes as double: " + boxesDouble);
+
+        int lengthCmInt = (int) lengthCm;
+        System.out.println("lengthCm as int: " + lengthCmInt);
+        System.out.println("discarded part: " + (lengthCm - lengthCmInt));
+
+        int driftCmInt = (int) driftCm;
+        System.out.println("driftCm as int: " + driftCmInt);
+
+        int distanceMmInt = (int) distanceMm;
+        System.out.println("distanceMm as int: " + distanceMmInt);
 
     }
 }
@@ -43,12 +57,19 @@ public class Ex010 {
 // Your answer (questions):
 // What does javac say about `int noCast = lengthCm;`, and why did steps 2-4
 // need a cast while step 1 did not?
+// javac says "incompatible types: possible lossy conversion from double to int".
+// Steps 2-4 are narrowing conversions (double to int): the value can lose its
+// fractional part or not fit, so Java requires an explicit cast. Step 1 is
+// widening (int to long/double): no information is lost, so it is implicit.
 //
 // Did the conversion of lengthCm and driftCm round, or cut? In which
 // direction does it cut a negative number?
+// It cuts: the fractional part is discarded, with no rounding. It always
+// cuts toward zero, so -2.75 becomes -2, not -3.
 //
 // Why is distanceMm as int not 3000000000?
-//
+// Because 3000000000 is above the int range. A double that is too large is
+// clamped to the largest int, Integer.MAX_VALUE (2147483647), with no error.
 
 // Expected output:
 // boxes as long: 12
@@ -59,4 +80,9 @@ public class Ex010 {
 // distanceMm as int: 2147483647
 
 // My output:
-//
+// boxes as long: 12
+// boxes as double: 12.0
+// lengthCm as int: 187
+// discarded part: 0.75
+// driftCm as int: -2
+// distanceMm as int: 2147483647

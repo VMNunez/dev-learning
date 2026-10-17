@@ -35,7 +35,7 @@ public class Ex004 {
         int notebooksLine = notebookPrice * notebookQuantity;
 
         // Your answer (correct the defect in this calculation):
-        int total = booksLine + pensLine + booksLine + shipping;
+        int total = booksLine + pensLine + notebooksLine + shipping;
 
         System.out.println("Books: " + booksLine);
         System.out.println("Pens: " + pensLine);
@@ -47,9 +47,12 @@ public class Ex004 {
 
 // Your answer (explanation):
 // Did the original compile? Did it throw anything when it ran?
-//
+// Yes, it compiled and ran without throwing any exeption, but it printed
+// a wrong total (87 instead of 59 )
 // Why could javac not detect this defect?
-//
+// Because it is a logic error, not a compile error. javac only checks syntax and types : booksline
+// is a valid int, so adding it twice is a correct expression for the compiler. Only the output
+// shows the mistake.
 
 // Expected output:
 // Books: 36
@@ -59,7 +62,15 @@ public class Ex004 {
 // Total: 59
 
 // Output before the fix:
-//
+// Books: 36
+// Pens: 10
+// Notebooks: 8
+// Shipping: 5
+// Total: 87
 
 // My output:
-//
+// Books: 36
+// Pens: 10
+// Notebooks: 8
+// Shipping: 5
+// Total: 59

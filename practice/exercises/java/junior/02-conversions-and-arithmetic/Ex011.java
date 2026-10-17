@@ -32,15 +32,26 @@ public class Ex011 {
         int countB = 4;
 
         // Your answer:
+        System.out.println("A, int division: " + (sumA/countA));
+        System.out.println("A, cast after dividing: " + (double)(sumA/countA));
+        System.out.println("A, average: " + (((double) sumA)/countA));
+
+        System.out.println("B, average: " + (((double) sumB)/countB));
 
     }
 }
 
 // Your answer (questions):
 // Why does the second line print 3.0 and not 3.5, even though it is a double?
+// Because the division happens first: 7 / 2 is an int division, so the
+// result is truncated to 3 and the fractional part is already lost. Only
+// then is that 3 cast to double, which gives 3.0.
 //
 // In your correct version, which operand is promoted, and at what moment
 // compared with the division?
+// sumA is promoted to double by the cast, before the division. Since one
+// operand is now a double, Java automatically widens countA to double too,
+// so the division is 7.0 / 2.0 and the result keeps its fractional part (3.5).
 //
 
 // Expected output:
@@ -50,4 +61,7 @@ public class Ex011 {
 // B, average: 3.75
 
 // My output:
-//
+// A, int division: 3
+// A, cast after dividing: 3.0
+// A, average: 3.5
+// B, average: 3.75

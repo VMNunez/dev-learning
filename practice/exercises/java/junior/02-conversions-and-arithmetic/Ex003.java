@@ -30,7 +30,7 @@
 public class Ex003 {
     public static void main(String[] args) {
         // Your answer (change the greeting text in step 2):
-        String greeting = "Good morning, Victor.";
+        String greeting = "Good afternoon, Victor.";
 
         System.out.println(greeting);
     }
@@ -39,8 +39,14 @@ public class Ex003 {
 // Your answer (explanation):
 // Which file did `java Ex003` execute in Run 1, and why did it still print
 // the old greeting even though the source already said "afternoon"?
+// Run 1 executed Ex003.class, the bytecode compiled from the old source.
+// The JVM runs the .class file, not the .java file, so editing the source
+// changes nothing until it is recompiled. That is why it still printed
+// "Good morning, Victor."
 //
 // What changed between Run 1 and Run 2, and which tool made that change?
+// Between Run 1 and Run 2, javac recompiled Ex003.java and overwrote
+// Ex003.class with new bytecode, so Run 2 printed "Good afternoon, Victor."
 //
 
 // Expected output:
@@ -51,6 +57,6 @@ public class Ex003 {
 
 // My output:
 // Run 1 (source edited, class not recompiled):
-//
+// Good morning, Victor.
 // Run 2 (after javac):
-//
+// Good afternoon, Victor.
