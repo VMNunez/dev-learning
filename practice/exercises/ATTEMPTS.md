@@ -13,3 +13,8 @@ no row is ever deleted. Every figure in `PROGRESS.md` → `### Short exercises` 
 | ATT-0003 | 2026-10-13 | java:junior | 01 | Variables, declared types, initialization, and scope | 01-execution-and-values | 3 | first | ✅ | — | — | — | JJ006 |
 | ATT-0004 | 2026-10-13 | java:junior | 01 | Primitive vs reference types | 01-execution-and-values | 4 | first | ✅ | — | — | — | JJ007 |
 | ATT-0005 | 2026-10-13 | java:junior | 01 | `int` vs `long` | 01-execution-and-values | 5 | first | ✅ | — | — | — | JJ008 |
+| ATT-0006 | 2026-10-17 | java:junior | 00 | Source, bytecode, and JVM execution | 02-conversions-and-arithmetic | 1 | variant | ✅ | — | ai | — | JJ003 |
+| ATT-0007 | 2026-10-17 | java:junior | 00 | Compile-time vs runtime failure | 02-conversions-and-arithmetic | 2 | variant | ✅ | — | ai | — | JJ004 |
+| ATT-0008 | 2026-10-17 | java:junior | 01 | Primitive vs wrapper types | 02-conversions-and-arithmetic | 3 | first | ✅ | — | ai | — | JJ009 |
+| ATT-0009 | 2026-10-17 | java:junior | 01 | Numeric conversions and casts | 02-conversions-and-arithmetic | 4 | first | ✅ | — | ai | — | JJ010 |
+| ATT-0010 | 2026-10-17 | java:junior | 01 | Integer arithmetic | 02-conversions-and-arithmetic | 5 | first | ✅ | — | ai, notes | — | JJ011 |
