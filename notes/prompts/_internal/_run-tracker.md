@@ -187,7 +187,7 @@ consumer reads freshness from the file itself.
 | system-check · practice | 2026-10-16 — completed — 52 paths, 30 dispatches (28 required + 2 cold re-dispatches); 32 map cells corrected, REC-355…357 opened; reviewer approve-with-tightening (`4fec3e6a`) |
 | system-check · strategy | 2026-10-18 — completed — 24 paths, 16 dispatches (12 required + 4 cold re-dispatches); 5 map cells corrected, REC-365 opened; reviewer approve-with-tightening; BRCH-0007 → REC-354 (`923176c0`) |
 | system-check · system | 2026-10-18 — completed — 22 paths, 19 dispatches (18 required + 1 cold re-dispatch); 23 map cells corrected, REC-366…369 opened; reviewer approve-with-tightening (`1ef91506`) |
-| system-check · cross |  |
+| system-check · cross | 2026-10-19 — completed — 5 clusters over the 189-path inventory, 7 dispatches (6 required + 1 superseded re-dispatch; 2 roles resumed after an API limit); 74 map edits, REC-370…373 opened, REC-363/365/367 updated; reviewer approve-with-tightening; BRCH-0009 → REC-370 (`0673c9e3`) |
 
 ## Single-shot prompt executions
 
