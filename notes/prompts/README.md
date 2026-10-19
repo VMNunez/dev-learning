@@ -287,7 +287,8 @@ Markdown entry points from internal Markdown:
 **Every folder keeps its internal pieces in an `_internal/` subfolder** (2026-07-22) — the fourteen families
 and this root, which holds the shared session/runtime contracts, preflight, the recommendation ledger and
 its resolution doctrine, the skill-friction sink, self-report contracts, market context, batch rules and run tracker. Open any
-folder under `notes/prompts/` and you see its runnable prompts and one `_internal/`, never a mix you
+folder under `notes/prompts/` and you see its runnable prompts and one `_internal/` — `practice/interview/`'s once one of its prompts
+has written the first report its contract places there — never a mix you
 have to read prefixes to sort. Standards, subagent steps and `_last-run-report*.md` files all live
 there; a new one goes in `_internal/` too, **including a report a pipeline has not written yet** — the
 path a prompt is told to write to counts, not just the files already on disk. The `_` prefix stays on
@@ -302,7 +303,7 @@ under half of it). **Adding a runnable prompt means adding its command in the sa
 - **Runnable — you launch these.** Fill in the config block at the top, paste it into a fresh
   conversation, or just use its slash command. **32 files, listed below.**
 - **Internal — a runnable prompt reads and executes these as its own step**; none of them is part of
-  your normal "paste into a new chat" workflow. Two kinds, both `_`-prefixed: **standards**
+  your normal "paste into a new chat" workflow. Mainly two kinds, both `_`-prefixed: **standards**
   (`_note-quality-standard.md`, `_review-standard.md`) — the shared rulebook a family of prompts reads
   — and **subagent steps** (`_notes-write-prompt.md`, `_plan-review-prompt.md`) — the author/reviewer
   slices an orchestrator (the `-audit.md` file in the same folder) fans out to automatically. Several
@@ -337,9 +338,9 @@ name, and the in-session **skills**, which have no launcher file and are written
 skill is and how it starts; `_session-rules.md` owns the naming rule itself. A violation is found by a
 bounded grep for `(?<![A-Za-z0-9-])/<skill-name>(?![A-Za-z0-9-])` over `notes/prompts/`, both skill trees
 and both launcher catalogues, discarding hits inside a file path; on 2026-08-10 it returned exactly one
-real violation, this system's own drift-report example. It still returns three lines today — this
-paragraph's own negative example, the same example in `_session-rules.md`, and the ledger row quoting the
-defect — so read every hit before calling it a defect.
+real violation, this system's own drift-report example. It returns two lines today — this
+paragraph's own negative example and the same example in `_session-rules.md` — so read every hit before
+calling it a defect.
 
 | Group | Prompts |
 |---|---|
@@ -358,16 +359,17 @@ Two flavors among these 32, both launched the same way (paste config into a new 
   `coverage-verify-prompt`, `notes-plan-prompt`, `sql-plan-prompt`, `sql-plan-audit`, `simulation-plan-prompt`, and
   the two system prompts `system-check-prompt` and `system-gaps-prompt` (they run the orchestrator contract
   even when the target is singular) — run entirely inside a supported agent runtime and hand you a
-  finished result (and, where noted, a commit) with no further input from you. **No orchestrator declares
-  a human gate any more**: `portfolio-audit`'s ✅/⚠️ one-bullet choice was retired 2026-08-31, the bullet
+  finished result (and, where noted, a commit) with no further input from you once configured and off
+  `main` (seven of them stop and ask which branch to use when started on `main`). **No orchestrator
+  declares a human ownership gate any more**: `portfolio-audit`'s ✅/⚠️ one-bullet choice was retired 2026-08-31, the bullet
   now being written to `_application-standard.md`'s checkable Project-bullet spec, and the only thing
   that still pauses that prompt for Victor is a `cv-bullets.md` section a pre-retirement run left holding two
   options. A section you have marked `[refined]` is not a gate either: that prompt reports it and moves
   on, never asking. **Twenty prompts**, and
   the set is defined by which self-report they run: these twenty execute `_pipeline-self-report.md`.
 - **Single-shot prompts** — the other twelve, which execute `_single-shot-self-report.md` — do one job
-  in one pass; some need you to paste something mid-conversation (your code into
-  `simulation-review-prompt`, a job offer into `cover-letter-prompt`, etc.).
+  in one pass; some need you to paste something mid-conversation (your solution to
+  `simulation-grade`, which dispatches `simulation-review-prompt` cold, a job offer into `cover-letter-prompt`, etc.).
 
 ### Public interface index
 
@@ -434,8 +436,8 @@ licences: this fence reaches three parts of one column and makes no claim about 
 | `/cover-letter` → `cover-letter-prompt` | `MODE`, `EMPRESA`, `PUESTO`, optional `CONTACTO`; pasted offer | S · output only | after a **clean** `/progress-update` (its drift repaired, not merely run; optionally `/cv tailor`); offer required; tailored text only, no repo file |
 | `/profile-readme` → `profile-readme-prompt` | `MODE=sync\|optimize` | S · external repo, committed there by the run, pushed by Victor | after `/portfolio-audit` when a project just reached ✅ Ready, otherwise run-first nothing; sync never silently expands to optimize; commits the portfolio repo **in that repo** (`git -C`), never into this one's index, and never pushes it |
 | `/tracker` → `tracker-prompt` | `MODE=log\|update\|analyze`; `log` adds `EMPRESA`, `PUESTO`, `CANAL`, `FUENTE`, `CONTACTO`, `CV_USADO` plus the `sector` it asks for when it cannot infer one, `update` adds `EMPRESA` (and `PUESTO` only if needed to disambiguate) plus the new `estado` and the verbatim feedback it asks for, `analyze` none; `log` also asks for the posting text pasted when fetching `FUENTE` fails | S · external/output | run-first nothing; external tracker only; analyze hands recurring gaps to evidence-intake |
-| `/system-check` → `system-check-prompt` | `FLOW=next\|knowledge\|projects\|practice\|strategy\|system\|cross` (default `next`, the first flow not `fresh`); explicit invocation; an in-progress `.system-check/flows/` checkpoint is resumed rather than a new run started (`FLOW=next` resumes it whatever its flow; a named flow resumes only its own) | O, one cold analyst per inventory file and per paired skill of the flow, one mechanical analyst for its launcher pairs — or one per cluster on `cross` — + one cold final reviewer · agent; every accepted return is persisted before the next wave | run-first nothing, explicit invocation only; one flow per run, never `all`; machinery only; takes `_session-rules.md`'s machinery-only exception, so it never opens active-project `PLANNING.md` / backlog / `PROGRESS.md` even for orientation; a flow stays `fresh` while its source files, the prompt and its mandate keep the blob ids its report records — the maps and both ledger files deliberately outside that comparison — and the whole system reads verified only when all six flows are `fresh` and no path is unassigned; never source repair, automatic gate, or a whole-system verdict written by one run |
-| `/system-gaps` → `system-gaps-prompt` | `MODE=update\|dry-run`; explicit invocation | O, one cold independent analyst + cold reviewer · agent; the orchestrator reads both maps itself | run-first nothing, explicit invocation only; the two maps are the only evidence, and nothing outside its declared read set (its family row's `Reads` cell) is opened — no prompt, skill, launcher, validator or live artifact, and no standard but the two contracts every runnable prompt executes; corrects nothing, caps the ledger at five rows a run, and never states one branch of an absence as fact |
+| `/system-check` → `system-check-prompt` | `FLOW=next\|knowledge\|projects\|practice\|strategy\|system\|cross` (default `next`, the first flow not `fresh`); explicit invocation; an in-progress `.system-check/flows/` checkpoint is resumed rather than a new run started (`FLOW=next` resumes it whatever its flow; a named flow resumes only its own) | O, one cold analyst per inventory file and per paired skill of the flow, one mechanical analyst for its launcher pairs — or one per cluster on `cross` — + one cold final reviewer · agent; every accepted return is persisted before the next wave | run-first nothing, explicit invocation only; one flow per run, never `all`; machinery only; takes `_session-rules.md`'s machinery-only exception, so it never opens active-project `PLANNING.md` / backlog / `PROGRESS.md` even for orientation; a flow stays `fresh` while its path set is unchanged and its source files, the prompt and its mandate keep the blob ids its report records — the maps and both ledger files deliberately outside that comparison — and the whole system reads verified only when all six flows are `fresh` and no path is unassigned; never source repair, automatic gate, or a whole-system verdict written by one run |
+| `/system-gaps` → `system-gaps-prompt` | `MODE=update\|dry-run`; explicit invocation | O, one cold independent analyst + cold reviewer · agent; the orchestrator reads both maps itself | run-first nothing, explicit invocation only; the two maps are the only evidence, and nothing outside its declared read set (its family row's `Reads` cell) is opened — no prompt, skill, launcher, validator or live artifact, and no standard but the runtime standard every runnable prompt reads and the self-report contract every orchestrator executes; corrects nothing, caps the ledger at five rows a run, and never states one branch of an absence as fact |
 
 Either way, **every run writes its own `_last-run-report*.md` and updates `_run-tracker.md`.**
 Orchestrators record target-level state; `notes-audit` rewrites the level's Notes J/M/S summary cell, naming the `TOPIC + LEVEL + NOTE` it ran on, and keeps no per-note row,
@@ -537,6 +539,11 @@ evidence that decides whether a frozen prompt gets reopened), plus every
 `_portfolio-write-prompt.md` / `_portfolio-review-prompt.md` / `_portfolio-translate-prompt.md` /
 `_portfolio-review-es-prompt.md`.
 
+The leading-`_` rule above, not this list, is exhaustive; also internal and never launched:
+`_session-rules.md`, `_agent-runtime-standard.md`, `_external-path-preflight.md`, `_system-map.md`,
+`_recommendation-ledger.md`, `_run-tracker.md`, `_cross-topic-inbox.md`, `_topic-ownership.md`,
+`_coverage-prompt-rationale.md`, `_last-drift-report.md`, and every `_last-run-report*.md`.
+
 ---
 
 ## The five hub files
@@ -546,10 +553,10 @@ consume one of these sources of truth.
 
 | Hub file | Source of truth for | Written by | Read by |
 |----------|---------------------|------------|---------|
-| `notes/coverage/junior.md` | **junior scope** | `coverage-prompt`, `coverage-audit-prompt` (bulk) · in session: `coverage-bullet-add`, `coverage-mark`, and `sql-step-close` (SQL drill markers) — complete list in [`_system-map.md` §7](_internal/_system-map.md#7--the-writer-registry) | `project-brief` (the only whole read), current notes/interview-prep audits, `roadmap-review`, `sql-exercises`, and the apply family for defensibility spot lookups (`cv`, `linkedin`, `cover-letter`, and `portfolio-audit`'s CV bullet, through `_application-standard.md` source 7); `plan-audit` only digests it to test a brief's freshness |
-| `notes/coverage/middle.md` | **middle scope after junior consolidation** | `coverage-prompt`, `coverage-audit-prompt` (bulk) · in session: `coverage-bullet-add`, `coverage-mark`, and `sql-step-close` (SQL drill markers) — complete list in [`_system-map.md` §7](_internal/_system-map.md#7--the-writer-registry) | level-aware notes/interview-prep audits |
-| `notes/coverage/senior.md` | **senior scope after middle consolidation** | `coverage-prompt`, `coverage-audit-prompt` (bulk) · in session: `coverage-bullet-add`, `coverage-mark`, and `sql-step-close` (SQL drill markers) — complete list in [`_system-map.md` §7](_internal/_system-map.md#7--the-writer-registry) | level-aware notes/interview-prep audits |
-| `PROGRESS.md` | **status, never a concept list** — the per-technology lists were deleted 2026-08-03 and a concept lives in the coverage files; the section-by-section inventory is [`_system-map.md` §8](_internal/_system-map.md#8--progressmd-section-by-section) | the closing rituals per section, in session (`step-complete`, `coverage-mark`, `study-block-close`, `authoring-progress-recount`, `sql-grade`, `simulation-review`…) + `progress-update-prompt`, which writes only `Professional level by topic` and audits the rest; **the sections' explanatory prose has no automatic writer — Victor repairs it by hand** (`REC-219`) | `plan-audit`, `roadmap-review`, `project-brief`, `review-audit`, `cv`, `linkedin`, `cover-letter`, `profile-readme`, `sql-exercises`, simulation/interview planning |
+| `notes/coverage/junior.md` | **junior scope** | `coverage-prompt`, `coverage-audit-prompt` (bulk) · in session: `coverage-bullet-add`, `coverage-mark`, and `sql-step-close` (SQL drill markers) — complete list in [`_system-map.md` §7](_internal/_system-map.md#7--the-writer-registry) | `project-brief` and `roadmap-review` (its gap-analysis subagent and cross-file reviewer, each to EOF), `coverage-audit` (the selected level's mirror), `notes-plan`, `coverage-verify` and `sql-plan` (parity check against the topic file), and the apply family for defensibility spot lookups (`cv`, `linkedin`, `cover-letter`, and `portfolio-audit`'s CV bullet, through `_application-standard.md` source 7); `plan-audit` only digests it to test a brief's freshness |
+| `notes/coverage/middle.md` | **middle scope after junior consolidation** | `coverage-prompt`, `coverage-audit-prompt` (bulk) · in session: `coverage-bullet-add`, `coverage-mark`, and `sql-step-close` (SQL drill markers) — complete list in [`_system-map.md` §7](_internal/_system-map.md#7--the-writer-registry) | `notes-plan`, `coverage-verify`, `coverage-audit`, `sql-plan` (each reading the selected level's mirror) |
+| `notes/coverage/senior.md` | **senior scope after middle consolidation** | `coverage-prompt`, `coverage-audit-prompt` (bulk) · in session: `coverage-bullet-add`, `coverage-mark`, and `sql-step-close` (SQL drill markers) — complete list in [`_system-map.md` §7](_internal/_system-map.md#7--the-writer-registry) | `notes-plan`, `coverage-verify`, `coverage-audit`, `sql-plan` (each reading the selected level's mirror) |
+| `PROGRESS.md` | **status, never a concept list** — the per-technology lists were deleted 2026-08-03 and a concept lives in the coverage files; the section-by-section inventory is [`_system-map.md` §8](_internal/_system-map.md#8--progressmd-section-by-section) | the closing rituals per section, in session (`step-complete`, `coverage-mark`, `study-block-close`, `authoring-progress-recount`, `sql-grade`, `simulation-review`…) + `progress-update-prompt`, which writes only `Professional level by topic` and audits the rest except `Short exercises` (no detector yet, `REC-275`) and `Useful resources`, which it leaves untouched; **the sections' explanatory prose has no automatic writer — Victor repairs it by hand** (`REC-219`) | `plan-audit`, `roadmap-review`, `project-brief`, `review-audit`, `cv`, `linkedin`, `cover-letter`, `profile-readme`, `sql-exercises`, simulation planning (`simulation-plan`) and, for orientation, `interview-prep-block-open` |
 | `{project}/PLANNING.md` | **what a project builds** | `plan-audit` · in session: `step-complete` (✅ + its §0 partition; `Next gate` re-derived) and `backlog-task-close` (rules section + §0 — `Last updated` always, the gate qualifier, and the route cells only when it owns them — plus the open-task count §22's prose restates), plus `backlog-task-open` for the open-task **number** alone — §0's cell and the count §22's prose restates — when it raises an incidental finding, and `slice-review` for that same number when it raises a finding, plus a `signable` `Next gate` qualifier turned to blocked by a new open High — the whole six-cell partition is in [`_system-map.md` §7](_internal/_system-map.md#7--the-writer-registry) | `readme-audit`, `review-audit`, `portfolio-audit`, `progress-update`, `roadmap-review`, `project-brief` (conditional project-07 Angular backfill), `slice-review` and `readme-concept-add` (their bounded §15/route-state checks) |
 
 ---
@@ -690,9 +697,9 @@ accurate; `apply/` produces the job-application material.
 
 | Prompt | What it does | Reads | Generates / updates |
 |--------|--------------|-------|---------------------|
-| `system/system-check-prompt.md` | **Explicit, on-demand machinery audit, one flow per run — never a per-commit gate.** Places every canonical runnable prompt, internal contract/component, root contract, the PowerShell validator, every mirrored skill and every launcher pair in exactly one of five flows — `knowledge`, `projects`, `practice`, `strategy`, `system`, matching the map's chains and its §12 — by a hand-written table; a path the table does not place is printed `unassigned`, never guessed. A run dispatches one cold analyst per file of its flow, which reads that file to EOF and rules on the map rows `_session-rules.md`'s read licence gives it (a positive contradiction anywhere, an absence only inside the licence), then one cold final reviewer over every proposed correction. A sixth flow, `cross`, rules in five clusters on what no single file licenses — §1, §2 and the chains' order, the producer→consumer list in "How the prompts feed each other", §8, §12, §13 re-measured in one pass, and every other map line no file licence names, the catalogue's counts and lists among them. Each flow keeps its own report, listing every audited path's git blob id (line-ending-normalised) and the ids of the prompt and its mandate: the flow is `fresh` while those are unchanged, the maps and both ledger files being deliberately outside the digest, since nearly every machinery commit or close-out edits them. A bare `/system-check` opens with the flow table and audits the first flow that is not `fresh`. Replaced the global, all-or-nothing method on 2026-10-15 (`REC-245`), which never completed a run. A claim its own source contradicts becomes a ledger row, never a map correction. | the flow's inventory files — for `system`, the root contract `_session-rules.md` and `_shared-context.md` among them, audited as machinery here, not read as background — and its own `_system-check-reconcile-prompt.md`; `validate-prompt-system.ps1 -MachineryOnly`; the short-exercise route checker `validate-practice-plan.py`, read as an inventory component and never run (`REC-277`); both maps; every flow's report, for the flow table; `_recommendation-ledger.md` for its improvement-loop contract and, with `_recommendation-ledger-closed.md`, for deduplicating new findings; an in-progress `.system-check/flows/` checkpoint as orchestration evidence only. Under `_session-rules.md`'s machinery-only exception it does not open the active project's `PLANNING.md`, backlog or `PROGRESS.md` even for session orientation; all live project/learning/practice/application artifacts, generated reports, trackers, evidence state, notes-plan freshness and debt counts stay outside the inventory | `notes/prompts/README.md`, `_internal/_system-map.md`, `system/_internal/_system-check-report-{FLOW}.md`, justified recommendation-ledger rows, the flow's `system-check · {FLOW}` tracker row, and Git-ignored `.system-check/flows/{FLOW}/{run-id}/` execution evidence; never source prompts, skills, standards or live artifacts |
+| `system/system-check-prompt.md` | **Explicit, on-demand machinery audit, one flow per run — never a per-commit gate.** Places every canonical runnable prompt, internal contract/component, root contract, the PowerShell validator, every mirrored skill and every launcher pair in exactly one of five flows — `knowledge`, `projects`, `practice`, `strategy`, `system`, matching the map's chains and its §12 — by a hand-written table; a path the table does not place is printed `unassigned`, never guessed. A run dispatches one cold analyst per inventory file and per paired skill of its flow, and one mechanical analyst for its launcher pairs together, which reads that file to EOF and rules on the map rows `_session-rules.md`'s read licence gives it (a positive contradiction anywhere, an absence only inside the licence), then one cold final reviewer over every proposed correction. A sixth flow, `cross`, rules in five clusters on what no single file licenses — §1, §2 and the chains' order, the producer→consumer list in "How the prompts feed each other", §8, §12, §13 re-measured in one pass, and every other map line no file licence names, the catalogue's counts and lists among them. Each flow keeps its own report, listing every audited path's git blob id (line-ending-normalised) and the ids of the prompt and its mandate: the flow is `fresh` while those ids and its path set are unchanged, the maps and both ledger files being deliberately outside the digest, since nearly every machinery commit or close-out edits them. A bare `/system-check` opens with the flow table and audits the first flow that is not `fresh`. Replaced the global, all-or-nothing method on 2026-10-15 (`REC-245`), which never completed a run. A claim whose own source states two mutually exclusive clauses becomes a ledger row, never a map correction. | the flow's inventory files — for `system`, the root contract `_session-rules.md` and `_shared-context.md` among them, audited as machinery here, not read as background — and its own `_system-check-reconcile-prompt.md`; `validate-prompt-system.ps1 -MachineryOnly`; the short-exercise route checker `validate-practice-plan.py`, read as an inventory component and never run (`REC-277`); both maps; every flow's report, for the flow table; `_recommendation-ledger.md` for its improvement-loop contract and, with `_recommendation-ledger-closed.md`, for deduplicating new findings; an in-progress `.system-check/flows/` checkpoint as orchestration evidence only. Under `_session-rules.md`'s machinery-only exception it does not open the active project's `PLANNING.md`, backlog or `PROGRESS.md` even for session orientation; all live project/learning/practice/application artifacts, generated reports, trackers, evidence state, notes-plan freshness and debt counts stay outside the inventory | `notes/prompts/README.md`, `_internal/_system-map.md`, `system/_internal/_system-check-report-{FLOW}.md`, justified recommendation-ledger rows, the flow's `system-check · {FLOW}` tracker row, and Git-ignored `.system-check/flows/{FLOW}/{run-id}/` execution evidence; never source prompts, skills, standards or live artifacts |
 | `system/_internal/_system-check-reconcile-prompt.md` | *Internal.* The **mandate of one `system-check` concern**: one inventory file, one paired skill, a flow's launcher pairs, or one `cross` cluster. It owns the per-kind licence — which map rows a whole read of that kind of file may rule on, `_session-rules.md`'s read-licence table applied to this audit, with §13 given whole to the `day` cluster — the four fence sites to read before ruling an absence, the five dispositions (`correct` · `incorrect` · `missing` · `fenced` · `source-contradiction`), and the return contract the orchestrator gates on. Read by the concerns, never by a launcher. Not runnable. | both maps (`README.md`, `_internal/_system-map.md`) — read to EOF on a `cross` cluster, grepped with every hit read as a whole row or paragraph on a file concern — and what the concern is about: the one file under audit, to EOF (`PATH`; a skill's `.claude/skills/` copy), the flow's launcher pairs, or, on `cross`, every inventory file a claim names, to EOF | — |
-| `system/system-gaps-prompt.md` | **Finds what the machinery does not cover, from the two derived maps alone.** Builds a typed edge ledger — writes, reads, fires-on, follows, gates, clears, hands-off — by reading both maps to EOF itself, then runs ten named detectors over it: unwritten file, orphan output, cold-only writer on in-session state, unrecorded event, broken handoff, ownerless gate, uncleared debt, unrouted symptom, contested write with no order, unreachable machinery. Every candidate is discharged by a quoted licence sentence or survives with a disposition; a finding resting on absence names **both** branches (the machinery lacks it · the maps omit it) and the one file that would settle it, because this prompt may not open that file. One cold independent analyst re-runs the detectors, one cold reviewer gates the ledger rows. Deliberately cheap and re-runnable: it is the counterpart of `/system-check`, which reads the machinery and asks whether the maps are *true* | `notes/prompts/README.md` and `_internal/_system-map.md`, whole; `_recommendation-ledger.md` (its `## Open` rows) and `_recommendation-ledger-closed.md` beside it (the resolved half, including **rejected** rows), for deduplication only; its own previous report and its `_last-run-report-system-gaps.md` `Status:` line; `_agent-runtime-standard.md` and `_pipeline-self-report.md`, the two contracts every runnable prompt executes. **Nothing else — no other prompt, skill, standard, launcher, validator or live artifact, not even the file a finding is about** | `system/_internal/_system-gaps-report.md` (every candidate, always) and at most five new `## Open` rows in `_recommendation-ledger.md`; **never a map, a prompt, a skill or any live artifact** — a finding that is a map defect is routed to `/system-check` or `map-sync` |
+| `system/system-gaps-prompt.md` | **Finds what the machinery does not cover, from the two derived maps alone.** Builds a typed edge ledger — writes, reads, fires-on, follows, gates, clears, hands-off — by reading both maps to EOF itself, then runs ten named detectors over it: unwritten file, orphan output, cold-only writer on in-session state, unrecorded event, broken handoff, ownerless gate, uncleared debt, unrouted symptom, contested write with no order, unreachable machinery. Every candidate is discharged by a quoted licence sentence or survives with a disposition; a finding resting on absence names **both** branches (the machinery lacks it · the maps omit it) and the one file that would settle it, because this prompt may not open that file. One cold independent analyst re-runs the detectors, one cold reviewer gates the ledger rows. Deliberately cheap and re-runnable: it is the counterpart of `/system-check`, which reads the machinery and asks whether the maps are *true* | `notes/prompts/README.md` and `_internal/_system-map.md`, whole; `_recommendation-ledger.md` (its `## Open` rows) and `_recommendation-ledger-closed.md` beside it (the resolved half, including **rejected** rows), for deduplication only; its own previous report and its `_last-run-report-system-gaps.md` `Status:` line; `_agent-runtime-standard.md` and `_pipeline-self-report.md`, the runtime standard every runnable prompt reads and the self-report contract every orchestrator executes. **Nothing else — no other prompt, skill, standard, launcher, validator or live artifact, not even the file a finding is about** | `system/_internal/_system-gaps-report.md` (every candidate, always) and at most five new `## Open` rows in `_recommendation-ledger.md`; **never a map, a prompt, a skill or any live artifact** — a finding that is a map defect is routed to `/system-check` or `map-sync` |
 
 ---
 
@@ -704,18 +711,20 @@ producer has not run (or is stale), its consumers produce wrong results. Run pro
 Each generated file, with who writes it and who depends on it:
 
 - **`notes/coverage/junior.md`, `notes/coverage/middle.md`, `notes/coverage/senior.md`** — written by
-  `coverage-prompt` / `coverage-audit-prompt`. Level-aware notes and interview-prep consume the selected
-  mirror; current project planning and roadmap review intentionally consume junior, while SQL practice consumes the selected level's mirror (`sql-plan` plans one `LEVEL` at a time, junior first).
+  `coverage-prompt` / `coverage-audit-prompt` · in session: `coverage-bullet-add`, `coverage-mark`, and
+  `sql-step-close` (SQL drill markers) — complete list in `_system-map.md` §7. `notes-plan` and `coverage-verify` check the selected mirror against the topic file and `coverage-audit`
+  reads it whole, while the notes and interview-prep audits read the topic files; current project planning and roadmap review intentionally consume junior, while SQL practice consumes the selected level's mirror (`sql-plan` plans one `LEVEL` at a time, junior first).
   *Coverage is the root — downstream work assumes the selected level is correct.*
 - **`notes/{topic}/coverage/verify-{LEVEL}.md`** — written by `coverage-verify` (verdict + level-targeted
-  findings, stamped with the selected coverage SHA only — earlier levels carry no field of their own) → read by `notes-plan` as an **advisory** gate (a missing, `gaps`, or
+  findings, stamped with the selected coverage SHA only — earlier levels carry no field of their own) → read by `notes-plan` and by `sql-plan` (SQL only) as an **advisory** gate (a missing, `gaps`, or
   stale verdict is reported in its final summary and never stops the run) and by `coverage-prompt`
   update, which consumes the open gaps as proposed items — from this file at its own level, and from a
   sibling `verify-*.md` for gaps that verification targeted at an earlier level.
   *The completeness checkpoint between coverage and the study map.*
 - **`notes/prompts/_internal/_job-market-evidence.md`** — written by `evidence-intake` (dedicated intake) and
   `cv-prompt` (tailor mode, as it tailors to each offer) → read by `coverage-prompt`, `coverage-audit`,
-  and both their subagents, plus `interview-prep-audit`'s market-analysis stage. *Real postings that
+  and both their subagents, plus `interview-prep-audit`'s market-analysis stage, `coverage-verify`,
+  `interview-prep-route` and `project-brief`. *Real postings that
   anchor coverage and the interview Q&A to the market.*
 - **`notes/prompts/strategy/apply/_internal/_application-evidence.md`** — written **by hand by the
   session that needs it** (Claude, under the `notes/prompts/` authorship rule — not Victor, unlike the
@@ -733,17 +742,17 @@ Each generated file, with who writes it and who depends on it:
   consulted only when a bar is questioned. *The third of the evidence family, scoped to one project's
   README — added 2026-09-01 (`REC-193`), and its finding on section sizes is a measured absence.*
 - **`PROGRESS.md`** — written **per section by the closing rituals** in the daily session, each owning its
-  own cell (`study-block-close` owns `Study progress`, `authoring-progress-recount` owns `Authoring progress`, and each owns the per-project question-bank table inside its own section since 2026-09-06); `progress-update` writes only `Professional level by topic` and *audits* the rest, reporting
+  own cell (`study-block-close` owns `Study progress`, `authoring-progress-recount` owns `Authoring progress`, and each owns the per-project question-bank table inside its own section since 2026-09-06); `progress-update` writes only `Professional level by topic` and *audits* the rest — `Short exercises` excepted, which no detector reads yet (`REC-275`), and `Useful resources`, which it leaves untouched — reporting
   drift with the owner to re-run (demoted 2026-08-05, REC-039) → read by `plan-audit`, `roadmap-review`,
-  `project-brief`, `review-audit`, `cv`, `linkedin`, `sql-exercises`, and `portfolio-audit` for the
+  `project-brief`, `review-audit`, `cv`, `linkedin`, `cover-letter`, `profile-readme`, `sql-exercises`, `sql-plan`, and `portfolio-audit` for the
   `## Projects` table alone, on Check 1's markerless-plan branch (REC-217). *Stale PROGRESS = the wrong next
   project in `project-brief` and a wrong gap analysis in `roadmap-review`.*
 - **`projects/briefs/project-brief-{NN}.md`** — written by `project-brief` → read by `plan-audit`
   (`MODE = new`, which refuses a hard-stale one), by its author half instead of the coverage mirror, and
-  by the `steps-tests` specialist as the authority for §3/§4. Its `## Gaps left for the next brief` is
+  by the `steps-tests` specialist as the authority for §2/§3/§4. Its `## Gaps left for the next brief` is
   the starting input for the following project's brief. *ROADMAP proposes · the brief decides ·
   PLANNING builds.*
-- **`{project}/PLANNING.md`** — written by `plan-audit` in new mode and revised by it in review mode → read by `readme-audit`,
+- **`{project}/PLANNING.md`** — written by `plan-audit` in new mode and revised by it in review mode · in session: `step-complete` (✅ + §0), `backlog-task-close`, `backlog-task-open` and `slice-review` (open-task count) — partition in `_system-map.md` §7 → read by `readme-audit`,
   `review-audit`, `portfolio-audit`, `progress-update`, `roadmap-review`. *It is the contract
   the whole project is checked against.*
 - **`PROJECT-BACKLOG.md`** — written by `review-audit` (the tasks, merged in and never regenerated, so
@@ -777,7 +786,8 @@ Each generated file, with who writes it and who depends on it:
   reviewer does on a standalone run), `study-block-close`
   (`[studied]` only), and Victor (or an agent on his say-so) for the study mark at the end of an `es/`
   index entry, which every run keeps → read by `interview-prep-route`,
-  `interview-prep-block-open`, `simulator`, `authoring-progress-recount` and `progress-update` — plus
+  `interview-prep-block-open`, `simulator`, `authoring-progress-recount`, `progress-update`, `study-block-close`,
+  `code-review-practice` and `simulation-review` — plus
   `portfolio-audit`'s translator **and its Spanish reviewer**, which each read **one `es/` file**
   (`junior/es/architecture.md`) as a Spanish-register reference and write nothing here.
 - **`interview-prep/routes/{LEVEL}.md`** — written only by `interview-prep-route` → read by
@@ -938,7 +948,8 @@ Practice (its own loop, fed by coverage):
 5. Repeat `notes-audit` for every pending plan entry, in dependency order, until the selected
    `notes-plan-{LEVEL}.md` contains only `Status: complete` (or `refined`)
    - **Freezing a note you have polished:** once you have taken a pair to your own bar with TODOs, set
-     its plan entry to `Status: refined` by hand. No prompt sets, clears, or downgrades that status, and
+     its plan entry to `Status: refined` by hand, or declare the pair refined in session, where
+     `study-content-writer` writes it after a cold correctness read. No prompt sets, clears, or downgrades that status, and
      from then on the existing prose in `en/` and `es/` is immutable to the whole pipeline. The entry's
      existing `[x]` `Coverage concepts` also become locked: coverage may still gain new bullets or evidence
      markers, but those assigned concepts are never reworded, reordered, moved between sections/topics/
@@ -1066,7 +1077,7 @@ bank inventory. Authoring, refinement and study are deliberately separate states
 - It audits **one flow per run** — `knowledge`, `projects`, `practice`, `strategy`, `system`, or `cross`
   for what no single file can settle. A bare `/system-check` prints which flows are `fresh` and audits
   the first one that is not, so repeating the bare command walks the whole system one session at a time.
-  A flow stays `fresh` until one of its source files (both ledger files excepted), the prompt or its
+  A flow stays `fresh` until its path set or one of its source files (the two maps and both ledger files excepted), the prompt or its
   mandate changes; its report and its own tracker row are the record.
 - Accepted concerns persist under Git-ignored `.system-check/flows/`; changing from Codex to Claude
   resumes the same run rather than repeating accepted work.
@@ -1107,7 +1118,7 @@ prompt in this tree, which collide on its report, the tracker and the git index
   single answer named two example fields that no batchable prompt has.
 - **One target only:** `coverage-prompt`, `coverage-verify`, `notes-plan-prompt`, `notes-audit`,
   `interview-prep-route`,
-  `simulation-plan`, `simulation-generator`, and `project-brief` (one decision/route step per run), and
+  `simulation-plan`, `sql-plan-prompt`, `simulation-generator`, and `project-brief` (one decision/route step per run), and
   `system-check` (one flow per run — a bare run picks the next flow that is not `fresh`, which is how it
   covers every flow without an `all`).
 - **Already global (no `all` needed):** `coverage-audit`, `roadmap-review`, `system-gaps`, `cv`,
@@ -1116,26 +1127,31 @@ prompt in this tree, which collide on its report, the tracker and the git index
   one run by design.
   `progress-update` defaults to `MODE = active` (only the in-progress project); set `MODE = all`
   for the full global pass.
-- **Single-shot (not batchable):** `simulation-review` and `hr-screen` — each needs your pasted code
-  or a live back-and-forth, so they run one at a time.
+- **Single-shot (not batchable):** `simulation-review` (graded by the cold `simulation-grade` dispatch on
+  your submitted solution) and `hr-screen` — each needs your solution or a live back-and-forth, so they run one at a time.
 
 ---
 
 ## Runtime-neutral reasoning tiers
 
-Every orchestrator specifies a canonical reasoning tier on each dispatch. Platform adapters decide
+Every orchestrator except the three coverage prompts (`coverage-prompt`, `coverage-verify`,
+`coverage-audit`, which name no tier on their dispatches and defer to the runtime standard) specifies a
+canonical reasoning tier on each dispatch. Platform adapters decide
 how that tier is fulfilled; canonical prompts never name a vendor model or agent API. The criterion:
 
 > **If the output's quality is guaranteed by structure — an explicit standard, a report contract, a
 > trace gate that rejects incomplete work — tier down. If it is guaranteed only by judgment — writing
 > prose, designing, translating, deciding what matters — use `deep`.**
 
-- **mechanical** — pure command-running and deterministic formatting.
-- **standard** — pattern-matching and conformance against an explicit standard: concept extraction,
-  notes inspect/translate/es-review, README review + consistency check, roadmap fact-gathering.
+- **mechanical** — pure command-running and deterministic formatting, and marker location against an
+  explicit format contract (`progress-update`'s per-project step-status and SQL-count subagents).
+- **standard** — pattern-matching and conformance against an explicit standard: notes translate/es-review,
+  README review + consistency check, roadmap fact-gathering, the frontend flow/cross-slice/learning-objectives
+  reviewers of `review-audit`.
 - **deep** — everything that authors, rewrites, or judges: plan author + advisor + specialists,
   notes/README/interview-prep authors, portfolio author + reviewer + translator + Spanish reviewer, roadmap reviewers,
-  project flow/security reviewers, and the README **reader-effect judge** — which authors nothing and
+  backend project flow/security reviewers (the frontend flow, cross-slice and learning-objectives reviewers
+  are `standard`), the notes English reviewer, and the README **reader-effect judge** — which authors nothing and
   sits here for the other half of the criterion: it rules on whether a finished page lands on a
   recruiter or an interviewer, with no checklist to fall back on. *The portfolio translator sits here and not under **standard** with
   the notes translator: it renders interview answers that must still sound like Victor saying them, so
