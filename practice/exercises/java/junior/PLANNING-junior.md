@@ -7,7 +7,7 @@ Coverage: notes/java/coverage/junior.md
 Coverage SHA-256: bad12930637587f5cce0f4c3bad990572d29c6e9c4ea340a6e4a2627a188508a
 Notes plan: notes/java/coverage/notes-plan-junior.md
 Notes structure SHA-256: 7ce0128dc0f8cf59aca6b22f2663bef9f9dd785e4acef79d79b74d259424f5e2
-Generated: 2026-10-06
+Generated: 2026-10-20
 
 This is the persistent practice route. The shared contract lives in
 `notes/prompts/practice/exercises/_internal/_practice-standard.md`; `practice-session` plans,
@@ -23,15 +23,18 @@ to that folder. The statement carries the task and pass condition, with concrete
 cases chosen on the day. First tasks introduce application; transfer tasks change the problem;
 integration tasks combine two or three concepts. Adaptive reviews are additional and uncounted.
 
-Every `variant` occurs in a later batch than its first attempt. Table order is the default, subject
-to block prerequisites and `After`; a request may select a later block under the standard's rules.
+Every `variant` occurs in a later batch than its first attempt. While the `## Essential route` below is
+not passed it is the default order for a Java request that names no block or concept; table order,
+subject to block prerequisites and `After`, applies after it and to a named block, which a request may
+select under the standard's rules.
 Diagnosis tasks still require corrected code and observed output where runnable. Invalid examples
 stay in comments, so the delivered skeleton and final source compile. Package/access and unfamiliar
 framework signatures are bounded reading/repair cases inside comments, with executable JDK-only
 counterparts where applicable. Supplied scaffolding may use already-familiar syntax, but never
 requires mastering an unintroduced concept or teaches framework behavior as Java scope.
 
-Each concept has one first and one transfer task, and each included block has one integration.
+Each concept has one first and one transfer task, and each included block has one integration;
+JJ270–JJ285 add seven stage integrations and nine combined problems for the essential route.
 Two block-06 concepts — access modifiers (`protected`) and `final` (methods, classes) — have a
 second transfer, JJ268 and JJ269, placed in block 08 because that half needs inheritance.
 Expected output never depends on the iteration order of a hash-based collection: statements print
@@ -41,7 +44,7 @@ supplied main and uses fixed instants, never the current time or the system zone
 several top-level types the public ExNNN class is declared first, so the single-file launcher
 runs it.
 
-**Target: 269 exercises = 125 first applications + 127 transfers + 17 integrations.**
+**Target: 285 exercises = 125 first applications + 127 transfers + 33 integrations.**
 17 included blocks, 125 included concepts and 7 explicitly excluded Maven concepts, out of 132.
 These are planned tasks, not completed work or a daily quota. A task passes on a correct attempt
 or a verified correction; consolidation still requires a later unaided success. All active tasks
@@ -54,20 +57,20 @@ must pass, with no later unresolved failure, before the route is complete. Attem
 |---|---|---|---|---|---|
 | 00 | Java execution foundations | notes/java/junior/es/00-intro-java.md | none | 2 | 5 |
 | 01 | Values, types, conversion, and arithmetic | notes/java/junior/es/01-variables-tipos.md | 00 | 12 | 25 |
-| 02 | Strings and text | notes/java/junior/es/02-cadenas-de-texto.md | 01 | 7 | 15 |
+| 02 | Strings and text | notes/java/junior/es/02-cadenas-de-texto.md | 01 | 7 | 16 |
 | 03 | Control flow | notes/java/junior/es/03-flujo-de-control.md | 01, 02 | 6 | 13 |
 | 04 | Methods | notes/java/junior/es/04-metodos.md | 03 | 5 | 11 |
 | 05 | References, the call stack, and memory | notes/java/junior/es/05-modelo-de-memoria.md | 04 | 3 | 7 |
-| 06 | Classes, encapsulation, records, and equality | notes/java/junior/es/06-poo-clases.md | 05 | 15 | 31 |
+| 06 | Classes, encapsulation, records, and equality | notes/java/junior/es/06-poo-clases.md | 05 | 15 | 32 |
 | 07 | Interfaces and abstract classes | notes/java/junior/es/07-interfaces-abstractas.md | 06 | 6 | 13 |
 | 08 | Inheritance and polymorphism | notes/java/junior/es/08-herencia-polimorfismo.md | 07 | 5 | 13 |
 | 09 | Generics and reading nested types | notes/java/junior/es/09-genericos.md | 08 | 6 | 13 |
-| 10 | Collections, hashing, and ordering | notes/java/junior/es/10-colecciones.md | 06, 09 | 17 | 35 |
-| 11 | Exceptions and diagnostics | notes/java/junior/es/11-excepciones.md | 05, 10 | 9 | 19 |
-| 12 | Lambdas, method references, and Optional pipelines | notes/java/junior/es/12-streams-lambdas.md | 09, 11 | 10 | 21 |
-| 13 | Streams, collectors, and ordering | notes/java/junior/es/13-streams-colectores.md | 10, 12 | 12 | 25 |
-| 14 | Enums | notes/java/junior/es/14-enums.md | 03, 06 | 3 | 7 |
-| 15 | Date, time, and API literacy | notes/java/junior/es/15-fechas.md | 01, 04, 06, 09, 11 | 5 | 11 |
+| 10 | Collections, hashing, and ordering | notes/java/junior/es/10-colecciones.md | 06, 09 | 17 | 37 |
+| 11 | Exceptions and diagnostics | notes/java/junior/es/11-excepciones.md | 05, 10 | 9 | 21 |
+| 12 | Lambdas, method references, and Optional pipelines | notes/java/junior/es/12-streams-lambdas.md | 09, 11 | 10 | 22 |
+| 13 | Streams, collectors, and ordering | notes/java/junior/es/13-streams-colectores.md | 10, 12 | 12 | 32 |
+| 14 | Enums | notes/java/junior/es/14-enums.md | 03, 06 | 3 | 8 |
+| 15 | Date, time, and API literacy | notes/java/junior/es/15-fechas.md | 01, 04, 06, 09, 11 | 5 | 12 |
 | 16 | Annotations | notes/java/junior/es/16-anotaciones.md | 04, 07, 14 | 2 | 5 |
 | 17 | Maven fundamentals | notes/java/junior/es/17-maven.md | 00, 04 | 7 | 0 |
 
@@ -484,6 +487,55 @@ remain authoritative in coverage. Escaped pipe characters in heads decode to the
 | JJ265 | 16 | C124 | variant | transfer | JJ263 | Ex265.java | Diagnose why a supplied annotation is absent at runtime and correct the stated retention requirement. | Legal target usage and runtime visibility agree with the metadata declarations. | active |
 | JJ266 | 16 | C125 | variant | transfer | JJ264 | Ex266.java | For a supplied framework-annotation snippet kept in comments, read its documentation and record its target, retention and processor with the page cited; then mark two supplied commented-out usages as legal or illegal placements and correct the illegal one. | The recorded target, retention and processor agree with the cited documentation page; each supplied usage is marked legal or illegal according to the documented target and the illegal one is corrected in its comment; the behaviour is attributed to the tool that processes the annotation, not to the annotation; the file compiles with no framework import. | active |
 | JJ267 | 16 | C124, C125 | integration | integration | JJ263, JJ264 | Ex267.java | A supplied look-alike of a framework annotation is ignored by the supplied miniature reflection processor and is also accepted on a field where it makes no sense; repair its retention and target, then record which tool acts on it here and which acts on the Override annotations in the same file. | After the repair the processor finds the annotated method and My output shows it invoked; the commented-out field usage is annotated as now rejected by the compiler; the comment attributes the runtime effect to the processor's reflection code and the Override check to the compiler; with the processor call commented out nothing runs. | active |
+| JJ270 | 02 | C017, C020, C021 | integration | integration | JJ033, JJ036, JJ037 | Ex270.java | Turn supplied raw quantity lines from a stock import into a report. A supplied loop hands each line, one at a time, to the code you complete inside its body: an empty or whitespace-only line is skipped and counted, every other line is parsed to a whole number, and the report lists each accepted quantity and the total, built in one mutable builder. The supplied lines hold no malformed number and no surrounding spaces. | Empty, spaces-only and tab-only lines are skipped and their count printed; accepted lines parse to numbers and the total is arithmetic, not concatenation; a comment names the exception a malformed number would throw; the report is accumulated in one builder and converted once; a supplied input made only of blank lines prints the stated empty report with a total of zero; My output matches. | active |
+| JJ271 | 06 | C046, C047, C049 | integration | integration | JJ087, JJ088, JJ090 | Ex271.java | A supplied contact list holds separately created entries, some with equal names and emails and some with a missing email; write the check that decides whether two entries are the same contact and run it over the supplied pairs. | Two separately built entries with equal content are reported as the same contact, and so is an entry compared with an alias of itself; text fields are compared by content, never with ==; a pair where one or both emails are missing follows the stated rule without NullPointerException; My output matches every supplied pair. | active |
+| JJ272 | 10 | C070, C071, C072 | integration | integration | JJ147, JJ148, JJ149 | Ex272.java | From a supplied day of library loans (member, book code, in arrival order) keep every loan in arrival order, the set of distinct members and the current borrower of each book, then answer the supplied queries. | Loans print in arrival order with repeats kept; the distinct-member count ignores repeats; a book borrowed twice reports its latest borrower and a never-borrowed book reports the stated absence message rather than null; nothing printed depends on hash iteration order; My output matches. | active |
+| JJ273 | 13 | C074, C083, C115 | integration | integration | JJ151, JJ160, JJ231 | Ex273.java | Build a leaderboard from supplied match results: accumulate points per player in a map, then print the players ranked by points descending and by name on ties. | Points are accumulated with a map accumulator idiom, a player seen once included; the ranking comes from sorting with a comparator built from key extractors with a tie-breaker, never from the map's iteration order; two players with equal points appear in name order; My output matches. | active |
+| JJ274 | 12 | C094, C095, C099 | integration | integration | JJ199, JJ200, JJ204 | Ex274.java | A supplied report method takes a supplied product list, a rule for which products to include and a rule for how to render each line; call it three times with different rules, at least one of them written as a method reference. | The report method's parameters are typed Predicate and Function and the method itself is not modified; three calls produce three different reports from the same list; one inclusion rule matches no product and that call prints the stated empty report; at least one argument is a method reference whose receiver and argument positions match its target; My output matches. | active |
+| JJ275 | 13 | C105, C107, C114 | integration | integration | JJ221, JJ223, JJ230 | Ex275.java | From supplied article records (title, a single tag, published flag, word count) produce, one pipeline each, the line of distinct tags of the published articles in alphabetical order, and the line of titles of the articles longer than a stated word count. | Each line is one stream pipeline ending in a joining collector with the stated delimiter, prefix and suffix; unpublished articles contribute no tag; a tag on several articles appears once; an input with no match prints the stated empty form; the source list prints unchanged; My output matches. | active |
+| JJ276 | 11 | C013, C074, C090 | integration | integration | JJ016, JJ151, JJ185 | Ex276.java | Validate and total supplied order lines (customer, quantity, unit price as text): an invalid line raises a dedicated exception naming its line number, the caller reports it and continues, and the valid lines are totalled per customer as exact money. | A line with a non-positive quantity or a negative price is rejected by throwing the dedicated exception type, which the caller catches by that type and reports with its line number; totals are BigDecimal built from text and accumulated per customer with a map idiom; totals print through key lookups at two decimals; My output matches. | active |
+| JJ277 | 13 | C067, C102, C115 | integration | integration | JJ137, JJ207, JJ231 | Ex277.java | Implement a lookup of the best customer of a supplied month — highest total spend, lowest sign-up number on ties; each order carries its month as a number from 1 to 12 and its amount in whole cents, so no date or decimal type is needed — returning an Optional, then use it twice: once printing a stated message when the month has no orders, once where a result is required and its absence is a domain error. | The lookup returns an Optional and never null; the best customer is chosen with a key-extractor comparator including the tie-break, and one supplied month has two customers with equal spend; the optional caller prints the message for an empty month without an unchecked get; the required caller throws the stated domain exception with a message naming the month; My output matches the three supplied months. | active |
+| JJ278 | 11 | C044, C072, C090 | integration | integration | JJ085, JJ149, JJ185 | Ex278.java | Keep stock per product in a map keyed by a record of product code and size; apply supplied restock and sale operations, where a sale larger than the stock raises a dedicated exception and leaves the stock unchanged. | The key is a record, and two independently created keys with equal components find the same stock; restocks and sales update the stored quantity; an oversized sale throws the dedicated exception, the caller reports it and the quantity is unchanged afterwards; a product never restocked reports zero through the stated rule; every quantity is printed through a key lookup, never by iterating the map; My output matches. | active |
+| JJ279 | 10 | C051, C058, C070 | integration | integration | JJ108, JJ122, JJ147 | Ex279.java | Model discount policies (percentage, fixed amount, buy-two-pay-one) behind one interface, keep them in a list, and for each supplied cart print its price under every policy and the best one; then append the supplied fourth policy to the list. | Each policy is a class implementing the interface; the cart loop calls the interface method and each object's own implementation runs, with no instanceof or type switch; appending the fourth policy changes the output with no edit inside the loop; the best price is chosen over the list and, on a tie, the policy earlier in the list is reported; My output matches. | active |
+| JJ280 | 14 | C090, C116, C118 | integration | integration | JJ185, JJ245, JJ247 | Ex280.java | Model an order's states as an enum and write a transition method that, for a supplied sequence of requested changes, applies the allowed ones and rejects the others with a dedicated exception. | The allowed next states are decided by a switch expression over the enum with no default arm; an illegal change throws the dedicated exception naming both states and leaves the state unchanged; the caller reports each rejection and continues; My output matches every step of the supplied sequence. | active |
+| JJ281 | 13 | C020, C092, C108 | integration | integration | JJ036, JJ187, JJ224 | Ex281.java | Analyse supplied request-log lines of the form user;milliseconds: compute the average latency of the valid lines and report every malformed line with its reason instead of hiding it. | Each malformed line (missing separator, non-numeric time) is reported with the line and its reason, none silently skipped and none stopping the run; the valid times are gathered first and then combined by a stream reduction into the sum the average uses, not by a running total inside the validation loop; the average uses the valid times only, with the stated result for an input with no valid line; an empty input gives that same stated result without an exception; My output matches. | active |
+| JJ282 | 13 | C062, C105, C110 | integration | integration | JJ132, JJ221, JJ226 | Ex282.java | Write a generic page method that returns the requested page of any list with the total count, and a generic search that returns the first element meeting a condition; use both on a list of products and on a list of strings. | The page type and both methods are generic and work for two element types with no cast; a page beyond the end is empty, not an exception, and the last partial page is complete; the search is one stream pipeline that filters and then takes the first match as an Optional, and the caller handles no match; the page may slice the list directly; My output matches. | active |
+| JJ283 | 13 | C044, C108, C113 | integration | integration | JJ085, JJ224, JJ229 | Ex283.java | From supplied timesheet entries (employee, day number, whole hours) build a map of total hours per employee and the week's grand total, and flag every employee above the stated weekly limit. | Entries are a record; totals per employee come from a toMap collector whose merge function sums the hours; the grand total is a reduce over the entries' hours and equals the sum of the per-employee totals; an employee with a single entry is included; an employee exactly at the limit is not flagged; flagged employees print in name order through lookups, never through the map's iteration order; an empty week prints the stated message; My output matches. | active |
+| JJ284 | 13 | C015, C074, C115 | integration | integration | JJ031, JJ151, JJ231 | Ex284.java | From a supplied paragraph, count how often each word appears, ignoring case and the punctuation marks the statement lists, and print the stated number of most frequent words, ties in alphabetical order. | Every transformed String is taken from a method's return value, never assumed changed in place; counts are accumulated with a map accumulator idiom, a word seen once included; the ranking comes from sorting the entries with a key-extractor comparator by count descending and word ascending, never from the map's iteration order; an empty or punctuation-only paragraph prints the stated empty result; My output matches. | active |
+| JJ285 | 15 | C119, C120, C122 | integration | integration | JJ252, JJ253, JJ255 | Ex285.java | Validate supplied employee records against a fixed today: a birth date as dd/MM/yyyy text and a clock-in and clock-out as local date-time text, each parsed with one explicit formatter; reject a birth date after today and a clock-out before its clock-in, and print each accepted employee's age in whole years and worked time in hours and minutes. | Today is a fixed LocalDate in the supplied main, never the system clock; every text is parsed with one explicitly declared numeric formatter and a text in another pattern is reported as rejected; the age comes from a Period and is exact on the day before the birthday and on the birthday itself; the worked time comes from a Duration and is correct for a shift crossing midnight; a future birth date and an inverted shift are each rejected with the stated message; My output matches. | active |
+
+## Essential route
+
+The route's minimum, as a ladder (standard §B, `REC-374`): each stage gives every concept a first
+exercise and a later variant, then closes with an exercise that combines them; the last stage is
+small problems of the shape a technical test asks. A request for Java with no block or concept named
+is served from here, in this order, until the route is passed. Tasks outside it stay active as
+optional review.
+
+| Stage | Title | Tasks |
+|---|---|---|
+| 00 | Starting point: running a program | JJ001, JJ003, JJ002, JJ004, JJ005 |
+| 01 | Values and exact numbers | JJ008, JJ020, JJ009, JJ021, JJ011, JJ023, JJ016, JJ028, JJ017, JJ029, JJ030 |
+| 02 | Text | JJ031, JJ038, JJ033, JJ040, JJ036, JJ043, JJ037, JJ044, JJ270 |
+| 03 | Control flow | JJ046, JJ052, JJ048, JJ054, JJ049, JJ055, JJ051, JJ057, JJ058 |
+| 04 | Methods | JJ059, JJ064, JJ060, JJ065, JJ063, JJ068, JJ069 |
+| 05 | References and the call stack | JJ070, JJ073, JJ071, JJ074, JJ072, JJ075, JJ076 |
+| 06 | Classes and objects | JJ077, JJ092, JJ079, JJ094, JJ080, JJ095, JJ083, JJ098, JJ084, JJ099, JJ085, JJ100, JJ086, JJ101, JJ107 |
+| 07 | Equality | JJ087, JJ102, JJ088, JJ103, JJ089, JJ104, JJ090, JJ105, JJ271 |
+| 08 | Interfaces and abstract classes | JJ108, JJ114, JJ109, JJ115, JJ110, JJ116, JJ111, JJ117, JJ120 |
+| 09 | Inheritance, composition and polymorphism | JJ121, JJ126, JJ122, JJ127, JJ123, JJ128, JJ125, JJ130, JJ124, JJ129, JJ131 |
+| 10 | Enums | JJ245, JJ248, JJ246, JJ249, JJ247, JJ250, JJ251 |
+| 11 | Generics and Optional as a return type | JJ132, JJ138, JJ136, JJ142, JJ137, JJ143, JJ144 |
+| 12 | Arrays, lists, sets and maps | JJ146, JJ163, JJ147, JJ164, JJ148, JJ165, JJ149, JJ166, JJ156, JJ173, JJ272 |
+| 13 | Hashing and map accumulation | JJ151, JJ168, JJ158, JJ175, JJ159, JJ176, JJ179 |
+| 14 | Exceptions | JJ180, JJ189, JJ183, JJ192, JJ184, JJ193, JJ185, JJ194, JJ186, JJ195, JJ187, JJ196, JJ188, JJ197, JJ198 |
+| 15 | Functional interfaces and lambdas | JJ199, JJ209, JJ200, JJ210, JJ203, JJ213, JJ204, JJ214, JJ274 |
+| 16 | Ordering | JJ160, JJ177, JJ231, JJ243, JJ273 |
+| 17 | Optional pipelines | JJ205, JJ215, JJ206, JJ216, JJ207, JJ217, JJ219 |
+| 18 | Streams | JJ221, JJ233, JJ222, JJ234, JJ223, JJ235, JJ224, JJ236, JJ226, JJ238, JJ230, JJ242, JJ275 |
+| 19 | Collecting to maps | JJ229, JJ241, JJ244 |
+| 20 | Dates and times | JJ252, JJ257, JJ253, JJ258, JJ255, JJ260, JJ285 |
+| 21 | Combined problems | JJ276, JJ277, JJ278, JJ279, JJ280, JJ281, JJ282, JJ283, JJ284 |
 
 ## Reconciliation
 
@@ -492,3 +544,7 @@ On source changes the planner preserves published IDs and task rows, retires rep
 appends replacements, and reports the delta before refreshing source fingerprints.
 Maven remains explicitly outside this executable environment; its seven concepts are visible
 above and are not counted as practiced or covered by these exercises.
+
+2026-10-20 (`REC-374`): appended JJ270–JJ285 — seven stage integrations and nine combined
+problems — and the `## Essential route` (22 stages, 192 listed tasks). No published row was changed or retired, no
+attempt relabelled, no batch edited; source fingerprints unchanged.
