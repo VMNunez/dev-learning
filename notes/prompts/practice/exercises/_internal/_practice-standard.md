@@ -214,7 +214,8 @@ planned.
   Roughly three fifths of the time budget advances unpassed planned tasks; the rest revisits failures
   and correctly answered concepts oldest first. With no history use eligible planned tasks only.
   A prerequisite task needs a non-void attempt; a planned variant additionally needs a different
-  batch from its first exercise. Integrations require attempts on all their concepts. Never emit a
+  batch from its first exercise. Integrations require all their concepts *attempted* (§E), which an
+  `extra` row never makes them. Never emit a
   plan ID already present in an ungraded batch: resume that batch, or choose other eligible work.
   Shrink to fit the time budget; do not fill space by inventing counted tasks. At route completion,
   serve adaptive reviews as unplanned variants/integrations with `Plan ID: —`.
@@ -312,12 +313,14 @@ attempt → cold feedback → Victor fixes → the fix is verified → a later v
 
 Derived per concept, from the rows above and never stored:
 
-- **attempted** — at least one non-`void` row.
+- **attempted** — at least one non-`void` row of a kind other than `extra`. An `extra` is counted toward
+  nothing (§C, §G), so it never makes a concept attempted — a pilot batch's rows included — and never
+  opens an integration or a `Depends on` block that waits on one (`REC-378`).
 - **owing a fix** — its latest failing row has `Fix verified: pending`.
 - **fixed** — that row carries a date. A fix made after reading the feedback proves he can repair it,
   not that he can produce it.
 - **consolidated** — a row of kind `variant`, `integration` or `reinforce` from a **later batch** than the concept's
-  first row (a higher `ATT` id under a different `Batch`; a second batch on the same day counts),
+  first row of a kind other than `extra` (a higher `ATT` id under a different `Batch`; a second batch on the same day counts),
   with `First result: ✅` and `Help: —`. Only this state lowers a concept's priority in §F. A fix and a
   later unaided variant are two different pieces of evidence and are never added together.
 
@@ -341,7 +344,7 @@ comments on the choice he makes instead.
 3. **The history**: concepts owing a fix (named in one line, never a gate), failures by recency, the
    time since each attempted concept was last seen, and the first block in plan order with eligible unpassed active tasks — or, while the
    plan's essential route (§B) is not passed, the next eligible listed ID of that route instead. `Depends on` blocks
-   need attempts; `After` and later-batch variant rules still apply.
+   need *attempted* concepts (§E); `After` and later-batch variant rules still apply.
 4. **Order of preference** between candidates: prerequisite first, then recent failures, then pending
    review, then new content — and never the absence of a coverage `✅`.
 
@@ -359,7 +362,7 @@ está definido") and the next candidate that has one is proposed instead.
 | Cell | Recount, from `ATTEMPTS.md`, `INDEX.md`, the plan's concept mapping and the heads of the notes plan the index names |
 |---|---|
 | `Blocks first-passed` | blocks `In route: yes` whose every included concept has a non-`void` `first` row / blocks `In route: yes` |
-| `Concepts attempted` | distinct included heads of in-route blocks with a non-`void` row / the in-route included-concept total (§B — the sum of in-route `Bullets` less the concepts excluded inside those blocks) |
+| `Concepts attempted` | distinct included heads of in-route blocks in state *attempted* (§E) / the in-route included-concept total (§B — the sum of in-route `Bullets` less the concepts excluded inside those blocks) |
 | `Consolidated` | distinct included heads of in-route blocks in state *consolidated* (§E) / the same denominator |
 | `Owing a fix` | the count of concepts in that state — a number, never a percentage |
 
