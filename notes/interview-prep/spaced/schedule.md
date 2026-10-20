@@ -2,7 +2,40 @@
 
 Plan y estado del bloque de interview-prep (16:00–16:50). Este archivo guarda, pregunta a pregunta,
 cuándo la aprendiste, cómo te fue en cada repaso y cuándo toca el siguiente. Lo escribe `spaced.py`;
-no se edita a mano salvo la sección de ajustes.
+a mano solo se tocan `## Reglas` y `## Ajustes`. Justo debajo, `spaced.py` recalcula en cada registro
+**por dónde vas** (`## Estado`), **el calendario de los próximos días** (`## Próximos días`) y **la
+evolución semana a semana** (`## Evolución`); el resumen va también a `PROGRESS.md` → `## Study progress`.
+
+<!-- spaced.py: inicio de lo generado, no editar a mano -->
+
+## Estado
+
+_Calculado por `spaced.py` el 20/10/2026._
+
+| Aprendidas | Verificadas | Consolidadas | Criterio E | Repasos atrasados | Última nueva prevista |
+|---|---|---|---|---|---|
+| 0/137 (0%) | 0 | 0 | 0/137 | 0 | 12/12/2026 |
+
+## Próximos días
+
+Previsión suponiendo que todos los repasos salen bien; cambia con cada resultado.
+
+| Día | Repasos | Nuevas | Min | Preguntas nuevas |
+|---|---|---|---|---|
+| lunes 26/10/2026 | 0 | 4 | 24 | ANG-J-001 · 07-timetrack-001 · SB-J-001 · JAVA-J-001 |
+| martes 27/10/2026 | 4 | 4 | 36 | SQL-J-001 · ANG-J-003 · 07-timetrack-005 · JS-J-001 |
+| miércoles 28/10/2026 | 4 | 4 | 36 | SB-J-002 · ANG-J-005 · 07-timetrack-007 · JAVA-J-002 |
+| jueves 29/10/2026 | 4 | 4 | 36 | ANG-J-007 · SB-J-003 · SQL-J-002 · 07-timetrack-009 |
+| viernes 30/10/2026 | 4 | 4 | 36 | ANG-J-011 · JAVA-J-007 · 07-timetrack-059 · SB-J-004 |
+| sábado 31/10/2026 | 4 | 4 | 36 | ANG-J-013 · JS-J-002 · TS-J-001 · ANG-J-015 |
+
+## Evolución
+
+Una fila por semana de estudio, sacada del historial de cada pregunta.
+
+Aún sin actividad.
+
+<!-- spaced.py: fin de lo generado -->
 
 ## Cómo se usa
 
@@ -10,7 +43,9 @@ no se edita a mano salvo la sección de ajustes.
    «¿qué toca hoy?». Primero salen los repasos y después las preguntas nuevas.
 2. Tras cada pregunta se registra el resultado:
    `python notes/interview-prep/spaced/spaced.py registrar ID resultado`.
-3. `calendario` enseña los próximos días y `estado` el progreso por tema.
+3. `calendario` enseña más días por delante y `estado` el progreso por tema.
+4. Al cerrar el bloque, `spaced.py progreso --escribir` actualiza la fila de `PROGRESS.md` y las
+   secciones de arriba.
 
 ## Reglas
 

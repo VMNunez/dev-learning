@@ -794,10 +794,20 @@ Each generated file, with who writes it and who depends on it:
   `interview-prep-block-open`, `study-block-close`, `authoring-progress-recount`, and `progress-update`.
 - **`interview-prep/routes/projects.md`** — written only by `interview-prep-route-projects` → read by
   that prompt itself, which needs the route its previous run built to list the `[studied]` questions a
-  rebuild drops, by `interview-prep-block-open` **on request only**, the CORE route staying its default,
+  rebuild drops, by `interview-prep-block-open` **on request only**, its default being the spaced schedule since 2026-10-20,
   and by `study-block-close` and `progress-update` (D9), for the denominator of the per-project studied row
   (2026-09-06). `authoring-progress-recount` and D10 do **not** read it: that twin row counts each
   project's whole bank, since refining an answer does not depend on any route carrying the question.
+- **`interview-prep/spaced/schedule.md`** (+ its calculator `spaced.py`) — written by no prompt: the
+  `interview-prep-block-open` skill writes it through `spaced.py` (`hoy` appends the `⭐⭐⭐` questions its
+  source banks gained, `registrar` records a learned date or a review verdict and the next review date),
+  and every write regenerates its `## Estado` / `## Próximos días` / `## Evolución` sections; Victor
+  edits its `## Reglas` / `## Ajustes` by hand, and `study-block-close` runs `spaced.py progreso
+  --escribir` — which also rewrites the spaced-review row of `PROGRESS.md` `## Study progress` — and
+  commits it (2026-10-20) →
+  read by `interview-prep-block-open`, whose default route it is: the daily *repasa X · estudia Y* of the
+  essential questions. It reads the `es/` banks it lists as sources and is not a route, so no prompt here
+  reads it or gates on it.
 - **`interview-prep/projects/en/*.md`** — written by `portfolio-audit`'s author + reviewer — which is
   also where the `⭐` priority marker is authored, the Spanish side only ever copying it — and by
   `study-content-writer` on an `en/`-side `TODO:`, and by `study-block-close`, whose only write here is
@@ -887,6 +897,7 @@ coverage-prompt / coverage-audit ─► notes/coverage/{junior|middle|senior}.md
         ├─► interview-prep-audit ─► unrefined Q&A ─► Victor refines ─► interview-prep-route
         │                                                             │
         │                                      interview-prep-block-open ─► study-block-close
+        │                 (default since 2026-10-20: interview-prep/spaced/schedule.md via spaced.py)
         │                                                             │
         │            notes-audit / interview-prep-audit / portfolio-audit / study-content-writer
         │                        └─► authoring-progress-recount ─► PROGRESS.md
@@ -976,9 +987,11 @@ Practice (its own loop, fed by coverage):
    `PROGRESS.md`'s `Authoring progress` rows the moment it does — as it does for a note declared refined
 8. After every required topic bank for the level is current, run `interview-prep-route` to build the
    globally weighted CORE order
-9. `interview-prep-block-open` asks one refined CORE question at a time — or, on request, one from
-   `routes/projects.md`, the project banks' own route; `study-block-close` writes `[studied]` only after a
-   final PASS, into whichever of the two banks the question came from
+9. `interview-prep-block-open` serves the daily block: by default the spaced-review schedule of the
+   essential questions (`interview-prep/spaced/`, «¿qué toca hoy?» — reviews first, then new questions,
+   each result recorded in `schedule.md`), and on request one refined CORE question at a time or one from
+   `routes/projects.md`, the project banks' own route; `study-block-close` commits the schedule and writes
+   `[studied]` only after a final PASS on a refined question, into whichever bank it came from
 10. After all topics have that level, run `coverage-audit`, then `roadmap-review`
 
 The unit changes at each stage: coverage and planning process one **topic + level**; `notes-audit`

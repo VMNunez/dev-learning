@@ -6,7 +6,8 @@ description: >
   only what the session proves he actively studied: date the completed/refined notes-plan entries,
   clear the `Pending study` sections that session actually discharged, mirror `[studied]` onto exact
   refined interview questions that earned a final PASS — in the levelled banks and, since 2026-09-06, in
-  the project banks too — and recount CORE, full-bank and per-project progress in PROGRESS.md.
+  the project banks too — recount CORE, full-bank and per-project progress in PROGRESS.md, and commit
+  the spaced-review schedule (`notes/interview-prep/spaced/schedule.md`) the block recorded.
   Authored is not studied, so never infer marks from files merely existing. Ask nothing and block on
   nothing: an ineligible target is reported and left unchanged.
 ---
@@ -38,7 +39,10 @@ pass before it can be dated. Never mark
 a whole file because one paragraph or one question was opened. If the session names no completed
 study unit, write nothing and report that no studied evidence was recorded — unless the run was invoked
 to repair a `progress-update` drift row naming this skill: then skip steps 2–3 and commit only if step 4
-changed a cell.
+changed a cell. **A block that only recorded spaced-route results** (`notes/interview-prep/spaced/schedule.md`
+modified, no refined `PASS` handed over, no note studied) skips steps 2–3 and, of step 4, runs only the
+spaced-review row: those results are already recorded, and projecting and committing them is all that is
+left.
 
 ## 2 — Mark notes studied
 
@@ -66,7 +70,7 @@ For each note actually studied:
 ## 3 — Mark interview questions studied
 
 **Two banks reach this step and the procedure is one procedure.** `interview-prep-block-open` serves the
-levelled CORE route by default and `notes/interview-prep/routes/projects.md` on request, and one block can
+spaced schedule by default (whose `PASS` reaches this step only on a refined question), the levelled CORE route and `notes/interview-prep/routes/projects.md` on request, and one block can
 have served both. Run steps 1–5 per question, whichever bank it came from; the project bank's own contract
 for what a frozen block is and where a marker sits on its bold line is `_portfolio-standard.md` →
 "Question identity, the refined freeze and the TODO channel", which is the file this ritual reads for that
@@ -143,15 +147,25 @@ rather than a widened cell, so the level columns keep meaning what they say.
   `—`**: an eligible project whose every `⭐⭐⭐` was deduplicated into another project's has a route
   presence of nothing, which is a measured fact and not a missing gate. Name it either way.
 
-Rewrite only the three levelled rows and that table in `## Study progress`. SQL and simulations stay under
+**Then the spaced-review row, whenever `notes/interview-prep/spaced/schedule.md` changed in this block.**
+Run `python -I notes/interview-prep/spaced/spaced.py progreso --escribir`: it rewrites the one data row
+of the `Essential interview questions — spaced review` table in `## Study progress` from the schedule and
+refreshes the schedule's generated `## Estado`, `## Próximos días` and `## Evolución` sections. Never
+compute or edit that row by hand — the schedule is the primary state and the script is its only
+projection.
+
+Rewrite only the three levelled rows, the per-project table and that one spaced-review row in
+`## Study progress`. SQL and simulations stay under
 `## Practice completed`; coverage evidence stays under `## Coverage demonstrated`.
 
 ## 5 — Commit atomically
 
 These are system-written tracking changes, so commit them directly on the active branch. Run
 `git status --short` immediately before staging and immediately before committing. Stage only the
-changed plan files, exact Q&A pairs — levelled or project — and `PROGRESS.md`; never stage study prose
-changes from another unit.
+changed plan files, exact Q&A pairs — levelled or project — `PROGRESS.md`, and
+`notes/interview-prep/spaced/schedule.md` when the block's spaced route recorded results in it
+(`interview-prep-block-open` §3 writes it through `spaced.py`; this ritual only commits it and never
+edits it); never stage study prose changes from another unit.
 
 Commit message, by what the close actually touched. **A project bank has no level to name**, so the
 levelled subject is not merely inaccurate over one, it is unwritable:
@@ -159,11 +173,13 @@ levelled subject is not merely inaccurate over one, it is unwritable:
 - levelled work only — `docs(study): record {level} notes and interview study progress`
 - project bank only — `docs(study): record project interview study progress`
 - both — `docs(study): record {level} and project study progress`
+- spaced schedule only — `docs(study): record spaced interview review progress`; when the schedule rides
+  with one of the commits above, that commit's subject stands and carries it
 
 ## 6 — Report
 
 Report notes marked, `Pending study` entries cleared, question IDs marked — naming the bank each came
-from — ineligible targets, the three per-level counts, every project row, and the commit. List every entry
+from — whether `schedule.md` was committed and the spaced-review row `progreso` wrote, ineligible targets, the three per-level counts, every project row, and the commit. List every entry
 still holding an open `Pending study` across the levels
 you touched, with the sections it owes — a studied note carrying an unstudied section is invisible in the
 counts by design, so this line and the append run that wrote the gap are the only places it surfaces.

@@ -8,6 +8,8 @@ All state lives in schedule.md, next to this script. Commands:
   calendario [--dias N] [--fecha ...]   projected plan, assuming every review is a pass
   estado                                progress per topic
   sincronizar                           append new three-star questions from the source banks
+  progreso [--escribir]                 progress row for PROGRESS.md (--escribir updates it in place
+                                        and refreshes the generated sections of schedule.md)
   iniciar --origen TEXTO                build schedule.md from the source banks (only once)
 """
 import argparse
@@ -18,6 +20,11 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 SCHEDULE = HERE / "schedule.md"
+PROGRESS = HERE.parents[2] / "PROGRESS.md"
+GEN_START = "<!-- spaced.py: inicio de lo generado, no editar a mano -->"
+GEN_END = "<!-- spaced.py: fin de lo generado -->"
+GENERATED = re.compile(re.escape(GEN_START) + r".*?" + re.escape(GEN_END), re.DOTALL)
+PROGRESS_HEADER = "| Learned | Verified (criterion E) | Consolidated | Overdue reviews | Last new question (projected) | Updated |"
 BANKS = HERE.parent  # notes/interview-prep
 TABLE_HEADING = "## Preguntas"
 COLUMNS = ["#", "ID", "Tema", "Título", "Origen", "Aprendida", "Racha",
@@ -80,6 +87,7 @@ def load():
         sys.exit(f"No existe {SCHEDULE}. Ejecuta primero: spaced.py iniciar --origen \"...\"")
     text = SCHEDULE.read_text(encoding="utf-8")
     head, _, table = text.partition(TABLE_HEADING)
+    head = GENERATED.sub(GEN_START + "\n" + GEN_END, head)
     settings = parse_settings(head)
     rows = []
     for line in table.splitlines():
@@ -112,7 +120,13 @@ def parse_settings(head):
         sys.exit(f"Falta el ajuste {missing} en {SCHEDULE.name}")
 
 
-def save(head, rows):
+def save(head, rows, today):
+    block = GEN_START + "\n\n" + generated_sections(head, rows, today) + "\n" + GEN_END
+    if GEN_START in head:
+        head = GENERATED.sub(lambda _: block, head)
+    else:
+        before, sep, after = head.partition("## Cómo se usa")
+        head = before + block + "\n\n" + sep + after if sep else head.rstrip() + "\n\n" + block
     lines = [TABLE_HEADING, "",
              "| " + " | ".join(COLUMNS) + " |",
              "|" + "|".join("---" for _ in COLUMNS) + "|"]
@@ -185,6 +199,102 @@ def label(day):
     return f"{WEEKDAYS[day.weekday()]} {fmt(day)}"
 
 
+def simulate(rows, s, day, max_days):
+    """Project the plan day by day, assuming every review is a pass.
+
+    Returns the list of (day, due, new, minutes) and the day the last new question is learned,
+    or None when questions are still pending after max_days."""
+    sim = [r.copy() for r in rows]
+    days = []
+    for _ in range(max_days):
+        due, new, learned_today, reviewed_today = plan_for(day, sim, s)
+        minutes = (s["review_min"] * (len(due) + reviewed_today)
+                   + s["new_min"] * (len(new) + learned_today))
+        days.append((day, due, new, minutes))
+        for r in due:
+            apply(r, "PASS", day, s["intervals"])
+        for r in new:
+            apply(r, "aprendida", day, s["intervals"])
+        day = skip_sunday(day + dt.timedelta(days=1))
+    if any(r.learned is None for r in sim):
+        return days, None
+    return days, max((r.learned for r in sim), default=None)
+
+
+def streak_on(row, day):
+    """The streak a question had at the end of `day`, replayed from its history."""
+    streak = None
+    for d, event in row.history:
+        if d > day:
+            break
+        if event in ("aprendida", "FAIL"):
+            streak = 0
+        elif event == "PASS":
+            streak = (streak or 0) + 1
+    return streak
+
+
+def stats(rows, s, today):
+    annex = [r for r in rows if r.origin.startswith("anexo")]
+    day, _ = study_day(today, s)
+    _, last_new = simulate(rows, s, day, 400)
+    return {
+        "total": len(rows),
+        "learned": sum(1 for r in rows if r.learned),
+        "verified": sum(1 for r in rows if r.streak >= 2),
+        "consolidated": sum(1 for r in rows if r.streak >= 3),
+        "annex": len(annex),
+        "annex_verified": sum(1 for r in annex if r.streak >= 2),
+        "overdue": sum(1 for r in rows if r.next_review and r.next_review < today),
+        "last_new": last_new,
+    }
+
+
+def pct(part, whole):
+    return f"{round(100 * part / whole)}%" if whole else "—"
+
+
+def generated_sections(head, rows, today):
+    s = parse_settings(head)
+    st = stats(rows, s, today)
+    out = ["## Estado", "",
+           f"_Calculado por `spaced.py` el {fmt(today)}._", "",
+           "| Aprendidas | Verificadas | Consolidadas | Criterio E | Repasos atrasados | Última nueva prevista |",
+           "|---|---|---|---|---|---|",
+           f"| {st['learned']}/{st['total']} ({pct(st['learned'], st['total'])}) | {st['verified']} | "
+           f"{st['consolidated']} | {st['annex_verified']}/{st['annex']} | {st['overdue']} | "
+           f"{fmt(st['last_new']) if st['last_new'] else '—'} |", "",
+           "## Próximos días", "",
+           "Previsión suponiendo que todos los repasos salen bien; cambia con cada resultado.", "",
+           "| Día | Repasos | Nuevas | Min | Preguntas nuevas |",
+           "|---|---|---|---|---|"]
+    day, _ = study_day(today, s)
+    for d, due, new, minutes in simulate(rows, s, day, 6)[0]:
+        out.append(f"| {label(d)} | {len(due)} | {len(new)} | {minutes:g} | "
+                   f"{' · '.join(r.qid for r in new) or '—'} |")
+    out += ["", "## Evolución", "",
+            "Una fila por semana de estudio, sacada del historial de cada pregunta.", ""]
+    events = [(d, e) for r in rows for d, e in r.history]
+    if not events:
+        out.append("Aún sin actividad.")
+        return "\n".join(out) + "\n"
+    out += ["| Semana del | Nuevas | Repasos | PASS | BORDERLINE | FAIL | Aprendidas (acum.) | Verificadas (acum.) |",
+            "|---|---|---|---|---|---|---|---|"]
+    first = min(d for d, _ in events)
+    week = first - dt.timedelta(days=first.weekday())
+    last = max(d for d, _ in events)
+    while week <= last:
+        end = week + dt.timedelta(days=6)
+        inside = [e for d, e in events if week <= d <= end]
+        learned = sum(1 for r in rows if r.learned and r.learned <= end)
+        verified = sum(1 for r in rows if (streak_on(r, end) or 0) >= 2)
+        out.append(f"| {fmt(week)} | {inside.count('aprendida')} | "
+                   f"{sum(1 for e in inside if e in REVIEW_EVENTS)} | {inside.count('PASS')} | "
+                   f"{inside.count('BORDERLINE')} | {inside.count('FAIL')} | {learned} | {verified} |")
+        week += dt.timedelta(days=7)
+    return "\n".join(out) + "\n"
+
+
 # ---------------------------------------------------------------- source banks
 
 def read_bank(path, topic):
@@ -223,7 +333,7 @@ def sync(head, s, rows, today):
                 next_order += 1
     gone = [r.qid for r in rows if r.qid not in in_banks]
     if added:
-        save(head, rows)
+        save(head, rows, today)
     return added, gone
 
 
@@ -287,33 +397,22 @@ def cmd_registrar(args):
         if row.next_review and row.next_review > day:
             print(f"Aviso: el repaso tocaba el {fmt(row.next_review)}; se registra adelantado.")
         apply(row, event, day, s["intervals"])
-    save(head, rows)
+    save(head, rows, day)
     nxt = f"próximo repaso {label(row.next_review)}" if row.next_review else "sin repaso"
     print(f"{row.qid}: {result} el {fmt(day)} · racha {row.streak} · {row.state} · {nxt}")
 
 
 def cmd_calendario(args):
     _, s, rows = load()
-    sim = [r.copy() for r in rows]
     day, notes = study_day(args.fecha or dt.date.today(), s)
     for note in notes:
         print(note)
     print(f"{'Fecha':<22}{'Repasos':>8}{'Nuevas':>8}{'Min':>6}  Preguntas nuevas")
-    last_new = None
-    for _ in range(args.dias):
-        due, new, learned_today, reviewed_today = plan_for(day, sim, s)
-        minutes = s["review_min"] * (len(due) + reviewed_today) + s["new_min"] * (len(new) + learned_today)
-        print(f"{label(day):<22}{len(due):>8}{len(new):>8}{minutes:>6g}  {' '.join(r.qid for r in new)}")
-        for r in due:
-            apply(r, "PASS", day, s["intervals"])
-        for r in new:
-            apply(r, "aprendida", day, s["intervals"])
-            last_new = day
-        day = skip_sunday(day + dt.timedelta(days=1))
-    pending = sum(1 for r in sim if r.learned is None)
-    if pending:
-        print(f"\nQuedan {pending} preguntas sin empezar al final de este periodo.")
-    elif last_new:
+    days, _ = simulate(rows, s, day, args.dias)
+    for d, due, new, minutes in days:
+        print(f"{label(d):<22}{len(due):>8}{len(new):>8}{minutes:>6g}  {' '.join(r.qid for r in new)}")
+    _, last_new = simulate(rows, s, day, 400)
+    if last_new:
         print(f"\nÚltima pregunta nueva prevista: {label(last_new)} (si todos los repasos salen bien).")
 
 
@@ -350,6 +449,32 @@ def cmd_sincronizar(args):
         print(f"Ya no son ⭐⭐⭐ o no existen en los bancos (se conservan): {', '.join(gone)}")
 
 
+def cmd_progreso(args):
+    head, s, rows = load()
+    today = args.fecha or dt.date.today()
+    st = stats(rows, s, today)
+    row = (f"| {st['learned']}/{st['total']} ({pct(st['learned'], st['total'])}) | "
+           f"{st['annex_verified']}/{st['annex']} | {st['consolidated']} | {st['overdue']} | "
+           f"{st['last_new'].isoformat() if st['last_new'] else '—'} | {today.isoformat()} |")
+    if not args.escribir:
+        print(row)
+        return
+    save(head, rows, today)  # refreshes Estado, Próximos días and Evolución in schedule.md
+    text = PROGRESS.read_text(encoding="utf-8")
+    newline = "\r\n" if "\r\n" in text else "\n"
+    lines = text.split(newline)
+    try:
+        i = lines.index(PROGRESS_HEADER)
+    except ValueError:
+        sys.exit(f"No encuentro la tabla del repaso espaciado en {PROGRESS}.")
+    if lines[i + 2] == row:
+        print("PROGRESS.md ya estaba al día.")
+        return
+    lines[i + 2] = row
+    PROGRESS.write_text(newline.join(lines), encoding="utf-8", newline="")
+    print(f"PROGRESS.md actualizado: {row}")
+
+
 def cmd_iniciar(args):
     if not SCHEDULE.exists():
         sys.exit(f"Crea antes {SCHEDULE.name} con su cabecera y sus ajustes.")
@@ -367,7 +492,7 @@ def cmd_iniciar(args):
     ranked.sort(key=lambda item: (item[0], item[1]))
     rows = [Row(n, qid, topic, title, args.origen)
             for n, (_, _, qid, topic, title) in enumerate(ranked, 1)]
-    save(head, rows)
+    save(head, rows, dt.date.today())
     print(f"{len(rows)} preguntas escritas en {SCHEDULE.name}.")
 
 
@@ -400,6 +525,11 @@ def main():
     p = sub.add_parser("sincronizar")
     p.add_argument("--fecha", **date_arg)
     p.set_defaults(func=cmd_sincronizar)
+
+    p = sub.add_parser("progreso")
+    p.add_argument("--escribir", action="store_true", help="actualiza la fila en PROGRESS.md")
+    p.add_argument("--fecha", **date_arg)
+    p.set_defaults(func=cmd_progreso)
 
     p = sub.add_parser("iniciar")
     p.add_argument("--origen", required=True)

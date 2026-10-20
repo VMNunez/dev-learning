@@ -172,6 +172,20 @@ fraction, keeps its marker, and is named in that ritual's report.
 `—` here is the missing route: `notes/interview-prep/routes/projects.md` has never been built, so no
 project has a study denominator yet. `/interview-prep-route-projects MODE = update` is what creates it.
 
+**Essential interview questions — spaced review.** Where the daily interview-prep block stands
+(2026-10-20): the essential questions of `Documents/main/HORARIO.md`'s annex, plus the `⭐⭐⭐` ones the
+source banks gain later, studied on the spaced schedule in `notes/interview-prep/spaced/schedule.md`.
+*Learned* counts every question in the schedule; *Verified* is criterion E — two passes in a row, at
+least six days apart — over the annex questions only; *Consolidated* has passed its third review too;
+the last column is the day the last new question is due if every review passes. The schedule is the
+primary state, so this row is only its projection: `study-block-close` rewrites it with
+`spaced.py progreso --escribir` whenever the block recorded results. Week-by-week evolution and the next
+days are in the schedule itself, under `## Evolución` and `## Próximos días`.
+
+| Learned | Verified (criterion E) | Consolidated | Overdue reviews | Last new question (projected) | Updated |
+|---|---|---|---|---|---|
+| 0/137 (0%) | 0/137 | 0 | 0 | 2026-12-12 | 2026-10-20 |
+
 ---
 
 ## Projects
