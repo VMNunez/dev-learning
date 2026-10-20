@@ -29,6 +29,7 @@ bullet, and never reads a missing `✅` as "never practised" or as a reason to p
 | `practice/exercises/ATTEMPTS.md` | the cold grader only (§D) | the per-attempt history; every count anywhere is derived from it |
 | `practice/exercises/{topic}/{level}/{NN}-{slug}/` | `practice-session` writes the batch `README.md` and each exercise file's statement and skeleton; **Victor writes the answers** | one folder per batch, never reused; `NN` is one above the highest number in that level folder (`01` first; a third digit after `99`), the date lives in the batch `README.md`, and a folder is never renamed once graded — the history cites it by name |
 | `PROGRESS.md` → `### Short exercises` | the cold grader (§G) | cells only, recounted from the history |
+| a topic's workspace root files, where its §H names a workspace (`practice/exercises/angular/junior/`: `angular.json`, `package.json`, `package-lock.json`, `tsconfig.json`, `.gitignore`, `.editorconfig`, `.prettierrc`, `.vscode/`, `README.md`) | `practice-session` — created once by the scaffold §H names, then changed only by each batch's generation, within the root changes §H permits | never part of an answer; committed once as the workspace, then with each batch as generated (`REC-376`) |
 
 Nothing is written into a note: a `refined` pair is frozen, and the index is what links a block to it.
 
@@ -100,7 +101,8 @@ copy junior tasks into another level or pre-create empty trees. SQL retains its 
 Before planning or generating, validate both sources and the exercise plan. A changed concept's
 description, a same-count remap, dependency, note path or order changes its source digest. Study
 checkboxes and project evidence do not. An absent/stale exercise plan goes through planning first;
-generation never silently substitutes an improvised route. Missing/stale notes plans name
+generation never silently substitutes an improvised route — the one exception is §C's pilot batch, which
+is served instead of a route, never as one. Missing/stale notes plans name
 `/notes-plan {topic} {level}` and stop planned generation. An explicitly requested off-route concept
 may still be served as `extra` in a supported environment, reported as outside the planned route.
 
@@ -173,6 +175,16 @@ override. A requested batch is a first-class attempt in every count. Called **as
 says he is unsure of something ("refuerzo de X", "no me siento seguro con X") — the batch follows the
 reinforcement entry below instead (`REC-278`, 2026-10-06).
 
+**The pilot batch** (`REC-376`, 2026-10-20). A topic that has a §H section and **no published plan** is
+served **one** pilot batch on its first practice request, whether or not he says "piloto", so the environment is tried on a real batch
+before a route is planned against it. Its rows are kind `extra`, `Plan ID: —`, each naming the coverage
+head it practises; its `README.md` carries `Pilot: yes` in place of `Exercise plan:` and has no
+`Plan snapshot`. It is graded cold against its own statements and declared heads, adds `ATTEMPTS.md`
+rows like any `extra`, moves no figure — the route has no `INDEX.md` table, so §G gives it no row — and
+reports the planned and essential counters as `n/a — pilot`. A second batch for that topic and level
+waits for the plan. What the pilot showed is written into the topic's §H section before the route is
+planned.
+
 - **What a request fixes.** Only *what* is practised. Size, objective, composition and difficulty below
   still apply. A requested concept whose prerequisite block has no attempt is served as asked, with at
   most one line saying so.
@@ -212,7 +224,8 @@ reinforcement entry below instead (`REC-278`, 2026-10-06).
   with a neighbour in an integration exercise. A concept is not served a third equivalent exercise. Adaptation never rewrites a planned task
   or waives its pass condition; prerequisite remediation has `Plan ID: —`.
 - **Integration exercises** join two or three already-attempted concepts in one small task. Untimed,
-  with feedback, one file — that is the line that keeps them out of `practice/simulations/`.
+  with feedback, one file — or one exercise folder, where the topic's §H makes the exercise a folder —
+  that is the line that keeps them out of `practice/simulations/`.
 - **Reinforcement** serves only the concept or concepts he names, each a head of an included concept of
   the route — anything else follows the `extra` rule above. Every row is kind `reinforce`, `Plan ID: —`:
   it never serves, reserves or spends a planned row, needs no `After` prerequisite, and has no
@@ -330,7 +343,7 @@ comments on the choice he makes instead.
 
 Two fixed outcomes. **SQL** is proposed like any other topic and then handed to the existing flow — say
 `vamos con el SQL` is the door — generating nothing here. **A topic with no environment section in §H**
-is named honestly when it would rank first ("angular sería lo siguiente; su entorno de práctica aún no
+is named honestly when it would rank first ("spring-boot sería lo siguiente; su entorno de práctica aún no
 está definido") and the next candidate that has one is proposed instead.
 
 ---
@@ -394,3 +407,75 @@ need rendering, angular and spring-boot need a small base app with isolated atte
 - **Spring Framework** has no route of its own (`ROADMAP.md` → "Spring Framework — when to start
   (post-job gate)"); the mechanisms Victor already uses are practised inside the spring-boot route when
   that topic gains its section.
+
+### angular — junior
+
+Ruled by Victor on 2026-10-20 (`REC-376`): one workspace with one application per batch, so the
+install is shared and a batch left broken never stops another; testing practised as its own concepts
+and only later combined with features; one pilot batch (§C) before the route is planned.
+
+- **Workspace.** `practice/exercises/angular/junior/` is one Angular workspace with no application of
+  its own, created once by the agent with
+  `ng new junior --directory=practice/exercises/angular/junior --create-application=false --skip-git --ai-config=none --package-manager=npm`
+  at the CLI version the active project pins (21.2.23 today), through `npx @angular/cli@{version}` — the
+  active project's local CLI refuses to create a workspace, because it finds its own. Its root files are
+  the system's (§A); `node_modules/`, `dist/` and the CLI cache under `.angular/` stay ignored by the scaffold's `.gitignore`. **No answer touches a root
+  file and no exercise adds a dependency**: a concept that needs either is excluded at planning, at
+  concept level, with its reason.
+- **A batch is an application.** Generation runs, from the workspace,
+  `ng g application lote-NN --project-root=NN-slug --style=scss --ssr=false` — `NN-slug` being the batch folder §A
+  names, so every path and name downstream of it is unchanged — after its `--dry-run`, read for the root
+  files it would touch. It may change, **on every batch**, `angular.json` (that application's entry) and
+  `tsconfig.json` (that application's two references), and **on the first batch only** `package.json` and
+  `package-lock.json` (the build and test dependencies the schematic adds and installs). From the second
+  batch it runs with `--skip-install`, and with `--skip-package-json` once the dry run shows nothing to
+  add. Any other root change stops generation, reported. Every command names its application —
+  `ng serve lote-NN`, `ng test lote-NN` — never the whole workspace.
+- **A batch is one small visible feature.** The application's shell (`app.html`) is the feature and the
+  index of its exercises — a list held in a signal, its filter, its empty state, a detail route — and the
+  batch's one objective (§C) names that behaviour. **Each isolated exercise brings the data and the
+  dependencies it needs to be graded alone**: the filter exercise receives its own given list, never
+  Victor's answer to the list exercise. Pieces depend on one another only inside a declared
+  `integration` row, under its own criteria.
+- **Shape.** An exercise is a folder under the batch's `src/app/`, named by its planned basename
+  (`File`) — `exNN-slug`, or `exextra-NN-slug` for unplanned work — holding the files its objective
+  needs: a standalone component (`.ts`, `.html`, `.scss`, never inline), a service, a pipe, a guard, an
+  interceptor, two components for a parent–child exchange. When the piece has something to show it gets
+  a demo route, `/exNN`, linked from the shell. The statement is the opening comment of its main `.ts`
+  file and ends with `Answer files:`, the files Victor writes in, each carrying its marker
+  (`// Your answer:`, `<!-- Your answer: -->`, `/* Your answer: */`). The code follows the 2025 style
+  guide and the version's practices (`inject()`, signals, `@if`/`@for`), checked against the Angular CLI
+  MCP's `get_best_practices` when the batch is written.
+- **Answered.** An exercise is answered when at least one of its declared answer files differs from the
+  batch's generation commit beyond its skeleton. A given spec is never an answer file; a spec the
+  statement asks him to write is one.
+- **Evidence.**
+  - *Logic* (signals, services, pipes, form logic): the exercise ships a **given spec** that tests
+    behaviour through the public API and the rendered DOM — never private names or call order. He runs
+    `ng test lote-NN --include app/exNN-slug --watch=false` (`--include` resolves from the
+    application's source root, and a folder includes every spec in it) and pastes what it printed under
+    a `// My output:` comment at the end of the main `.ts` file. A given spec that differs from the
+    generation commit is not evidence.
+  - *Interface*: the statement carries a **manual check** — an action and its expected result ("type
+    `xyz` in the filter → the list shows `Sin resultados`") — and he writes what the browser actually
+    did under `<!-- Observed: … -->` in the template. `ng build` proves the code compiles; it is not
+    enough evidence of visual behaviour.
+  - *Testing* — blocks `24` and `25`, and an `integration` that combines a feature with its test: he
+    writes the spec, which is an answer file; its skeleton holds one pending test (`it.todo(…)`), so the
+    generation check reports it as skipped rather than as an empty-file error. Before those blocks every
+    spec is given.
+  - *HTTP* has no backend: a GET reads a JSON file the batch ships under `public/`; what a static file
+    cannot answer — a POST, a `401`, a delay — runs through a given spec with `HttpTestingController`.
+- **Generation check — environment validated, pending exercises red.** Before committing a batch as
+  generated, the agent runs `ng build lote-NN` and `ng test lote-NN --watch=false` on it untouched, and
+  commits only when the build passes; the shell spec, rewritten for the new shell, passes; the spec files
+  the run discovered are exactly the ones the batch ships; and every given spec fails **only on its
+  assertions** — a given spec that passes before he answers tests nothing. An injection, configuration,
+  compilation or runtime error is a defect of the batch, repaired before the commit. The batch
+  `README.md` says that this red is where he starts. The scaffold, its dry run and these two runs are
+  the only commands the agent runs in the workspace: never `ng serve`, never his answers.
+- **Grading.** Static reading of the declared answer files against the statement and the concept its
+  row names: does it do what was asked, using that concept rather than routing around it; would it
+  compile; does `My output` or `Observed` match what was expected; is every given spec unchanged since
+  the generation commit. Style is feedback, never a failure. His comments and explanations are in
+  Spanish, under java's language rule above, which applies here unchanged.

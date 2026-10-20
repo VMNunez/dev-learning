@@ -88,10 +88,16 @@ the topics that do, and stop — on the proposal path, propose the next candidat
 Open `practice/exercises/{topic}/{level}/PLANNING-{level}.md`, its topic coverage, notes plan,
 INDEX and ATTEMPTS. Validate the route under standard §B, including actual source digests, not just
 the notes plan's stored fingerprint. On an absent/stale exercise plan execute Route 0's planner
-and continue only after acceptance. On missing/stale sources, report the owner and stop planned
+and continue only after acceptance — except where the pilot paragraph below applies. On missing/stale sources, report the owner and stop planned
 generation. A reinforcement request is not planned generation: it continues on the published plan's
 heads, and the grader excludes any that turn out orphaned (§D). An explicitly requested off-route extra follows §C and does not create a counted ID.
 An unsupported topic/level never enters this route or silently falls back to Java junior.
+
+**The pilot batch** (standard §C, `REC-376`). When the topic has a §H section, **no published plan**, and
+no batch yet in its level folder, any practice request for it — "un lote piloto de angular" or just "ejercicios de angular" — skips the plan requirement above, though the coverage and the notes plan are still read and validated for the heads, the `Block` column and `## Study notes`: compose one batch
+of `extra` rows, `Plan ID: —`, each naming the coverage head it practises, with `Pilot: yes` in the
+README and no `Exercise plan:` line or `Plan snapshot`. One per topic and level — once a pilot batch
+exists there and no plan does, a further practice request is refused in one line naming the plan (Route 0, once §H carries what the pilot showed) as what it waits for; it never starts the planner on its own.
 
 ### 1c — Compose the batch
 
@@ -105,20 +111,26 @@ which replaces all of these but the size and the objective. If a concept is owin
 
 One new folder, `practice/exercises/{topic}/{level}/{NN}-{slug}/` (`NN` is one above the highest number in that
 level folder, `01` for the first, a third digit after `99`; the date goes in the README's `Date:`,
-never in the name): the `README.md` in the exact shape standard §C gives, and one exercise file per
-row in the shape the topic's §H section gives, using the planned basename, or §H's unplanned one. Copy its ID, task,
+never in the name): the `README.md` in the exact shape standard §C gives, and one exercise file — or
+folder, where §H makes the exercise one — per row in the shape the topic's §H section gives, using the planned basename, or §H's unplanned one. Copy its ID, task,
 criteria and concept heads into the batch snapshot; unplanned rows (adaptive, extra, reinforce) use `Plan ID: —`. Statements are written in English, like all code and
 technical files. The README's `## Study notes` section is part of that shape: one linked Spanish note
 per block the table names, its path and live `Status:` read from the notes plan, listed even when the
 note is not written yet. Nothing else is written, and no earlier batch is named in it.
 
-**Then commit the batch as generated** — that folder and nothing else, under `## Commits` — before
-handing over. From that commit on its files are his.
+**Where the topic's §H makes the batch an application** (angular), §H's sequence wraps this step: run the
+scaffold's dry run and read the root files it would touch, run the scaffold, write the files, then run
+§H's generation check on the untouched batch. A root change §H does not permit, or a check that fails,
+stops here: nothing is committed, the batch is repaired or removed, and the report says which. If the
+topic's workspace does not exist yet, create it first with §H's command and commit it on its own.
+
+**Then commit the batch as generated** — that folder plus the root changes §H permits its scaffold, and
+nothing else, under `## Commits` — before handing over. From that commit on its files are his.
 
 ### 1e — Hand over
 
-Print the plan path, passed/active planned tasks and `essential passed / listed` (standard §B),
-the objective, the table, the block's Spanish note path with its live `Status:`, and how the
+Print the plan path, passed/active planned tasks and `essential passed / listed` (standard §B) — on
+a pilot batch, `n/a — pilot` for all three — the objective, the table, the block's Spanish note path with its live `Status:`, and how the
 topic's §H says he runs a file. Say once that the batch has no deadline — he may answer it over several
 sittings and days — and give him the message his answer commits take (`## Commits`). Then stop: he
 answers on his own, and says when it is ready.
@@ -159,11 +171,13 @@ corrected code. Then exactly one line of next step:
 | any `⚠️` / `❌` | he rewrites those answers in the same files and says they are corrected — that run is `verify` |
 | all `✅`, or `VERIFIED` with none left `pending` | nothing owed; a later batch will bring variants |
 | `void` rows | say which exercise was defective and why; it is not his failure and the concept is still owed |
+| a pilot batch graded | its rows are in `ATTEMPTS.md` and no figure moved; name what it showed about the environment, which goes into the topic's §H before planning the route (Route 0) |
 | `recount pending — replan` in the report | the grade is recorded and the `PROGRESS.md` row was not recounted; name the stale source and its owner (`/notes-plan {topic} {level}`, then asking to plan) — the planner triggers the recount |
 
 Check the grader's returned file list against `git status`: a subset of
 `practice/exercises/ATTEMPTS.md` and `PROGRESS.md` — both after a grade or verify on current sources,
-the history alone when the recount was deferred, `PROGRESS.md` alone in `recount` — or nothing. Anything else modified is a deviation of this run. Each line of its
+the history alone when the recount was deferred or the batch is a pilot, `PROGRESS.md` alone in
+`recount` — or nothing. Anything else modified is a deviation of this run. Each line of its
 `desvíos de la rama:` is one too, logged under the shared deviation close-out with `Scope: shared`.
 
 ---
@@ -183,8 +197,11 @@ each `git commit`, so no file of a batch folder is staged alongside a system fil
   `docs(practice): recount {topic} {level}`
 - the batch folder **as generated** — its `README.md` and the statement-and-skeleton files, before he
   has written a line (authorized 2026-10-13, `REC-332`) —
-  `docs(practice): generate {topic} {level} batch {NN}-{slug}`. At generation only: once that commit
-  exists, no file of that folder is ever staged by you again.
+  `docs(practice): generate {topic} {level} batch {NN}-{slug}`, carrying also the root changes the
+  topic's §H permits its scaffold. At generation only: once that commit exists, no file of that folder
+  is ever staged by you again.
+- the topic's workspace, once, where its §H names one — every file its scaffold created —
+  `chore(practice): {topic} {level} workspace` (authorized 2026-10-20, `REC-376`).
 
 **Victor commits himself** — every change to a batch folder after its generation commit, which is his
 answers and nothing else. He commits them whenever he likes, in one sitting or across several days, and
@@ -201,7 +218,8 @@ when it shows changes he has not committed**: `docs(practice): {topic} {slug} �
 
 Route 0: plan path, counts, exclusions, reconciliation delta, validation and cold-review verdict.
 
-Route 1 includes the plan path, `Plan: passed/active tasks` and `Esencial: passed/listed`, alongside:
+Route 1 includes the plan path, `Plan: passed/active tasks` and `Esencial: passed/listed` — `n/a —
+pilot` on a pilot batch — alongside:
 
 ```
 Práctica: java junior · bloque 10 — Collections, hashing, and ordering · 30 min · 5 ejercicios
@@ -214,7 +232,7 @@ Commit: lote generado — <hash> · tus respuestas: `docs(practice): java collec
 
 (`Por qué:` only on the proposal path.) Then the batch table.
 
-Route 2:
+Route 2 (on a pilot batch the `PROGRESS.md` and `Esencial` rows read `n/a — pilot`):
 
 | Target | Result |
 |---|---|
