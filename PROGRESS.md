@@ -173,8 +173,9 @@ fraction, keeps its marker, and is named in that ritual's report.
 project has a study denominator yet. `/interview-prep-route-projects MODE = update` is what creates it.
 
 **Interview prep — spaced review.** Where the daily interview-prep block stands, phase by phase. The
-block studies the question banks in phases ordered by impact on the job goal (ruled by Victor
-2026-10-20): phase 1 is the `⭐⭐⭐` questions of the core banks — project 07, Spring Boot, Angular, Java
+block studies one level at a time — **junior now**; middle and senior later, each starting only once
+every question of the level before is consolidated — and, inside the level, the question banks in
+phases ordered by impact on the job goal (ruled by Victor 2026-10-20): junior phase 1 is the `⭐⭐⭐` questions of the core banks — project 07, Spring Boot, Angular, Java
 first, then SQL, security, architecture, TypeScript, general, JavaScript, Git and project 06; phase 2 is
 the remaining `⭐⭐⭐` (projects 01–05, CSS); phase 3, the `⭐⭐` questions, is planned with Victor when
 phase 2 ends. Each phase opens once every question of the one before is verified. *Learned* is studied
@@ -186,11 +187,13 @@ change a bank). Per-topic progress, the next days and week-by-week evolution are
 
 <!-- spaced.py: begin, generated — do not edit by hand -->
 
-| Phase | Scope | Questions | Learned | Verified | Consolidated | Status |
-|---|---|---|---|---|---|---|
-| 1 | ⭐⭐⭐ — Proyecto 7, Spring Boot, Angular, Java, SQL, Seguridad, Arquitectura, TypeScript, General, JavaScript, Git, Proyecto 6 | 194 | 0/194 (0%) | 0 | 0 | open · last new projected 2026-12-22 · fully verified ~2026-12-29 |
-| 2 | ⭐⭐⭐ — Proyecto 5, Proyecto 3, CSS, Proyecto 4, Proyecto 2, Proyecto 1 | 103 | 0/103 (0%) | 0 | 0 | locked until phase 1 is fully verified |
-| 3 | ⭐⭐ | — | — | — | — | to be planned with Victor when phase 2 ends |
+**Current level: junior.** Then middle and senior. A level starts only once every question of the one before is consolidated.
+
+| Phase | Level | Scope | Questions | Learned | Verified | Consolidated | Status |
+|---|---|---|---|---|---|---|---|
+| 1 | junior | ⭐⭐⭐ — Proyecto 7, Spring Boot, Angular, Java, SQL, Seguridad, Arquitectura, TypeScript, General, JavaScript, Git, Proyecto 6 | 194 | 0/194 (0%) | 0 | 0 | open · last new projected 2026-12-22 · fully verified ~2026-12-29 |
+| 2 | junior | ⭐⭐⭐ — Proyecto 5, Proyecto 3, CSS, Proyecto 4, Proyecto 2, Proyecto 1 | 103 | 0/103 (0%) | 0 | 0 | locked until phase 1 is fully verified |
+| 3 | junior | ⭐⭐ | — | — | — | — | to be planned with Victor when phase 2 ends |
 
 Overdue reviews: 0 · Hard questions (2+ fails): none · Updated 2026-10-20.
 

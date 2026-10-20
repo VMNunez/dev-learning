@@ -51,8 +51,9 @@ def number(text):
 
 def parse_settings(head):
     values = dict(re.findall(r"^- ([^:\n]+): (.+)$", head, flags=re.MULTILINE))
-    phases = {int(n): (stars.count("⭐"), name.strip())
-              for n, stars, name in re.findall(r"^- Fase (\d+): (\S+) \| (.+)$", head, flags=re.MULTILINE)}
+    phases = {int(n): (stars.count("⭐"), name.strip(), level)
+              for n, level, stars, name in
+              re.findall(r"^- Fase (\d+): (\w+) \| (\S+) \| (.+)$", head, flags=re.MULTILINE)}
     sources = [(path, topic.strip(), int(phase), prio.strip())
                for path, topic, phase, prio in
                re.findall(r"^- Fuente: (\S+) \| ([^|]+) \| (\d+) \| (\S+)\s*$", head, flags=re.MULTILINE)]
@@ -77,9 +78,14 @@ def parse_settings(head):
             "spans": spans,
             "phases": phases,
             "sources": sources,
+            "levels": [x.strip() for x in values["Niveles"].split(",")],
         }
     except KeyError as missing:
         sys.exit(f"Falta el ajuste {missing} en {SCHEDULE.name}")
+    order = [s["levels"].index(level) if level in s["levels"] else -1
+             for _, (_, _, level) in sorted(phases.items())]
+    if -1 in order or order != sorted(order):
+        sys.exit("Cada fase debe ser de un nivel de «Niveles», y las fases deben ir en ese orden.")
     for path, topic, phase, prio in sources:
         if phase not in phases:
             sys.exit(f"La fuente {path} pide la fase {phase}, que no está definida.")
@@ -329,17 +335,28 @@ def print_sync(report):
 
 # ---------------------------------------------------------------- planning
 
-def phase_open(phase, rows):
-    """A phase opens when every question of the earlier phases is verified, and stays open once
-    one of its questions has been learned."""
+def level_of(phase, s):
+    return s["phases"][phase][2]
+
+
+def consolidated(row):
+    return row.learned is not None and row.streak >= 3
+
+
+def phase_open(phase, rows, s):
+    """A phase opens when every question of the earlier phases of its level is verified and every
+    question of an earlier level is consolidated; once one of its questions is learned it stays
+    open."""
     if any(r.phase == phase and r.learned for r in rows):
         return True
-    return all(r.verified() for r in rows if r.phase is not None and r.phase < phase)
+    level = level_of(phase, s)
+    return all(r.verified() if level_of(r.phase, s) == level else consolidated(r)
+               for r in rows if r.phase is not None and r.phase < phase)
 
 
-def candidates(rows):
+def candidates(rows, s):
     pending = [r for r in rows if r.phase is not None and r.learned is None]
-    open_phases = {p for p in {r.phase for r in pending} if phase_open(p, rows)}
+    open_phases = {p for p in {r.phase for r in pending} if phase_open(p, rows, s)}
     return sorted((r for r in pending if r.phase in open_phases),
                   key=lambda r: (r.phase, r.key if r.key is not None else float("inf"), r.order))
 
@@ -358,7 +375,7 @@ def plan_for(day, rows, s):
     points = (s["load"] - s["review_pts"] * (len(due) + reviewed_today)
               - s["new_pts"] * learned_today)
     allowed = max(0, min(s["new_per_day"] - learned_today, int(points // s["new_pts"])))
-    return due, candidates(rows)[:allowed], learned_today, reviewed_today
+    return due, candidates(rows, s)[:allowed], learned_today, reviewed_today
 
 
 def study_day(requested, s):
@@ -404,28 +421,51 @@ def label(day):
     return f"{WEEKDAYS[day.weekday()]} {fmt(day)}"
 
 
-def current_phase(rows):
-    pending = candidates(rows)
+def current_phase(rows, s):
+    pending = candidates(rows, s)
     if pending:
         return pending[0].phase
     active = [r for r in rows if r.phase is not None]
+    waiting = [r.phase for r in active if r.learned is None]
+    if waiting:
+        nxt = min(waiting)
+        level = level_of(nxt, s)
+        blocking = [r.phase for r in active if r.phase < nxt and not (
+            r.verified() if level_of(r.phase, s) == level else consolidated(r))]
+        if blocking:
+            return min(blocking)
     unverified = sorted({r.phase for r in active if not r.verified()})
     return unverified[0] if unverified else (max((r.phase for r in active), default=None))
 
 
 def phase_stats(rows, s):
     out = []
-    for p, (stars, name) in sorted(s["phases"].items()):
+    for p, (stars, name, level) in sorted(s["phases"].items()):
         group = [r for r in rows if r.phase == p]
         out.append({
-            "phase": p, "stars": "⭐" * stars, "name": name, "total": len(group),
+            "phase": p, "stars": "⭐" * stars, "name": name, "level": level, "total": len(group),
             "learned": sum(1 for r in group if r.learned),
             "verified": sum(1 for r in group if r.verified()),
-            "consolidated": sum(1 for r in group if r.learned and r.streak >= 3),
-            "open": bool(group) and phase_open(p, rows),
+            "consolidated": sum(1 for r in group if consolidated(r)),
+            "open": bool(group) and phase_open(p, rows, s),
             "topics": list(dict.fromkeys(t for _, t, ph, _ in s["sources"] if ph == p)),
         })
     return out
+
+
+def current_level(rows, s):
+    phase = current_phase(rows, s)
+    return level_of(phase, s) if phase else s["levels"][0]
+
+
+def level_line(rows, s, spanish=True):
+    level = current_level(rows, s)
+    later = s["levels"][s["levels"].index(level) + 1:]
+    if spanish:
+        return (f"**Nivel actual: {level}.**" + (f" Después vendrán {' y '.join(later)}." if later else "")
+                + " Un nivel no empieza hasta que todas las preguntas del anterior estén consolidadas.")
+    return (f"**Current level: {level}.**" + (f" Then {' and '.join(later)}." if later else "")
+            + " A level starts only once every question of the one before is consolidated.")
 
 
 def pct(part, whole):
@@ -443,10 +483,13 @@ def generated_sections(s, rows, today):
     days, last_new, all_verified = simulate(rows, s, day, 500)
     overdue = sum(1 for r in rows if r.phase is not None and r.learned and r.next_review < today)
     out = ["## Estado", "", f"_Calculado por `spaced.py` el {fmt(today)}._", "",
+           level_line(rows, s), "",
            "| Fase | Preguntas | Aprendidas | Verificadas | Consolidadas | Situación |",
            "|---|---|---|---|---|---|"]
-    for st in phase_stats(rows, s):
+    stats = phase_stats(rows, s)
+    for i, st in enumerate(stats):
         p = st["phase"]
+        new_level = i > 0 and stats[i - 1]["level"] != st["level"]
         if not st["total"]:
             situation = "por planificar contigo cuando termine la fase anterior"
         elif st["verified"] == st["total"]:
@@ -456,10 +499,11 @@ def generated_sections(s, rows, today):
                          else "abierta · todas aprendidas") + (
                 f" · verificada entera hacia el {fmt(all_verified[p])}" if p in all_verified else "")
         else:
-            situation = "se abre cuando estén verificadas todas las de la fase anterior" + (
+            situation = (f"se abre cuando estén consolidadas todas las del nivel {stats[i - 1]['level']}"
+                         if new_level else "se abre cuando estén verificadas todas las de la fase anterior") + (
                 f" (previsto: empieza hacia el {fmt(min(d for d, _, new in days if any(r.phase == p for r in new)))})"
                 if any(r.phase == p for _, _, new in days for r in new) else "")
-        out.append(f"| {p} · {st['stars']} {st['name']} | {st['total']} | "
+        out.append(f"| {p} · {st['level']} · {st['stars']} {st['name']} | {st['total']} | "
                    f"{st['learned']} ({pct(st['learned'], st['total'])}) | {st['verified']} | "
                    f"{st['consolidated']} | {situation} |")
     difficult = hard(rows)
@@ -508,22 +552,26 @@ def progress_block(s, rows, today):
     """The summary PROGRESS.md carries, in English like the rest of that file."""
     day, _ = study_day(today, s)
     _, last_new, all_verified = simulate(rows, s, day, 500)
-    lines = ["| Phase | Scope | Questions | Learned | Verified | Consolidated | Status |",
-             "|---|---|---|---|---|---|---|"]
-    for st in phase_stats(rows, s):
+    lines = [level_line(rows, s, spanish=False), "",
+             "| Phase | Level | Scope | Questions | Learned | Verified | Consolidated | Status |",
+             "|---|---|---|---|---|---|---|---|"]
+    stats = phase_stats(rows, s)
+    for i, st in enumerate(stats):
         p = st["phase"]
         scope = f"{st['stars']} — {', '.join(st['topics'])}" if st["topics"] else st["stars"]
         if not st["total"]:
-            lines.append(f"| {p} | {scope} | — | — | — | — | to be planned with Victor when phase {p - 1} ends |")
+            lines.append(f"| {p} | {st['level']} | {scope} | — | — | — | — | to be planned with Victor when phase {p - 1} ends |")
             continue
         if st["verified"] == st["total"]:
             status = "complete"
         elif st["open"]:
             status = "open" + (f" · last new projected {last_new[p].isoformat()}" if p in last_new else "") + (
                 f" · fully verified ~{all_verified[p].isoformat()}" if p in all_verified else "")
+        elif i > 0 and stats[i - 1]["level"] != st["level"]:
+            status = f"locked until every {stats[i - 1]['level']} question is consolidated"
         else:
             status = f"locked until phase {p - 1} is fully verified"
-        lines.append(f"| {p} | {scope} | {st['total']} | {st['learned']}/{st['total']} "
+        lines.append(f"| {p} | {st['level']} | {scope} | {st['total']} | {st['learned']}/{st['total']} "
                      f"({pct(st['learned'], st['total'])}) | {st['verified']} | {st['consolidated']} | {status} |")
     overdue = sum(1 for r in rows if r.phase is not None and r.learned and r.next_review < today)
     difficult = hard(rows)
@@ -552,10 +600,11 @@ def cmd_hoy(args):
         save(head, s, rows, today)
     day, notes = study_day(today, s)
     due, new, learned_today, reviewed_today = plan_for(day, rows, s)
-    phase = current_phase(rows)
+    phase = current_phase(rows, s)
 
     name = s["phases"].get(phase, (0, ""))[1] if phase else ""
-    print(f"Interview-prep · {label(day)}" + (f" · fase {phase}: {name}" if phase else ""))
+    print(f"Interview-prep · {label(day)} · nivel {current_level(rows, s)}"
+          + (f" · fase {phase}: {name}" if phase else ""))
     for note in notes:
         print(note)
     print_sync(report)
@@ -574,7 +623,7 @@ def cmd_hoy(args):
     for i, r in enumerate(new, 1):
         print(f"   {i}. {r.qid} · {r.topic} · {r.title}")
     if not new:
-        waiting = candidates(rows)
+        waiting = candidates(rows, s)
         pending = [r for r in rows if r.phase is not None and r.learned is None]
         if waiting and learned_today >= s["new_per_day"]:
             print("   Ya has hecho las nuevas de hoy. Si te sobra tiempo: `spaced.py mas`.")
@@ -582,9 +631,15 @@ def cmd_hoy(args):
             print(f"   Hoy ninguna: los repasos ya llenan el día. Ponte al día primero; "
                   f"si aun así te sobra tiempo: `spaced.py mas`.")
         elif pending:
-            blocking = [r.qid for r in rows if r.phase is not None and r.phase < min(p.phase for p in pending)
-                        and not r.verified()]
-            print(f"   Ninguna: la fase siguiente se abre cuando estén verificadas todas las de la anterior. "
+            nxt = min(r.phase for r in pending)
+            level = level_of(nxt, s)
+            earlier = [r for r in rows if r.phase is not None and r.phase < nxt]
+            blocking = [r.qid for r in earlier
+                        if not (r.verified() if level_of(r.phase, s) == level else consolidated(r))]
+            rule = ("estén consolidadas todas las del nivel anterior"
+                    if any(level_of(r.phase, s) != level for r in earlier)
+                    else "estén verificadas todas las de la fase anterior")
+            print(f"   Ninguna: la fase {nxt} ({level}) se abre cuando {rule}. "
                   f"Faltan {len(blocking)}: {', '.join(blocking[:12])}{' …' if len(blocking) > 12 else ''}")
         else:
             last = max(s["phases"]) if s["phases"] else 0
@@ -603,7 +658,7 @@ def cmd_mas(args):
     if any(report[k] for k in ("añadidas", "quitadas", "retiradas", "reactivadas")):
         save(head, s, rows, args.fecha or dt.date.today())
     print_sync(report)
-    nxt = candidates(rows)[:args.n]
+    nxt = candidates(rows, s)[:args.n]
     if not nxt:
         print("No hay más preguntas nuevas abiertas ahora mismo.")
         return
@@ -627,7 +682,7 @@ def cmd_registrar(args):
     if result == "aprendida":
         if row.learned:
             sys.exit(f"{row.qid} ya se aprendió el {fmt(row.learned)}. Registra un repaso.")
-        if row.phase is not None and row not in candidates(rows)[:s["new_per_day"]]:
+        if row.phase is not None and row not in candidates(rows, s)[:s["new_per_day"]]:
             print(f"Aviso: {row.qid} no era la siguiente en el orden de estudio; se registra igual.")
         record(row, day, "aprendida", s)
     else:

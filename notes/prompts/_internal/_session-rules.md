@@ -993,7 +993,10 @@ its `Studied` field to `pending` — under the rule below, which decides what co
 narrower than it sounds; reopening an interview question resets both question state markers.
 
 **The spaced review of the question banks** (ruled by Victor 2026-10-20). The daily interview-prep
-block studies the banks in **phases ordered by impact on the job goal**: phase 1 is the `⭐⭐⭐` questions
+block studies **one professional level at a time — junior now; middle and senior later, with their own
+banks and phases — and a level never starts until every question of the one before is consolidated**
+(three passes in a row). Inside the level, the banks go in **phases ordered by impact on the job goal**:
+junior phase 1 is the `⭐⭐⭐` questions
 of the core banks (project 07, Spring Boot, Angular and Java first; then SQL, security, architecture,
 TypeScript, general, JavaScript, Git and project 06); phase 2 the remaining `⭐⭐⭐` (projects 01–05,
 CSS); phase 3, the `⭐⭐`, is planned with Victor when phase 2 ends. A phase opens once every question of

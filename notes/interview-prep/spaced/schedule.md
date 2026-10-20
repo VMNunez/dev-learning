@@ -13,11 +13,13 @@ has estudiado. Lo escribe `spaced.py`; a mano solo se tocan `## Reglas` y `## Aj
 
 _Calculado por `spaced.py` el 20/10/2026._
 
+**Nivel actual: junior.** Después vendrán middle y senior. Un nivel no empieza hasta que todas las preguntas del anterior estén consolidadas.
+
 | Fase | Preguntas | Aprendidas | Verificadas | Consolidadas | Situación |
 |---|---|---|---|---|---|
-| 1 · ⭐⭐⭐ Núcleo para el primer empleo | 194 | 0 (0%) | 0 | 0 | abierta · última nueva prevista 22/12/2026 · verificada entera hacia el 29/12/2026 |
-| 2 · ⭐⭐⭐ Resto de bancos y proyectos | 103 | 0 (0%) | 0 | 0 | se abre cuando estén verificadas todas las de la fase anterior (previsto: empieza hacia el 30/12/2026) |
-| 3 · ⭐⭐ Profundización (por planificar) | 0 | 0 (—) | 0 | 0 | por planificar contigo cuando termine la fase anterior |
+| 1 · junior · ⭐⭐⭐ Núcleo para el primer empleo | 194 | 0 (0%) | 0 | 0 | abierta · última nueva prevista 22/12/2026 · verificada entera hacia el 29/12/2026 |
+| 2 · junior · ⭐⭐⭐ Resto de bancos y proyectos | 103 | 0 (0%) | 0 | 0 | se abre cuando estén verificadas todas las de la fase anterior (previsto: empieza hacia el 30/12/2026) |
+| 3 · junior · ⭐⭐ Profundización (por planificar) | 0 | 0 (—) | 0 | 0 | por planificar contigo cuando termine la fase anterior |
 
 Repasos atrasados: 0 · Difíciles (2 fallos o más): ninguna
 
@@ -82,10 +84,16 @@ Aún sin actividad.
 
 **Qué se estudia y en qué orden**
 
-- **Por fases.** Fase 1: las ⭐⭐⭐ de lo que más pesa para el primer empleo Angular + Spring Boot en
+- **Por niveles.** Ahora estudias el nivel **junior**: sus bancos (`notes/interview-prep/junior/`) y
+  los de tus proyectos. Más adelante vendrán **middle** y **senior**, con sus propios bancos y sus
+  propias fases. **Un nivel no empieza hasta que todas las preguntas del anterior estén consolidadas**
+  (tres `pass` seguidos); mientras tanto, el nivel siguiente no da preguntas nuevas, aunque sus fases ya
+  estén escritas en `## Ajustes`.
+- **Por fases, dentro del nivel.** Fase 1: las ⭐⭐⭐ de lo que más pesa para el primer empleo Angular + Spring Boot en
   consultora. Fase 2: las ⭐⭐⭐ del resto de bancos y proyectos. Fase 3: las ⭐⭐, que se planifican
   contigo cuando termine la fase 2. Las fuentes de cada fase y su prioridad están en `## Ajustes`.
-- **Una fase se abre cuando todas las de la anterior están verificadas**, y ya no se cierra. Si un banco
+- **Una fase se abre cuando todas las de la anterior están verificadas** (si es del mismo nivel) o
+  consolidadas (si es la primera de un nivel nuevo), y ya no se cierra. Si un banco
   de una fase anterior gana preguntas después, esas van primero.
 - **Orden dentro de la fase:** cada banco reparte sus preguntas, en el orden en que están en el banco
   (de lo básico a lo avanzado), a lo largo de un tramo de la fase según su prioridad: las de prioridad
@@ -155,11 +163,13 @@ Aún sin actividad.
 - Repaso máximo tras borderline: 7
 - Reparto por prioridad: alta 0–0,7 · media 0,1–0,85 · baja 0,2–1
 
-Fases (estrellas que entran | nombre):
+- Niveles: junior, middle, senior
 
-- Fase 1: ⭐⭐⭐ | Núcleo para el primer empleo
-- Fase 2: ⭐⭐⭐ | Resto de bancos y proyectos
-- Fase 3: ⭐⭐ | Profundización (por planificar)
+Fases (nivel | estrellas que entran | nombre; las de middle y senior se añadirán cuando tengan bancos):
+
+- Fase 1: junior | ⭐⭐⭐ | Núcleo para el primer empleo
+- Fase 2: junior | ⭐⭐⭐ | Resto de bancos y proyectos
+- Fase 3: junior | ⭐⭐ | Profundización (por planificar)
 
 Fuentes (banco | tema | fase | prioridad; con la misma prioridad, el orden de la lista desempata):
 
