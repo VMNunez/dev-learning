@@ -180,13 +180,17 @@ reinforcement entry below instead (`REC-278`, 2026-10-06).
 
 **The pilot batch** (`REC-376`, 2026-10-20). A topic that has a §H section and **no published plan** is
 served **one** pilot batch on its first practice request, whether or not he says "piloto", so the environment is tried on a real batch
-before a route is planned against it. Its rows are kind `extra`, `Plan ID: —`, each naming the coverage
+before batches are generated from a route. Its rows are kind `extra`, `Plan ID: —`, each naming the coverage
 head it practises; its `README.md` carries `Pilot: yes` in place of `Exercise plan:` and has no
 `Plan snapshot`. It is graded cold against its own statements and declared heads, adds `ATTEMPTS.md`
 rows like any `extra`, moves no figure — the route has no `INDEX.md` table, so §G gives it no row — and
-reports the planned and essential counters as `n/a — pilot`. A second batch for that topic and level
-waits for the plan. What the pilot showed is written into the topic's §H section before the route is
-planned.
+reports the planned and essential counters as `n/a — pilot`. **The route may be planned before the
+pilot is graded**: the pilot tries the environment, not the route, so what it shows bears on how
+batches are generated (§H), never on the plan (Victor, 2026-10-20, `REC-380`). **A second batch for
+that topic and level waits for both the plan and what the pilot showed**, which is written into the
+topic's §H section by hand, under the recommendation ledger, its grade included, and closed there by a
+last line `Pilot folded: {NN}-{slug}, YYYY-MM-DD (REC-NNN)`. Until that line names the level folder's
+pilot batch, no further batch is generated there.
 
 - **What a request fixes.** Only *what* is practised. Size, objective, composition and difficulty below
   still apply. A requested concept whose prerequisite block has no attempt is served as asked, with at
@@ -419,7 +423,9 @@ need rendering, angular and spring-boot need a small base app with isolated atte
 
 Ruled by Victor on 2026-10-20 (`REC-376`): one workspace with one application per batch, so the
 install is shared and a batch left broken never stops another; testing practised as its own concepts
-and only later combined with features; one pilot batch (§C) before the route is planned.
+and only later combined with features; one pilot batch (§C), whose lessons this section carries,
+closed by its `Pilot folded:` line, before a second batch is generated — the route may be planned
+before then (`REC-380`).
 
 - **Workspace.** `practice/exercises/angular/junior/` is one Angular workspace with no application of
   its own, created once by the agent with

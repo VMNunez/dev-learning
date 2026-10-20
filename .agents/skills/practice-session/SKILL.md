@@ -96,8 +96,12 @@ An unsupported topic/level never enters this route or silently falls back to Jav
 **The pilot batch** (standard §C, `REC-376`). When the topic has a §H section, **no published plan**, and
 no batch yet in its level folder, any practice request for it — "un lote piloto de angular" or just "ejercicios de angular" — skips the plan requirement above, though the coverage and the notes plan are still read and validated for the heads, the `Block` column and `## Study notes`: compose one batch
 of `extra` rows, `Plan ID: —`, each naming the coverage head it practises, with `Pilot: yes` in the
-README and no `Exercise plan:` line or `Plan snapshot`. One per topic and level — once a pilot batch
-exists there and no plan does, a further practice request is refused in one line naming the plan (Route 0, once §H carries what the pilot showed) as what it waits for; it never starts the planner on its own.
+README and no `Exercise plan:` line or `Plan snapshot`. One per topic and level. Once a pilot batch
+exists there (`Pilot: yes` in its README), a further batch also waits for the `Pilot folded:` line
+standard §C puts at the end of the topic's §H section naming that batch: while the line is missing, a
+practice request is refused in one line naming that debt — and, while the pilot has no `ATTEMPTS.md` rows, that it is graded first (Route 2) — and the plan too, when none is published —
+and never starts the planner on its own; with the line in place, the absent-plan path above applies as
+for any topic. A planning request (Route 0) is never held back by a pilot, graded or not (`REC-380`).
 
 ### 1c — Compose the batch
 
@@ -171,7 +175,7 @@ corrected code. Then exactly one line of next step:
 | any `⚠️` / `❌` | he rewrites those answers in the same files and says they are corrected — that run is `verify` |
 | all `✅`, or `VERIFIED` with none left `pending` | nothing owed; a later batch will bring variants |
 | `void` rows | say which exercise was defective and why; it is not his failure and the concept is still owed |
-| a pilot batch graded | its rows are in `ATTEMPTS.md` and no figure moved; name what it showed about the environment, which goes into the topic's §H before planning the route (Route 0) |
+| a pilot batch graded | its rows are in `ATTEMPTS.md` and no figure moved; name what it showed about the environment, which goes into the topic's §H, closed by its `Pilot folded:` line, before a second batch — the route may be planned (Route 0) before or after |
 | `recount pending — replan` in the report | the grade is recorded and the `PROGRESS.md` row was not recounted; name the stale source and its owner (`/notes-plan {topic} {level}`, then asking to plan) — the planner triggers the recount |
 
 Check the grader's returned file list against `git status`: a subset of
