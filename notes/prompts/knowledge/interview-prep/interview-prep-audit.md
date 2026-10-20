@@ -37,9 +37,6 @@ everything.
 `_interview-prep-review-prompt.md` (reviewer). The market-analysis (M) and gap-hunt (G) subagents are
 defined inline in the per-topic pipeline below — they are dispatch-only, with no standalone file.
 
-> **First run on a topic, use `DRY_RUN = true`.** It builds and reviews everything but commits nothing,
-> so you can read the diff before it lands. Once you trust it, `DRY_RUN = false` is fully hands-off.
-
 ---
 
 ## How to use — recipes
@@ -360,8 +357,9 @@ never overlap a section's two subagents — they edit the same two files. Neithe
 > Read `notes/prompts/knowledge/interview-prep/_internal/_interview-prep-write-prompt.md` and execute it for
 > `FILE = «topic»`, `SECTION = «this exact heading»`, `MODE = «mode»`. **Work on this one section
 > only** — read it in full in both `en/{FILE}.md` and `es/{FILE}.md`, top to bottom. Here is its
-> market/gap slice — treat every `often`/`sometimes` market question and every genuine gap as required
-> (a well-worded question must exist for each), and match the market's phrasing:
+> market/gap slice — treat every `often`/`sometimes` market question and every genuine gap inside the
+> selected coverage as required (a well-worded question must exist for each; your Step 3 governs one
+> outside it), and match the market's phrasing:
 > ```
 > «paste this section's slice: M questions + G gaps for this heading»
 > ```
@@ -450,8 +448,10 @@ before moving on, using the section slice you assembled (it is already in your c
   it is a completed report of an incomplete job, and it goes to the disposition above rather than to
   the retry below.
 - **Slice coverage:** every `often`/`sometimes` market question (M) and every gap (G) in this section's
-  slice must now be covered by a question — confirmed by A's or B's trace. Uncovered items mean the
-  section is not done, even if B said PASS.
+  slice must now be covered by a question — confirmed by A's or B's trace — or, if outside the selected
+  coverage (the standard's "When a section is complete" binds no further), be named in the final report
+  as routed to its owner where `_topic-ownership.md` assigns it to another topic, else as a coverage gap.
+  Uncovered items mean the section is not done, even if B said PASS.
 
 If either check fails, re-dispatch B **once** for this section, listing the missing trace lines and the
 uncovered slice items so it knows exactly what to close. One retry maximum; if items are still
