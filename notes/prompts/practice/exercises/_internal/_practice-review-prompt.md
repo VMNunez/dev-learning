@@ -73,11 +73,16 @@ changed. Return `RECOUNTED` or `RECOUNT PENDING — replan`, the projection delt
 - One block per exercise, for Victor: the result, and on a failure **what is wrong and why it is wrong**
   — the mechanism, in two or three sentences, with the line of his code it happens on. Name the `Why`
   category in plain words. Never the corrected code: he fixes it himself. On a `✅`, at most one line,
-  and only when there is something worth knowing (an idiom, a simpler form).
+  and only when there is something worth knowing (an idiom, a simpler form). His explanations are in
+  Spanish; on a `✅` — and on a fix you date in `verify` — that carries one, add his explanation reworded
+  more clearly in Spanish and its English translation, as §H's language rule states. That rewording is
+  feedback and never makes the attempt `ai`.
 - On a `void`: what was wrong with the exercise.
 - The `ATT-NNNN` rows written or changed.
 - Planned passed/active task count (§B), separately from first-pass exposure and consolidation;
-  on stale sources say `unavailable — replan` rather than claiming a current denominator.
+  on stale sources say `unavailable — replan` rather than claiming a current denominator. When the plan
+  carries an essential route, also `essential passed / listed`, `consolidated essential concepts /
+  essential concepts` and whether the route's minimum is met, as §B defines them.
 - The `PROGRESS.md` row before and after, plus the count of `extra` rows and orphaned heads on this route.
 - The exact list of files you modified — a subset of `practice/exercises/ATTEMPTS.md` and
   `PROGRESS.md`: both after a grade or verify on current sources, the history alone when the recount

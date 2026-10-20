@@ -85,7 +85,8 @@ copy junior tasks into another level or pre-create empty trees. SQL retains its 
   attempted/passed counts are derived from the history, never copied into the plan.
 - `INDEX.md` is navigation and a projection, one section per route: the lines `Exercise plan:`,
   `Active planned exercises:`, `Notes plan:`, `Coverage SHA-256:`, `Notes structure SHA-256:` and
-  `Derived:` (date), then one row per block — `Block | Title | Note | Depends on | Bullets | In route`
+  `Derived:` (date) — plus `Essential route:` (its stage and listed-task counts) when the plan carries
+  one — then one row per block — `Block | Title | Note | Depends on | Bullets | In route`
   — where `Bullets` counts the block's bullets and `In route` is `yes`, or `no — <reason>` where §H
   excludes the block, and one line of in-route totals, which are §G's two denominators. It never
   owns task design.
@@ -124,6 +125,36 @@ failure. Report `planned passed / active total` separately from concept first-pa
 Extra reviews do not increase the target. Retired IDs remain historical and count toward no active
 target; an attempt without a Plan ID remains concept evidence but never fulfils a task.
 
+### Essential route — the route's minimum, as a ladder
+
+A whole route is a long inventory in notes order, and served in that order a learner spends weeks on
+foundations before reaching the work a junior is hired for. So a plan **may** carry a
+`## Essential route` section, after `## Exercise inventory`: the subset of active tasks that is the
+route's **minimum** — the floor Victor's schedule criteria cite — ordered as a ladder from simple to
+combined (Victor, 2026-10-20: *"debe haber ejercicios sencillos y con una evolución para poder hacer lo
+complicado, o si no me voy a perder"*). It reorders nothing in the inventory and retires nothing: a task
+outside it stays active, and is served on request or once the route is passed.
+
+- One table, `Stage | Title | Tasks`: `Stage` a two-digit number, unique, in serving order; `Tasks` the
+  stage's IDs, comma-separated, in serving order. Every ID is an active inventory row and appears once
+  in the whole section.
+- **Closure and order.** Every ID a listed row names in `After` is itself listed, earlier in the section.
+  The route is therefore servable on its own, from its first stage.
+- **The ladder.** Every concept a listed row names is an *essential concept*, and the section lists that
+  concept's `first` row and at least one of its `variant` rows. Every stage lists at least one
+  `integration` row, so each stage ends by combining what it taught; the last stages may consist of
+  cross-block integrations alone — small problems of the shape a technical test asks.
+- **Reconciliation.** A listed ID that a replan retires is replaced, in the same position, by the row
+  that replaces it; a listed ID is never silently dropped.
+
+**The essential route is passed** when every listed ID is passed under the rule above. **The route's
+minimum is met** when, in addition, every essential concept is *consolidated* (§E), and every listed
+`integration` row was first answered `✅` with `Help: —` — or, where it was not, a later `integration`
+attempt naming the same heads was. The grading report states `essential passed / listed`,
+`consolidated essential concepts / essential concepts` and whether the minimum is met, and the session
+report `essential passed / listed`, each apart from the planned and first-pass figures; none of them
+enters the `PROGRESS.md` row (§G).
+
 ---
 
 ## C — A batch
@@ -151,7 +182,16 @@ reinforcement entry below instead (`REC-278`, 2026-10-06).
   more than 8 exercises.
 - **One objective.** Every batch states a single checkable objective in its `README.md` — "transform a
   list with a stream without opening the notes" — never the topic's name.
-- **Composition.** Use the active plan rows in table order, respecting `After` prerequisites.
+- **Composition.** Use the active plan rows in table order, respecting `After` prerequisites —
+  **except while the plan carries an essential route (§B) that is not passed**: then a proposed batch,
+  or one requested for the topic as a whole ("ejercicios de java") with no block or concept named, takes
+  its advancing share from the unpassed listed IDs in the section's order — the difficulty adaptation
+  below included, which picks its next planned transfer/integration among them — and table order
+  resumes once the route is passed. Eligibility is unchanged, so a listed variant still waits for a
+  later batch than its first and the next eligible listed ID is taken meanwhile. From the route passed
+  until its minimum is met, such a batch's revisit share goes first to the essential concepts not yet
+  consolidated and, for each listed `integration` not yet answered `✅` with `Help: —`, to an unplanned
+  integration (`Plan ID: —`) naming the same heads.
   Roughly three fifths of the time budget advances unpassed planned tasks; the rest revisits failures
   and correctly answered concepts oldest first. With no history use eligible planned tasks only.
   A prerequisite task needs a non-void attempt; a planned variant additionally needs a different
@@ -226,7 +266,7 @@ nothing else. It is the track's only primary state.
 | `Kind` | `first` · `variant` · `integration` · `extra` · `reinforce` |
 | `First result` | `✅` · `⚠️` (works, with a real defect) · `❌` · `void` |
 | `Why` | on `⚠️`/`❌` only: `concept` · `prerequisite: <head>` · `api` (knew the idea, not the call) · `reading` (answered a different question) · `careless`; `—` otherwise |
-| `Help` | what Victor **said** he used: `notes` · `hint` · `feedback` · `ai`; `—` when he declared none. Never inferred, never asked for |
+| `Help` | what Victor **said** he used: `notes` · `hint` · `feedback` · `ai`; `—` when he declared none. Never inferred, never asked for. `ai` is technical help from an AI while solving — code, a hint, the solution, or a judgement of whether his answer is right — and never help with only the wording or translation of an explanation he worked out himself, which is no help at all (Victor, 2026-10-20) |
 | `Fix verified` | `—` on `✅` and `void` · `pending` on `⚠️`/`❌` · the date a later run verified his corrected answer |
 | `Plan ID` | planned ID from the batch table, or `—`; immutable |
 
@@ -279,7 +319,8 @@ comments on the choice he makes instead.
    `practice/simulations/MISTAKES.md`, `practice/interview/MISTAKES.md`, every project's
    `PROJECT-BACKLOG.md`, and the active project's current `PLANNING.md` step. "Not recorded" is never read as "not known".
 3. **The history**: concepts owing a fix (named in one line, never a gate), failures by recency, the
-   time since each attempted concept was last seen, and the first block in plan order with eligible unpassed active tasks. `Depends on` blocks
+   time since each attempted concept was last seen, and the first block in plan order with eligible unpassed active tasks — or, while the
+   plan's essential route (§B) is not passed, the next eligible listed ID of that route instead. `Depends on` blocks
    need attempts; `After` and later-batch variant rules still apply.
 4. **Order of preference** between candidates: prerequisite first, then recent failures, then pending
    review, then new content — and never the absence of a coverage `✅`.
@@ -338,6 +379,12 @@ need rendering, angular and spring-boot need a small base app with isolated atte
 - **Grading.** Static reading of the file against the statement and the concept its row names: does it
   solve the stated task, does it use the concept the exercise exists for rather than route around it,
   would it compile, does `My output` match where one was asked for. Style is feedback, never a failure.
+- **Language of the answer.** The statement stays in English; the comments and explanations Victor
+  writes in his answer are in **Spanish** (Victor, 2026-10-20), and the grader judges them in Spanish.
+  Where an exercise he answered correctly — a `✅`, or a fix a `verify` run dates — carries an
+  explanation he wrote, the grader's feedback returns that explanation reworded more clearly in Spanish
+  and translated into English, for him to read. It is feedback, written in the report and never in his
+  file, and it is never help: the attempt's `Help` stays what he declared (§D).
 - **Excluded block.** `17 — Maven fundamentals`: its concepts need a real `pom.xml` and a build, not a
   standalone file. `In route: no`. They are practised in the projects, and requested as `extra` they are
   answered in prose or against an existing project's `pom.xml`, never by scaffolding one here.

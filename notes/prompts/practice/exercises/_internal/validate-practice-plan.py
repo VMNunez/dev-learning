@@ -61,6 +61,42 @@ def preserved(base, plan, errors):
                 errors.append("published row rewritten: " + old[0])
 
 
+def essential(plan, tasks, check):
+    """The optional essential route (standard §B): closed, ordered, a ladder of stages."""
+    if "\n## Essential route\n" not in plan:
+        return {}
+    rows = table(plan, "Essential route")
+    check(bool(rows), "essential route has no stage")
+    by_task = {r[0]: r for r in tasks}
+    listed, stages = [], []
+    for row in rows:
+        check(len(row) == 3, "essential route row needs three cells")
+        if len(row) != 3:
+            continue
+        stage, _, ids = row
+        check(bool(re.fullmatch(r"[0-9]{2}", stage)) and all(s < stage for s in stages), "invalid, duplicate or out-of-order essential stage: " + stage)
+        stages.append(stage)
+        ids = [x.strip() for x in ids.split(",") if x.strip()]
+        check(bool(ids), "empty essential stage: " + stage)
+        kinds = set()
+        for tid in ids:
+            row = by_task.get(tid)
+            check(row is not None and row[9] == "active", "essential ID missing or not active: " + tid)
+            check(tid not in listed, "essential ID listed twice: " + tid)
+            if row is not None:
+                deps = [] if row[5] == "none" else [d.strip() for d in row[5].split(",")]
+                check(all(d in listed for d in deps), "essential ID depends on an unlisted or later task: " + tid)
+                kinds.add(row[3])
+            listed.append(tid)
+        check("integration" in kinds, "essential stage has no integration: " + stage)
+    concepts = {c.strip() for t in listed if t in by_task for c in by_task[t][2].split(",")}
+    for cid in sorted(concepts):
+        kinds = {by_task[t][3] for t in listed if t in by_task and by_task[t][3] != "integration"
+                 and cid in [c.strip() for c in by_task[t][2].split(",")]}
+        check({"first", "variant"} <= kinds, "essential concept lacks a listed first and variant: " + cid)
+    return {"essential_stages": len(stages), "essential_tasks": len(listed), "essential_concepts": len(concepts)}
+
+
 def validate(root, topic, level, candidate=None, baseline=None):
     path = candidate or root / f"practice/exercises/{topic}/{level}/PLANNING-{level}.md"
     plan = text(path)
@@ -130,9 +166,11 @@ def validate(root, topic, level, candidate=None, baseline=None):
         if disposition == "included":
             kinds = {r[3] for r in active if cid in [x.strip() for x in r[2].split(",")]}
             check({"first", "variant"} <= kinds, "concept lacks first and transfer practice: " + cid)
+    route = essential(plan, tasks, check)
     return errors, {"coverage_sha256": scope, "notes_structure_sha256": structure,
                     "coverage_concepts": len(heads), "included": sum(r[3] == "included" for r in concepts),
-                    "excluded": sum(r[3] == "excluded" for r in concepts), "active_exercises": len(active)}
+                    "excluded": sum(r[3] == "excluded" for r in concepts), "active_exercises": len(active),
+                    **route}
 
 
 if __name__ == "__main__":
