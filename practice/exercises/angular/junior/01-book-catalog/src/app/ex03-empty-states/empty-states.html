@@ -1,0 +1,17 @@
+<section class="catalogue">
+  <h2>Estantería</h2>
+
+  <label class="search">
+    Buscar por título
+    <input type="search" [value]="query()" (input)="onQuery($event)" />
+  </label>
+
+  <div class="actions">
+    <button type="button" (click)="emptyShelf()">Vaciar estantería</button>
+    <button type="button" (click)="restoreShelf()">Restaurar estantería</button>
+  </div>
+
+  <!-- Your answer: -->
+</section>
+
+<!-- Observed: -->

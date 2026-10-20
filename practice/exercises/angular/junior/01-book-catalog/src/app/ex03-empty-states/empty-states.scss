@@ -1,0 +1,15 @@
+.catalogue {
+  display: grid;
+  gap: 1rem;
+  max-width: 40rem;
+}
+
+.search {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+}

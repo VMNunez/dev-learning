@@ -1,0 +1,15 @@
+<header class="shell">
+  <h1>Catálogo de libros</h1>
+  <p>Lote 01 — piloto · Angular junior</p>
+
+  <nav aria-label="Ejercicios">
+    <a routerLink="/ex03" routerLinkActive="active" ariaCurrentWhenActive="page">Ex 3 — ¿Por qué está vacía?</a>
+    <a routerLink="/ex04/2" routerLinkActive="active" ariaCurrentWhenActive="page">Ex 4 — Detalle</a>
+  </nav>
+
+  <p class="hint">Los ejercicios 1 y 2 son lógica: se comprueban con <code>ng test lote-01</code>.</p>
+</header>
+
+<main>
+  <router-outlet />
+</main>

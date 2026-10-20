@@ -1,0 +1,18 @@
+<article class="detail">
+  @if (book(); as current) {
+    <h2>{{ current.title }}</h2>
+    <p>{{ current.author }}</p>
+  } @else {
+    <p>Libro no encontrado.</p>
+  }
+</article>
+
+<nav class="books" aria-label="Otros libros">
+  @for (other of books; track other.id) {
+    <a [routerLink]="['/ex04', other.id]">{{ other.title }}</a>
+  }
+  <a routerLink="/ex04/abc">abc</a>
+  <a routerLink="/ex04/99">99</a>
+</nav>
+
+<!-- Observed: -->
