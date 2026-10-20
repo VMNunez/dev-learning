@@ -380,6 +380,9 @@ Rules:
 - Every `Coverage concepts` line is exactly `- [ ] {exact coverage bullet}` or
   `- [x] {exact coverage bullet}`. The checkbox is plan metadata and is stripped before exact matching
   against `COVERAGE`; trailing coverage evidence markers are handled by the normal scope-byte rule.
+  The junior `00` introduction is the one entry that may be assigned no bullet; when it carries none it
+  writes the field on one line as `Coverage concepts: none`, the same `none` its sibling fields use
+  (`REC-383`).
 - `[ ]` means the concept is assigned but has not yet been incorporated by a successful notes pipeline
   run. `[x]` means the English and Spanish note pair contains it and Stage C committed that fact.
 - A `pending` entry may contain `[x]` concepts preserved from an earlier successful run when a changed

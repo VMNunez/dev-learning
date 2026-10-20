@@ -97,6 +97,7 @@ copy junior tasks into another level or pre-create empty trees. SQL retains its 
 - Notes structure digest: SHA-256 of UTF-8 JSON, `ensure_ascii=False`, compact separators, no final
   newline, over the ordered list of `[number,title,Spanish,Depends on,[full coverage bullets]]`.
   Strip checkbox and evidence markers from bullets; exclude note prose and all status/study fields.
+  An entry written `Coverage concepts: none` contributes an empty bullet list (`REC-383`).
   `validate-practice-plan.py` beside this standard implements both digests and route checks.
 
 ### Freshness and preservation

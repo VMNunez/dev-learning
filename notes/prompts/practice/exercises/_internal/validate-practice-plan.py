@@ -34,10 +34,12 @@ def sources(root, topic, level):
     blocks = []
     for m in re.finditer(r"^## (\d+) — ([^\n]+)\n(.*?)(?=^## |\Z)", notes, re.M | re.S):
         number, title, body = m.groups()
-        section = re.search(r"^Coverage concepts:\n(.*?)(?=^[A-Z][^\n]*:|\Z)", body, re.M | re.S)
+        section = re.search(r"^Coverage concepts:( none)?\n(.*?)(?=^[A-Z][^\n]*:|\Z)", body, re.M | re.S)
         if not section:
             raise ValueError("no concept list in block " + number)
-        concepts = [clean(x) for x in re.findall(r"^- \[[ x]\] (.+)$", section.group(1), re.M)]
+        concepts = [clean(x) for x in re.findall(r"^- \[[ x]\] (.+)$", section.group(2), re.M)]
+        if section.group(1) and concepts:
+            raise ValueError("block " + number + " says Coverage concepts: none and lists concepts")
         blocks.append([number, title, field(body, "Spanish"), field(body, "Depends on"), concepts])
     scope = digest("\n".join(clean(x) for x in cov.split("\n")))
     structure = digest(json.dumps(blocks, ensure_ascii=False, separators=(",", ":")))
