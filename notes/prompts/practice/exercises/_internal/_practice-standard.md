@@ -89,8 +89,11 @@ copy junior tasks into another level or pre-create empty trees. SQL retains its 
   `Derived:` (date) and `Essential route:` (its stage and listed-task counts) — then one row per block —
   `Block | Title | Note | Depends on | Bullets | In route`
   — where `Bullets` counts the block's bullets and `In route` is `yes`, or `no — <reason>` where §H
-  excludes the block, and one line of in-route totals, which are §G's two denominators. It never
-  owns task design.
+  excludes the block, and one line of in-route totals, which are §G's two denominators: the in-route
+  blocks, and the **included** concepts of those blocks. A concept excluded at concept level inside an
+  in-route block (angular §H) stays in its block's `Bullets` and enters neither total — the line names
+  how many there are when any — since no exercise may be planned for it, and counting it would leave a
+  share that can never reach 100 % (`REC-377`). It never owns task design.
 - Notes structure digest: SHA-256 of UTF-8 JSON, `ensure_ascii=False`, compact separators, no final
   newline, over the ordered list of `[number,title,Spanish,Depends on,[full coverage bullets]]`.
   Strip checkbox and evidence markers from bullets; exclude note prose and all status/study fields.
@@ -189,7 +192,8 @@ planned.
   still apply. A requested concept whose prerequisite block has no attempt is served as asked, with at
   most one line saying so.
 - **A concept outside the route.** One that is a coverage bullet at that level but sits in an excluded
-  block, and one that is no coverage bullet at all, are both served as kind `extra`: recorded, never
+  block or is itself excluded at concept level (§B), and one that is no coverage bullet at all, are both
+  served as kind `extra`: recorded, never
   counted toward a first pass, the second with one line saying it is outside the checklist. This track
   never authors a bullet.
 - **Size.** From the time Victor states when he opens the session; with none stated, assume 30 minutes
@@ -352,11 +356,11 @@ está definido") and the next candidate that has one is proposed instead.
 
 `## Practice completed` → `### Short exercises — practice/exercises/`, one row per route in `INDEX.md`:
 
-| Cell | Recount, from `ATTEMPTS.md`, `INDEX.md` and the heads of the notes plan the index names |
+| Cell | Recount, from `ATTEMPTS.md`, `INDEX.md`, the plan's concept mapping and the heads of the notes plan the index names |
 |---|---|
 | `Blocks first-passed` | blocks `In route: yes` whose every included concept has a non-`void` `first` row / blocks `In route: yes` |
-| `Concepts attempted` | distinct heads of in-route blocks with a non-`void` row / the sum of `Bullets` over in-route blocks |
-| `Consolidated` | distinct heads in state *consolidated* (§E) / the same denominator |
+| `Concepts attempted` | distinct included heads of in-route blocks with a non-`void` row / the in-route included-concept total (§B — the sum of in-route `Bullets` less the concepts excluded inside those blocks) |
+| `Consolidated` | distinct included heads of in-route blocks in state *consolidated* (§E) / the same denominator |
 | `Owing a fix` | the count of concepts in that state — a number, never a percentage |
 
 The planned passed/active total (§B) is returned in the session and grading reports, not added to
@@ -367,7 +371,7 @@ A recount writes no attempts and reuses §G; the planner never invents grades.
 
 The three share cells are written `n/N (p%)`. The grader rewrites the affected row after every run that
 appended or changed a history row, and adds the row on a route's first such run (or on an explicit `recount`). `extra`
-rows and orphaned heads enter no cell; the grader's report states how many of each exist. A route with
+rows, orphaned heads and excluded heads enter no cell; the grader's report states how many of each exist. A route with
 no table in `INDEX.md` has no row. The legend prose beside the table has no automatic writer.
 
 ---

@@ -56,7 +56,8 @@ stays wrong on disk until he rewrites it.
    using §B's checker; if it cannot be run, recompute both digests as §B states and say so, never
    reporting a PASS it did not run; when stale, retain the existing projection and report `recount pending — replan`
    without losing the new grade. On current sources, rows are matched to blocks by head, and a head no in-route
-   block of the plan holds any more is an orphan and enters no cell. **A pilot batch skips this step**:
+   block of the plan holds any more is an orphan and enters no cell — nor does a head the plan's
+   concept mapping marks `excluded` (§G). **A pilot batch skips this step**:
    its route has no `INDEX.md` table and so no `PROGRESS.md` row (§G).
 
 ## Mode `verify`
@@ -90,7 +91,7 @@ changed. Return `RECOUNTED` or `RECOUNT PENDING — replan`, the projection delt
   pilot batch `n/a — pilot` for this and every counter below, the `PROGRESS.md` row included. Also
   `essential passed / listed`, `consolidated essential concepts / essential concepts` and whether the
   route's minimum is met, as §B defines them.
-- The `PROGRESS.md` row before and after, plus the count of `extra` rows and orphaned heads on this route.
+- The `PROGRESS.md` row before and after, plus the count of `extra` rows, orphaned heads and excluded heads on this route.
 - The exact list of files you modified — a subset of `practice/exercises/ATTEMPTS.md` and
   `PROGRESS.md`: both after a grade or verify on current sources, the history alone when the recount
   was deferred or the batch is a pilot, `PROGRESS.md` alone in `recount` — or nothing.

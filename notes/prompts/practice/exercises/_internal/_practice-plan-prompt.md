@@ -49,7 +49,8 @@ It writes plans and navigation only; statements, skeletons, answers and grades b
    the existing route and park the candidate at the scratch path. When no published route exists,
    leave it absent. Report the blocker; generate no planned batch from the rejected candidate.
 7. After approval, validate again, publish the plan and refresh only its INDEX projection: exercise
-   plan path, source fingerprints, block table, included concept totals, active task total and the
+   plan path, source fingerprints, block table, the in-route totals as §B defines them (included
+   concepts only, naming any excluded inside an in-route block), active task total and the
    essential route's counts. Keep
    existing route tables. Invoke the cold grader in `recount` mode when existing attempts need a new
    projection; it alone owns PROGRESS cells. Do not grade or alter history in this route.
