@@ -217,7 +217,9 @@ pilot batch, no further batch is generated there.
   consolidated and, for each listed `integration` not yet answered `✅` with `Help: —`, to an unplanned
   integration (`Plan ID: —`) naming the same heads.
   Roughly three fifths of the time budget advances unpassed planned tasks; the rest revisits failures
-  and correctly answered concepts oldest first. With no history use eligible planned tasks only.
+  and correctly answered concepts oldest first, among concepts *attempted* (§E) — an `extra` row alone
+  never puts a concept there. With no attempted concept — no history, or none but `extra` or `void`
+  rows — use eligible planned tasks only.
   A prerequisite task needs a non-void attempt; a planned variant additionally needs a different
   batch from its first exercise. Integrations require all their concepts *attempted* (§E), which an
   `extra` row never makes them. Never emit a
