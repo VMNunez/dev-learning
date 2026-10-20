@@ -148,13 +148,13 @@ rather than a widened cell, so the level columns keep meaning what they say.
   presence of nothing, which is a measured fact and not a missing gate. Name it either way.
 
 **Then the spaced-review row, whenever `notes/interview-prep/spaced/schedule.md` changed in this block.**
-Run `python -I notes/interview-prep/spaced/spaced.py progreso --escribir`: it rewrites the one data row
-of the `Essential interview questions — spaced review` table in `## Study progress` from the schedule and
-refreshes the schedule's generated `## Estado`, `## Próximos días` and `## Evolución` sections. Never
-compute or edit that row by hand — the schedule is the primary state and the script is its only
-projection.
+Run `python -I notes/interview-prep/spaced/spaced.py progreso --escribir`: it re-reads the source banks,
+rewrites the generated per-phase block of the `Interview prep — spaced review` summary in
+`## Study progress` from the schedule and refreshes the schedule's generated `## Estado`,
+`## Próximos días` and `## Evolución` sections. Never compute or edit that block by hand — the schedule
+is the primary state and the script is its only projection.
 
-Rewrite only the three levelled rows, the per-project table and that one spaced-review row in
+Rewrite only the three levelled rows, the per-project table and that generated spaced-review block in
 `## Study progress`. SQL and simulations stay under
 `## Practice completed`; coverage evidence stays under `## Coverage demonstrated`.
 

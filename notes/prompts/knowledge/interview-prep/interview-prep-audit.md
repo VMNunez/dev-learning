@@ -602,6 +602,18 @@ this run left `blocked — partial`, whose banks its gate will refuse. Invoke it
 run, not per topic, so a `FILE = all` batch writes the rows a single time. Fold its report row into the
 final report, and do not re-stage `PROGRESS.md` here.
 
+### Re-order the spaced review
+
+The daily interview-prep block studies the banks on the spaced schedule in
+`notes/interview-prep/spaced/`, and a question this run adds, re-stars or removes changes that
+schedule's study route (Victor, 2026-10-20). So after the recount — on `full` and `correct`, once per
+run, never on `DRY_RUN = true` — run `python -I notes/interview-prep/spaced/spaced.py progreso --escribir`. It re-reads every
+source bank, places new questions in the route, drops pending ones that left it, retires learned ones
+with their history, and rewrites the generated sections of `schedule.md` and the spaced-review block of
+`PROGRESS.md`. Commit those two files alone, `docs(study): re-sync the spaced review with the banks`,
+with `git status` immediately before staging and before committing. Never edit either by hand; fold the
+script's added/removed/retired lines into the final report.
+
 ### Final step — pipeline self-report
 
 After everything above is done, read `notes/prompts/_internal/_pipeline-self-report.md` and execute it for this

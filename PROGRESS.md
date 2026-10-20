@@ -172,19 +172,29 @@ fraction, keeps its marker, and is named in that ritual's report.
 `—` here is the missing route: `notes/interview-prep/routes/projects.md` has never been built, so no
 project has a study denominator yet. `/interview-prep-route-projects MODE = update` is what creates it.
 
-**Essential interview questions — spaced review.** Where the daily interview-prep block stands
-(2026-10-20): the essential questions of `Documents/main/HORARIO.md`'s annex, plus the `⭐⭐⭐` ones the
-source banks gain later, studied on the spaced schedule in `notes/interview-prep/spaced/schedule.md`.
-*Learned* counts every question in the schedule; *Verified* is criterion E — two passes in a row, at
-least six days apart — over the annex questions only; *Consolidated* has passed its third review too;
-the last column is the day the last new question is due if every review passes. The schedule is the
-primary state, so this row is only its projection: `study-block-close` rewrites it with
-`spaced.py progreso --escribir` whenever the block recorded results. Week-by-week evolution and the next
-days are in the schedule itself, under `## Evolución` and `## Próximos días`.
+**Interview prep — spaced review.** Where the daily interview-prep block stands, phase by phase. The
+block studies the question banks in phases ordered by impact on the job goal (ruled by Victor
+2026-10-20): phase 1 is the `⭐⭐⭐` questions of the core banks — project 07, Spring Boot, Angular, Java
+first, then SQL, security, architecture, TypeScript, general, JavaScript, Git and project 06; phase 2 is
+the remaining `⭐⭐⭐` (projects 01–05, CSS); phase 3, the `⭐⭐` questions, is planned with Victor when
+phase 2 ends. Each phase opens once every question of the one before is verified. *Learned* is studied
+once; *Verified* is two passes in a row; *Consolidated* is three or more. The schedule in
+`notes/interview-prep/spaced/schedule.md` is the primary state and re-reads the banks whenever it is
+used, so a rebuilt bank re-orders the route on its own; this block is only its projection, rewritten by
+`spaced.py progreso --escribir` (run by `study-block-close`, and by the bank-writing audits after they
+change a bank). Per-topic progress, the next days and week-by-week evolution are in the schedule itself.
 
-| Learned | Verified (criterion E) | Consolidated | Overdue reviews | Last new question (projected) | Updated |
-|---|---|---|---|---|---|
-| 0/137 (0%) | 0/137 | 0 | 0 | 2026-12-12 | 2026-10-20 |
+<!-- spaced.py: begin, generated — do not edit by hand -->
+
+| Phase | Scope | Questions | Learned | Verified | Consolidated | Status |
+|---|---|---|---|---|---|---|
+| 1 | ⭐⭐⭐ — Proyecto 7, Spring Boot, Angular, Java, SQL, Seguridad, Arquitectura, TypeScript, General, JavaScript, Git, Proyecto 6 | 194 | 0/194 (0%) | 0 | 0 | open · last new projected 2026-12-22 · fully verified ~2026-12-29 |
+| 2 | ⭐⭐⭐ — Proyecto 5, Proyecto 3, CSS, Proyecto 4, Proyecto 2, Proyecto 1 | 103 | 0/103 (0%) | 0 | 0 | locked until phase 1 is fully verified |
+| 3 | ⭐⭐ | — | — | — | — | to be planned with Victor when phase 2 ends |
+
+Overdue reviews: 0 · Hard questions (2+ fails): none · Updated 2026-10-20.
+
+<!-- spaced.py: end -->
 
 ---
 

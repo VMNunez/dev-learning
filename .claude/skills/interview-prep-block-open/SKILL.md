@@ -4,8 +4,9 @@ description: >
   Open and conduct the active-recall interview-prep block whenever Victor starts interview questions
   ("vamos con interview prep", "¿qué toca hoy?", "hazme preguntas de entrevista", "abro el bloque de
   preguntas") or continues an already open question. By default it follows the spaced-repetition
-  schedule of the essential questions (`notes/interview-prep/spaced/`): it runs `spaced.py hoy`, tells
-  him what to review first and what to learn next, serves one question at a time without revealing its
+  schedule of the question banks, phase by phase (`notes/interview-prep/spaced/`): it runs `spaced.py
+  hoy`, tells him what to review first and what to learn next — and `spaced.py mas` when he has time
+  for more — serves one question at a time without revealing its
   answer, accepts either voice-dictation transcripts or typed answers, grades PASS / BORDERLINE / FAIL
   and records every result in `schedule.md` through `spaced.py registrar`. The CORE route and the
   cross-project route stay available on request. It never writes a Q&A bank: study-block-close owns
@@ -29,18 +30,19 @@ only when he asks for it by name ("la ruta CORE", "preguntas de nivel junior fue
 project route only when he asks for project questions outside the plan ("todas las preguntas del 07",
 "project questions"). Which kind of recall he wants is his call and not this skill's.
 
-**Spaced route (default).** The essential questions, each with the date Victor learned it, its review
-history, its streak and its next review date, live in `notes/interview-prep/spaced/schedule.md`; its
-`## Reglas` and `## Ajustes` sections are the contract and are not restated here. Before anything else:
+**Spaced route (default).** The questions of the source banks, in study phases ordered by impact on
+the job goal, each with the date Victor learned it, its review history, its streak and its next review
+date, live in `notes/interview-prep/spaced/schedule.md`; its `## Reglas` and `## Ajustes` sections are
+the contract and are not restated here. Before anything else:
 
 1. If `git status --short` shows `schedule.md` modified by an earlier block that was never closed,
    commit it alone first, `docs(study): record spaced interview review progress`, with `git status`
    immediately before staging and before committing.
-2. Run `python -I notes/interview-prep/spaced/spaced.py hoy` — it first appends any `⭐⭐⭐` question the
-   source banks gained, then prints today's reviews (overdue first) and the new questions that still fit
-   the block. Relay it to Victor in Spanish as a short instruction — *«Hoy: primero repasa X, Y; después
-   estudia Z»* — with the estimated minutes, and name any question it reported as added or as gone from
-   the banks.
+2. Run `python -I notes/interview-prep/spaced/spaced.py hoy` — it first re-reads the source banks
+   (adding, dropping, retiring and re-ordering questions), then prints today's reviews, the most at risk
+   first, and the new questions the day's load still admits. Relay it to Victor in Spanish as a short
+   instruction — *«Hoy: primero repasa X, Y; después estudia Z»* — and name any question it reported as
+   added, removed, retired or reactivated. Never estimate minutes: Victor does not time the block.
 3. Read the Spanish bank file of each listed question — `notes/interview-prep/junior/es/{topic}.md` or
    `notes/interview-prep/projects/es/«project».md`, resolving the ID on its bold question line alone —
    for its question text and stored answer.
@@ -86,7 +88,10 @@ like any other — say so, print its handoff, and offer the spaced route instead
 
 **Spaced route.** Follow the order `spaced.py hoy` printed: every review first, then the new questions.
 Never add a question it did not list, and never skip one he did not ask to skip. Run `hoy` again
-whenever he asks what is left; it accounts for what was already recorded that day.
+whenever he asks what is left; it accounts for what was already recorded that day. **The day adapts to
+him, never the other way round:** when he says he has time for more, run `spaced.py mas [N]` and serve
+those in their order; when he stops early, nothing is owed — what he did not do stays due and the next
+`hoy` puts it first.
 
 **CORE and project routes.** Walk the resolved route in its own order and choose the first question
 that is:
@@ -135,7 +140,7 @@ the same concept (*repregunta*), and grade answer and follow-up together:
 Give concise evidence, explain what was missing, show the stored answer on a `BORDERLINE` or `FAIL`, and
 record the verdict at once: `spaced.py registrar «ID» pass|borderline|fail`. Only the first attempt of
 the day counts — a corrected second answer is good practice and is not recorded; the script refuses a
-second record for the same day and question, and `--forzar` exists only to correct a mistyped verdict.
+second record for the same day and question, and `--corregir` exists only to replace a mistyped verdict.
 Relay the script's output line (streak, state, next review date) in Spanish.
 
 **CORE and project routes** keep their in-block verdicts:
