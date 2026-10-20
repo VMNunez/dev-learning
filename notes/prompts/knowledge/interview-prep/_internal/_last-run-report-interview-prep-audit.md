@@ -3,7 +3,7 @@
 **Date:** 2026-10-20
 **Target:** `LEVEL = junior` · `FILE = spring-boot` · `SECTION = all` · `MODE = full` · `DRY_RUN = false`
 **Outcome:** completed — topic commit `6d9d4c20`; recount `c0b842b6`
-**Status:** open
+**Status:** applied in 1e8a8a6d
 
 1. **Plan vs reality** — the split held: M and G once, then author → reviewer over all eight sections in
    order, each diff confined to its own section (checked by hunk ranges after every author). No step reads
@@ -31,6 +31,9 @@
 5. **Verdict** — change worth considering: let the acceptance gate close an item outside the selected
    coverage or owned by another topic by a reported coverage gap or a route to its owner, as the standard
    already does. The prompt is 611 lines, over the ~500 alarm; largest section `### Per-section deep work`.
+   cold reviewer: approve-with-tightening — applied in `1e8a8a6d` (gate + author dispatch, route vs gap made
+   exclusive; duplicate `DRY_RUN` blockquote out, net 0 lines; maps updated). The write prompt's twin
+   "treat every … as required" (`BRCH-0015`, shared) is not this prompt's to edit and stays open.
 
 Close-out check: declared files — the `en/` + `es/` pair (`6d9d4c20`, fingerprint written, index and 99
 anchors rebuilt), `PROGRESS.md` via `authoring-progress-recount` (`c0b842b6`), this report,
