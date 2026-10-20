@@ -80,9 +80,9 @@ changed. Return `RECOUNTED` or `RECOUNT PENDING — replan`, the projection delt
 - On a `void`: what was wrong with the exercise.
 - The `ATT-NNNN` rows written or changed.
 - Planned passed/active task count (§B), separately from first-pass exposure and consolidation;
-  on stale sources say `unavailable — replan` rather than claiming a current denominator. When the plan
-  carries an essential route, also `essential passed / listed`, `consolidated essential concepts /
-  essential concepts` and whether the route's minimum is met, as §B defines them.
+  on stale sources say `unavailable — replan` rather than claiming a current denominator. Also
+  `essential passed / listed`, `consolidated essential concepts / essential concepts` and whether the
+  route's minimum is met, as §B defines them.
 - The `PROGRESS.md` row before and after, plus the count of `extra` rows and orphaned heads on this route.
 - The exact list of files you modified — a subset of `practice/exercises/ATTEMPTS.md` and
   `PROGRESS.md`: both after a grade or verify on current sources, the history alone when the recount

@@ -117,8 +117,8 @@ handing over. From that commit on its files are his.
 
 ### 1e — Hand over
 
-Print the plan path, passed/active planned tasks — and, when the plan carries an essential route,
-`essential passed / listed` (standard §B) — the objective, the table, the block's Spanish note path with its live `Status:`, and how the
+Print the plan path, passed/active planned tasks and `essential passed / listed` (standard §B),
+the objective, the table, the block's Spanish note path with its live `Status:`, and how the
 topic's §H says he runs a file. Say once that the batch has no deadline — he may answer it over several
 sittings and days — and give him the message his answer commits take (`## Commits`). Then stop: he
 answers on his own, and says when it is ready.
@@ -201,8 +201,7 @@ when it shows changes he has not committed**: `docs(practice): {topic} {slug} �
 
 Route 0: plan path, counts, exclusions, reconciliation delta, validation and cold-review verdict.
 
-Route 1 includes the plan path and `Plan: passed/active tasks` — plus `Esencial: passed/listed` when
-the plan carries an essential route — alongside:
+Route 1 includes the plan path, `Plan: passed/active tasks` and `Esencial: passed/listed`, alongside:
 
 ```
 Práctica: java junior · bloque 10 — Collections, hashing, and ordering · 30 min · 5 ejercicios
@@ -223,6 +222,6 @@ Route 2:
 | Resultado | 4/5 ✅ · 1 ❌ (`HashMap` iteration order, por `concept`) |
 | Histórico | `ATT-0012`–`ATT-0016` |
 | PROGRESS.md | java junior: bloques 2/17 → 2/17 · conceptos 14/125 → 18/125 · consolidados 3 → 3 · pendientes de corregir 0 → 1 |
-| Esencial | 12/118 tareas · 4/50 conceptos consolidados · mínimo: pendiente (only when the plan carries an essential route) |
+| Esencial | 12/118 tareas · 4/50 conceptos consolidados · mínimo: pendiente |
 | Siguiente | corrige el 4 en su archivo y di que está corregido |
 | Commits | míos: ATTEMPTS.md + PROGRESS.md · tuyos: las respuestas que queden sin comitear (comandos abajo), o ninguno |

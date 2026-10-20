@@ -22,8 +22,8 @@ It writes plans and navigation only; statements, skeletons, answers and grades b
    exercises whose answer is only a definition; diagnostic/API-reading tasks lead to code or an
    annotated repair. Keep all execution feasible in §H; do not require a framework/build environment
    that does not exist. A pending/unrefined note does not prevent planning or practice.
-   Author or preserve the optional `## Essential route` (§B, "Essential route") when the route has one
-   or Victor asks for one: a ladder of stages from simple to combined, each closed by an integration,
+   Author or preserve the `## Essential route` (§B, "Essential route") — every plan carries one
+   (`REC-375`): a ladder of stages from simple to combined, each closed by an integration,
    whose listed rows carry their own prerequisites; add the cross-block integrations its last stages
    need as new inventory rows rather than repurposing published ones.
 4. On reconciliation, keep all published IDs and unchanged task rows. A listed essential ID that is
@@ -42,15 +42,15 @@ It writes plans and navigation only; statements, skeletons, answers and grades b
 6. Dispatch one **cold reviewer**, `deep`, under `_agent-runtime-standard.md`, with only the proposed
    route, its sources, the standard, the prior route (if any), and a writable scratch report path.
    Ask it to read each to EOF and judge scope completeness, exercise variety and feasibility,
-   progression, pass conditions, history preservation and all validation results — and, when the plan
-   carries an essential route, whether its stages climb from simple to combined without a gap. It must persist
+   progression, pass conditions, history preservation and all validation results — and whether the
+   essential route's stages climb from simple to combined without a gap. It must persist
    findings and `approve`, `approve-with-tightening` or `reject`, with EOF evidence. Never self-approve.
    Apply approved tightenings. A rejection permits one repair/review round; if still rejected, retain
    the existing route and park the candidate at the scratch path. When no published route exists,
    leave it absent. Report the blocker; generate no planned batch from the rejected candidate.
 7. After approval, validate again, publish the plan and refresh only its INDEX projection: exercise
-   plan path, source fingerprints, block table, included concept totals, active task total and, when
-   present, the essential route's counts. Keep
+   plan path, source fingerprints, block table, included concept totals, active task total and the
+   essential route's counts. Keep
    existing route tables. Invoke the cold grader in `recount` mode when existing attempts need a new
    projection; it alone owns PROGRESS cells. Do not grade or alter history in this route.
 8. Return the plan path, totals, exclusions, reconciliation delta, validation result, cold-review

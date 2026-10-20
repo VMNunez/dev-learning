@@ -84,9 +84,9 @@ copy junior tasks into another level or pre-create empty trees. SQL retains its 
   and integrations, not just a list of headings or totals. `State` is `active` or `retired` only;
   attempted/passed counts are derived from the history, never copied into the plan.
 - `INDEX.md` is navigation and a projection, one section per route: the lines `Exercise plan:`,
-  `Active planned exercises:`, `Notes plan:`, `Coverage SHA-256:`, `Notes structure SHA-256:` and
-  `Derived:` (date) — plus `Essential route:` (its stage and listed-task counts) when the plan carries
-  one — then one row per block — `Block | Title | Note | Depends on | Bullets | In route`
+  `Active planned exercises:`, `Notes plan:`, `Coverage SHA-256:`, `Notes structure SHA-256:`,
+  `Derived:` (date) and `Essential route:` (its stage and listed-task counts) — then one row per block —
+  `Block | Title | Note | Depends on | Bullets | In route`
   — where `Bullets` counts the block's bullets and `In route` is `yes`, or `no — <reason>` where §H
   excludes the block, and one line of in-route totals, which are §G's two denominators. It never
   owns task design.
@@ -128,12 +128,15 @@ target; an attempt without a Plan ID remains concept evidence but never fulfils 
 ### Essential route — the route's minimum, as a ladder
 
 A whole route is a long inventory in notes order, and served in that order a learner spends weeks on
-foundations before reaching the work a junior is hired for. So a plan **may** carry a
+foundations before reaching the work a junior is hired for. So **every plan carries** a
 `## Essential route` section, after `## Exercise inventory`: the subset of active tasks that is the
 route's **minimum** — the floor Victor's schedule criteria cite — ordered as a ladder from simple to
 combined (Victor, 2026-10-20: *"debe haber ejercicios sencillos y con una evolución para poder hacer lo
 complicado, o si no me voy a perder"*). It reorders nothing in the inventory and retires nothing: a task
-outside it stays active, and is served on request or once the route is passed.
+outside it stays active, and is served on request or once the route is passed. It is mandatory since
+2026-10-20 (`REC-375`): while it was optional it existed only when someone asked for it at planning
+time, and a plan built without it serves the inventory in notes order — the failure this section exists
+for. The checker fails a plan that lacks it.
 
 - One table, `Stage | Title | Tasks`: `Stage` a two-digit number, unique, in serving order; `Tasks` the
   stage's IDs, comma-separated, in serving order. Every ID is an active inventory row and appears once
@@ -183,7 +186,7 @@ reinforcement entry below instead (`REC-278`, 2026-10-06).
 - **One objective.** Every batch states a single checkable objective in its `README.md` — "transform a
   list with a stream without opening the notes" — never the topic's name.
 - **Composition.** Use the active plan rows in table order, respecting `After` prerequisites —
-  **except while the plan carries an essential route (§B) that is not passed**: then a proposed batch,
+  **except while the plan's essential route (§B) is not passed**: then a proposed batch,
   or one requested for the topic as a whole ("ejercicios de java") with no block or concept named, takes
   its advancing share from the unpassed listed IDs in the section's order — the difficulty adaptation
   below included, which picks its next planned transfer/integration among them — and table order

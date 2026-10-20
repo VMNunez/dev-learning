@@ -62,8 +62,9 @@ def preserved(base, plan, errors):
 
 
 def essential(plan, tasks, check):
-    """The optional essential route (standard §B): closed, ordered, a ladder of stages."""
+    """The mandatory essential route (standard §B, REC-375): closed, ordered, a ladder of stages."""
     if "\n## Essential route\n" not in plan:
+        check(False, "plan has no essential route (standard section B)")
         return {}
     rows = table(plan, "Essential route")
     check(bool(rows), "essential route has no stage")
