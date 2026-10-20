@@ -38,3 +38,46 @@ Derived: 2026-10-20
 | 17 | Maven fundamentals | `notes/java/junior/es/17-maven.md` | 00, 04 | 7 | no — needs a Maven project, not a standalone file (standard §H) |
 
 **In route: 17 blocks, 125 concepts.** Block 17 is excluded and its 7 bullets enter no denominator.
+
+## angular — junior
+
+Exercise plan: [Angular junior](angular/junior/PLANNING-junior.md)
+Active planned exercises: 382
+Essential route: 14 stages, 118 tasks
+Notes structure SHA-256: 23effbefa74f66293ff8dead8c9832b68e324039a1c37867d7094914bfb03709
+Notes plan: notes/angular/coverage/notes-plan-junior.md
+Coverage SHA-256: 090fc3628c0017acfa06c306c24fbf39e9bcffca252e8a2187fd0cba5f0d84d5
+Derived: 2026-10-21
+
+| Block | Title | Note | Depends on | Bullets | In route |
+|---|---|---|---|---|---|
+| 00 | Angular in the browser | `notes/angular/junior/es/00-introduccion-angular.md` | none | 0 | no — orientation chapter; it carries no coverage bullet, so there is nothing to practise |
+| 01 | Application bootstrap | `notes/angular/junior/es/01-arranque-aplicacion.md` | 00 | 2 | yes |
+| 02 | Components and template bindings | `notes/angular/junior/es/02-componentes-plantillas.md` | 01 | 8 | yes |
+| 03 | Signals: state the template reacts to | `notes/angular/junior/es/03-senales.md` | 02 | 5 | yes |
+| 04 | Template control flow | `notes/angular/junior/es/04-control-flujo-plantillas.md` | 02, 03 | 5 | yes |
+| 05 | Component communication: inputs, outputs, and projection | `notes/angular/junior/es/05-comunicacion-componentes.md` | 02, 03, 04 | 6 | yes |
+| 06 | Attribute directives and the host element | `notes/angular/junior/es/06-directivas-estilos.md` | 02, 03, 05 | 2 | yes |
+| 07 | Component styles and the style boundary | `notes/angular/junior/es/07-estilos-componentes.md` | 02, 03, 05, 06 | 6 | yes |
+| 08 | Dependency injection and provider scope | `notes/angular/junior/es/08-inyeccion-dependencias.md` | 01, 02, 05, 06 | 9 | yes |
+| 09 | Component lifecycle, view queries, and cleanup | `notes/angular/junior/es/09-ciclo-vida-componentes.md` | 02, 03, 05, 08 | 6 | yes |
+| 10 | Effects and signal ownership | `notes/angular/junior/es/10-efectos-propiedad-senales.md` | 03, 08, 09 | 6 | yes |
+| 11 | Template pipes | `notes/angular/junior/es/11-pipes.md` | 01, 02, 08 | 4 | yes |
+| 12 | HTTP requests and remote UI states | `notes/angular/junior/es/12-http.md` | 01, 03, 04, 08, 09 | 9 | yes |
+| 13 | RxJS operators: transforming, combining, and flattening streams | `notes/angular/junior/es/13-flujos-rxjs.md` | 03, 12 | 10 | yes |
+| 14 | RxJS errors, cleanup, and consumption | `notes/angular/junior/es/14-rxjs-errores-consumo.md` | 03, 08, 09, 11, 12, 13 | 8 | yes |
+| 15 | Reactive forms: the control model and validation | `notes/angular/junior/es/15-formularios-reactivos.md` | 02, 04, 06, 08 | 10 | yes |
+| 16 | Reactive forms: values, submission, and change streams | `notes/angular/junior/es/16-valores-envio-formularios.md` | 12, 13, 14, 15 | 9 | yes |
+| 17 | Routing: routes, outlets, and navigation | `notes/angular/junior/es/17-enrutamiento.md` | 01, 02, 06, 08, 13, 14 | 10 | yes |
+| 18 | The URL as view state | `notes/angular/junior/es/18-estado-vista-url.md` | 03, 08, 13, 14, 17 | 11 | yes |
+| 19 | Route matching and lazy loading | `notes/angular/junior/es/19-coincidencia-rutas-carga-diferida.md` | 01, 08, 17 | 6 | yes |
+| 20 | Route guards | `notes/angular/junior/es/20-guards-rutas.md` | 08, 10, 16, 17, 18, 19 | 9 | yes |
+| 21 | HTTP interceptors and session expiry | `notes/angular/junior/es/21-interceptores-http.md` | 12, 14, 17, 18, 20 | 3 | yes |
+| 22 | Change detection and pipe execution | `notes/angular/junior/es/22-deteccion-cambios.md` | 03, 05, 10, 11, 12, 14 | 5 | yes |
+| 23 | Production build, configuration, and template trust | `notes/angular/junior/es/23-entrega-produccion.md` | 02, 12, 19 | 4 | yes |
+| 24 | Test setup, doubles, and service tests | `notes/angular/junior/es/24-testing.md` | 03, 08, 13, 20 | 6 | yes |
+| 25 | Testing HTTP and rendered components | `notes/angular/junior/es/25-testing-http-componentes.md` | 05, 12, 14, 22, 24 | 6 | yes |
+| 26 | Debugging and maintained-code navigation | `notes/angular/junior/es/26-depuracion-codigo-mantenido.md` | 03, 08, 12, 17, 23, 25 | 2 | yes |
+| 27 | Legacy enterprise Angular | `notes/angular/junior/es/27-angular-legacy.md` | 01, 02, 03, 04, 05, 08, 10, 13, 14, 15 | 6 | yes |
+
+**In route: 27 blocks, 172 concepts.** Block 00 carries no bullet and enters no denominator. 1 concept excluded at concept level inside an in-route block — C132 (block 19) — stays in its block's `Bullets` and enters neither total.
