@@ -135,11 +135,12 @@ technical files. The README's `## Study notes` section is part of that shape: on
 per block the table names, its path and live `Status:` read from the notes plan, listed even when the
 note is not written yet. Nothing else is written, and no earlier batch is named in it.
 
-**Where the topic's §H makes the batch an application** (angular), §H's sequence wraps this step: run the
-scaffold's dry run and read the root files it would touch, run the scaffold, write the files, then run
-§H's generation check on the untouched batch. A root change §H does not permit, or a check that fails,
+**Where the topic's §H names a workspace** (angular, spring-boot), §H's sequence wraps this step: run
+what it names before writing — angular's scaffold dry run, read for the root files it would touch, then
+the scaffold — write the files and the root change §H permits, then run §H's generation check on the
+untouched batch. A root change §H does not permit, or a check that fails,
 stops here: nothing is committed, the batch is repaired or removed, and the report says which. If the
-topic's workspace does not exist yet, create it first with §H's command and commit it on its own.
+topic's workspace does not exist yet, create it first as §H names and commit it on its own.
 
 **Then rewrite `practice/exercises/INDEX.md` → `## Practice state`** under standard §F, the new batch
 open, **and commit the batch as generated** — that folder plus the root changes §H permits its scaffold
@@ -227,8 +228,9 @@ each `git commit`, so no file of a batch folder is staged alongside a system fil
   `docs(practice): generate {topic} {level} batch {NN}-{slug}`, carrying also the root changes the
   topic's §H permits its scaffold and `INDEX.md`'s `## Practice state` (1d). At generation only: once that commit exists, no file of that folder
   is ever staged by you again.
-- the topic's workspace, once, where its §H names one — every file its scaffold created —
-  `chore(practice): {topic} {level} workspace` (authorized 2026-10-20, `REC-376`).
+- the topic's workspace, once, where its §H names one — every file its creation wrote —
+  `chore(practice): {topic} {level} workspace` (authorized 2026-10-20, `REC-376`; spring-boot
+  2026-10-21, `REC-386`).
 
 **Victor commits himself** — every change to a batch folder after its generation commit, which is his
 answers and nothing else. He commits them whenever he likes, in one sitting or across several days, and

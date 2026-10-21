@@ -29,7 +29,7 @@ bullet, and never reads a missing `✅` as "never practised" or as a reason to p
 | `practice/exercises/ATTEMPTS.md` | the cold grader only (§D) | the per-attempt history; every count anywhere is derived from it |
 | `practice/exercises/{topic}/{level}/{NN}-{slug}/` | `practice-session` writes the batch `README.md` and each exercise file's statement and skeleton; **Victor writes the answers** | one folder per batch, never reused; `NN` is one above the highest number in that level folder (`01` first; a third digit after `99`), the date lives in the batch `README.md`, and a folder is never renamed once graded — the history cites it by name |
 | `PROGRESS.md` → `### Short exercises` | the cold grader (§G) | cells only, recounted from the history |
-| a topic's workspace root files, where its §H names a workspace (`practice/exercises/angular/junior/`: `angular.json`, `package.json`, `package-lock.json`, `tsconfig.json`, `.npmrc`, `.gitignore`, `.editorconfig`, `.prettierrc`, `.vscode/`, `README.md`) | `practice-session` — created once by the scaffold §H names, then changed only by each batch's generation, within the root changes §H permits | never part of an answer; committed once as the workspace, then with each batch as generated (`REC-376`) |
+| a topic's workspace root files, where its §H names a workspace (`practice/exercises/angular/junior/`: `angular.json`, `package.json`, `package-lock.json`, `tsconfig.json`, `.npmrc`, `.gitignore`, `.editorconfig`, `.prettierrc`, `.vscode/`, `README.md` · `practice/exercises/spring-boot/junior/`: `pom.xml`, `mvnw`, `mvnw.cmd`, `.mvn/wrapper/maven-wrapper.properties`, `.gitignore`, `.gitattributes`) | `practice-session` — created once as §H names, then changed only by each batch's generation, within the root changes §H permits | never part of an answer; committed once as the workspace, then with each batch as generated (`REC-376`, `REC-386`) |
 
 Nothing is written into a note: a `refined` pair is frozen, and the index is what links a block to it.
 
@@ -418,7 +418,7 @@ a change to this section, made by hand under the ledger. **Every step reads the 
    for is the simulation track's to serve or to hold.
 3. **Otherwise the next topic of the rotation, from its essential route.** The rotation is java →
    angular → spring-boot. Its members are those of the three with a §H section and a published plan at
-   the level — spring-boot joins once `REC-386` gives it both. The next topic is the member after the topic
+   the level — spring-boot, whose section `REC-386` wrote, joins once its plan is published. The next topic is the member after the topic
    of the most recently closed batch, wrapping round — any batch of a member counts, a pilot, a requested
    batch or a reinforcement included — and with no closed batch, the first member. Topics interleave, one
    batch each, bound to no weekday. What the batch holds is §C's composition, which takes its advancing
@@ -434,9 +434,9 @@ a change to this section, made by hand under the ledger. **Every step reads the 
 
 Two fixed outcomes. **SQL is outside the rotation**: its track has its own block and its own door,
 `vamos con el SQL`, so it is never proposed here, and a request naming it is handed to that flow,
-generating nothing. **A topic with no environment section in §H** is no member: the `Rotation:` line names
-it with what it waits for ("spring-boot: su entorno de práctica aún no está definido"), and it is never
-proposed.
+generating nothing. **A rotation topic that is no member yet** — no environment section in §H, or no
+published plan at the level — is never proposed: the `Rotation:` line names it with what it waits for
+("spring-boot: espera su plan de ejercicios").
 
 ### The practice state — `INDEX.md` → `## Practice state`
 
@@ -537,8 +537,8 @@ need rendering, angular and spring-boot need a small base app with isolated atte
   standalone file. `In route: no`. They are practised in the projects, and requested as `extra` they are
   answered in prose or against an existing project's `pom.xml`, never by scaffolding one here.
 - **Spring Framework** has no route of its own (`ROADMAP.md` → "Spring Framework — when to start
-  (post-job gate)"); the mechanisms Victor already uses are practised inside the spring-boot route when
-  that topic gains its section.
+  (post-job gate)"); the mechanisms Victor already uses are practised inside the spring-boot route
+  (`spring-boot — junior`, below).
 
 ### angular — junior
 
@@ -644,3 +644,92 @@ before then (`REC-380`).
   history records no time, so §C's size budget stands as written.
 
 Pilot folded: 01-book-catalog, 2026-10-21 (REC-379)
+
+### spring-boot — junior
+
+Ruled by Victor on 2026-10-21 (`REC-386`): the goal is writing Spring Boot unaided in a technical test,
+and project 07 practises it step by step under guidance, which proves nothing about that; and the agent
+checks every generated batch with Maven, as it checks an Angular one. Built on the angular section's
+principles — one shared install, a broken batch never stops another — and tried on a throwaway copy of
+this layout before it was written (2026-10-21): the run, the per-exercise filter and the security rule
+below are what it showed.
+
+- **Workspace.** `practice/exercises/spring-boot/junior/` is one Maven project with no code of its own,
+  written once by the agent: an aggregator `pom.xml` (packaging `pom`) whose parent is
+  `spring-boot-starter-parent` at the version the active project pins (4.0.6 today), with
+  `java.version` 25, Lombok's annotation-processor path and a `<modules>` list of the batches; the Maven
+  wrapper — `mvnw`, `mvnw.cmd`, `.mvn/wrapper/maven-wrapper.properties` — copied from the active
+  project's backend, since no Maven is installed globally; and a `.gitignore` (`target/`, IDE files) and a
+  `.gitattributes` (`mvnw` LF, `*.cmd` CRLF) as that backend has them. Its root files are the system's
+  (§A). He opens the folder in IntelliJ as a Maven project. **No answer edits a `pom.xml` and no exercise
+  adds a dependency**: a concept whose answer is a build-file change, or that needs Docker, a real
+  PostgreSQL or a network service, is excluded at planning, at concept level, with its reason — it is
+  practised in the projects.
+- **The database is H2, in memory.** Every test context gets an empty database of its own — `@DataJpaTest`
+  swaps in an embedded one, and any other context gets Boot's uniquely named in-memory one — so a run
+  repeats and leaves nothing behind. PostgreSQL would need a database created by hand per batch and would
+  keep state between runs, and project 07 already exercises it every day.
+- **A batch is a module.** Generation writes the batch folder §A names as a module of the workspace:
+  its own `pom.xml` (the workspace's as parent, `artifactId` `lote-NN`) declaring what its exercises
+  need — Spring Boot starters at the parent's versions, H2, Lombok, and jjwt at the active project's
+  version, nothing else — and adds exactly one `<module>NN-slug</module>` line to the workspace
+  `pom.xml`, the one root change permitted, checked line by line against the committed version. The
+  module's `pom.xml` is generation's, never an answer. A batch compiles as one module, so an answer that
+  does not compile stops that batch's tests and no other batch's; the batch `README.md` says so.
+- **Shape.** An exercise is a package of the batch, `practice.loteNN.{File}` — the planned basename,
+  `exNNN_slug` (a package name takes no hyphen), or `exextraNN_slug` for unplanned work — under
+  `src/main/java`, mirrored under `src/test/java` for its tests. It holds its own
+  `@SpringBootApplication` class, `ExNNNApplication`, given at generation: a slice test takes the
+  configuration nearest its package and scanning stops at that package, so every exercise is an
+  application of its own and none sees another's beans or entities. **Each isolated exercise brings the
+  code and data it needs to be graded alone**; pieces depend on one another only inside a declared
+  `integration` row. Configuration is the exercise's own as well: `src/main/resources/{File}.properties`
+  and any `{File}-{profile}.properties`, which its given test loads with `spring.config.name={File}`;
+  the module holds no `application.properties` an exercise answers. The statement is the opening comment
+  of its main class and ends with `Answer files:`, each carrying its marker (`// Your answer:`,
+  `# Your answer:` in a properties file, `-- Your answer:` in a SQL migration) — and each explanation
+  the statement asks for its own, in the file the statement names for it, listed there too:
+  `// Your answer (<what to explain>):` (§C). **The statement fixes the public surface its given test
+  calls** — class names, method signatures, endpoints, DTO fields — and the skeleton declares it with a
+  neutral body (`null`, an empty list, `0`), so the module compiles before he writes a line; what sits
+  behind it — a repository's query method, a mapping, a handler — is his, and no given test names it.
+  The code is Spring Boot 4 on `jakarta.*`, with constructor injection.
+- **Answered.** An exercise is answered when at least one of its declared answer files differs from the
+  batch's generation commit beyond its skeleton. A given test is never an answer file; a test the
+  statement asks him to write is one.
+- **How he runs it.** From the workspace folder, one exercise at a time:
+  `.\mvnw -pl NN-slug test "-Dtest=practice.loteNN.{File}.**"`, or IntelliJ's run on the exercise's test
+  package. An exercise whose evidence is a started application runs its `ExNNNApplication` from
+  IntelliJ. The agent never runs his work.
+- **Evidence.**
+  - *Given tests*, through the public surface and never his internal names or call order: `@WebMvcTest`
+    with `MockMvc` for a controller, `@DataJpaTest` for a repository or a mapping, plain JUnit with
+    Mockito for a service, `@RestClientTest` for an outbound call. He pastes what the run printed — its
+    `Tests run:` line and any failure — under `// My output:` at the end of the main class. A given test
+    that differs from the generation commit is not evidence. **Where the module declares Spring
+    Security's test support, every web slice in that batch runs behind its filter chain**, so the given
+    test of an exercise that does not practise security runs with the filters off
+    (`@AutoConfigureMockMvc(addFilters = false)`): a right answer is never refused over a rule it was not
+    asked about.
+  - *Observed*: what only a started application or its log shows — the SQL Hibernate sends, an N+1, a
+    startup failure and its message, a log line. The statement names the action and what should be seen,
+    and he writes what he saw under `// Observed:`.
+  - *Testing* — block `09 — Testing a Spring Boot application`, and an `integration` that combines a
+    feature with its test: he writes the test, which is an answer file; its skeleton holds one test method
+    marked `@Disabled("pending — your answer")`, so the generation check reports it skipped rather than
+    absent. Before that block every test is given.
+- **Generation check — environment validated, pending exercises red.** Before committing a batch as
+  generated, the agent runs `.\mvnw -pl NN-slug test` on it untouched, and commits only when the module
+  compiles; the test classes the run reports are exactly the ones the batch ships; and every given test
+  fails **on an assertion about what its exercise asks**. A context that does not start, an injection or
+  configuration error, and a `401` or `403` returned to a test that asks for a body are defects of the
+  batch, repaired before the commit — save an exercise whose statement declares that its given code
+  fails to start, the failure it asks him to diagnose, whose given test must fail with exactly that
+  declared cause. The batch `README.md` says that this red is where he starts. Writing the workspace and
+  this run are the only things the agent does there: never his answers, never an application.
+- **Grading.** Static reading of the declared answer files against the statement and the concept its
+  row names: does it do what was asked, using that concept rather than routing around it — a list
+  filtered in Java where the row asks for a derived query routes around it; would it compile; does
+  `My output` or `Observed` match what was expected; is every given test unchanged since the generation
+  commit. Style is feedback, never a failure. His comments and explanations are in Spanish, under java's
+  language rule above, which applies here unchanged.
