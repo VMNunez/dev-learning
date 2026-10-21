@@ -288,7 +288,7 @@ subagent, `reasoning tier: deep`, `execution: foreground` (market judgment shape
 
 > You are a specialist in technical interviews for **«level» candidates** at Spanish IT consultancies. Read
 > `notes/prompts/_internal/_shared-context.md` for the candidate's exact target role, companies and stack,
-> `ROADMAP.md` for the timeline built on them,
+> `ROADMAP.md` for the plan built on them,
 > and `notes/prompts/knowledge/interview-prep/_internal/_interview-prep-standard.md` for what a good
 > interview question is. The topic is «topic».
 >

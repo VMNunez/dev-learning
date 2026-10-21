@@ -94,8 +94,8 @@ stacks) do come from `_shared-context.md` and are checked like any other.
 **No section heading carries an hour, and the block sections carry these headings** — each named by
 what is done in it, as `_session-rules.md` → "Daily study blocks" names the blocks: `## Daily schedule`,
 `## Project block — active project`, `## SQL block — SQL exercises`, `## Technical test simulations`
-and `## Interview-prep block — spaced review and notes`. Other files cite these headings by name, so
-they change only together with their readers. Until `REC-392` the three block sections were headed by
+and `## Interview-prep block — spaced review and notes`. `roadmap-review-prompt.md` cites them by name,
+so they change only together with it; the SQL prompts cite the SQL section by its content instead. Until `REC-392` the three block sections were headed by
 the June day's hours, and the simulations sat inside the SQL one as its `Stage 2`.
 
 ## Level-aware sequencing
@@ -119,8 +119,8 @@ level; ROADMAP owns the strategy resulting from it.
 Project phases are structured as sequential goals: "first do X; when X is done, start Y." Calendar
 dates do NOT belong in project milestone sections — they become stale and create false pressure.
 
-Dates are allowed only in the applications strategy section — the date of a ruling, never a calendar
-phase. If a date appears anywhere else, replace it with a gate condition — a concrete, verifiable state
+Dates are allowed only in the applications strategy section — the date of a ruling or a market fact
+(when consultancies open junior calls), never a calendar phase that stages applications. If a date appears anywhere else, replace it with a gate condition — a concrete, verifiable state
 that is true or false regardless of the date. **A clock time is allowed nowhere**: the day is
 `HORARIO.md`'s, so an `HH:MM` in this file is always a stale copy of it, and it is cut, leaving the
 block's name. (The daily schedule header was the second place a date was allowed until `REC-392` made
@@ -161,12 +161,13 @@ JOINs · GROUP BY/aggregates · subqueries/CTEs · NULL handling · DML basics �
 puts first, because they are what consultancy tests ask, with window functions, indexes and PostgreSQL
 specifics after them; and it says the full table still gates LeetCode. **The floor is a priority, never
 a switch**: the SQL block stays SQL exercises on every day it runs, so the section names no stage the
-block moves on to and no reduced cadence for the topics after the floor. It was the switch condition
+block moves on to — no `Stage` label on the SQL topics or on LeetCode — and no reduced cadence for the
+topics after the floor. It was the switch condition
 that opened `Stage 2` until `REC-392`, once `HORARIO.md` §1 had moved the timed simulations out of the
 SQL block and given each area's first one its own gate (Victor, 2026-10-21).
 
 **Technical test simulations — their own section.** `## Technical test simulations` sits outside the SQL
-section and is no stage of any block: a simulation takes the exercise and project blocks together
+section and is no stage of any block: a simulation may take the exercise and project blocks together
 (`HORARIO.md` §1). It carries three things and nothing else: **the strategy** — why timed tests matter
 for a consultancy application; **the target** — the minimum number of simulations that marks the
 technical stage prepared, with its per-track split, a number that is ROADMAP's own and that holds no
@@ -214,14 +215,17 @@ section does not state. Two checks, over every row not yet ✅ — a ✅ row des
 and these two checks leave it as it stands:
 - **SQL.** A cell names SQL topics and nothing else — never a simulation, which has its own section and
   is no stage of the SQL block, and never LeetCode, which has no block. A cell that carries one has it
-  removed, and a row left naming no topic reads `Remaining SQL topics`. No row puts a topic outside the
+  removed, and a row left naming no topic — for that or any other reason — reads `Remaining SQL
+  topics`. No row puts a topic outside the
   screening floor — `Remaining SQL topics` included — in an earlier phase than the row that completes
   the floor.
 - **Interview prep.** Notes topics appear down the rows in the canonical study order above: no topic sits in an
   earlier phase than one the order puts before it, and none is skipped between two that are listed — a
   ✅ row's topics count as listed, though that row is not edited. A skipped topic joins the cell of the
   listed topic the order puts directly before it, or the first row not yet ✅ where that cell is in a ✅
-  row; a listed topic is never deleted to close the gap.
+  row; a listed topic is never deleted to close the gap. A cell carries no stage (`Interview prep (es/)
+  started`, `full focus`) — the block is the spaced review from the start — so a stage is cut, and a
+  cell left naming no notes topic reads `Spaced review`.
 
 Where a cell and its block section disagree, the section wins and the cell is the one corrected. The
 table predates the condition it now has to match — its row 3c read "Remaining SQL topics → technical

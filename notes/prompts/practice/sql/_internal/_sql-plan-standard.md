@@ -54,7 +54,8 @@ Its two inputs, and it never invents beyond them:
   table (the objective this ordering serves: a junior Angular + Java role in Spain, technical screening
   first, and the screening floor stated under that table). The rest of the file cannot falsify a
   route-ordering decision. The block the pace has to fit is the daily SQL block, whose length is
-  `HORARIO.md` §1's; ROADMAP's daily schedule only points there since `REC-392`, so it is not read for it.
+  `HORARIO.md` §1's; `_roadmap-standard.md` makes ROADMAP's daily schedule a pointer there since
+  `REC-392`, so it is not read for it.
 
 ---
 

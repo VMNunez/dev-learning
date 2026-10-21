@@ -46,7 +46,8 @@ it receives the brief, the sources, and the acceptance format — never this run
   and `Coverage demonstrated` (including the paragraph under it about which projects are backfilled).
   **Never a per-technology concept list** — those were deleted on 2026-08-03 and PROGRESS is a status
   instrument now, not an inventory
-- `ROADMAP = ROADMAP.md` → the candidate ideas section, the phase table, and the gate list
+- `ROADMAP = ROADMAP.md` → the candidate ideas section, the phase table, and the applications
+  strategy's list of what an application needs (what to bring, never a gate on applying since `REC-392`)
 - `PROJECTS = projects/README.md` — the published projects and their domains, for the variety
   criterion. This is a hand-maintained inventory: Victor, or a session acting on his explicit
   instruction, updates it whenever a top-level numbered project is added or removed, or its published

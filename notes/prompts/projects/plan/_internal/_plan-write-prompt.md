@@ -65,7 +65,8 @@ Read these in order. They are the inputs to every decision this prompt makes.
    instrument, not an inventory: the per-technology concept lists were deleted on 2026-08-03 and what
    replaced them is the marker state in the coverage files, which the brief already resolved. You read
    it to know the project history and the open gates, never to re-derive a gap.
-5. `ROADMAP.md` — the career plan: phase table and the "What 'ready' means" gate list. The candidate
+5. `ROADMAP.md` — the career plan: phase table and the applications strategy's list of what an
+   application needs (what to bring, never a gate on applying since `REC-392`). The candidate
    ideas are the brief's input, not yours; the choice is settled.
 6. The **highest-numbered existing** `projects/0X-name/PLANNING.md` — in progress counts, completed is
    not the test. This is the reference for depth and structure, and only a plan written to the current

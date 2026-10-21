@@ -294,7 +294,7 @@ both directions at once.
 
 Then hold the screening floor under the table to the standard's screening-floor bullet: the five
 test-relevant topics stated as the route's priority, never as a switch to another stage or to a
-reduced SQL cadence.
+reduced SQL cadence, and no `Stage` label left on the SQL topics or on LeetCode.
 
 **Technical test simulations:** hold `## Technical test simulations` to the standard's bullet of that
 name — its strategy and target kept, its gate and pace left to the simulation track's pointer, no SQL
@@ -376,10 +376,15 @@ its checks need). Its instruction:
 >
 > 1. **Stray-date and clock-time scan.** Do a literal scan of ROADMAP.md for every month name
 >    (January–December) and year pattern (2025, 2026, …). For each match: if it is inside the
->    applications strategy section, it is intentional — leave it. Anywhere else, convert it to a gate
+>    applications strategy section and dates a ruling or states a market fact, leave it; a month that
+>    stages applications there (a calendar phase such as `July → Fridays only`, `by September`) is cut
+>    per the standard's applications item, and logged. Anywhere else, convert it to a gate
 >    condition (per the standard's ❌→✅ examples) and log it. Then scan for every clock time
 >    (`\d{1,2}:\d{2}`): none is intentional anywhere, so cut each one, leaving the block's name, and
->    check that every block section carries the heading the standard lists.
+>    check that every block section carries the heading the standard lists, that `## Daily schedule` is
+>    the standard's pointer — no hour, block order, block count or block content — and that no
+>    section, the phase table's `Goal` and `Project` cells included, stages applications by month,
+>    weekday or phase (the standard's applications item).
 > 2. **Notes study order.** The interview-prep block's study order equals the canonical string in the standard exactly:
 >    `angular → spring-boot → java → architecture → security → typescript → sql → javascript → css → git`
 >    You are cold and hold none of the orchestrator's context, so do not assume the shared session rules
@@ -398,14 +403,16 @@ its checks need). Its instruction:
 >    strategy, target and pointer present; no gate, pace or procedure of the simulation track restated,
 >    no SQL topic or switch condition put in front of it, and nothing telling Victor to open a spec file
 >    or to have a solution reviewed outside `simulation-grade`. Cut any such passage to the pointer. The
->    screening floor under the SQL table matches its own bullet — a priority, never a switch — and the
->    LeetCode passage names no block it replaces.
+>    screening floor under the SQL table matches its own bullet — a priority, never a switch, with no
+>    `Stage` label left in the SQL section — and the LeetCode passage names no block it replaces.
 > 5. **Phase-plan block columns.** The columns are `Project`, `SQL` and `Interview prep`, and the `SQL`
 >    and `Interview prep` cells of every phase row not yet ✅ match the standard's "Canonical study-block
 >    references" phase-plan bullet, read against the two block sections as invariants 2 and 4 left them:
->    a `SQL` cell names SQL topics only — no simulation, no LeetCode — and no topic outside the screening
->    floor sits in a row before the one that completes it; the `Interview prep` cells name notes topics
->    in the study order, none skipped between two listed. Where a cell disagrees, fix the cell — never
+>    a `SQL` cell names SQL topics only — no simulation, no LeetCode, and a cell naming no SQL topic for
+>    any other reason reads `Remaining SQL topics` — and no topic outside the screening floor sits in a
+>    row before the one that completes it; the `Interview prep` cells name notes topics in the study
+>    order, none skipped between two listed, and carry no stage — a cell naming no notes topic reads
+>    `Spaced review`. Where a cell disagrees, fix the cell — never
 >    the screening floor or the order — by the repair the bullet states, and leave ✅ rows as they stand.
 >
 > Report **only** a short table of `Invariant | Verdict (pass / fixed) | What you changed` — no file

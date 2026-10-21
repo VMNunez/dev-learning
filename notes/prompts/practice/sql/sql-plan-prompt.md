@@ -48,7 +48,7 @@ If a required role cannot be dispatched, stop unless its instruction explicitly 
   the test-relevant topics it puts first (the only thing in the file a `Why here` can be falsified
   against). Nothing else in the file bears on route ordering. A step is sized in sessions of the daily
   SQL block, whose length is `HORARIO.md` §1's and is read by no ceiling below; until `REC-392` this key
-  also named ROADMAP's daily schedule for it, which now only points at that file.
+  also named ROADMAP's daily schedule for it, which `_roadmap-standard.md` makes a pointer at that file.
 
 `PLAN` is a committed source of truth. It is not a temporary worklist.
 
