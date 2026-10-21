@@ -7,7 +7,9 @@ route needs its own run. Creates or reconciles that route under `_practice-stand
 It writes plans and navigation only; statements, skeletons, answers and grades belong to other routes.
 
 1. Read the standard to EOF, the selected-level topic coverage and notes plan to EOF, the existing
-   exercise plan if any, INDEX and ATTEMPTS. Read prior-level coverage only to classify a dependency,
+   exercise plan if any, INDEX and ATTEMPTS, and `ROADMAP.md` and
+   `notes/prompts/_internal/_shared-context.md` to EOF for the goal the essential route is weighed
+   against (§B, "Goal fit"). Read prior-level coverage only to classify a dependency,
    never to add it to the selected-level denominator. Count lines and report EOF reads. Require a
    supported topic **and level** in §H, current source mapping and recomputed coverage digest.
    Missing or stale source: report the exact source and `/notes-plan {topic} {level}`, write no plan
@@ -25,7 +27,12 @@ It writes plans and navigation only; statements, skeletons, answers and grades b
    Author or preserve the `## Essential route` (§B, "Essential route") — every plan carries one
    (`REC-375`): a ladder of stages from simple to combined, each closed by an integration,
    whose listed rows carry their own prerequisites; add the cross-block integrations its last stages
-   need as new inventory rows rather than repurposing published ones.
+   need as new inventory rows rather than repurposing published ones. Two duties go past what the
+   checker can see (`REC-385`). Read each listed row's `Task` and `Pass condition` for what it asks him
+   to write: a route concept it needs is one of its concepts or listed earlier, or is a call its own
+   text names, or, used only for the task's setting, is supplied — each named in the section's opening
+   prose with the task IDs, or the stage, that use it (§B). Then weigh the minimum against the goal (§B, "Goal fit"), list what that work needs, and write
+   in `## Reconciliation` what the minimum covers and what it leaves out on purpose and why.
 4. On reconciliation, keep all published IDs and unchanged task rows. A listed essential ID that is
    retired is replaced in place by its replacement. Retire changed/removed tasks,
    append replacements and adjust dependencies of replacement rows without rewriting historical rows.
@@ -40,10 +47,17 @@ It writes plans and navigation only; statements, skeletons, answers and grades b
    never report a script PASS without running it. On a source mismatch stop; on a candidate defect
    repair the candidate before review.
 6. Dispatch one **cold reviewer**, `deep`, under `_agent-runtime-standard.md`, with only the proposed
-   route, its sources, the standard, the prior route (if any), and a writable scratch report path.
+   route, its sources, `ROADMAP.md` and `_shared-context.md`, the standard, the prior route (if any),
+   and a writable scratch report path.
    Ask it to read each to EOF and judge scope completeness, exercise variety and feasibility,
    progression, pass conditions, history preservation and all validation results — and whether the
-   essential route's stages climb from simple to combined without a gap. It must persist
+   essential route's stages climb from simple to combined without a gap. Two checks it makes on the
+   essential route walk **every listed row**, never a sample, and the report names each row it
+   fails (`REC-385`): whether every route concept the row's `Task` and `Pass condition` ask him to write is one of its
+   concepts or listed earlier, or a named call or a supplied piece under §B — declared in the
+   section's prose, never what the row practises, and, for a supplied piece, never what its pass
+   condition asks him to get right; and whether the minimum covers what the goal needs, with
+   `## Reconciliation` recording what it leaves out and why. It must persist
    findings and `approve`, `approve-with-tightening` or `reject`, with EOF evidence. Never self-approve.
    Apply approved tightenings. A rejection permits one repair/review round; if still rejected, retain
    the existing route and park the candidate at the scratch path. When no published route exists,

@@ -149,6 +149,28 @@ for. The checker fails a plan that lacks it.
   in the whole section.
 - **Closure and order.** Every ID a listed row names in `After` is itself listed, earlier in the section.
   The route is therefore servable on its own, from its first stage.
+- **What a listed task asks him to write is taught before it** (`REC-385`). Closure over `After` is not
+  enough: a row's `Task` and `Pass condition` can ask for a tool its `Concepts` do not name — the first
+  angular route asked for `@switch` in a row whose concepts did not include it, and for `map()` a stage
+  before the row that teaches it. So every tool a listed task asks him to write that is a concept of this route is one of that
+  row's concepts or the concept of a row listed earlier in the section. A tool belongs to every concept
+  whose coverage bullet asks for it, and is taught once any of them is the row's or listed earlier. There are two
+  exceptions, each named in the section's opening prose with the task IDs, or the stage, that use it. A
+  **named** call — one the task's own text tells him to make, with its shape — is his to write and the
+  pass condition may check that it ran, but it is never the concept the task exists to practise. A
+  **supplied** piece — a route concept the task needs only for its setting, such as the markup around
+  the piece he writes or the stream feeding it — is written out as code by the statement (§C) and is
+  never part of his answer, never the concept the task exists to practise and never what its pass
+  condition asks him to get right. A tool no concept of this route owns — another topic's, or a helper
+  no coverage bullet names, such as RxJS's `of()` — is outside this rule, and the statement names it
+  where the task needs it.
+- **Goal fit** (`REC-385`). The minimum is weighed against the goal it is the floor of: what a junior
+  hired for the role `ROADMAP.md` and `_shared-context.md` describe writes unaided in this topic — never
+  coverage order or a block's size. A concept that work needs is listed (in angular: a stream consumed
+  by the view, a form's server-side field errors, a URL's query params); one it does not need is left to
+  the full route. The plan's `## Reconciliation` section records the judgement each time this section
+  is authored, changed or re-audited: what the minimum covers for that goal, and what it leaves out on purpose and
+  why.
 - **The ladder.** Every concept a listed row names is an *essential concept*, and the section lists that
   concept's `first` row and at least one of its `variant` rows. Every stage lists at least one
   `integration` row, so each stage ends by combining what it taught; the last stages may consist of
@@ -156,7 +178,13 @@ for. The checker fails a plan that lacks it.
 - **Reconciliation.** A listed ID that a replan retires is replaced, in the same position, by the row
   that replaces it; a listed ID is never silently dropped.
 
-**The essential route is passed** when every listed ID is passed under the rule above. **The route's
+The checker covers the section's shape, closure, order and ladder. The two rules marked `REC-385` are
+not mechanical, so `validate-practice-plan.py` stays as it is: it reads a row's `Concepts` and `After`,
+never what its `Task` asks, and holds no goal. The planner applies them and its cold reviewer checks
+them, walking every listed row (`_practice-plan-prompt.md`, steps 3 and 6).
+
+**The essential route is passed** when every listed ID is passed, as §B's Completion defines a planned
+exercise passed. **The route's
 minimum is met** when, in addition, every essential concept is *consolidated* (§E), and every listed
 `integration` row was first answered `✅` with `Help: —` — or, where it was not, a later `integration`
 attempt naming the same heads was. The grading report states `essential passed / listed`,
@@ -253,7 +281,9 @@ pilot batch, no further batch is generated there.
 `Note:` (the block's Spanish note path and its live `Status:`), then `Exercise plan:` (path),
 then one table: `Ex | Plan ID | Kind | Block | Concept | File`. `Plan ID` is an active planned ID or
 `—` for adaptive reviews, extras and reinforcement. Copy the selected task and pass condition into each statement;
-instantiate data and context without changing their scope. Resolve concept IDs to verbatim heads.
+instantiate data and context without changing their scope. A call the essential route names for that
+row (§B) is named in the statement with its shape, and he writes it; a piece it supplies is written out
+as code and is never part of his answer. Resolve concept IDs to verbatim heads.
 For each planned row preserve its Task, Pass condition and head list in a `Plan snapshot` section
 of the batch README, so grading an existing attempt remains possible after source changes. `Kind` is `first`, `variant`, `integration`, `extra` or `reinforce`; `Block` is the block that holds
 the row's concept — a batch routinely mixes blocks, since variants return from earlier ones — the
