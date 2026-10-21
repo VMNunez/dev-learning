@@ -81,3 +81,34 @@ Derived: 2026-10-21
 | 27 | Legacy enterprise Angular | `notes/angular/junior/es/27-angular-legacy.md` | 01, 02, 03, 04, 05, 08, 10, 13, 14, 15 | 6 | yes |
 
 **In route: 27 blocks, 172 concepts.** Block 00 carries no bullet and enters no denominator. 1 concept excluded at concept level inside an in-route block — C132 (block 19) — stays in its block's `Bullets` and enters neither total.
+
+## spring-boot — junior
+
+Exercise plan: [Spring Boot junior](spring-boot/junior/PLANNING-junior.md)
+Active planned exercises: 293
+Essential route: 15 stages, 192 tasks
+Notes structure SHA-256: 52268abf9d309c37c6ee57c4a8456aa7351877cf6ef97bf84376c38a1d93e8d4
+Notes plan: notes/spring-boot/coverage/notes-plan-junior.md
+Coverage SHA-256: b7cb1dbcde90bef75bb05fb7fe680d9ec762b6d627b0c4340eed48e174e4285c
+Derived: 2026-10-21
+
+| Block | Title | Note | Depends on | Bullets | In route |
+|---|---|---|---|---|---|
+| 00 | What Spring Boot is and how this topic is organised | `notes/spring-boot/junior/es/00-introduccion-spring-boot.md` | none | 1 | yes |
+| 01 | Creating, configuring and starting a Spring Boot application | `notes/spring-boot/junior/es/01-basicos.md` | 00 | 11 | yes |
+| 02 | REST controllers: the HTTP boundary | `notes/spring-boot/junior/es/02-controladores-rest.md` | 00, 01 | 18 | yes |
+| 03 | Spring Data JPA: entities and relationship mapping | `notes/spring-boot/junior/es/03-spring-data-jpa.md` | 00, 01 | 16 | yes |
+| 04 | Repositories and queries | `notes/spring-boot/junior/es/04-repositorios-y-consultas.md` | 02, 03 | 15 | yes |
+| 05 | Exception handling and the error contract | `notes/spring-boot/junior/es/05-manejo-excepciones.md` | 02, 04 | 10 | yes |
+| 06 | Spring Security and JWT authentication | `notes/spring-boot/junior/es/06-seguridad-jwt.md` | 02, 03, 04, 05 | 29 | yes |
+| 07 | Bean Validation at the input boundary | `notes/spring-boot/junior/es/07-validacion.md` | 02, 03, 05, 06 | 10 | yes |
+| 08 | The service transaction boundary and the open session | `notes/spring-boot/junior/es/08-transacciones.md` | 01, 02, 03, 04, 05 | 4 | yes |
+| 09 | Testing a Spring Boot application | `notes/spring-boot/junior/es/09-testing.md` | 02, 03, 04, 05, 06, 07, 08 | 12 | yes |
+| 10 | Reproducible builds: the artifact and the schema are versioned outputs | `notes/spring-boot/junior/es/10-herramientas.md` | 01, 03 | 2 | yes |
+| 11 | Diagnosing a running application | `notes/spring-boot/junior/es/11-depuracion-en-produccion.md` | 01, 03, 04, 08 | 3 | yes |
+| 12 | Application logging | `notes/spring-boot/junior/es/12-logging-observabilidad.md` | 01 | 1 | yes |
+| 13 | Profiles and environment-specific startup | `notes/spring-boot/junior/es/13-perfiles-spring.md` | 01, 03, 04, 06 | 3 | yes |
+| 14 | Reading maintained Spring Boot code | `notes/spring-boot/junior/es/14-reconocer-codigo-heredado.md` | 02, 03, 04, 06, 07, 09 | 4 | yes |
+| 15 | Calling another service over HTTP | `notes/spring-boot/junior/es/15-clientes-http.md` | 02, 04, 05 | 1 | yes |
+
+**In route: 16 blocks, 132 concepts.** 8 concepts excluded at concept level inside in-route blocks — C004 (block 01), C005 (block 01), C006 (block 01), C030 (block 02), C103 (block 07), C110 (block 07), C123 (block 09), C128 (block 10) — stay in their blocks' `Bullets` and enter neither total.
