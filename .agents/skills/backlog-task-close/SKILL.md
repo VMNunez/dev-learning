@@ -257,7 +257,7 @@ table is `plan-audit` (`MODE = new` authors it, a G2 pass rewrites it), so a run
 touches it leaves the pointer dated to the first one.
 
 **Inside a daily session §0 has two writers, this ritual and `step-complete`** (`REC-091`). Both fire in
-the 08:00 block, so a morning that closes a task *and* finishes a step runs them back to back:
+the project block, so a block that closes a task *and* finishes a step runs them back to back:
 
 - **Read §0 as it stands before writing it**, never as the pre-session state. Whether a step closed
   earlier this morning is settled by **one command**, because §15's `✅` markers are undated and

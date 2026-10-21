@@ -271,7 +271,7 @@ after authoring and review succeed.
 
 `Status` and `Studied` are deliberately independent. `complete` / `refined` proves that the files
 exist and meet their contract; it does not prove Victor has studied them. `Studied: YYYY-MM-DD` may
-be written only for a `complete` or `refined` entry by the 13:30 closing ritual. What resets it to
+be written only for a `complete` or `refined` entry by the interview-prep closing ritual. What resets it to
 `pending` is prose changing **under** Victor: a material contract change, or an inline refinement of a
 `complete` pair. Three things that look like changes do not, and the distinction was drawn 2026-08-22:
 a pure path renumber that preserves the accepted bytes; a newly owed coverage concept, which is a bullet

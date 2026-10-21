@@ -272,14 +272,14 @@ nobody reads it at the start of the next run.
 ## Context
 
 **Before starting, read these four files:**
-- `notes/prompts/_internal/_session-rules.md` — daily schedule and teaching context (my profile and the market are in `notes/prompts/_internal/_shared-context.md`).
+- `notes/prompts/_internal/_session-rules.md` — block names and teaching context (my profile and the market are in `notes/prompts/_internal/_shared-context.md`).
 - `{PLAN}` — **the SQL learning plan.** It owns the step order, the file numbering, how many exercises each file targets, and which coverage sections each step claims. If this prompt and that plan ever disagree about a path or an order, the plan wins and this prompt is the thing to fix.
 - `PROGRESS.md` — `## Practice completed` → `### Exercise route`. Its roll-up says how much of this level's route is done; `{LEVEL}`'s detail table says which files are already `closed ✅`. Both branches write back into it: `practice` raises the `Corrected` denominator when it writes a batch, `review` raises the graded counts.
 - `notes/sql/coverage/{LEVEL}.md` — the source of truth for every SQL concept required at junior level. Read it now; in Step 3 you will use the section for {TOPIC} to define the concept scope for the exercises.
 
 My profile is in `notes/prompts/_internal/_shared-context.md`.
 
-My daily SQL block is 12:30–13:30. I write answers directly in the SQL file in pgAdmin
+I have one SQL block a day. I write answers directly in the SQL file in pgAdmin
 (PostgreSQL), then paste it into review mode. This block feeds into Stage 2: technical test
 simulation — so exercises should reflect the kind of SQL a real consultancy test includes.
 

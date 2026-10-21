@@ -254,7 +254,7 @@ Label each exercise with its level: `-- Exercise N [Intro]:`, `[Standard]:`, `[C
 
 **First-pass batches — resolved `{REVIEW} = no`. Every exercise must introduce a concept not already
 drilled in this file.** Read the exercises already in `{FILE}` before generating: a batch that re-covers
-ground the file already holds spends an hour of the 12:30 block buying nothing. This is derived from
+ground the file already holds spends a SQL block buying nothing. This is derived from
 `{REVIEW}`, not pasted into the config — the plan used to tell Victor to append the rule by hand, which
 made it a line he could forget.
 

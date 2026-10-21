@@ -349,7 +349,7 @@ exactly why they catch what a long single context skips. Each loads only the fil
 need. Wait for both before writing the report.
 
 **Reviewer 1 — mechanical invariants** (reads `_roadmap-standard.md`, `ROADMAP.md`, and — for
-invariant 2 alone — the `## Daily study blocks (from June 2)` section of `_session-rules.md`, the authority
+invariant 2 alone — the `## Daily study blocks` section of `_session-rules.md`, the authority
 the standard itself defers to; it must NOT open PROGRESS.md or coverage-junior.md, whose facts none of
 its checks need). Its instruction:
 
@@ -365,7 +365,7 @@ its checks need). Its instruction:
 > 2. **Notes study order.** The 13:30 study order equals the canonical string in the standard exactly:
 >    `angular → spring-boot → java → architecture → security → typescript → sql → javascript → css → git`
 >    You are cold and hold none of the orchestrator's context, so do not assume the shared session rules
->    are loaded: read `## Daily study blocks (from June 2)` in `notes/prompts/_internal/_session-rules.md`
+>    are loaded: read `## Daily study blocks` in `notes/prompts/_internal/_session-rules.md`
 >    — **that section only.** A plain read starts at the file's first line and takes as much of it as
 >    one call returns, so `grep -n`
 >    the heading and read from that line with `offset`/`limit`. Compare its order with the string above.

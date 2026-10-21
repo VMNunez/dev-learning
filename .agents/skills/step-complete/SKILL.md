@@ -285,7 +285,7 @@ stale until someone notices by hand, and the next session opens on a pointer tha
 
 **Inside a daily session §0 has two writers, this ritual and `backlog-task-close`** (partition added
 2026-08-11, `REC-091`; this section used to claim it was the only one, which stopped being true the day
-the close ritual gained its own §0 cells). Both fire in the 08:00 block, and a morning that finishes a
+the close ritual gained its own §0 cells). Both fire in the project block, and a block that finishes a
 step *and* closes a task runs them back to back:
 
 - **Read §0 as it stands before writing it**, never as the pre-session state — the close may already have

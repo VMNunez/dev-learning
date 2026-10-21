@@ -1,7 +1,7 @@
 ---
 name: study-block-close
 description: >
-  Close the daily 13:30 notes/interview-prep block whenever Victor ends it ("cierro el bloque de
+  Close the daily interview-prep block, with the notes studied in it, whenever Victor ends it ("cierro el bloque de
   estudio", "hasta aquí las notas", "terminé estas preguntas", "done with interview prep"). Record
   only what the session proves he actively studied: date the completed/refined notes-plan entries,
   clear the `Pending study` sections that session actually discharged, mirror `[studied]` onto exact
@@ -27,9 +27,9 @@ trigger declared resolved, or write outside its declared writer set, follow
 breach log"; do not restate or widen that trigger here.
 
 
-This is the 13:30 block's closing ritual. It records learning state, not content quality and not
-authoring progress. The source contract is the shared session rules, "Study state and the 13:30
-closing ritual".
+This is the interview-prep block's closing ritual. It records learning state, not content quality and not
+authoring progress. The source contract is the shared session rules, "Study state and the
+interview-prep closing ritual".
 
 ## 1 — Resolve evidence without questions
 

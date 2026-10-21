@@ -116,7 +116,7 @@ explicitly in the report — this is the one place a reader would expect that de
 
 ## 2 — The doctrine's §0 quick reference
 
-`practice/sql/PLANNING.md` §0 is read at the start of every 12:30 block, so it is the file that hurts
+`practice/sql/PLANNING.md` §0 is read at the start of every SQL block, so it is the file that hurts
 most when stale. The grading subagent already rewrote it (its step 4d). **Verify, do not redo**: current
 step, done condition, next revision point, last updated. Fix only what is wrong, and say what you fixed.
 

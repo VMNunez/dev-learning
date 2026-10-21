@@ -28,8 +28,8 @@ Use PROJECT wherever the prompt refers to {PROJECT}.
 
 ## Context
 
-Victor is targeting junior / junior-mid roles at Spanish consultancies (NTT Data, Capgemini, Indra) for
-August–September 2026. The architecture must be **recognisably professional but level-appropriate**: a
+Victor is targeting junior / junior-mid roles at Spanish consultancies (NTT Data, Capgemini, Indra), with
+no date and as the most urgent of his goals. The architecture must be **recognisably professional but level-appropriate**: a
 recruiter should see standard enterprise layering, and Victor must be able to **defend every layer and
 pattern in an interview**. An architecture he cannot explain is worse than a simpler one he can.
 

@@ -650,10 +650,10 @@ down a flat list of ten files — and a fourth since 2026-10-05, which holds no 
 
 | Subfolder | What lives there | When you reach for it |
 |---|---|---|
-| `practice/sql/` | the SQL exercise track — plan auditor, exercise generator/grader, its standard and run reports | the 12:30 SQL block |
+| `practice/sql/` | the SQL exercise track — plan auditor, exercise generator/grader, its standard and run reports | the SQL block |
 | `practice/simulations/` | timed technical tests — the generator that writes specs, the reviewer that grades them | practising a take-home (stage 3) |
 | `practice/interview/` | live interview training — technical mock, HR call, code critique | rehearsing stages 2–4 |
-| `practice/exercises/` | short graded exercises beyond SQL — **no runnable prompt**: only the standard, the internal planner with its read-only route checker, and the cold grader's brief, all executed by the `practice-session` skill | never launched — say you want to practise, in session |
+| `practice/exercises/` | short graded exercises beyond SQL — **no runnable prompt**: only the standard, the internal planner with its read-only route checker, and the cold grader's brief, all executed by the `practice-session` skill | the exercise block — or whenever you say you want to practise, in session; never launched |
 
 | Prompt | What it does | Reads | Generates / updates |
 |--------|--------------|-------|---------------------|
@@ -1001,7 +1001,7 @@ processes one **planned file pair**; `interview-prep-audit` processes one **topi
 (deep work remains one section per agent); `interview-prep-route` processes the complete selected-level
 bank inventory. Authoring, refinement and study are deliberately separate states.
 
-**The SQL track (the daily 12:30 block)**
+**The SQL track (the daily SQL block)**
 1. `coverage-prompt` (`TOPIC = sql`) → `coverage-verify` → `coverage-prompt` again to close the gaps —
    only when coverage is stale; it is the root of the plan
 2. `sql-plan` (`LEVEL = junior`) — turns that coverage into the ordered route in
@@ -1019,7 +1019,7 @@ bank inventory. Authoring, refinement and study are deliberately separate states
    SQL route §3
 7. after the last step: `progress-update`, then `roadmap-review` — then `sql-plan` for the next level
 
-**The short-exercise track (on demand)**
+**The short-exercise track (the daily exercise block, or on demand)**
 1. Ask to plan a topic and level: `practice-session` executes its internal planner, grounding every
    task in coverage and notes-plan prerequisites and publishing after cold review. Java junior and
    angular junior (`REC-376`) are enabled; other environments remain REC-275's scope. Planning creates no exercise source. A topic with an
@@ -1187,8 +1187,8 @@ run's self-report as evidence, per the frozen-prompts rule.
 
 ## Gaps — closed, and what is left
 
-The three gaps detected against the goal (junior Angular + Spring Boot at a Spanish consultancy by
-Aug–Sep 2026, per the market analysis in `_shared-context.md`) are now **built**:
+The three gaps detected against the goal (a first junior Angular + Spring Boot job at a Spanish consultancy,
+per the market analysis in `_shared-context.md`) are now **built**:
 
 - ✅ **`practice/interview/code-review-prompt.md`** — trains the stage-3 code-review step (critique a flawed,
   often AI-style snippet). Was the biggest blind spot: nothing else hands me broken code to review.

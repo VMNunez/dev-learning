@@ -1,7 +1,7 @@
 ---
 name: sql-block-close
 description: >
-  Close the daily 12:30 SQL block in under a minute, WHENEVER Victor ends it ("cierro el bloque", "lo
+  Close the daily SQL block in under a minute, WHENEVER Victor ends it ("cierro el bloque", "lo
   dejo por hoy", "hasta aquí el SQL", "se acabó la hora", "done for today"). It records the one thing
   the whole track otherwise drops: **friction without failure** — the concept that cost him twenty
   minutes and that he then got right, which scores ✅ and vanishes, even though it is exactly what will

@@ -1,7 +1,7 @@
 ---
 name: sql-block-open
 description: >
-  Orient the daily 12:30 SQL block before a single query is written, WHENEVER Victor opens it ("vamos
+  Orient the daily SQL block before a single query is written, WHENEVER Victor opens it ("vamos
   con el SQL", "abro el bloque de SQL", "¿por dónde iba en SQL?", "what's next in SQL"). It reads
   practice/sql/PLANNING.md §0, the level's route file, the current exercise file and its PROGRESS.md
   row, MISTAKES.md and the notes plan, and answers the questions the block always starts with: which step is open, which file,
@@ -29,7 +29,7 @@ trigger declared resolved, or write outside its declared writer set, follow
 breach log"; do not restate or widen that trigger here.
 
 
-Victor is starting the 12:30 SQL block. Give him the state of the track in one screen, then get out of
+Victor is starting the SQL block. Give him the state of the track in one screen, then get out of
 the way.
 
 **Write nothing.** No file, no commit, not even a "Last updated" fix. This skill is a lens, and a lens
@@ -201,7 +201,7 @@ Ojo: este archivo corre en la base de datos `practice_junior_02_execution_order_
 exercises over the sessions that produced them, from each graded header's **first** marker date —
 `❌ Revisado` or `✅ Corregido`, the later one on a rewritten answer being a re-grade — and print it in
 parentheses. With no history yet, write `(sin histórico)` rather than guessing a number. The block is
-60 minutes and Stage 2 is a timed test, so a track that never mentions the clock trains no pacing at
+timed (`HORARIO.md` §1) and Stage 2 is a timed test, so a track that never mentions the clock trains no pacing at
 all; but the estimate never becomes a quota, and a block that runs slower than it is not a finding.
 **Never comment on how long he took or suggest moving on** — he decides what the block is worth.
 

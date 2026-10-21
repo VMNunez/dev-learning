@@ -47,7 +47,7 @@ Outside that exception, before giving any guidance, in this order:
    is not always obvious from the name. Run `git branch` or ask. See "Git workflow" below.
 2. **Read the active project's `PLANNING.md`** — find the current step, its done condition, **and §6's
    engineering rules for the tier being built** (backend layer rules, or the Angular rule block).
-   This is the compass for the morning block: guide Victor toward that step's done condition,
+   This is the compass for the project block: guide Victor toward that step's done condition,
    one small move at a time. Open the session by orienting him — name the current step and the
    next concrete action.
    - Project 07: the "Progressive learning plan" + Section 0 (Session quick reference).
@@ -81,7 +81,8 @@ concept, tech stack, data model, key patterns, folder structure, and the step-by
 
 - I am 31 years old and I am learning Angular, CSS, Tailwind, SQL and Java/Spring Boot
 - Final stack goal: Angular + Java (Spring Boot) — the standard in Spanish companies
-- My goal is to get a junior / junior-mid developer job in Spain by August–September 2026
+- My goal is my first junior / junior-mid developer job in Spain — no date, and the most urgent of my
+  goals (Victor, 2026-10-20); programming shares the day with the TAI civil-service exam, my safety net
 - Target companies: large consultancies like NTT Data, Capgemini, and similar
 - Strategy: differentiate with Angular + Java since React has more competition in Spain
 - I am also preparing for the Cambridge First Certificate (B2 English exam)
@@ -102,36 +103,55 @@ condensed copy, so keep the two in sync.
 - Java version: **25**
 - API testing: **Postman** — one collection per project, named `## - ProjectName` (e.g. `07 - TimeTrack`); folders inside group by resource (e.g. `projects`, `auth`, `users`)
 
-## Daily study blocks (from June 2)
+## Daily study blocks
 
-**The times below are approximations, not triggers.** A block opens when Victor says it opens, or from
-the context a conversation starts in — never because a clock reached an hour. The hours name *which*
-block is meant and roughly when it usually falls; a block that runs at a different time, twice, or not at
-all on a given day is normal and is not drift. Nothing in the system may read a time to decide anything.
+**The day itself is `HORARIO.md`'s, never this section's** (Victor, 2026-10-21, `REC-389`): which
+blocks exist, their hours, their order and how many there are live in `HORARIO.md` §1, in the
+`Documents/main` folder above this repository (`../../HORARIO.md` from its root), which plans his whole
+day — the TAI and English blocks this repository never serves included. This section names each
+programming block by **what is done in it**, never by its hour, and says only what the system serves
+there, so an hour moved in `HORARIO.md` changes nothing here. It restated the June day, by hour, until
+2026-10-21, five days before `HORARIO.md` replaced that day on 2026-10-26 — and because these rules
+outrank every standard, the stale copy was the one a session would have obeyed.
 
-- **08:00–12:30 — active project with the coding agent** (4h total, split by a 30min breakfast break).
-  The main learning block. The agent guides, Victor implements. Goal: depend less on AI over time.
-- **12:30–13:30 — SQL then practice.** SQL exercises first, then technical test simulation, and
-  LeetCode Easy last. **When the block moves from one stage to the next is `ROADMAP.md`'s to state,
-  never this bullet's**: `ROADMAP.md`'s `## 12:30–13:30 block — SQL then practice` section owns both
-  switch conditions — the one that opens the simulation stage, written under its SQL table, and the
-  LeetCode gates — and neither is restated here. This bullet carried its own copy of the first one —
-  "until all SQL topics are solid" — until 2026-10-09, although `ROADMAP.md` had replaced that
-  condition on 2026-07-16 (`146b982e`); these rules outrank `ROADMAP.md`, so the stale copy was the
-  one a session would have obeyed (`REC-309`).
-- **13:30–14:30 — notes then interview prep.** Notes first, then active interview prep when notes
-  are well understood. Notes study order (most important for interviews first):
+**A block is named, not timed.** A block opens when Victor says it opens, or from the context a
+conversation starts in — never because a clock reached an hour. A block that runs at a different time,
+twice, or not at all on a given day is normal and is not drift. Nothing in the system may read a time to
+decide anything.
+
+- **Exercise block — short practice exercises, one open batch at a time.** From 2026-10-26 short
+  exercises have a block of their own (`HORARIO.md` §1), superseding the 2026-10-05 ruling that they had
+  none (`REC-274`). He still asks in his own words — "vamos a practicar", "hazme ejercicios de
+  streams" — and a request made outside the block is served the same: the `practice-session` skill
+  proposes or generates a batch for the practical topics beyond SQL from a persistent topic-level
+  exercise plan — or, once per topic and level before that plan exists, as a pilot batch
+  (`_practice-standard.md` §C) — then grades it cold when he says it is ready. What it proposes when he
+  names nothing — the open batch, a due simulation, the rotation's next topic — is that standard's §F.
+  Proposing is the default door, never the only one: a topic he names is served as asked. The contract
+  is `notes/prompts/practice/exercises/_internal/_practice-standard.md`; the SQL track keeps its own
+  flow. A timed simulation may take this block and the project block together (`HORARIO.md` §1).
+- **Project block — the active project with the coding agent.** The agent guides, Victor implements.
+  Goal: depend less on AI over time.
+- **SQL block — SQL exercises.** **When the SQL track moves to a later stage is `ROADMAP.md`'s to
+  state, never this bullet's**: its SQL-then-practice section owns both switch conditions — the one that
+  opens the simulation stage, written under its SQL table, and the LeetCode gates — and neither is
+  restated here. This bullet carried its own copy of the first one — "until all SQL topics are solid" —
+  until 2026-10-09, although `ROADMAP.md` had replaced that condition on 2026-07-16 (`146b982e`); these
+  rules outrank `ROADMAP.md`, so the stale copy was the one a session would have obeyed (`REC-309`).
+  LeetCode has no block in the day: it stays behind those gates.
+- **Interview-prep block — the spaced review, with the notes it needs.** It follows the spaced-review
+  schedule (Victor, 2026-10-20): "¿qué toca hoy?" opens it, and `interview-prep-block-open` answers with
+  the day's reviews and new questions from `notes/interview-prep/spaced/` — see "The spaced review of
+  the question banks" below. **Notes have no block of their own** (Victor, 2026-10-21): he opens them in
+  this block when a question fails or a topic is new to him, and in the exercise or SQL block when a doubt
+  comes up while solving an exercise (`sql-block-open` may also name the SQL step's note before its
+  exercises). Notes study order (most important for interviews first):
   **angular → spring-boot → java → architecture → security → typescript → sql → javascript → css → git**
-  (SQL is last because it is already practiced daily in the 12:30 block). Fridays from July: always CV + applications.
-  **The interview-prep half follows the spaced-review schedule** (Victor, 2026-10-20): "¿qué toca hoy?"
-  opens it, and `interview-prep-block-open` answers with the day's reviews and new questions from
-  `notes/interview-prep/spaced/` — see "The spaced review of the question banks" below.
-- **Short practice exercises have no block of their own** (ruled by Victor 2026-10-05, `REC-274`). He
-  asks for them in his own words, at any point of the day — "vamos a practicar", "hazme ejercicios de
-  streams" — and the `practice-session` skill proposes or generates a batch for the practical topics
-  beyond SQL from a persistent topic-level exercise plan — or, once per topic and level before that plan exists, as a pilot batch (`_practice-standard.md` §C) — then grades it cold when he says it is ready. Proposing is the default door, never the
-  only one: a topic he names is served as asked. The contract is
-  `notes/prompts/practice/exercises/_internal/_practice-standard.md`; the SQL track keeps its own flow.
+  (SQL is last because it is already practised daily in the SQL block).
+- **Job-search block — applications every day.** Offers, a CV tailored to each, applications and their
+  follow-up (`/cv`, `/cover-letter`, `/tracker`), replacing the June rule of CV + applications on
+  Fridays; on a day with nothing useful left to do for the search, it practises one concrete gap an offer
+  or an interview showed (`HORARIO.md` §1).
 
 **HR-screen practice has an event trigger, not a clock trigger.** When application work starts, or a
 real HR call is scheduled, run `/hr-screen` before that first call. Re-run it before later calls while
@@ -967,7 +987,7 @@ level column — written by the same two rituals that own those sections. Do not
   a refined *question* both markers, because a question is one atomic block a correction replaces
   whole and a note is many sections of which a TODO touches one.
 
-### Study state and the 13:30 closing ritual
+### Study state and the interview-prep closing ritual
 
 Authored is not refined, and refined is not studied. The notes pipeline's `Status: complete/refined`
 says the bilingual artifact exists and passed its quality gates; it does not say Victor has studied it.
@@ -1131,7 +1151,7 @@ everything commits on the branch you're on — is simpler to remember than a spl
   merge is named here because it is performed on ordinary project branches, by whoever is merging
   rather than by machinery work; `notes/prompts/README.md` still owns the rest of that script's
   trigger list, and this bullet adds no other entry to it.
-- SQL block (12:30): work in `practice/sql/` on the active branch and commit there. The SQL section of
+- SQL block: work in `practice/sql/` on the active branch and commit there. The SQL section of
   `PROGRESS.md` (`## Practice completed` → `### Exercise route`) moves as the track runs — never left for
   `progress-update-prompt` — and is written by the prompt or skill that moved it and committed by it, or
   by the skill that dispatched the write (`sql-grade`, for its cold subagent), never in the same commit

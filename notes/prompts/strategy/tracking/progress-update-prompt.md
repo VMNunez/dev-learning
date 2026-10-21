@@ -84,7 +84,7 @@ contract each project subagent follows and the shape of what it returns.
 | `Professional level by topic` | **this prompt** — `Current tracked level`, `Knowledge consolidation`, `Next gate` · `step-complete` and `backlog-task-close` — `Practical evidence`, in session | **writes** — and on `Practical evidence` it may only **add**; rewriting or dropping an entry it did not write is forbidden there, whatever the rest of the row says. D7 holds that rule |
 | `Coverage demonstrated` | `coverage-mark` + `coverage-bullet-add` (the cells they touch, plus `Total`) · `coverage-prompt` (one topic+level) · `coverage-audit` (a whole level) | measures and reports (D8) |
 | `Authoring progress` | `authoring-progress-recount` (all three levelled rows plus the per-project table, recounted whenever a note or question reaches an authored state) | measures and reports (D10) |
-| `Study progress` | `study-block-close` (all three levelled rows plus the per-project table, recounted at the end of the 13:30 block) | measures and reports (D9) |
+| `Study progress` | `study-block-close` (all three levelled rows plus the per-project table, recounted at the end of the interview-prep block) | measures and reports (D9) |
 | `## Projects` | `step-complete` (the `Status` cell) · `plan-audit` (registers a new project's row) | measures and reports (D5) |
 | `Practice completed` → `Exercise route` | `sql-exercises` (both branches) · `sql-grade` · `sql-step-close` · `sql-plan` (seeds the rows) | measures and reports (D3) |
 | `Practice completed` → `Timed simulations` | `simulation-review` | measures and reports (D4) |

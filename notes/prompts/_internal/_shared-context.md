@@ -37,7 +37,9 @@ large Spanish IT consultancies actually run internally.
   PostgreSQL→MySQL/Flyway migration, JWT auth, Docker dev environment) and onboarded teammates. The
   stack differs from my target, but it is real, professional teamwork — full detail in the CV source
   file `job-search/internship-daw.md`.
-- **Goal:** my first developer job at a Spanish IT consultancy by **August–September 2026**.
+- **Goal:** my first developer job at a Spanish IT consultancy — **no date, and the most urgent of my
+  goals** (2026-10-20). If no job comes, the TAI civil-service exam (AGE) is my safety net, prepared
+  in parallel; a job offer always comes first.
 - **Target companies:** NTT Data, Capgemini, Indra, Sopra Steria, Accenture, Everis, Atos, CGI,
   and similar large consultancies.
 - **The bet (my differentiator):** most juniors in Spain apply with React, so that pool is
@@ -76,9 +78,10 @@ to the bar. It is not a pep talk — it is the real picture.
 
 - **The portfolio centrepiece is not finished.** My first full-stack project (07 — TimeTrack) is
   still in progress. Until it ships — runnable, tested, with a README and defensible decisions —
-  my strongest claim is incomplete. **Finishing it is priority number one before applying.**
-- **Short runway.** The applications window is August–September 2026. That favours depth over
-  breadth: one full-stack project I can defend end to end beats three half-built ones.
+  my strongest claim is incomplete. **Finishing it is priority number one** — applications do not wait for it (`HORARIO.md` §3).
+- **Short runway.** I am applying from now, while I prepare, and programming shares the day with
+  the TAI (`HORARIO.md` §1). That favours depth over breadth: one full-stack project I
+  can defend end to end beats three half-built ones.
 - **No professional reference in the target stack.** This is my first Angular + Spring Boot role,
   so the projects and my ability to explain decisions have to carry the weight a job reference
   normally would.
