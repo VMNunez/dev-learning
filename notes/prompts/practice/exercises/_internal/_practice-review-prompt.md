@@ -8,7 +8,8 @@ grader. **This is an internal step — never launched by hand.**
 You receive exactly: `{ROUTE}` (`{topic}:{level}`), `{BATCH}` (the batch folder path), `{MODE}`
 (`grade`, `verify` or `recount`), and `{HELP}` — what Victor said he used, per exercise, or `none declared`. Take
 `{HELP}` as given; never infer help from the code. `recount` receives only ROUTE and MODE;
-it reads no batch and writes no history, only the current §G projection.
+it grades no batch and writes no history — only the current §G projection and `INDEX.md`'s
+`## Practice state` (grade step 8), reading batch manifests for that section alone.
 
 Read first, each to EOF, stating `N lines, read to EOF` for each in your report:
 
@@ -25,6 +26,12 @@ Read first, each to EOF, stating `N lines, read to EOF` for each in your report:
 - the notes plan named on the `Notes plan:` line of this route's table in the index — **only** each
   entry's heading and its `Coverage concepts:` list, for the heads each block holds (§B). Its prose
   fields are not yours to read; say `heads only` for it instead of the EOF line.
+- For the index's `## Practice state` (§F), whatever the mode and the batch, a pilot included: the header
+  lines and the table of every batch folder's `README.md` under each topic and level the section covers, the
+  `## Essential route` of each published plan there, and the simulation route
+  `practice/simulations/{level}/PLANNING-{level}.md` — its §0 and §2 and the steps' `Review history` —
+  when it exists. Those parts only, for the state and never for grading: say `state only` for each
+  instead of the EOF line.
 
 **You never edit a file inside `{BATCH}`.** Not to fix an answer, not to add a marker. A wrong answer
 stays wrong on disk until he rewrites it.
@@ -59,19 +66,23 @@ stays wrong on disk until he rewrites it.
    block of the plan holds any more is an orphan and enters no cell — nor does a head the plan's
    concept mapping marks `excluded` (§G). **A pilot batch skips this step**:
    its route has no `INDEX.md` table and so no `PROGRESS.md` row (§G).
+8. **Rewrite `INDEX.md` → `## Practice state` whole**, from the files above, exactly as §F states — on a
+   pilot batch and on stale sources too, the stale plan marked in its cell. Nothing else in `INDEX.md`
+   is yours.
 
 ## Mode `verify`
 
 For each row of this `Batch` whose `Fix verified` is `pending`: re-read that exercise file — every file of its folder where §H makes the exercise one, with §H's evidence checks. If the
 answer now solves the statement with the named concept, write today's date in that cell — and nothing
 else on the row; `First result` never changes. If it still fails, leave `pending` and say what is still
-wrong. Then recount as in step 7. A batch with no `pending` row returns `NOTHING TO VERIFY`.
+wrong. Then recount as in step 7 and rewrite the state as in step 8. A batch with no `pending` row returns
+`NOTHING TO VERIFY`.
 
 ---
 
 ## Mode `recount`
 
-Validate the route and execute grade step 7 only. No batch is required; no attempt is added or
+Validate the route and execute grade steps 7 and 8 only. No batch is required; no attempt is added or
 changed. Return `RECOUNTED` or `RECOUNT PENDING — replan`, the projection delta and modified files.
 
 ## What you return
@@ -92,9 +103,11 @@ changed. Return `RECOUNTED` or `RECOUNT PENDING — replan`, the projection delt
   `essential passed / listed`, `consolidated essential concepts / essential concepts` and whether the
   route's minimum is met, as §B defines them.
 - The `PROGRESS.md` row before and after, plus the count of `extra` rows, orphaned heads and excluded heads on this route.
-- The exact list of files you modified — a subset of `practice/exercises/ATTEMPTS.md` and
-  `PROGRESS.md`: both after a grade or verify on current sources, the history alone when the recount
-  was deferred or the batch is a pilot, `PROGRESS.md` alone in `recount` — or nothing.
+- The `## Practice state` section before and after.
+- The exact list of files you modified — a subset of `practice/exercises/ATTEMPTS.md`, `PROGRESS.md`
+  and `practice/exercises/INDEX.md`: all three after a grade or verify on current sources, the history
+  and the index when the recount was deferred or the batch is a pilot, `PROGRESS.md` and the index in
+  `recount` — or nothing.
 - `desvíos de la rama: ninguno`, or one line per step above you could not perform as written, naming it
   as `` `_practice-review-prompt.md` → `<heading>` ``.
 

@@ -5,14 +5,15 @@ description: >
   WHENEVER Victor asks to practise in his own words ("vamos a hacer ejercicios de repaso de práctica",
   "quiero practicar", "hazme ejercicios de streams", "ejercicios de java"), asks for reinforcement on something he is unsure of ("refuerzo de Optional", "no me siento seguro con equals y hashCode"), or asks to create/update a topic-level exercise plan ("planifica los ejercicios de java junior"), or says a batch is ready
   ("listo, corrige los ejercicios", "ya he hecho el lote", "he corregido los fallos"). He never types a
-  command: naming no topic makes it propose what to practise and why, from his goal and his history;
+  command: naming no topic makes it propose what to practise and why, from the practice state — the open
+  batch first, then a due simulation, then the next topic of his rotation;
   naming a topic, a block or a concept generates exactly that, with no proposal and no counter-suggestion.
   When a batch is answered it grades nothing itself — it dispatches one COLD grader, because this skill
   runs in the session where the concept may have just been explained to him — and the grader writes the
   per-attempt history and its PROGRESS.md recount. The failure mode this exists for is a concept read in
   a note and not written again for weeks, until the project step that needs it. Do NOT use it for SQL
-  exercises (sql-block-open / sql-grade and /sql-exercises own that track — a proposal that lands on SQL
-  hands off to them), for a timed simulation (simulation-block-open / simulation-grade), for interview
+  exercises (sql-block-open / sql-grade and /sql-exercises own that track — a request naming SQL hands
+  off to them), for a timed simulation (simulation-block-open / simulation-grade), for interview
   questions (interview-prep-block-open), or to teach a concept — it serves exercises, not explanations.
 ---
 
@@ -67,7 +68,8 @@ and review result; commit the accepted plan and INDEX. Do not generate an exerci
 
 - **He named something** — a topic, a block ("el bloque de colecciones"), or a concept ("`Optional`").
   That is the batch (standard §C). No proposal, no reason asked for, no alternative offered. `{LEVEL}` is
-  what he said, else `junior`.
+  what he said, else `junior`. An open batch of any topic is named in one line, never a gate. SQL named
+  is handed to its own flow: say `vamos con el SQL` is the door and generate nothing.
 - **He asked for reinforcement** — he is unsure of something and says so ("refuerzo de X", "no me
   siento seguro con X"). The batch is that concept or those concepts under standard §C's reinforcement
   entry: no proposal, no planned row spent. A thing too vague to resolve to a concept head is matched
@@ -76,12 +78,16 @@ and review result; commit the accepted plan and INDEX. Do not generate an exerci
   name `/sql-exercises` with `MODE = reinforce`, the `TOPIC` and the `FILE` of the
   `practice/sql/{LEVEL}/` file whose step in `PLANNING-{LEVEL}.md` covers that concept, and generate
   nothing here.
-- **He named nothing** — choose under standard §F, reading the files it lists, and open the reply with
-  **one line**: what, and why. Then carry straight on to 1b; the proposal is not a question. If it lands
-  on SQL, say `vamos con el SQL` is the door, generate nothing and end at the report.
+- **He named nothing** — choose under standard §F from `practice/exercises/INDEX.md` →
+  `## Practice state`; where that section is missing, derive it as §F states and write it first,
+  committed alone (`docs(practice): derive the practice state`). Open the reply with **one line**: what,
+  and why. The proposal is not a question. On an open batch, name it and its exercises with no
+  `ATTEMPTS.md` row, generate nothing and end at the report; on a due simulation, say
+  `vamos con una simulación` is the door, generate nothing and end at the report; on a topic, carry
+  straight on to 1b.
 
 **The topic must have an environment section** in standard §H. If it has none, say so in one line, name
-the topics that do, and stop — on the proposal path, propose the next candidate that has one instead.
+the topics that do, and stop. The proposal path never lands on one (§F).
 
 ### 1b — Require the persistent plan
 
@@ -89,7 +95,8 @@ Open `practice/exercises/{topic}/{level}/PLANNING-{level}.md`, its topic coverag
 INDEX and ATTEMPTS. Validate the route under standard §B, including actual source digests, not just
 the notes plan's stored fingerprint. On an absent/stale exercise plan execute Route 0's planner
 and continue only after acceptance — except where the pilot paragraph below applies. On missing/stale sources, report the owner and stop planned
-generation. A reinforcement request is not planned generation: it continues on the published plan's
+generation — on the proposal path that is standard §F step 4: name it in one line and propose the next
+member from 1a instead. A reinforcement request is not planned generation: it continues on the published plan's
 heads, and the grader excludes any that turn out orphaned (§D). An explicitly requested off-route extra follows §C and does not create a counted ID.
 An unsupported topic/level never enters this route or silently falls back to Java junior.
 
@@ -98,10 +105,16 @@ no batch yet in its level folder, any practice request for it — "un lote pilot
 of `extra` rows, `Plan ID: —`, each naming the coverage head it practises, with `Pilot: yes` in the
 README and no `Exercise plan:` line or `Plan snapshot`. One per topic and level. Once a pilot batch
 exists there (`Pilot: yes` in its README), a further batch also waits for the `Pilot folded:` line
-standard §C puts at the end of the topic's §H section naming that batch: while the line is missing, a
-practice request is refused in one line naming that debt — and, while the pilot has no `ATTEMPTS.md` rows, that it is graded first (Route 2) — and the plan too, when none is published —
-and never starts the planner on its own; with the line in place, the absent-plan path above applies as
-for any topic. A planning request (Route 0) is never held back by a pilot, graded or not (`REC-380`).
+standard §C puts at the end of the topic's §H section naming that batch. While the line is missing no
+batch is generated there, and the session is not refused (§F step 4): name in one line what holds the
+topic — while the pilot has no `ATTEMPTS.md` rows, that it is graded first (Route 2), the pilot being the
+open batch; the plan too, when none is published — and make §F's proposal instead, which passes the topic
+over. Once the pilot is graded the line is the agent's work: name the `_recommendation-ledger.md`
+`## Open` row that owes it, or, where none does, open one — the next free `REC-NNN`, state `open`, the
+batch, its grade and what it showed — run `notes/prompts/_internal/validate-prompt-system.ps1`, and commit
+the row alone (`docs(prompts): open REC-NNN — fold the {topic} {level} pilot`) before carrying on. Never
+start the planner on its own here; with the line in place, the absent-plan path above applies as for any
+topic. A planning request (Route 0) is never held back by a pilot, graded or not (`REC-380`).
 
 ### 1c — Compose the batch
 
@@ -128,8 +141,10 @@ scaffold's dry run and read the root files it would touch, run the scaffold, wri
 stops here: nothing is committed, the batch is repaired or removed, and the report says which. If the
 topic's workspace does not exist yet, create it first with §H's command and commit it on its own.
 
-**Then commit the batch as generated** — that folder plus the root changes §H permits its scaffold, and
-nothing else, under `## Commits` — before handing over. From that commit on its files are his.
+**Then rewrite `practice/exercises/INDEX.md` → `## Practice state`** under standard §F, the new batch
+open, **and commit the batch as generated** — that folder plus the root changes §H permits its scaffold
+and that section, and nothing else, under `## Commits` — before handing over. From that commit on the
+folder's files are his.
 
 ### 1e — Hand over
 
@@ -179,9 +194,11 @@ corrected code. Then exactly one line of next step:
 | `recount pending — replan` in the report | the grade is recorded and the `PROGRESS.md` row was not recounted; name the stale source and its owner (`/notes-plan {topic} {level}`, then asking to plan) — the planner triggers the recount |
 
 Check the grader's returned file list against `git status`: a subset of
-`practice/exercises/ATTEMPTS.md` and `PROGRESS.md` — both after a grade or verify on current sources,
-the history alone when the recount was deferred or the batch is a pilot, `PROGRESS.md` alone in
-`recount` — or nothing. Anything else modified is a deviation of this run. Each line of its
+`practice/exercises/ATTEMPTS.md`, `PROGRESS.md` and `practice/exercises/INDEX.md` — all three after a
+grade or verify on current sources, the history and the index when the recount was deferred or the batch
+is a pilot, `PROGRESS.md` and the index in `recount` — or nothing. In `INDEX.md` only its
+`## Practice state` section may have changed — beyond, on a planner-triggered `recount`, the route
+sections the planner refreshed before the dispatch. Anything else modified is a deviation of this run. Each line of its
 `desvíos de la rama:` is one too, logged under the shared deviation close-out with `Scope: shared`.
 
 ---
@@ -195,14 +212,20 @@ each `git commit`, so no file of a batch folder is staged alongside a system fil
 
 - `practice/exercises/{topic}/{level}/PLANNING-{level}.md` + `practice/exercises/INDEX.md`,
   after an accepted planning/reconciliation run — `docs(practice): plan the {topic} {level} exercises`
-- `practice/exercises/ATTEMPTS.md` + `PROGRESS.md`, after a grader run that wrote —
+- `practice/exercises/ATTEMPTS.md` + `PROGRESS.md` + `practice/exercises/INDEX.md` (its
+  `## Practice state`), whichever of them a grader run wrote —
   `docs(practice): grade {batch} — n/m`, or `docs(practice): verify the fixes of {batch} — n/m` on a
-  `verify` run — or `PROGRESS.md` alone after a planner-triggered `recount` that changed the row:
+  `verify` run — or `PROGRESS.md` and the index after a planner-triggered `recount` that changed them:
   `docs(practice): recount {topic} {level}`
+- `practice/exercises/INDEX.md` alone, when a proposal derived a missing `## Practice state` —
+  `docs(practice): derive the practice state`
+- `notes/prompts/_internal/_recommendation-ledger.md` alone — the one `## Open` row 1b opens for a
+  graded pilot's owed `Pilot folded:` line, after `validate-prompt-system.ps1` passes —
+  `docs(prompts): open REC-NNN — fold the {topic} {level} pilot`
 - the batch folder **as generated** — its `README.md` and the statement-and-skeleton files, before he
   has written a line (authorized 2026-10-13, `REC-332`) —
   `docs(practice): generate {topic} {level} batch {NN}-{slug}`, carrying also the root changes the
-  topic's §H permits its scaffold. At generation only: once that commit exists, no file of that folder
+  topic's §H permits its scaffold and `INDEX.md`'s `## Practice state` (1d). At generation only: once that commit exists, no file of that folder
   is ever staged by you again.
 - the topic's workspace, once, where its §H names one — every file its scaffold created —
   `chore(practice): {topic} {level} workspace` (authorized 2026-10-20, `REC-376`).
@@ -227,7 +250,7 @@ pilot` on a pilot batch — alongside:
 
 ```
 Práctica: java junior · bloque 10 — Collections, hashing, and ordering · 30 min · 5 ejercicios
-Por qué: es el primer bloque sin primer pase cuyos prerrequisitos ya tienen intentos
+Por qué: toca java en la rotación — el último lote cerrado fue de angular
 Objetivo: elegir entre `List`, `Set` y `Map` y recorrerlos sin abrir la nota
 Lote: practice/exercises/java/junior/03-collections/
 Nota: notes/java/junior/es/10-colecciones.md (pending)
@@ -246,4 +269,4 @@ Route 2 (on a pilot batch the `PROGRESS.md` and `Esencial` rows read `n/a — pi
 | PROGRESS.md | java junior: bloques 2/17 → 2/17 · conceptos 14/125 → 18/125 · consolidados 3 → 3 · pendientes de corregir 0 → 1 |
 | Esencial | 12/118 tareas · 4/50 conceptos consolidados · mínimo: pendiente |
 | Siguiente | corrige el 4 en su archivo y di que está corregido |
-| Commits | míos: ATTEMPTS.md + PROGRESS.md · tuyos: las respuestas que queden sin comitear (comandos abajo), o ninguno |
+| Commits | míos: ATTEMPTS.md + PROGRESS.md + INDEX.md (`## Practice state`) · tuyos: las respuestas que queden sin comitear (comandos abajo), o ninguno |

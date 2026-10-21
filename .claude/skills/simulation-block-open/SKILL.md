@@ -25,6 +25,9 @@ Resolve LEVEL from Victor's message, else from `practice/simulations/PLANNING.md
 4. its TRACKER row;
 5. open `practice/simulations/MISTAKES.md` rows for this track and recent friction.
 6. `PROGRESS.md`, the coverage-standard digest rule, and every coverage path in route §1's manifest.
+7. on a track's first Angular or Spring Boot step, whose `Prerequisites` names short-exercise stages, that topic's
+   `practice/exercises/{topic}/{LEVEL}/PLANNING-{LEVEL}.md` → `## Essential route` and
+   `practice/exercises/ATTEMPTS.md`.
 
 If the route is missing, say `No existe la ruta de {LEVEL}. Corre /simulation-plan LEVEL={LEVEL}.` and
 stop. Prefer route+disk over doctrine §0; report a disagreement, never repair it.
@@ -46,6 +49,12 @@ allowing another timed attempt. Never trust the literal `Plan status: current` w
 | reinforcement-required | Moment 2r — `/simulation-plan LEVEL={LEVEL}` authors/resolves the linked unaided successor |
 | closed | next open route step |
 | blocked | name the exact gate and owner; no substitute test |
+
+Before Moment 3 on an Angular or Spring Boot step that is its track's first row and has no recorded attempt,
+check every short-exercise stage its `Prerequisites` names (simulation standard invariant 15): a stage is passed when every ID it lists has an `ATTEMPTS.md`
+row with `First result: ✅` or a dated `Fix verified`, its `Plan ID` that ID. An unpassed stage, or the
+exercise plan the topic lacks, makes the step `blocked`: name the first unpassed stage and that
+`practice-session` serves it. Read it live and write nothing.
 
 Before Moment 3 state: exact time limit; no notes, docs or AI; timer stops at the limit; a hint makes
 the attempt Assisted and ineligible for the Pass gate. Never start a timer or claim the attempt began.

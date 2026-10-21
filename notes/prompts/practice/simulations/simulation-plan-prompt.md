@@ -46,7 +46,9 @@ Validate `LEVEL`; default only `MODE`. Resolve:
 Check the active branch. If it is `main`, close out as blocked and do not write target artifacts.
 
 Read `PROGRESS.md`, `ROADMAP.md`, TRACKER, MISTAKES when present, every existing simulation spec, the
-selected-level topic coverage files named by the standard, and the SQL doctrine/route inputs. Count
+selected-level topic coverage files named by the standard, the SQL doctrine/route inputs, and the
+`## Essential route` of `practice/exercises/angular/{LEVEL}/PLANNING-{LEVEL}.md` and
+`practice/exercises/spring-boot/{LEVEL}/PLANNING-{LEVEL}.md` when each exists. Count
 lines before every whole-file read and read to EOF. Missing middle/senior coverage blocks that track;
 it does not block planning the tracks whose sources exist.
 
@@ -64,6 +66,10 @@ Derive readiness independently per track:
   evidence at this level.
 - Spring Boot: Java/Spring/Spring Boot/Architecture/Security scope exists and PROGRESS names practical
   backend evidence at this level.
+- For both, the track's first step's `Prerequisites` also names the short-exercise essential-route
+  stages its spec uses, or the exercise plan the topic lacks, under the standard's section 5 rule
+  (`REC-382`); later steps of the track name none. That is a step's gate, never a track's: a track that
+  is ready keeps its steps scheduled while `simulation-block-open` holds the first on the stages.
 - SQL: selected SQL scope exists and only techniques whose SQL steps are `closed ✅` in `SQL_ROUTE` §3
   are admissible — doctrine §8c holds the rule, the route holds the mapping and the status line. A
   realistic first SQL simulation still requires that route's own first-test gate (junior: Step 2).
@@ -102,10 +108,12 @@ Dispatch one cold `reviewer`, reasoning tier `deep`, with only:
 
 - LEVEL, DOCTRINE, ROUTE;
 - the full simulation-plan standard;
-- the evidence manifest and readiness facts, without the author's rationale.
+- the evidence manifest and readiness facts, without the author's rationale;
+- the `## Essential route` of every short-exercise plan a step's `Prerequisites` cites.
 
-It checks every required section, all fourteen invariants, history preservation, coverage traceability,
-readiness fences, route balance, existing-spec reuse, SQL limits, and whether each step is completable
+It checks every required section, all fifteen invariants, history preservation, coverage traceability,
+readiness fences, route balance, existing-spec reuse, SQL limits, the short-exercise stages the first
+Angular and the first Spring Boot step name, and whether each step is completable
 in its time limit. It returns `approve`, `approve-with-fixes`, or `reject`, beginning with line counts
 and `read to EOF` for every whole file. Apply approved fixes. A reject or unusable review blocks the run
 without committing target artifacts.

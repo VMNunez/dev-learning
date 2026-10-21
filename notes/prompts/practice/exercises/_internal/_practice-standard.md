@@ -25,7 +25,7 @@ bullet, and never reads a missing `✅` as "never practised" or as a reason to p
 | File | Writer | Notes |
 |---|---|---|
 | `practice/exercises/{topic}/{level}/PLANNING-{level}.md` | `practice-session` planning route (§B) | persistent reviewed tasks; no exercise source files |
-| `practice/exercises/INDEX.md` | `practice-session` planning route (§B) | navigation projected from the plans, each block linked to its note |
+| `practice/exercises/INDEX.md` | `practice-session` planning route (§B) — every route section · its `## Practice state` section: `practice-session` at generation, and the cold grader on every run that writes (§F) | navigation projected from the plans, each block linked to its note — and, at its head, the state the proposal reads (§F) |
 | `practice/exercises/ATTEMPTS.md` | the cold grader only (§D) | the per-attempt history; every count anywhere is derived from it |
 | `practice/exercises/{topic}/{level}/{NN}-{slug}/` | `practice-session` writes the batch `README.md` and each exercise file's statement and skeleton; **Victor writes the answers** | one folder per batch, never reused; `NN` is one above the highest number in that level folder (`01` first; a third digit after `99`), the date lives in the batch `README.md`, and a folder is never renamed once graded — the history cites it by name |
 | `PROGRESS.md` → `### Short exercises` | the cold grader (§G) | cells only, recounted from the history |
@@ -96,7 +96,8 @@ copy junior tasks into another level or pre-create empty trees. SQL retains its 
   blocks, and the **included** concepts of those blocks. A concept excluded at concept level inside an
   in-route block (angular §H) stays in its block's `Bullets` and enters neither total — the line names
   how many there are when any — since no exercise may be planned for it, and counting it would leave a
-  share that can never reach 100 % (`REC-377`). It never owns task design.
+  share that can never reach 100 % (`REC-377`). It never owns task design. The file opens with one
+  section that is no route's, `## Practice state` (§F), which the planner never writes.
 - Notes structure digest: SHA-256 of UTF-8 JSON, `ensure_ascii=False`, compact separators, no final
   newline, over the ordered list of `[number,title,Spanish,Depends on,[full coverage bullets]]`.
   Strip checkbox and evidence markers from bullets; exclude note prose and all status/study fields.
@@ -203,6 +204,13 @@ enters the `PROGRESS.md` row (§G).
 refined generates nothing. Once generated it has no deadline: he may answer it over several sittings
 and days, and it is graded once, when he says it is finished (`REC-332`).
 
+**One open batch at a time, across topics** (Victor, 2026-10-21, `REC-382`). A batch is **open** from its
+generation commit until it is **graded** — every exercise of its table has a row in `ATTEMPTS.md`. A
+`PARTIAL` return leaves it open; a `pending` fix does not, since owing a fix is named and never a gate
+(§F). On the proposal path an open batch is the only proposal: it is continued, across as many days as
+it takes, and nothing new is generated. A topic, block or concept he names is still served, and the open
+batch is named in one line.
+
 **Three entries, one component.** Called **with** a topic, a block or a single concept, the batch is that —
 no proposal first, no reason asked for, no counter-suggestion; wanting to is sufficient. Called
 **without**, §F chooses and the batch opens with one line saying what and why, which Victor may always
@@ -222,7 +230,8 @@ batches are generated (§H), never on the plan (Victor, 2026-10-20, `REC-380`). 
 that topic and level waits for both the plan and what the pilot showed**, which is written into the
 topic's §H section by hand, under the recommendation ledger, its grade included, and closed there by a
 last line `Pilot folded: {NN}-{slug}, YYYY-MM-DD (REC-NNN)`. Until that line names the level folder's
-pilot batch, no further batch is generated there.
+pilot batch, no further batch is generated there. That line is the agent's to write, so the session never
+waits on it: the proposal passes the topic over, and the line is owed under the ledger (§F step 4).
 
 - **What a request fixes.** Only *what* is practised. Size, objective, composition and difficulty below
   still apply. A requested concept whose prerequisite block has no attempt is served as asked, with at
@@ -391,26 +400,82 @@ Correctly answered concepts return too: an unaided `✅` on a first attempt is `
 ## F — Choosing what to propose
 
 Only when Victor names no topic. One short proposal with its reason; he may override it, and no ritual
-comments on the choice he makes instead.
+comments on the choice he makes instead. The order is Victor's, ruled on 2026-10-21 (`REC-382`) for his
+exercise block — `HORARIO.md` §1, in the `Documents/main` folder above this repository; a change to it is
+a change to this section, made by hand under the ledger. **Every step reads the position from
+`INDEX.md` → `## Practice state` (below), never from a conversation.**
 
-1. **Goal, read and never hard-coded**: `ROADMAP.md` and the open gates of `PROGRESS.md` →
-   `## Professional level by topic`. As Victor states it today, writing a lot of java, angular, sql and
-   spring-boot; javascript, typescript, html and css enter when they support angular or a concrete gap
-   appears.
-2. **Evidence already on disk, before any history exists**: `practice/sql/MISTAKES.md`,
-   `practice/simulations/MISTAKES.md`, `practice/interview/MISTAKES.md`, every project's
-   `PROJECT-BACKLOG.md`, and the active project's current `PLANNING.md` step. "Not recorded" is never read as "not known".
-3. **The history**: concepts owing a fix (named in one line, never a gate), failures by recency, the
-   time since each attempted concept was last seen, and the first block in plan order with eligible unpassed active tasks — or, while the
-   plan's essential route (§B) is not passed, the next eligible listed ID of that route instead. `Depends on` blocks
-   need *attempted* concepts (§E); `After` and later-batch variant rules still apply.
-4. **Order of preference** between candidates: prerequisite first, then recent failures, then pending
-   review, then new content — and never the absence of a coverage `✅`.
+1. **An open batch is the only proposal** (§C). The oldest open batch is named with the exercises of its
+   table that have no `ATTEMPTS.md` row, and continued; nothing is generated.
+2. **Otherwise a simulation that is due** — the state's `Simulations:` line reads `due`, or it reads
+   `no route` or `waiting — step N ({track}) blocked: …` and, re-derived as below from the route as it
+   stands, would read `due` — `/simulation-plan` moves either line with no state writer running. The proposal is
+   that test, handed to its own flow — `vamos con una simulación` is the door, `simulation-block-open`
+   names the moment — and nothing is generated here. Before proposing it, re-read step N's state and the
+   route's latest attempt date; where either differs from what the line names, the line is stale, and it
+   is re-derived from the route as it stands, under the rules of the `Simulations:` bullet below, before
+   anything is proposed — written only by the state's writers, never here. The cadence decides only what is proposed: a simulation he asks
+   for is the simulation track's to serve or to hold.
+3. **Otherwise the next topic of the rotation, from its essential route.** The rotation is java →
+   angular → spring-boot. Its members are those of the three with a §H section and a published plan at
+   the level — spring-boot joins once `REC-386` gives it both. The next topic is the member after the topic
+   of the most recently closed batch, wrapping round — any batch of a member counts, a pilot, a requested
+   batch or a reinforcement included — and with no closed batch, the first member. Topics interleave, one
+   batch each, bound to no weekday. What the batch holds is §C's composition, which takes its advancing
+   share from the essential route while that route is not passed, and never the absence of a coverage
+   `✅`. A concept owing a fix is named in one line, never a gate.
+4. **A topic that cannot be served now is passed over, never a refusal of the session.** A member held
+   by a pilot batch without its `Pilot folded:` line (§C) or by a stale source is named in one line with
+   what holds it and who owes it — the source to `/notes-plan {topic} {level}` — and the next member is
+   proposed. Where what holds it is the agent's own work, the session never waits on it: the fold line is
+   owed under the recommendation ledger, so an `## Open` row naming it is opened if none does, and the
+   proposal carries on. A stale or absent exercise plan holds nothing — the practice request replans
+   first (§B).
 
-Two fixed outcomes. **SQL** is proposed like any other topic and then handed to the existing flow — say
-`vamos con el SQL` is the door — generating nothing here. **A topic with no environment section in §H**
-is named honestly when it would rank first ("spring-boot sería lo siguiente; su entorno de práctica aún no
-está definido") and the next candidate that has one is proposed instead.
+Two fixed outcomes. **SQL is outside the rotation**: its track has its own block and its own door,
+`vamos con el SQL`, so it is never proposed here, and a request naming it is handed to that flow,
+generating nothing. **A topic with no environment section in §H** is no member: the `Rotation:` line names
+it with what it waits for ("spring-boot: su entorno de práctica aún no está definido"), and it is never
+proposed.
+
+### The practice state — `INDEX.md` → `## Practice state`
+
+The first section of `INDEX.md`, above the routes: the position the proposal reads. Written by
+`practice-session` when it generates a batch, and by the cold grader on every run that writes — `grade`,
+`verify` (a dated fix can pass a planned ID) and `recount`, pilot batches and stale sources included.
+**Each writer rewrites the section whole from primary state** — the batch folders' `README.md` tables,
+`ATTEMPTS.md`, each published plan's `## Essential route`, §H, and the simulation route of that level —
+so no writer patches another's cell; a proposal that finds the section missing derives it the same way
+and writes it. Never written by hand or by the planner.
+
+- `Derived: YYYY-MM-DD`.
+- One table, `Topic | Essential route | Open batch | Last closed batch`, one row per topic and level that
+  has a §H section and a plan or a batch:
+  - `Essential route` — `next stage NN of MM`, every stage before it passed (a stage is passed when every
+    ID it lists is, §B → Completion); `passed`; or `no plan`. `(plan stale — replan)` is appended when
+    this writer's own validation of that route, this run, found its sources moved; a route it did not
+    validate carries no mark, and 1b's live validation holds it (step 4).
+  - `Open batch` — each open batch (§C) by folder and generation date, or `—`.
+  - `Last closed batch` — the most recently graded batch by folder and grading date, `(pilot)` where it
+    was one, or `—`.
+- `Rotation:` — the members in order, each rotation topic that is not one yet with what it waits for, and
+  `next: {topic}` under step 3, with the topic holding it named under step 4.
+- `Simulations:` — one of: `no route — /simulation-plan LEVEL={level}` · `waiting — step N ({track})
+  needs {topic} essential stages 01–NN (now at stage MM)`, or the exercise plan it lacks · `waiting — one
+  per round: due once {members} have each closed a batch after {date}, the last attempt (still owed:
+  {topics})` · `due — step N ({track}), {state}, last attempt {YYYY-MM-DD | none}`, the state being any
+  the route's step holds short of `closed ✅` other than `blocked`; a step the route holds `blocked` is
+  written `waiting — step N ({track}) blocked: {gate}` and never `due`. A track's first step with no
+  attempt in its `Review history` whose `Prerequisites` names short-exercise stages not all passed — invariant 15's test, the one `simulation-block-open` applies — is always written in
+  the `waiting — step N ({track}) needs …` form and never `due`, before any attempt or after. Before any
+  attempt the round clause does not apply: an area's first simulation waits only for its stages. From
+  the first attempt on, one simulation is due per completed round — every member having closed a batch
+  graded on a later day than the route's latest recorded attempt — and the round counts new timed
+  attempts only: a step already attempted and awaiting review or `correction-required` is `due` at once, whatever the round, since its review and correction go in the
+  next programming block (`HORARIO.md` §1). Which step is next, and whether it is ready, stays the
+  simulation route's: a track's first-step stage prerequisite (`_simulation-plan-standard.md` §5) is
+  checked live by `simulation-block-open`, never read off this line; the line applies the same test only
+  so that it never reads `due` on a step the opener would hold.
 
 ---
 

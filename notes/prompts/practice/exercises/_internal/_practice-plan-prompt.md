@@ -66,8 +66,9 @@ It writes plans and navigation only; statements, skeletons, answers and grades b
    plan path, source fingerprints, block table, the in-route totals as §B defines them (included
    concepts only, naming any excluded inside an in-route block), active task total and the
    essential route's counts. Keep
-   existing route tables. Invoke the cold grader in `recount` mode when existing attempts need a new
-   projection; it alone owns PROGRESS cells. Do not grade or alter history in this route.
+   existing route tables and the `## Practice state` section, which is not the planner's (§F). Invoke the cold grader in `recount` mode when existing attempts need a new
+   projection, or when this run published a route or changed its `## Essential route`, so
+   `## Practice state`, which every recount rewrites, sees it; it alone owns PROGRESS cells. Do not grade or alter history in this route.
 8. Return the plan path, totals, exclusions, reconciliation delta, validation result, cold-review
    token and any blocked condition. The calling skill commits the system-written plan and INDEX
    under the session contract. A plan-only request ends here; a practice request continues to its

@@ -26,6 +26,9 @@ The plan is evidence-driven. For the selected level it reads:
   Spring Boot, Architecture, Security, and SQL;
 - `practice/sql/PLANNING.md` §8/§8c and the selected SQL route, because SQL simulations may use only
   techniques unlocked by closed exercise steps;
+- for Angular and Spring Boot, `practice/exercises/{topic}/{LEVEL}/PLANNING-{LEVEL}.md` →
+  `## Essential route`, when it exists, because a track's first timed test waits for the short-exercise
+  stages it uses (section 5, route table);
 - `practice/simulations/TRACKER.md`, `MISTAKES.md`, and all existing specs as inventory and evidence.
 - `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md` for the canonical
   evidence-marker stripping rule used by every coverage digest.
@@ -106,6 +109,17 @@ Rules:
   gates on the alternative whose step closes first; `Bonus` items are attempted only with time left
   over and gate nothing. The SQL route says what each step unlocks and which steps are closed, never
   which spec that blocks (invariant 6 holds the limit; this is how one spec is measured against it).
+- **On the first Angular row and the first Spring Boot row of the route, `Prerequisites` names the
+  short-exercise essential-route stages the spec uses** (Victor, 2026-10-21, `REC-382`: an area's first
+  timed test waits for an adaptation period that is measured, not felt; from then on the tests are paced
+  by one per completed round of the exercise rotation, `_practice-standard.md` §F, and no later row of
+  the track names stages). It is written `{topic} essential stages 01–NN`, `NN` being the highest stage
+  of `practice/exercises/{topic}/{LEVEL}/PLANNING-{LEVEL}.md` that lists a concept one of the spec's
+  mandatory `What to build` items cannot be met without; the stages climb as a ladder, so every lower
+  one is part of the gate, and `Bonus` items gate nothing. A track whose topic has no such plan names
+  that plan as the missing prerequisite. Whether the stages are passed is never stored here or in a
+  `State`: `simulation-block-open` reads it live (invariant 15), so the route moves on nothing a
+  short-exercise grade does. The spec files declare no stages; the route alone does, as it does for SQL.
 - A balanced junior route normally contains Angular, Spring Boot, and SQL. A blocked track remains
   visible with its gate; it is not silently replaced by extra work from an easier track.
 - Existing pending specs are reused when they fit. The plan does not generate duplicates just to own
@@ -204,6 +218,12 @@ left a requirement unmet or scored 1 on a non-core dimension and still earned th
 12. A reinforcement Pass closes its linked Fail/Assisted learning step without changing historical evidence.
 13. `simulation-grade` is the only entry point that may dispatch a state-writing review or correction.
 14. A `current` route is never attempted against a moved coverage manifest or unadjudicated progress snapshot.
+15. An Angular or Spring Boot track's first step at this level — its first row under section 5, while
+    that step's `Review history` records no attempt — is never attempted before every short-exercise stage its
+    `Prerequisites` names is passed — every ID the stage lists passed, as `_practice-standard.md` §B →
+    Completion defines it, read off `practice/exercises/ATTEMPTS.md` — and `simulation-block-open` checks
+    it live before Moment 3. Later steps of the track are paced by the round cadence alone
+    (`_practice-standard.md` §F).
 
 ## 8 — The tracker's header and scale
 
