@@ -180,7 +180,7 @@ consumer reads freshness from the file itself.
 |---|---|
 | coverage-audit | 2026-08-01 — completed — junior update; 1,344-item floor converged; 497 markers preserved; mirror parity; cold review passed · ⚠ stale 2026-09-04 (+95 bullets) |
 | progress-update | 2026-10-21 — completed — MODE=active; 2/2 dispatches; no drift; matrix refreshed in 12 rows (`0a0ecef8`) |
-| roadmap-review | 2026-10-09 — completed — parity PASS (14 topics x 3 levels); 4/4 roles, both reviewers passed after fixes; Steps 8–10 reflected; no new candidate; `2d6f911f` |
+| roadmap-review | 2026-10-21 — completed — parity PASS (14 topics x 3 levels); 4/4 roles (2b resumed once), both reviewers passed after fixes; block-named sections, daily applications; no new candidate; `cbb230d9` |
 | system-gaps | 2026-08-11 — completed — `MODE = update`; 23 subjects reconciled, 5 promoted (`REC-094`–`REC-098`); cold reviewer `approve-with-tightening` |
 | system-check · knowledge | 2026-10-16 — completed — 44 paths, 28/28 dispatches; 44 map cells corrected, REC-349…353 opened; reviewer approve-with-tightening; BRCH-0003 → REC-354 (`2a3b8250`) |
 | system-check · projects | 2026-10-17 — completed — 43 paths, 28/28 dispatches; maps synchronized, REC-358…364 opened; reviewer approve-with-tightening; BRCH-0006 → REC-354 (`b5effb82`) |
