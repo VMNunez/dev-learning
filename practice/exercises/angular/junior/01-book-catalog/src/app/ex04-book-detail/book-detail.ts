@@ -24,10 +24,12 @@
  *
  * Answer files: book-detail.ts, book-detail.html (the `Observed:` comment only)
  */
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { map } from 'rxjs';
 
-import { BOOKS, Book } from '../books';
+import { BOOKS } from '../books';
 
 @Component({
   selector: 'app-book-detail',
@@ -40,6 +42,17 @@ export class BookDetail {
   private readonly route = inject(ActivatedRoute);
   protected readonly books = BOOKS;
 
-  // Your answer: replace this placeholder.
-  protected readonly book = signal<Book | undefined>(undefined);
+  protected readonly book = toSignal(
+    this.route.paramMap.pipe(
+      map((params) => {
+        const id = Number(params.get('id'));
+        return this.books.find((book) => book.id === id);
+      }),
+    ),
+  );
 }
+
+// Qué pasaría con book.id === param y por qué:
+// nunca encontraría ningún libro, ni siquiera con /ex04/2. El parámetro de la ruta siempre
+// es texto ('2') y book.id es un número (2). === compara también el tipo, así que
+// 2 === '2' da false. Por eso hay que convertir el parámetro con Number() antes de comparar.

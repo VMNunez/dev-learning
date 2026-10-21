@@ -33,12 +33,32 @@ export class BookShelf {
   readonly books = this.shelf.asReadonly();
 
   add(title: string, author: string): void {
-    // Your answer:
+    this.shelf.update((books) => {
+      const nextId = books.length === 0 ? 1 : Math.max(...books.map((book) => book.id)) + 1;
+      return [...books, { id: nextId, title, author }];
+    });
   }
 
   remove(id: number): void {
-    // Your answer:
+    this.shelf.update((books) => books.filter((book) => book.id !== id));
   }
 }
 
+// Por qué mutar el array actual deja la misma referencia:
+// Por qué mutar el array actual deja la misma referencia:
+// push mete el libro en el mismo array que ya tiene el signal, no crea uno nuevo.
+// Por eso books() devuelve el mismo array, y el signal, al ver la misma referencia,
+// cree que nada ha cambiado y no avisa ni a la vista ni a los computed que dependen de él.
+
 // My output:
+//  ✓  lote-01  01-book-catalog/src/app/ex01-book-shelf/book-shelf.spec.ts (4 tests) 21ms
+//    ✓ Exercise 1 — BookShelf (4)
+//      ✓ add appends the new book last, with the next id 15ms
+//      ✓ add gives the signal a new array instead of changing the old one 2ms
+//      ✓ remove takes only that book off and keeps the order; an unknown id changes nothing 2ms
+//      ✓ the next id follows the highest id left on the shelf, and is 1 on an empty shelf 1ms
+
+//  Test Files  1 passed (1)
+//       Tests  4 passed (4)
+//    Start at  11:56:29
+//    Duration  13.00s (transform 55ms, setup 592ms, import 26ms, tests 21ms, environment 12.05s)

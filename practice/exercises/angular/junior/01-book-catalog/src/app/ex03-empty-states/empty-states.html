@@ -12,6 +12,25 @@
   </div>
 
   <!-- Your answer: -->
+  <ul>
+    @for (book of visible(); track book.id) {
+      <li>{{ book.title }} - {{ book.author }}</li>
+    } @empty {
+      @if (books().length === 0) {
+        <li>Todavía no hay libros en la estantería.</li>
+      } @else {
+        <li>Sin resultados para «{{ query().trim() }}».</li>
+      }
+    }
+  </ul>
 </section>
 
-<!-- Observed: -->
+<!-- Por qué @empty solo no distingue los dos casos: -->
+<!-- porque solo detecta que visible está vacío, y visible puede estar vacío porque books es un array vacío o porque al filtrar no hay coincidencias. Para saber cuál de los dos es, hay que mirar books(), la lista sin filtrar. -->
+
+<!-- Observed:
+  1. Se ven los cinco títulos con su autor.
+  2. Al escribir xyz solo se ve «Sin resultados para «xyz».».
+  3. Con xyz escrito, al pulsar Vaciar estantería solo se ve «Todavía no hay libros en la estantería.».
+  4. Al restaurar y borrar el buscador vuelven los cinco títulos.
+-->
