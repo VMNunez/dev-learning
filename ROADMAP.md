@@ -2,7 +2,7 @@
 
 **Goal:** Junior / junior-mid Angular + Java Spring Boot developer at a Spanish consultancy — achieved when a consultancy hires you into that role.
 
-**This goal does not expire.** The full-application push is a checkpoint that raises urgency, not a deadline that ends the search. If the goal is not met after that push, the search continues and the same employment gates remain active; once hired, the post-job growth plan near the end of this file takes over.
+**This goal does not expire.** Applications run every day from now (see the applications strategy); finishing the phases below raises the strength of each application, not the date the search starts or ends. If the goal is not met when they are done, the search continues and the same employment gates remain active; once hired, the post-job growth plan near the end of this file takes over.
 
 ---
 
@@ -10,7 +10,7 @@
 
 Build the application story around transferable team experience and a finished, defensible full-stack project. Use the internship's concrete delivery and collaboration results to bridge the difference between its stack and the target role; use TimeTrack to demonstrate the target stack itself.
 
-The profile, internship details, strengths and risks are maintained in [`_shared-context.md`](notes/prompts/_internal/_shared-context.md#profile). This plan turns them into priorities: finish the project gate, practise unaided delivery and explanation, and keep the English track alongside the technical work.
+The profile, internship details, strengths and risks are maintained in [`_shared-context.md`](notes/prompts/_internal/_shared-context.md#profile). This plan turns them into priorities: finish the project gate and practise unaided delivery and explanation; the English track is paused and returns under the criteria in `HORARIO.md` §2 (in the `Documents/main` folder above this repository).
 
 ---
 
@@ -57,7 +57,7 @@ In order of impact:
 
 4. **The internship on the CV** — select a specific result from the shared context's internship evidence: _built X that does Y for Z users/clients_. Connect that result to the role rather than retelling the profile here.
 
-5. **English at B2** — keep the English track alongside the technical plan and make only credential claims supported by the profile's current evidence in the shared context.
+5. **English at B2** — the English track is paused until `HORARIO.md` §2's return criteria are met; make only credential claims supported by the profile's current evidence in the shared context.
 
 6. **Interview prep** — knowing how to answer _what is dependency injection, what is lazy loading, what is a JWT, what is a DTO_ fluently and with a project example. The notes/ folder and the simulator prompt exist for this.
 
@@ -97,23 +97,24 @@ This produces two different decisions:
 
 ## Phase plan
 
-| #   | Goal                                              | Project (08:00)                                                    | SQL → Practice (12:30)                                            | Interview prep (13:30)                        | Status     |
+| #   | Goal                                              | Project                                                            | SQL                                                               | Interview prep                                | Status     |
 | --- | ------------------------------------------------- | ------------------------------------------------------------------ | ----------------------------------------------------------------- | --------------------------------------------- | ---------- |
 | 1   | Angular projects 01–04 delivered                  | Angular 01–04 + CSS/Tailwind                                       | SELECT, WHERE, ORDER BY                                           | Angular notes                                 | ✅ Done    |
 | 2   | Angular projects 05–06 delivered; Java introduced | Angular 05–06 + RxJS + Java foundation                             | SQL basics continued                                              | Angular notes + interview prep started        | ✅ Done    |
 | 3a  | Project 07 backend demonstrable                   | Project 07 backend — JWT auth + protected endpoint                 | SQL querying basics in progress                                   | Spring Boot notes                             | ✅ Done    |
 | 3b  | Project 07 demonstrable — frontend + tests        | Project 07 — finish backend/Angular tests; frontend already delivered | JOINs, GROUP BY, aggregates, subqueries                           | Java + Architecture + Security notes          | ⏳ Current |
-| 3c  | Consolidation — fluent without Claude             | Rebuild key 07 slices solo (no notes, no AI) + SQL complement; Docker and deployment delivered | JOINs, GROUP BY/aggregates, subqueries/CTEs, NULL handling, DML basics → technical test simulation | Interview prep (es/) started                  | 🔜         |
-| 4   | Applications daily + simulations; 08 conditional  | Friday→daily applications; Project 08 **only once simulations are on track** | Technical test simulation                                         | TypeScript + SQL + JavaScript + CSS + Git notes + interview prep (es/) | 🔜         |
-| 5   | Interview ready — full application push           | Final project polish + applications every day                      | Technical test simulation                                         | Interview prep full focus                     | 🔜         |
-| 6   | After the application push — depends on outcome   | Continue the employment gates, or follow the post-job growth plan once hired | Depends on path                                                   | Depends on path                               | 🔜         |
+| 3c  | Consolidation — fluent without Claude             | Rebuild key 07 slices solo (no notes, no AI) + SQL complement; Docker and deployment delivered | JOINs, GROUP BY/aggregates, subqueries/CTEs, NULL handling, DML basics | Spaced review                                 | 🔜         |
+| 4   | Simulations on track; 08 conditional              | Project 08 **only once simulations are on track**                  | Remaining SQL topics                                              | TypeScript + SQL + JavaScript + CSS + Git notes | 🔜         |
+| 5   | Interview ready                                   | Final project polish                                               | Remaining SQL topics                                              | Spaced review                                 | 🔜         |
+| 6   | After phase 5 — depends on outcome                | Continue the employment gates, or follow the post-job growth plan once hired | Remaining SQL topics                                              | Spaced review                                 | 🔜         |
 
 _Row 6 is intentionally open: if the employment gate is not met, the search and unfinished gates continue; once it is met, the post-job growth section applies._
 
 ### Urgency order — urgent first, important-but-not-urgent after
 
-The hiring process above defines urgency: the real filter is a **technical test done alone, timed, no
-notes, no AI** — so fluency without Claude outranks adding more artifacts. In order:
+The hiring process (stages in the shared context's market section) defines urgency: the decisive filters
+are the technical test and its live review, where the code must be produced and explained **unaided** —
+so fluency without Claude outranks adding more artifacts. In order:
 
 1. **Finish Project 07 tests (Steps 8–9)** — the frontend is delivered and the public deploy exists; the demonstrable gate still needs verified backend and Angular service tests. Start with Step 8's exact done condition in `projects/07-timetrack/PLANNING.md`.
 2. **Close the Project 07 SQL complement (Step 10)** — Docker and deployment are already delivered; the remaining tests and SQL work close the project before its final quality gates.
@@ -126,24 +127,13 @@ LeetCode stays behind its existing five gates — unchanged.
 
 ---
 
-## Daily schedule (fixed from June 2)
+## Daily schedule
 
-_This schedule applies while full-time study is available. When available hours change, adapt them to the outcome: unfinished employment gates continue until hiring, then the post-job growth plan applies._
-
-| Block                  | Time        | Focus                                                                              |
-| ---------------------- | ----------- | ---------------------------------------------------------------------------------- |
-| Active project         | 08:00–12:30 | Claude guides, Victor implements (30 min breakfast break inside)                   |
-| SQL → Practice         | 12:30–13:30 | SQL now → technical test simulation → LeetCode Easy (only when all gates complete) |
-| Notes → Interview prep | 13:30–14:30 | Notes first, then interview prep, then CV/applications                             |
-| English study          | 16:00–19:00 | Cambridge First Certificate preparation                                            |
-| Sport                  | 19:00–20:30 | Physical training — essential for sustainability in a 10-hour study day            |
-| English reading        | 22:00–23:00 | Cambridge English Reader — listening + reading                                     |
-
-**Friday rule:** the 13:30–14:30 block is always CV + applications, starting with the Friday-only stage in the applications strategy.
+The day is `HORARIO.md` §1's, in the `Documents/main` folder above this repository: it alone says which blocks exist, when and in what order. What this system serves in each programming block is `_session-rules.md` → "Daily study blocks". The sections below are named by block and carry the strategy of each one, never its hour.
 
 ---
 
-## 08:00–12:30 — Active project
+## Project block — active project
 
 ### Now — Project 07 TimeTrack
 
@@ -151,11 +141,11 @@ _This schedule applies while full-time study is available. When available hours 
 
 **Covers:** REST API, JWT auth, role-based authorization, JPA + Hibernate, TimeEntry workflow (DRAFT → SUBMITTED → APPROVED / REJECTED), reports, Angular frontend, JUnit 5 + Mockito, Vitest + TestBed, Docker Compose, architecture README.
 
-**Demonstrable gate (Phase 3b):** Angular frontend live (Steps 7a–7d), all services have at least one unit test, README includes at least one architecture decision with a real tradeoff — and every line is explainable out loud in an interview. This is what unlocks the CV update and consolidation.
+**Demonstrable gate (Phase 3b):** Steps 8 and 9 pass their done conditions in `projects/07-timetrack/PLANNING.md` — `mvn test` green over every service test class with no database running, and `ng test` green over the six Angular service specs. The Angular frontend (Steps 7a–7d) and the README's architecture decisions and tradeoffs are already in place. This is what unlocks consolidation.
 
 **Full project gate (Phase 3c):** Steps 8–10 pass their done conditions and the plan's final quality gates are signed off. Docker and public deployment are already delivered; the remaining work is backend tests, Angular tests and the SQL complement. See `projects/07-timetrack/PLANNING.md` for the assertions and gate chain.
 
-**CV gate:** Update CV when project 07 is live on GitHub with a README that includes at least one architecture decision — not before.
+**CV gate:** met — project 07 is live on GitHub with a README that includes its architecture decisions, so the CV leads with it now. The CV bullet is rewritten from the finished project once the portfolio gate (G7 in `projects/07-timetrack/PLANNING.md`) returns ✅ Ready.
 
 ### Tests — permanent rule from project 07 — complete and production-quality
 
@@ -187,9 +177,7 @@ Planned in two runs, both inside Claude Code once project 07 is complete. `proje
 
 ---
 
-## 12:30–13:30 block — SQL then practice
-
-**Stage 1 — SQL (current):**
+## SQL block — SQL exercises
 
 | Coverage heading                          | Status |
 | ----------------------------------------- | ------ |
@@ -212,28 +200,15 @@ Planned in two runs, both inside Claude Code once project 07 is complete. `proje
 | Performance basics                        | 🔜     |
 | Query workflow and SQL review             | 🔜     |
 
-→ **Switch to Stage 2 when the test-relevant topics are solid** — JOINs · GROUP BY/aggregates ·
-subqueries/CTEs · NULL handling · DML basics. Those are what consultancy tests actually ask; window
-functions, indexes, and PostgreSQL specifics are not worth delaying simulations for. Once in Stage 2,
-interleave the remaining topics (one SQL day per week) until the table is complete — the full list
-still gates LeetCode (Stage 3), unchanged.
+**The screening floor comes first.** The SQL route puts the test-relevant topics first — JOINs ·
+GROUP BY/aggregates · subqueries/CTEs · NULL handling · DML basics — because they are what consultancy
+tests actually ask; window functions, indexes and PostgreSQL specifics follow them. This is a priority
+inside the route, never a switch: the SQL block stays SQL exercises on every day it runs, and the full
+table above still gates LeetCode.
 
-**Stage 2 — Technical test simulation:**
-Simulate real consultancy tests: write a Spring Boot endpoint from scratch, build an Angular form with validation, write a SQL query against an unfamiliar schema — all under time pressure. This is what the actual tests look like.
+**LeetCode Easy — behind five gates (all of the following must be complete):**
 
-**Minimum target: 15 simulations before applying seriously** — all tests are in `practice/simulations/` with a tracker at `practice/simulations/TRACKER.md`. Split by type:
-
-| Type        | Minimum | What it covers                                                        |
-| ----------- | ------- | --------------------------------------------------------------------- |
-| Spring Boot | 5       | REST endpoint + service + repository + basic validation               |
-| Angular     | 5       | Reactive form + service + HTTP call + error state                     |
-| SQL         | 5       | Given a schema: SELECT, JOIN, GROUP BY, subquery — under a time limit |
-
-**Procedure:** `/simulation-plan` builds the level route, including admissible tests, order and time limits. `simulation-block-open` opens the block and states its attempt conditions without starting the timer; `simulation-grade` is the door to a recorded review. Follow that track for readiness and attempt rules.
-
-**Stage 3 — LeetCode Easy (only if all of the following are complete):**
-
-**When LeetCode replaces SQL:** LeetCode Easy replaces the 12:30–13:30 block permanently once all five gates below are complete. The 13:30–14:30 interview prep block stays fixed and is never replaced by LeetCode.
+LeetCode has no block in the day. Once all five gates below are complete, where it goes is a change to `HORARIO.md`, which is Victor's.
 
 | Gate                                                                       | Why |
 | -------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -243,53 +218,50 @@ Simulate real consultancy tests: write a Spring Boot endpoint from scratch, buil
 | Notes complete for Angular, Spring Boot, Java, Architecture, Security      | Interview prep gaps matter more than algorithm practice                                                                                                                                                                                                                                      |
 | Interview prep (es/) solid for the main topics                             | Active recall ready before adding a new track                                                                                                                                                                                                                                                |
 
-When all five gates are complete, start LeetCode Easy. Until then, use that time to strengthen whichever gate remains open.
+Until all five gates are complete, LeetCode stays out of the day; the open gate is what to strengthen.
 
 ---
 
-## 13:30–14:30 block — Notes then interview prep
+## Technical test simulations
 
-**Stage 1 — Notes:**
-Study in priority order: `angular → spring-boot → java → architecture → security → typescript → sql → javascript → css → git`. SQL also has daily practice in the 12:30 block. Move to Stage 2 when notes for the high-priority topics are well understood.
+**Strategy:** the technical test and its live review are the stages that filter juniors out (their format is the shared context's, in its market section), and both ask for code produced and then explained unaided. Timed simulations, done alone with no notes and no AI, are the only practice that reproduces that unaided delivery, which is why they outrank adding more artifacts.
 
-Supporting topics have an explicit place alongside that order: Angular Material with Angular, Spring with Spring Boot, HTML with CSS, and General with Git. Use each topic's junior notes plan and active recall to consolidate its uncovered fundamentals; the coverage files remain the concept inventory.
+**Target: 15 simulations mark the technical stage prepared** — a preparation target, never a condition for sending an application. Split by type:
 
-**Stage 2 — Interview prep:**
-Active recall with `notes/interview-prep/junior/es/`. Later levels use their own isolated folders.
-Same order as Stage 1. Use the simulator prompt for mock interviews.
+| Type        | Minimum | What it covers                                                        |
+| ----------- | ------- | --------------------------------------------------------------------- |
+| Spring Boot | 5       | REST endpoint + service + repository + basic validation               |
+| Angular     | 5       | Reactive form + service + HTTP call + error state                     |
+| SQL         | 5       | Given a schema: SELECT, JOIN, GROUP BY, subquery — under a time limit |
 
-**Stage 3 — CV + LinkedIn + active applications:**
-Replaces interview prep when all main topics are solid.
+**The track owns everything else.** When a simulation is due is the level route's and `_practice-standard.md` §F's to state. `/simulation-plan` builds the level route — which tests are admissible, in what order and with what time limit; `simulation-block-open` opens a block and states its attempt conditions without starting the timer; `simulation-grade` is the only door to a review that records anything.
+
+---
+
+## Interview-prep block — spaced review and notes
+
+The block is the spaced review of the question banks, with the notes it needs — how it runs is `_session-rules.md` → "Daily study blocks" and "The spaced review of the question banks". Notes are opened inside it when a question fails or a topic is new, not studied first as a separate stage. Notes study order: `angular → spring-boot → java → architecture → security → typescript → sql → javascript → css → git` (SQL is last because it is already practised in the SQL block).
+
+Supporting topics have an explicit place alongside that order: Angular Material with Angular, Spring with Spring Boot, HTML with CSS, and General with Git. Use each topic's junior notes plan and active recall to consolidate its uncovered fundamentals; the coverage files remain the concept inventory. Later levels use their own isolated folders. Use the simulator prompt for mock interviews.
 
 ---
 
 ## Applications strategy
 
-| When      | Mode             | What to do                                                                                                                                                                                                            |
-| --------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| July      | Fridays only     | Polish CV, update LinkedIn and GitHub. Apply to 2–3 companies — the goal is to **practice the process**: learn how the screening works, what they ask, what the CV is missing. Getting hired in July is not the goal. |
-| August 1  | Equal priority   | Study + applications every weekday                                                                                                                                                                                    |
-| September | Full target mode | Market opens — companies back with budget and junior positions                                                                                                                                                        |
+**Applications run every day, from now**, in the job-search block (Victor, 2026-10-20; `_session-rules.md` → "Daily study blocks"): offers, a CV tailored to each, applications and their follow-up through `/cv`, `/cover-letter` and `/tracker`. Nothing in this plan holds an application back — every early application also teaches how the screening works and what the CV is missing.
 
-**What "ready" means by September — minimum vs stretch:**
+**What makes an application strong — bring what you have, strongest first:**
 
-The minimum is what the hiring process actually evaluates (CV screen → technical test → technical
-interview). Being "not ready" because a stretch item is missing is a false alarm — apply anyway.
+The order follows what the hiring process actually evaluates (CV screen → technical test → technical
+interview). Each item raises the odds of the next stage; none is a condition for applying.
 
-*Minimum (blocks applying seriously — all four required):*
-
-- Project 07 live, documented, explainable line by line
-- At least 15 simulations completed (5 Spring Boot, 5 Angular, 5 SQL) — tracker at `practice/simulations/TRACKER.md`
+- Project 07 live, documented, explainable line by line — and, once Steps 8–9 pass, tested
+- Timed simulations completed toward the 15-simulation target (see Technical test simulations)
 - Interview prep (es/) solid for angular, spring-boot, java, architecture, security — every question answered with a project example
 - CV with specific results (_built X that does Y_) + LinkedIn updated with project summaries and the internship bullet
+- Then, as they come: Project 08 (see Urgency order, item 6), the remaining interview prep topics (typescript, css, sql, javascript, git), and LeetCode Easy behind its five gates
 
-*Stretch (raises the ceiling, never blocks applying):*
-
-- Project 08 live or well advanced — only if the minimum is on track (see Urgency order, item 6)
-- Remaining interview prep topics (typescript, css, sql, javascript, git)
-- LeetCode Easy (behind its five gates, unchanged)
-
-**Why September and not August:** Spanish consultancies approve headcount after summer. The positions open in September — not in August when the decision-makers are on holiday.
+**Market timing (fact, not a phase):** Spanish consultancies approve headcount after summer, so junior positions cluster from September, when the decision-makers are back from holiday. It changes the volume of offers to expect, never whether to apply.
 
 **Where to find jobs in Spain:**
 
@@ -328,7 +300,7 @@ What matters most:
 - One page maximum — non-negotiable for junior roles at Spanish consultancies
 - Every bullet has a concrete result — "built X that does Y", not "developed a feature"
 - ATS keywords present naturally: `Angular`, `Spring Boot`, `Java`, `PostgreSQL`, `Docker`, `JWT`
-- Cambridge First Certificate listed under languages — a concrete certification, not self-reported
+- English level stated as the profile evidences it; the Cambridge First Certificate is listed under languages once obtained — a concrete certification, not self-reported
 
 ---
 
@@ -336,7 +308,7 @@ What matters most:
 
 **Why this matters for consultancies:** large consultancies (NTT Data, Capgemini) have international clients and European delivery teams. A junior with B2 English is placed on better projects, grows faster, and is harder to replace.
 
-**Current plan:** keep Cambridge First Certificate preparation alongside the technical work; use the English technical documents for additional exposure. Study sessions follow the shared session rules' current language preference, and the profile's language level remains in `_shared-context.md`.
+**Current plan:** Cambridge First Certificate preparation is paused while the TAI and programming take its blocks; it returns when the criteria in `HORARIO.md` §2 are met, and the English technical documents remain additional exposure meanwhile. Study sessions follow the shared session rules' current language preference, and the profile's language level remains in `_shared-context.md`.
 
 **In the CV:** Cambridge First Certificate (B2) is a concrete certification — not self-reported. It signals discipline and that you invest in yourself beyond the minimum.
 
