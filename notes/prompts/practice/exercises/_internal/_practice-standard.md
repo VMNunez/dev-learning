@@ -29,7 +29,7 @@ bullet, and never reads a missing `✅` as "never practised" or as a reason to p
 | `practice/exercises/ATTEMPTS.md` | the cold grader only (§D) | the per-attempt history; every count anywhere is derived from it |
 | `practice/exercises/{topic}/{level}/{NN}-{slug}/` | `practice-session` writes the batch `README.md` and each exercise file's statement and skeleton; **Victor writes the answers** | one folder per batch, never reused; `NN` is one above the highest number in that level folder (`01` first; a third digit after `99`), the date lives in the batch `README.md`, and a folder is never renamed once graded — the history cites it by name |
 | `PROGRESS.md` → `### Short exercises` | the cold grader (§G) | cells only, recounted from the history |
-| a topic's workspace root files, where its §H names a workspace (`practice/exercises/angular/junior/`: `angular.json`, `package.json`, `package-lock.json`, `tsconfig.json`, `.gitignore`, `.editorconfig`, `.prettierrc`, `.vscode/`, `README.md`) | `practice-session` — created once by the scaffold §H names, then changed only by each batch's generation, within the root changes §H permits | never part of an answer; committed once as the workspace, then with each batch as generated (`REC-376`) |
+| a topic's workspace root files, where its §H names a workspace (`practice/exercises/angular/junior/`: `angular.json`, `package.json`, `package-lock.json`, `tsconfig.json`, `.npmrc`, `.gitignore`, `.editorconfig`, `.prettierrc`, `.vscode/`, `README.md`) | `practice-session` — created once by the scaffold §H names, then changed only by each batch's generation, within the root changes §H permits | never part of an answer; committed once as the workspace, then with each batch as generated (`REC-376`) |
 
 Nothing is written into a note: a `refined` pair is frozen, and the index is what links a block to it.
 
@@ -78,7 +78,10 @@ copy junior tasks into another level or pre-create empty trees. SQL retains its 
   Explain any exception. Difficulty is `foundation`, `transfer` or `integration`. `After` lists
   prior exercise IDs or `none`. Tasks state a concrete coding, diagnosis or API-use problem;
   "practise concept X" is not a task. Pass conditions specify observable evidence and edge cases,
-  never a worked solution. Quantity follows the tasks, not a uniform quota per block.
+  never a worked solution. Both are written in English, and any UI text or datum they quote is
+  English too, since a statement copies them (§C, `REC-379`). A published row quoting another
+  language is not retired for that alone: §C renders it. Quantity follows the tasks, not a
+  uniform quota per block.
 - `File` reserves an exact basename inside a future batch folder, matching §H. The batch number and
   slug are allocated when Victor sits down to answer. No source files or full statements are
   generated during planning. The first plan must show all intended tasks, including transfers
@@ -302,6 +305,25 @@ An `extra` row outside any block adds no line. The section is navigation for Vic
 it back — the grader works from the table and the snapshot, and a note he opens while answering is
 `Help: notes` only when he says so (§D).
 
+**A statement is one language, plain, and gives every explanation it asks for a place** (`REC-379`,
+from the angular pilot, whose statements quoted Spanish UI text as expected results and asked for
+explanations no file had a slot for — Victor, 2026-10-21: *"Si es inglés, es todo en inglés. Además
+deben ser enunciados claros"*).
+
+- **English end to end.** Every result it quotes as expected, and every word of UI text and given
+  data the batch itself renders, is English — a person's name stays as it is; a title or any other
+  given text is English. A plan row that quotes UI
+  text in another language is rendered in English: an instantiation that leaves its scope unchanged,
+  never a mismatch with the `Plan snapshot` (§D), which keeps the row verbatim. What the browser itself
+  shows, such as its own context menu, is described, never quoted.
+- **One requirement per line.** The task is a list; context that is not a requirement comes before it,
+  and no requirement is stated only inside a paragraph. Splitting a plan row's paragraph into lines is
+  the same instantiation as rendering it in English.
+- **Every explanation has its own marker.** An explanation the statement asks for names the answer
+  file it goes in, and that file carries a marker for it alone, labelled in English with what to explain
+  — its form is the topic's §H `Shape`. Victor writes the explanation in Spanish, under §H's language
+  rule, which this leaves unchanged.
+
 **Earlier solutions stay out of the way by construction**: each batch is its own folder, the new batch
 never names an earlier one, and the no-repeat rule above is what makes looking back useless.
 
@@ -428,7 +450,8 @@ need rendering, angular and spring-boot need a small base app with isolated atte
 
 - **Shape.** One standalone file per exercise, `ExNN.java`, using the planned basename (unplanned work — adaptive reviews, extras and reinforcement — uses `ExExtraNN.java`), holding the statement as its opening comment
   block and a compilable skeleton — a public class matching the basename with a `main` — with `// Your answer:` marking
-  where he writes. No package line, no build tool, no dependency beyond the JDK.
+  where he writes, and each explanation the statement asks for its own `// Your answer (<what to explain>):` line in
+  that file (§C). No package line, no build tool, no dependency beyond the JDK.
 - **How he runs it.** Normally with the JDK's single-file source launcher, from the batch folder.
   Block 00 may explicitly ask him to compile with `javac` and run the resulting class with `java`
   to observe source versus bytecode; both are JDK tools, with no build project. The agent never
@@ -464,7 +487,15 @@ before then (`REC-380`).
   its own, created once by the agent with
   `ng new junior --directory=practice/exercises/angular/junior --create-application=false --skip-git --ai-config=none --package-manager=npm`
   at the CLI version the active project pins (21.2.23 today), through `npx @angular/cli@{version}` — the
-  active project's local CLI refuses to create a workspace, because it finds its own. Its root files are
+  active project's local CLI refuses to create a workspace, because it finds its own. The scaffold then
+  writes a root `.npmrc` holding `legacy-peer-deps=true`: npm 10.8.2 on Node 20.20 cannot resolve this
+  workspace's dependency tree from scratch — it stops on jsdom's optional peer `canvas` with
+  `Cannot read properties of null (reading 'edgesOut')` — and resolves it with that setting, so the
+  first batch's install needs it and every later install keeps the lockfile's mode (`SBRC-0034`,
+  reproduced 2026-10-21: against the committed lockfile a plain `npm ci` refuses it as out of sync,
+  missing three `@emnapi/*` packages, and a plain `npm install` passes only by adding them to the
+  lockfile). A workspace
+  scaffolded without it gains it from its next batch's generation. Its root files are
   the system's (§A); `node_modules/`, `dist/` and the CLI cache under `.angular/` stay ignored by the scaffold's `.gitignore`. **No answer touches a root
   file and no exercise adds a dependency**: a concept that needs either is excluded at planning, at
   concept level, with its reason.
@@ -473,13 +504,24 @@ before then (`REC-380`).
   names, so every path and name downstream of it is unchanged — after its `--dry-run`, read for the root
   files it would touch. It may change, **on every batch**, `angular.json` (that application's entry) and
   `tsconfig.json` (that application's two references), and **on the first batch only** `package.json` and
-  `package-lock.json` (the build and test dependencies the schematic adds and installs). From the second
+  `package-lock.json` (the build and test dependencies the schematic adds and installs); and, on
+  whichever batch first finds it missing, `.npmrc` (above). From the second
   batch it runs with `--skip-install`, and with `--skip-package-json` once the dry run shows nothing to
-  add. Any other root change stops generation, reported. Every command names its application —
+  add. **The two JSON files are compared by value, never by line** (`REC-379`): the CLI's writer re-lays
+  out entries it does not change — adding a second application rewrote `lote-01`'s `styles` array onto
+  one line — so each is parsed against its committed version, `/* */` comments removed outside strings
+  (`angular.json`'s asset glob `"**/*"` is a string), and the change is permitted when `projects` gained
+  exactly that application's key, `references` gained exactly its two entries at the end, and every other
+  value is equal. Any other root change stops generation, reported; the files are committed as the CLI
+  wrote them. The schematic leaves the new application's `tsconfig.app.json` and `tsconfig.spec.json`
+  without `rootDir`; generation sets `"rootDir": "./src"` in both — batch files, not root ones. The
+  pilot was given one by hand after its grade (`e3c62764`: `./src` in `tsconfig.app.json`, `./src/app`
+  in `tsconfig.spec.json`), and every project 01–07 sets `./src` in its `tsconfig.app.json`; `./src` is
+  used in both because every file either one includes sits under `src/`. Every command names its application —
   `ng serve lote-NN`, `ng test lote-NN` — never the whole workspace.
 - **A batch is one small visible feature.** The application's shell (`app.html`) is the feature and the
   index of its exercises — a list held in a signal, its filter, its empty state, a detail route — and the
-  batch's one objective (§C) names that behaviour. **Each isolated exercise brings the data and the
+  batch's one objective (§C) names that behaviour. Its UI text and given data are English (§C). **Each isolated exercise brings the data and the
   dependencies it needs to be graded alone**: the filter exercise receives its own given list, never
   Victor's answer to the list exercise. Pieces depend on one another only inside a declared
   `integration` row, under its own criteria.
@@ -489,7 +531,10 @@ before then (`REC-380`).
   interceptor, two components for a parent–child exchange. When the piece has something to show it gets
   a demo route, `/exNN`, linked from the shell. The statement is the opening comment of its main `.ts`
   file and ends with `Answer files:`, the files Victor writes in, each carrying its marker
-  (`// Your answer:`, `<!-- Your answer: -->`, `/* Your answer: */`). The code follows the 2025 style
+  (`// Your answer:`, `<!-- Your answer: -->`, `/* Your answer: */`) — and each explanation the
+  statement asks for its own, in the file the statement names for it, listed there too:
+  `// Your answer (<what to explain>):` in a `.ts`, `<!-- Your answer (<what to explain>): -->` in a
+  template (§C). The code follows the 2025 style
   guide and the version's practices (`inject()`, signals, `@if`/`@for`), checked against the Angular CLI
   MCP's `get_best_practices` when the batch is written.
 - **Answered.** An exercise is answered when at least one of its declared answer files differs from the
@@ -503,7 +548,7 @@ before then (`REC-380`).
     a `// My output:` comment at the end of the main `.ts` file. A given spec that differs from the
     generation commit is not evidence.
   - *Interface*: the statement carries a **manual check** — an action and its expected result ("type
-    `xyz` in the filter → the list shows `Sin resultados`") — and he writes what the browser actually
+    `xyz` in the filter → the list shows `No results`") — and he writes what the browser actually
     did under `<!-- Observed: … -->` in the template. `ng build` proves the code compiles; it is not
     enough evidence of visual behaviour.
   - *Testing* — blocks `24` and `25`, and an `integration` that combines a feature with its test: he
@@ -525,3 +570,12 @@ before then (`REC-380`).
   compile; does `My output` or `Observed` match what was expected; is every given spec unchanged since
   the generation commit. Style is feedback, never a failure. His comments and explanations are in
   Spanish, under java's language rule above, which applies here unchanged.
+- **What the pilot showed** (`01-book-catalog`, `ATT-0011`–`ATT-0014`: three `✅` unaided and one `⚠️`
+  `careless`, fixed and verified the same day). The given specs, the manual checks with their
+  `Observed:` blocks and the generation check worked as written — no given spec was edited, no
+  exercise was `void`. What it changed: the statements' language and layout and a marker per
+  explanation (§C, §B's task rule, both `Shape` bullets), the `.npmrc` (`Workspace`), the by-value root
+  comparison and `rootDir` (`A batch is an application`). The
+  history records no time, so §C's size budget stands as written.
+
+Pilot folded: 01-book-catalog, 2026-10-21 (REC-379)
