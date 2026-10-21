@@ -6,6 +6,19 @@ Coverage defines scope, the notes plan groups it, and each topic-level exercise 
 The tables link blocks to notes; they never substitute for the exercise inventories. Note status
 is read live. Future routes use the same topic/level layout when their environment is enabled.
 
+## Practice state
+
+Derived: 2026-10-21
+
+| Topic | Essential route | Open batch | Last closed batch |
+|---|---|---|---|
+| java — junior | next stage 00 of 22 | — | 02-conversions-and-arithmetic, 2026-10-17 |
+| angular — junior | next stage 01 of 17 | — | 01-book-catalog, 2026-10-21 (pilot) |
+| spring-boot — junior | next stage 01 of 15 | — | — |
+
+Rotation: java → angular → spring-boot; next: spring-boot
+Simulations: no route — /simulation-plan LEVEL=junior
+
 ## java — junior
 
 Exercise plan: [Java junior](java/junior/PLANNING-junior.md)
