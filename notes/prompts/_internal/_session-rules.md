@@ -90,7 +90,7 @@ concept, tech stack, data model, key patterns, folder structure, and the step-by
 - Previous knowledge (a bit rusty): React, Node.js, Express, TypeScript, Tailwind, CSS, HTML, JavaScript
 - Internship ended June 2 2026 (built a SaaS with Next.js + TypeScript + Supabase) — real work experience
 
-Career strategy, phases, applications timeline, and what makes a strong junior in 2026 → `ROADMAP.md`.
+Career strategy, phases, applications strategy, and what makes a strong junior in 2026 → `ROADMAP.md`.
 Fuller profile, honest situation analysis (strengths / risks), and the Spanish job market →
 `notes/prompts/_internal/_shared-context.md` — that file is the single source; the bullets above are its
 condensed copy, so keep the two in sync.
@@ -132,13 +132,15 @@ decide anything.
   flow. A timed simulation may take this block and the project block together (`HORARIO.md` §1).
 - **Project block — the active project with the coding agent.** The agent guides, Victor implements.
   Goal: depend less on AI over time.
-- **SQL block — SQL exercises.** **When the SQL track moves to a later stage is `ROADMAP.md`'s to
-  state, never this bullet's**: its SQL-then-practice section owns both switch conditions — the one that
-  opens the simulation stage, written under its SQL table, and the LeetCode gates — and neither is
-  restated here. This bullet carried its own copy of the first one — "until all SQL topics are solid" —
-  until 2026-10-09, although `ROADMAP.md` had replaced that condition on 2026-07-16 (`146b982e`); these
-  rules outrank `ROADMAP.md`, so the stale copy was the one a session would have obeyed (`REC-309`).
-  LeetCode has no block in the day: it stays behind those gates.
+- **SQL block — SQL exercises.** **Which SQL topics come first and when LeetCode may start are
+  `ROADMAP.md`'s to state, never this bullet's** — the screening floor under its SQL table and its
+  LeetCode gates — and **when a timed simulation is due is the simulation route's and
+  `_practice-standard.md` §F's**, at `HORARIO.md` §1's pace; a simulation is no later stage of this
+  block. None of the three is restated here. This bullet carried its own copy of ROADMAP's switch
+  condition — "until all SQL topics are solid" — until 2026-10-09, although `ROADMAP.md` had replaced it
+  on 2026-07-16 (`146b982e`), and these rules outrank `ROADMAP.md`, so the stale copy was the one a
+  session would have obeyed (`REC-309`); until 2026-10-21 it still named simulations a stage that
+  condition opened (`REC-392`). LeetCode has no block in the day: it stays behind its gates.
 - **Interview-prep block — the spaced review, with the notes it needs.** It follows the spaced-review
   schedule (Victor, 2026-10-20): "¿qué toca hoy?" opens it, and `interview-prep-block-open` answers with
   the day's reviews and new questions from `notes/interview-prep/spaced/` — see "The spaced review of
@@ -1542,7 +1544,7 @@ learning/
 ├── AGENTS.md / CLAUDE.md  ← thin platform adapters
 ├── notes/prompts/_internal/_session-rules.md ← shared session rules
 ├── PROGRESS.md            ← demonstrated level, projects done, status (no concept lists)
-├── ROADMAP.md             ← career strategy, phases, daily schedule, applications plan
+├── ROADMAP.md             ← career strategy, phases, gates, applications plan (the day is HORARIO.md's)
 ├── projects/              ← every project, chronological (01–06 Angular-only, 07+ full-stack); see projects/README.md
 │   ├── 06-hr-portal/      ← last Angular-only project
 │   └── 07-timetrack/      ← Spring Boot + Angular + PostgreSQL + Docker

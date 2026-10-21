@@ -42,7 +42,7 @@ Before generating anything, read these files:
    the coverage files, so never ask this file which concepts Victor knows — source 7 is what answers
    that. Its `## Projects` `Key concepts` cell is a handful of headline topics the row's author set, not
    an inventory, and not maintained after the row is created (`progress-update-prompt.md` D1).
-4. `ROADMAP.md` — the applications strategy with its timeline and gates, and **what most increases the
+4. `ROADMAP.md` — the applications strategy and its gates, and **what most increases the
    probability of being hired**, whose ranking is that file's own and exists nowhere else
    (`_session-rules.md` routes "what makes a strong junior in 2026" here). The career target and the
    market analysis behind them are source 2's.

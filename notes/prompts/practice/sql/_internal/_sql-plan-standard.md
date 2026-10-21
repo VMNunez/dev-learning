@@ -50,10 +50,11 @@ and that is why nothing checked it.)
 Its two inputs, and it never invents beyond them:
 - **`notes/sql/coverage/{LEVEL}.md`** — what must be learned at the level the route serves. Every step
   claims bullets of it; a concept that belongs to SQL and is missing goes *there*, never into this plan.
-- **`ROADMAP.md`** — why, and by when, read at two sections only: `## 12:30–13:30 block — SQL then
-  practice` (the objective this ordering serves: a junior Angular + Java role in Spain, technical
-  screening first, and the Stage-1 → Stage-2 switch gate) and `## Daily schedule (fixed from June 2)`
-  (the block the pace has to fit). The rest of the file cannot falsify a route-ordering decision.
+- **`ROADMAP.md`** — why, read at one section only: the SQL block's, the one carrying the SQL topic
+  table (the objective this ordering serves: a junior Angular + Java role in Spain, technical screening
+  first, and the screening floor stated under that table). The rest of the file cannot falsify a
+  route-ordering decision. The block the pace has to fit is the daily SQL block, whose length is
+  `HORARIO.md` §1's; ROADMAP's daily schedule only points there since `REC-392`, so it is not read for it.
 
 ---
 

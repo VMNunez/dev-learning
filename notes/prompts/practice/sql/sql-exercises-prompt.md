@@ -280,8 +280,8 @@ nobody reads it at the start of the next run.
 My profile is in `notes/prompts/_internal/_shared-context.md`.
 
 I have one SQL block a day. I write answers directly in the SQL file in pgAdmin
-(PostgreSQL), then paste it into review mode. This block feeds into Stage 2: technical test
-simulation — so exercises should reflect the kind of SQL a real consultancy test includes.
+(PostgreSQL), then paste it into review mode. This block feeds the timed technical test
+simulations — so exercises should reflect the kind of SQL a real consultancy test includes.
 
 SQL is not isolated from the rest of the stack. Where relevant, connect a concept to its
 Spring Boot or JPA equivalent in the exercise description (e.g. transactions → @Transactional,
@@ -306,8 +306,8 @@ Why this order and not the coverage file's order:
   join-pitfalls cannot precede group-by.
 - **NULLs after aggregation** — the surprises already met (a `LEFT JOIN` producing nulls, `AVG`
   skipping them) get their mechanism explained rather than described.
-- **DML right after subqueries and CTEs** — it is the fifth topic of `ROADMAP.md`'s Stage-1 → Stage-2
-  gate, so the five gate topics land consecutively (Steps 1–6) and every post-gate topic follows them.
+- **DML right after subqueries and CTEs** — it is the fifth topic of `ROADMAP.md`'s screening floor,
+  so the five floor topics land consecutively (Steps 1–6) and every topic past the floor follows them.
 - **date functions before window functions** — a live exercise stalls on `DATE_TRUNC` first, and every
   monthly report is `GROUP BY DATE_TRUNC('month', ...)`.
 

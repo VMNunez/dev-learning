@@ -201,7 +201,7 @@ Ojo: este archivo corre en la base de datos `practice_junior_02_execution_order_
 exercises over the sessions that produced them, from each graded header's **first** marker date —
 `❌ Revisado` or `✅ Corregido`, the later one on a rewritten answer being a re-grade — and print it in
 parentheses. With no history yet, write `(sin histórico)` rather than guessing a number. The block is
-timed (`HORARIO.md` §1) and Stage 2 is a timed test, so a track that never mentions the clock trains no pacing at
+timed (`HORARIO.md` §1) and a simulation is a timed test, so a track that never mentions the clock trains no pacing at
 all; but the estimate never becomes a quota, and a block that runs slower than it is not a finding.
 **Never comment on how long he took or suggest moving on** — he decides what the block is worth.
 

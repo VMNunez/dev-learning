@@ -12,7 +12,7 @@ enumeration and no wider — the project list below defers to `PROGRESS.md` in i
 `ROADMAP.md` owns the ranked "what most increases your probability of being hired", which has no
 counterpart here. So a prompt that needs a **target fact**
 — role, companies, stack, seniority, market, hiring stages — reads it here, and reads `ROADMAP.md` for
-the **plan** built on it: phases, gates, the applications timeline, the study-block tables.
+the **plan** built on it: phases, gates, the applications strategy, the block sections.
 `_coverage-standard.md` states the same fence for coverage scope; `_roadmap-standard.md` carries the
 obligation on the roadmap's side.
 

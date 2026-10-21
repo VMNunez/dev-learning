@@ -43,10 +43,12 @@ If a required role cannot be dispatched, stop unless its instruction explicitly 
 - `MISTAKES = practice/sql/MISTAKES.md`
 - `STANDARD = notes/prompts/practice/sql/_internal/_sql-plan-standard.md`
 - `CONTEXT = notes/prompts/_internal/_shared-context.md`
-- `ROADMAP = ROADMAP.md` → two sections only: `## 12:30–13:30 block — SQL then practice`, which carries
-  the SQL topic table and the Stage-1 → Stage-2 switch gate (the only thing in the file a `Why here` can
-  be falsified against), and `## Daily schedule (fixed from June 2)`, which defines the one-hour block a
-  step is sized in. Nothing else in the file bears on route ordering.
+- `ROADMAP = ROADMAP.md` → one section only: the SQL block's — the section carrying the SQL topic
+  table, whose heading `_roadmap-standard.md` fixes — with the screening floor stated under that table,
+  the test-relevant topics it puts first (the only thing in the file a `Why here` can be falsified
+  against). Nothing else in the file bears on route ordering. A step is sized in sessions of the daily
+  SQL block, whose length is `HORARIO.md` §1's and is read by no ceiling below; until `REC-392` this key
+  also named ROADMAP's daily schedule for it, which now only points at that file.
 
 `PLAN` is a committed source of truth. It is not a temporary worklist.
 
@@ -155,8 +157,8 @@ log for the whole track: a concept failed at junior and re-failed at middle is o
 3. Build the route by **dependency, then by what a screening asks first** (B1, B2). Every step's
    position carries a one-sentence `Why here` that names what it needs from an earlier step, or why the
    objective pulls it forward. "Next in the coverage file" is not a reason. The objective is not a
-   slogan: `CONTEXT` states the role being targeted and the timeline, `ROADMAP` the gate this level
-   feeds. A step pulled forward "because it comes up in interviews" must name **which** target that is.
+   slogan: `CONTEXT` states the role being targeted and the timeline, `ROADMAP` the screening floor
+   this order serves. A step pulled forward "because it comes up in interviews" must name **which** target that is.
 4. Assign every coverage bullet of the selected level to exactly one step (invariant 1). A bullet this
    level deliberately does not drill goes under `## Out of scope at this level` with a reason, never
    silently dropped. Never paraphrase a coverage bullet in the assignment list.

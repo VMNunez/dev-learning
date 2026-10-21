@@ -197,7 +197,7 @@ The steps and the gate sentence above are junior's, as an example — read the r
 With the gate's step closed, its sentence becomes `Gate del primer test (Step 2): cumplido.` and the
 line may then say what a simulation can ask for.
 
-**This is the only line in the track that connects it to Stage 2**, and it exists because of a real
+**This is the only line in the track that connects it to the timed simulations**, and it exists because of a real
 asymmetry: a step closes on a score obtained in pgAdmin, with the notes reachable and no clock, while
 the interview is the opposite of all three. Readiness is the fact nobody else holds — a test demanding a
 technique from an unclosed step is not hard, it is impossible, and finding that out mid-timer teaches

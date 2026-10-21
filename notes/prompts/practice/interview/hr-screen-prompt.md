@@ -13,7 +13,7 @@ are easy to get wrong.
 It runs as a live mock HR call: the recruiter asks one question at a time, I answer, I get feedback.
 
 > **▶ Run first:** nothing — self-contained; it reads your profile from `_shared-context` and the
-> applications strategy and timeline from `ROADMAP`.
+> applications strategy from `ROADMAP`.
 
 ---
 
@@ -54,7 +54,7 @@ penalise grammar or fluency.
 
 Before starting, read `notes/prompts/_internal/_shared-context.md` (my profile and the "Where I stand"
 analysis — the internship, the career change, the differentiator) and `ROADMAP.md` (the
-applications strategy and timeline). Use them to probe realistically.
+applications strategy). Use them to probe realistically.
 Read `practice/interview/MISTAKES.md`. Ask open `hr-screen` concepts first, while keeping a natural
 recruiter order; they are durable evidence from earlier calls, not optional polished answers.
 

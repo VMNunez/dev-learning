@@ -265,8 +265,8 @@ Inventory of every timed-simulation spec and its recorded outcome — not a proc
 `simulation-block-open` ("vamos con una simulación"): it names the current test, its time limit and the
 attempt conditions. `simulation-block-close` records the attempt and `simulation-grade` reviews it. The
 rows are written by `/simulation-generator`, `simulation-block-close` and the review `simulation-grade`
-dispatches — never by hand. The target this count serves is set in `ROADMAP.md` (Stage 2 and the
-minimum for applying).
+dispatches — never by hand. The target this count serves is set in `ROADMAP.md` (its technical test
+simulations section).
 
 ---
 ```

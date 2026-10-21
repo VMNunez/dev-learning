@@ -68,7 +68,7 @@ First read `notes/prompts/strategy/tracking/_internal/_roadmap-standard.md` — 
 prompt is built on. Every "per `_roadmap-standard.md`" reference below points there.
 
 Then read `notes/prompts/_internal/_shared-context.md` (my profile, target job, and the market). You are the
-orchestrator, and your run-start check read the shared session rules (daily schedule, study order) to
+orchestrator, and your run-start check read the shared session rules (the daily study blocks, the study order) to
 EOF before any file changed — so by the time you reach this step you hold them; do not re-read them. **That holds for you and for no subagent below**: a
 cold role is handed only its target, its sources and its standard, so where one of them needs a rule from
 that file, its own instruction names the section it reads (Reviewer 1, invariant 2).
@@ -98,8 +98,9 @@ Identify the active project from PROGRESS.md's project table. If ambiguous, run 
 identify the active project-level branch (pattern: `projects/0X-name` or `angular/0X-name`; feature
 branches `feat/...` are sub-branches and do not identify the project on their own).
 
-Today's date is available in the session context — use it to judge which applications strategy
-phases (July, August, September) are past, current, or still ahead.
+The applications strategy has no calendar phases: applications run every day, from now (per
+`_roadmap-standard.md`, "What ROADMAP.md contains"). A passage that still stages them by month, weekday
+or phase is a wrong fact, fixed in Step 5 like any other.
 
 ---
 
@@ -130,7 +131,7 @@ Launch **both** `role-appropriate` subagents in a single message so they run in 
 >    count exactly the same. A bare `✅ 05-task-manager` is an *old* marker, never a malformed one.
 > 3. **A drill marker is not a project marker.** A bullet whose only marker is `✅ sql:{file-slug}` was
 >    drilled in graded exercises, not built. It is still a gap **for a project** and not a gap **for the
->    12:30 SQL block** — say which of the two when you list it.
+>    SQL block** — say which of the two when you list it.
 > 4. **Markers record demonstration, never study.** An unmarked bullet means *not yet demonstrated*, not
 >    *not yet studied* — Victor may know it well from `notes/`. Never write "not yet learned".
 >
@@ -272,10 +273,18 @@ are held to the block sections in Step 4, once those sections are settled.
 Update the study-block sections to match the canonical values in `_roadmap-standard.md`
 ("Canonical study-block references"):
 
-**12:30 block — SQL then practice:** reconcile the SQL topic table against the SQL topic list that
+**Headings and the daily schedule first.** Every block section carries the heading the standard's
+"What ROADMAP.md contains" lists, and a section headed by an hour is renamed in place, its content kept.
+The `Daily schedule` section is the standard's pointer at `HORARIO.md` §1 and the session rules' "Daily
+study blocks" — a table of hours there is a stale copy of the day and is replaced by the pointer. A
+simulation passage still sitting inside the SQL section moves out to `## Technical test simulations`,
+its strategy and target kept, before the two bullets below hold either section to the standard. These
+are the one restructuring this run makes; Step 5's in-place rule governs everything else.
+
+**SQL block — SQL exercises:** reconcile the SQL topic table against the SQL topic list that
 subagent 2a returned from coverage-junior.md — add missing topics, remove out-of-scope topics. For the
 ✅ / ⏳ / 🔜 markers, derive each row's marker by `_roadmap-standard.md` → "Canonical study-block
-references", 12:30 bullet — a row is a coverage heading, read off the route's §3 statuses through its
+references", SQL topic-table bullet — a row is a coverage heading, read off the route's §3 statuses through its
 §2 `**Coverage:**` lines, never off a count. Read `practice/sql/junior/PLANNING-junior.md` at those
 places only: `grep -nE '^### Step [0-9]+|^\*\*Coverage:\*\*|^## §3'` — a step heading supplies each
 `**Coverage:**` line's step number and nothing else, its counts being ones no grading run updates —
@@ -283,25 +292,32 @@ then read §3's step table with `offset`. **Not `PROGRESS.md`** — its exercise
 *file*, so it cannot answer a topic row on its own, and syncing against it is how this table drifted in
 both directions at once.
 
-**12:30 block — simulation stage:** hold `Stage 2 — Technical test simulation` to the standard's
-simulation-stage bullet — its heading unchanged, its strategy kept, its gate left under the SQL table, and
-any passage that restates the simulation track's procedure (which specs exist, a time limit, attempt
-rules, how to get a review) or sends Victor to a spec file or to a review outside `simulation-grade` cut
-to the pointer the standard names.
+Then hold the screening floor under the table to the standard's screening-floor bullet: the five
+test-relevant topics stated as the route's priority, never as a switch to another stage or to a
+reduced SQL cadence.
 
-**13:30 block — Notes then interview prep:** confirm the notes study order matches the canonical
-string exactly; if the shared session rules differs, the shared session rules wins.
+**Technical test simulations:** hold `## Technical test simulations` to the standard's bullet of that
+name — its strategy and target kept, its gate and pace left to the simulation track's pointer, no SQL
+topic or switch condition put in front of it, and any passage that restates the simulation track's
+procedure (which specs exist, a time limit, attempt rules, how to get a review) or sends Victor to a
+spec file or to a review outside `simulation-grade` cut to the pointer the standard names.
+
+**Interview-prep block — spaced review and notes:** confirm the notes study order matches the
+canonical string exactly; if the shared session rules differs, the shared session rules wins. Hold the
+rest of the section to the standard's bullet — the pointer at the spaced review, and no stages.
 
 **LeetCode gate conditions:** verify the topics in the study-order gate condition match the
 high-priority topics per the standard (angular, spring-boot, java, architecture, and any topic added
 between architecture and typescript such as security). Do not add typescript, sql, javascript, css,
 or git. Do not change the other 4 gate conditions unless they are factually wrong — all four resolve
 against `## Projects`, `Practice completed`, and the level matrix's `Knowledge consolidation` column.
+The passage names no block LeetCode replaces or leaves fixed (the standard's LeetCode bullet).
 
-**Phase plan — block columns:** last, once the two block sections above are settled, hold the phase
-table's `SQL → Practice (12:30)` and `Interview prep (13:30)` cells to the standard's phase-plan bullet
-— every row not yet ✅, cell by cell against the block section it projects. A cell that disagrees is
-the one corrected; a block section is never edited to fit a cell.
+**Phase plan — block columns:** last, once the block sections above are settled, rename the phase
+table's columns to the standard's `Project`, `SQL` and `Interview prep`, then hold the `SQL` and
+`Interview prep` cells to the standard's phase-plan bullet — every row not yet ✅, cell by cell against
+the block section it projects. A cell that disagrees is the one corrected; a block section is never
+edited to fit a cell.
 
 ---
 
@@ -327,7 +343,7 @@ which is ROADMAP's own — the facts inside its items are not exempt. The source
 
 After applying the edits, do a quick self-check against `_roadmap-standard.md`:
 - No calendar date in a project milestone, gate condition, or "CV rule" — only in the applications
-  strategy section and the daily schedule header.
+  strategy section — and no clock time anywhere.
 - No content duplicates PROGRESS.md, coverage-junior.md, or `_shared-context.md` — reference them
   instead. Against the first two the test is word-for-word; against `_shared-context.md` it is the
   **fact**, which drifts long before the wording matches.
@@ -358,11 +374,13 @@ its checks need). Its instruction:
 > below — and nothing else. Verify each invariant below **from scratch** — do not trust that the edits
 > are correct. For each violation, **fix it directly in ROADMAP.md**, then report what you changed and why.
 >
-> 1. **Stray-date scan.** Do a literal scan of ROADMAP.md for every month name (January–December) and
->    year pattern (2025, 2026, …). For each match: if it is inside the applications strategy section
->    or the daily schedule header, it is intentional — leave it. Anywhere else, convert it to a gate
->    condition (per the standard's ❌→✅ examples) and log it.
-> 2. **Notes study order.** The 13:30 study order equals the canonical string in the standard exactly:
+> 1. **Stray-date and clock-time scan.** Do a literal scan of ROADMAP.md for every month name
+>    (January–December) and year pattern (2025, 2026, …). For each match: if it is inside the
+>    applications strategy section, it is intentional — leave it. Anywhere else, convert it to a gate
+>    condition (per the standard's ❌→✅ examples) and log it. Then scan for every clock time
+>    (`\d{1,2}:\d{2}`): none is intentional anywhere, so cut each one, leaving the block's name, and
+>    check that every block section carries the heading the standard lists.
+> 2. **Notes study order.** The interview-prep block's study order equals the canonical string in the standard exactly:
 >    `angular → spring-boot → java → architecture → security → typescript → sql → javascript → css → git`
 >    You are cold and hold none of the orchestrator's context, so do not assume the shared session rules
 >    are loaded: read `## Daily study blocks` in `notes/prompts/_internal/_session-rules.md`
@@ -375,18 +393,20 @@ its checks need). Its instruction:
 > 3. **LeetCode gate topics.** The study-order gate condition lists exactly the high-priority topics
 >    per the standard (angular, spring-boot, java, architecture, security if added in that range) and
 >    does NOT list typescript, sql, javascript, css, or git.
-> 4. **Simulation stage.** `Stage 2 — Technical test simulation` matches the standard's
->    "Canonical study-block references" simulation-stage bullet: heading unchanged; strategy and pointer
->    present, the gate left under the SQL table rather than copied in; no passage restating the
->    simulation track's procedure, and none telling Victor to open a spec file or to have a solution
->    reviewed outside `simulation-grade`. Cut any such passage to the pointer.
-> 5. **Phase-plan block columns.** The `SQL → Practice (12:30)` and `Interview prep (13:30)` cells of
->    every phase row not yet ✅ match the standard's "Canonical study-block references" phase-plan
->    bullet, read against the two block sections as invariants 2 and 4 left them: no 12:30 cell puts
->    anything in front of `technical test simulation` but the topics the switch condition under the SQL
->    table names, and the 13:30 cells name notes topics in the study order, none skipped between two
->    listed. Where a cell disagrees, fix the cell — never the switch condition or the order — and leave
->    ✅ rows as they stand.
+> 4. **Simulations and the screening floor.** `## Technical test simulations` matches the standard's
+>    "Canonical study-block references" bullet of that name: its own section, outside the SQL one;
+>    strategy, target and pointer present; no gate, pace or procedure of the simulation track restated,
+>    no SQL topic or switch condition put in front of it, and nothing telling Victor to open a spec file
+>    or to have a solution reviewed outside `simulation-grade`. Cut any such passage to the pointer. The
+>    screening floor under the SQL table matches its own bullet — a priority, never a switch — and the
+>    LeetCode passage names no block it replaces.
+> 5. **Phase-plan block columns.** The columns are `Project`, `SQL` and `Interview prep`, and the `SQL`
+>    and `Interview prep` cells of every phase row not yet ✅ match the standard's "Canonical study-block
+>    references" phase-plan bullet, read against the two block sections as invariants 2 and 4 left them:
+>    a `SQL` cell names SQL topics only — no simulation, no LeetCode — and no topic outside the screening
+>    floor sits in a row before the one that completes it; the `Interview prep` cells name notes topics
+>    in the study order, none skipped between two listed. Where a cell disagrees, fix the cell — never
+>    the screening floor or the order — by the repair the bullet states, and leave ✅ rows as they stand.
 >
 > Report **only** a short table of `Invariant | Verdict (pass / fixed) | What you changed` — no file
 > excerpts, no reasoning trace. If everything passed with no fixes, say so explicitly.
@@ -423,7 +443,7 @@ its checks need). Its instruction:
 >    gate.
 > 4. **SQL table.** The SQL topic table matches the SQL section of coverage-junior.md (no missing topic, no
 >    out-of-scope topic) and each ✅ / ⏳ / 🔜 marker is the one the standard's "Canonical study-block
->    references" 12:30 bullet derives from the route's §3 `Status` column through its §2 `**Coverage:**`
+>    references" SQL topic-table bullet derives from the route's §3 `Status` column through its §2 `**Coverage:**`
 >    lines — never from a scored count or a §2 step heading, and not from `PROGRESS.md`, whose exercise
 >    table is keyed by file rather than by topic and cannot decide a topic row.
 > 5. **Phase-table markers agree with PROGRESS.md.** Each phase row is ✅ only if `## Projects`,
@@ -457,7 +477,7 @@ Include both the doer's edits (Steps 1–5) and the two reviewers' fixes (Step 6
 reported by 2a. Split them into two groups; the split is the point, not the length:
 
 - *Gaps the plan already owns* — for each, name what closes it (a project in the sequence, the SQL
-  block, the notes block). Group by topic, max 3 per topic, ranked by what interviewers at NTT
+  block, the interview-prep block and the notes opened in it). Group by topic, max 3 per topic, ranked by what interviewers at NTT
   Data, Capgemini, and similar companies actually ask junior Angular + Spring Boot candidates.
   Nothing to decide here — this group is a status line.
 - *Gaps nothing in ROADMAP closes* — **no limit**, but bounded by 2a's contracted report rather than by
@@ -466,7 +486,8 @@ reported by 2a. Split them into two groups; the split is the point, not the leng
   Where a topic is short **as a whole** — a low `marked/total` in 2a's row and no candidate or block
   naming it — say so as one line for the topic *with that ratio*, instead of listing its bullets;
   coverage-junior.md owns the full list. That one-line form is the normal case for the four topics no
-  project will ever close (CSS, Git, JavaScript, General), whose only route is the 13:30 block — which is
+  project will ever close (CSS, Git, JavaScript, General), whose only route is the interview-prep block
+  and the notes opened in it — which is
   precisely why 2a reports every topic in the registry and not just the ones a project could touch.
 
 Never restate coverage-junior.md — reference it for detail.
@@ -482,9 +503,9 @@ it closes, and one sentence on why a recruiter at a Spanish consultancy would va
 If no candidates were added, write either "No new candidates — existing candidates cover all
 significant gaps" or list which gaps remain uncovered by any candidate.
 
-**Pace check:** given the remaining gaps, the current project gate, and the applications
-timeline (July Fridays → August equal priority → September full push), name the one gate
-most at risk. If the pace looks tight, propose one concrete trade-off.
+**Pace check:** given the remaining gaps, the current project gate, and that applications already
+run every day, name the one gate most at risk. If the pace looks tight, propose one concrete
+trade-off.
 
 If any phase was newly promoted to ✅ in this review, add this reminder:
 "Phase X is now closed — if a project also finished, update PROGRESS.md's project table and
