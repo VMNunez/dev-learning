@@ -72,10 +72,11 @@ carries its `Pilot folded:` line naming `01-book-catalog` (§C).
 
 Statements are in English; his comments and explanations are in Spanish.
 
-**Target: 382 exercises = 172 first applications + 172 transfers + 38 integrations.**
+**Target: 384 active exercises = 172 first applications + 172 transfers + 40 integrations.**
 27 included blocks (01–27), 172 included concepts and 1 excluded at concept level, out of 173.
 Each included concept has one first and one transfer task, and each included block one integration;
-AJ372–AJ382 add seven stage integrations and four small technical tests for the essential route.
+AJ372–AJ382 add seven stage integrations and four small technical tests for the essential route, and
+AJ384–AJ385 two more integrations; AJ383 replaces the retired AJ182 (see `## Reconciliation`).
 Block 00 is the route's orientation chapter and carries no coverage bullet, so it has no task.
 These are planned tasks, not completed work or a daily quota. A task passes on a correct attempt or a
 verified correction; consolidation still requires a later unaided success. Attempts live only in
@@ -481,7 +482,7 @@ authoritative in coverage. Escaped pipe characters in heads decode to their lite
 | AJ179 | 14 | C080 | variant | transfer | AJ171 | ex179-catch-outside | A polling stream must stop for good on a 401; place the `catchError()` so the whole pipeline ends there. | The given spec flushes a 401 and finds no further polling request; a Spanish comment contrasts it with the search case. | active |
 | AJ180 | 14 | C081 | variant | transfer | AJ172 | ex180-restore-focus | Focus returns to the page heading only after a successful load; make it return after a failure too. | The given spec finds the heading focused after both outcomes. | active |
 | AJ181 | 14 | C082 | variant | transfer | AJ173 | ex181-finalize-cancel | Show that `finalize()` also runs when a search is cancelled, so 'Buscando…' clears on a new term. | The given spec starts two searches and finds 'Buscando…' cleared by the cancellation of the first. | active |
-| AJ182 | 14 | C083 | variant | transfer | AJ174 | ex182-which-needs-cleanup | Of an HTTP GET, the router's events and an interval, decide which subscriptions need explicit cleanup, and implement the cleanup only where it is owed. | The given spec destroys the component and finds the long-lived subscriptions ended; a Spanish comment justifies leaving the GET alone. | active |
+| AJ182 | 14 | C083 | variant | transfer | AJ174 | ex182-which-needs-cleanup | Of an HTTP GET, the router's events and an interval, decide which subscriptions need explicit cleanup, and implement the cleanup only where it is owed. | The given spec destroys the component and finds the long-lived subscriptions ended; a Spanish comment justifies leaving the GET alone. | retired |
 | AJ183 | 14 | C084 | variant | transfer | AJ175 | ex183-cancel-write | A save dialog that closes mid-PUT cancels the request; prevent closing while saving and say what the client can no longer know. | The given spec finds close refused while the PUT is pending; a Spanish comment says the server may already have saved it. | active |
 | AJ184 | 14 | C085 | variant | transfer | AJ176 | ex184-async-or-subscribe | Replace a manual subscription that copies data into a field with the `async` pipe, keeping a manual `subscribe()` only for navigating after a save. | The given spec finds the list rendered and the navigation made; a Spanish comment justifies the remaining `subscribe()`. | active |
 | AJ185 | 14 | C086 | variant | transfer | AJ177 | ex185-to-signal-derived | Turn a clock stream into a signal and derive a 'mañana/tarde' label with `computed()`, instead of a subscription writing a signal. | The given spec (fake timers) finds the label switching at noon; there is no manual `subscribe()`. | active |
@@ -682,46 +683,99 @@ authoritative in coverage. Escaped pipe characters in heads decode to their lite
 | AJ380 | 18 | C078, C116, C066 | integration | integration | AJ136, AJ158, AJ248 | ex380-catalog-search | Small technical test: a catalogue with a debounced search over the API, loading, empty and error states, and a detail page by id. | The given spec (fake timers) searches, opens a detail and covers the three states. | active |
 | AJ381 | 21 | C133, C142, C091 | integration | integration | AJ191, AJ282, AJ301 | ex381-login-flow | Small technical test: a validated login form, an interceptor adding the token afterwards, and a guarded area. | The given spec logs in, finds the header on the next request and the area opened. | active |
 | AJ382 | 25 | C066, C160, C164 | integration | integration | AJ136, AJ341, AJ345 | ex382-list-with-tests | Small technical test with tests: build a remote list page and its service, then write the specs of both. | The page shows loading, error and success; your specs assert the request, the data and each rendered state, and fail when switched to the supplied `broken-list-api.ts`, both runs pasted. | active |
+| AJ383 | 14 | C083 | variant | transfer | AJ174 | ex383-cleanup-owed | A detail page holds three subscriptions: an HTTP GET whose success callback shows a toast and navigates, the router's events, and an `interval`. For each, decide whether it can outlive the component and whether its callback can still run after the component is destroyed, and end each one where that is owed. | The given spec destroys the component while the GET is still pending and finds no toast and no navigation, and no further router-event or interval callback; a Spanish comment says, for each subscription, whether it completes by itself and whether ending it was owed, and why a GET that completes leaks nothing yet can still act on a screen that is gone. | active |
+| AJ384 | 16 | C097, C098, C101 | integration | integration | AJ208, AJ209, AJ212 | ex384-edit-against-api | Edit a product against a REST API: prefill the form from the loaded product with `patchValue()`, keep the disabled `id` in the PUT body with `getRawValue()`, and place each entry of a `400` response's `fieldErrors` under the control it names, with one form-level alert for an entry that matches no control. | The given spec loads a product, edits one field and saves, then flushes a `400` naming one known and one unknown field, and finds the known message under its control, the unknown one in the form-level alert and the `id` in the PUT body; after the field the `400` named is edited, a second save flushed with `200` leaves no error shown, the form-level alert included. | active |
+| AJ385 | 18 | C062, C118, C119 | integration | integration | AJ132, AJ250, AJ251 | ex385-paged-list-url | A paged order list reads `page` and `status` from the query params as a stream, because the same component instance stays on screen while they change, and requests `GET /api/orders` with `HttpParams` built from them: `page` sent as a zero-based index, `status` omitted when absent. | The given spec (router harness) opens `?page=2&status=OPEN` and finds the request params `page=1&status=OPEN`, then navigates to `?page=3` on the same component instance and finds a second request with `page=2` and no `status`, and each response's rows rendered. | active |
 
 ## Essential route
 
-The route's minimum, as a ladder (standard §B): 50 of the 172 concepts — what a junior
-Angular developer in a Spanish consultancy is expected to write unaided — in 14 stages. Each stage gives
-every concept a first exercise and a later variant, then closes with an exercise that combines what it
-taught; from stage 03 on, those closing exercises are already small features of the kind a technical
-test asks for, and stages 09, 10, 11 and 13 each end on a small technical test end to end, placed as
-soon as its prerequisites are served. One concept from each block an essential
-block depends on is listed, so no stage waits on a block outside the route. Stage 13 is where he starts
-writing specs. A request for Angular with no block or concept named is served from here, in this
-order, until the route is passed; every other task stays active, served on request or once the route is
-passed.
+The route's minimum, as a ladder (standard §B): 78 of the 172 concepts — what a junior Angular
+developer joining a Spanish consultancy to work against a Spring Boot REST API is expected to write
+unaided — in 17 stages. Each stage gives every concept a first exercise and a later variant, then closes
+with an exercise that combines what it taught; from stage 03 on, those closing exercises are already
+small features of the kind a technical test asks for, and stages 10, 11, 13 and 16 each end on a small
+technical test end to end, placed as soon as its prerequisites are served. One concept from each block
+an essential block depends on is listed, so no stage waits on a block outside the route. Stage 15 is
+where he starts writing specs.
+
+**What a listed task asks him to write is listed before it.** Every tool a listed task needs from him is
+one of its own concepts or the concept of a task listed earlier. A call the task's own text names —
+`provideHttpClient()` and `provideRouter()` in `AJ001`, `reset()` in `AJ199`, `setErrors()` in `AJ212` —
+and an RxJS helper no coverage bullet owns (`of()`, `throwError()`, `filter()`) are given by its
+statement. Where a task's setting uses a tool outside the route — the list markup of stage 02's tasks,
+written before `@for` is taught; the selection stream feeding `AJ155`; the input stream feeding `AJ158`,
+`AJ168`, `AJ373` and `AJ380`; the `FormArray` inside `AJ206`'s form model; the navigation call after
+`AJ184`'s save — the statement supplies that piece as given code, and he writes only what the task asks
+for.
+
+A request for Angular with no block or concept named is served from here, in this order, until the
+route is passed; every other task stays active, served on request or once the route is passed.
 
 | Stage | Title | Tasks |
 |---|---|---|
-| 01 | One screen: a component, its bindings and the start of the app | AJ006, AJ014, AJ008, AJ016, AJ010, AJ018, AJ007, AJ015, AJ001, AJ003, AJ022 |
-| 02 | State in signals | AJ023, AJ028, AJ024, AJ029, AJ025, AJ030, AJ033 |
-| 03 | What the template renders | AJ034, AJ039, AJ036, AJ041, AJ037, AJ042, AJ044 |
-| 04 | Parent, child and a directive | AJ046, AJ052, AJ047, AJ053, AJ059, AJ061, AJ057 |
-| 05 | Services, lifecycle and effects | AJ077, AJ086, AJ078, AJ087, AJ095, AJ101, AJ108, AJ114, AJ372 |
+| 01 | One screen: a component, its bindings and the start of the app | AJ001, AJ006, AJ007, AJ014, AJ008, AJ016, AJ009, AJ017, AJ010, AJ018, AJ015, AJ003, AJ022 |
+| 02 | State in signals | AJ023, AJ028, AJ024, AJ029, AJ025, AJ030, AJ027, AJ032, AJ033 |
+| 03 | What the template renders | AJ034, AJ039, AJ035, AJ040, AJ036, AJ041, AJ037, AJ042, AJ038, AJ043, AJ044 |
+| 04 | Parent and child, and a directive | AJ045, AJ051, AJ046, AJ052, AJ047, AJ053, AJ059, AJ061, AJ063, AJ069, AJ057 |
+| 05 | Services, provider scope, lifecycle and effects | AJ078, AJ077, AJ086, AJ087, AJ082, AJ091, AJ095, AJ101, AJ108, AJ114, AJ112, AJ118, AJ372 |
 | 06 | Pipes | AJ121, AJ125, AJ124, AJ128, AJ129 |
-| 07 | Remote data | AJ131, AJ140, AJ134, AJ143, AJ136, AJ145, AJ148 |
-| 08 | RxJS pipelines and their errors | AJ152, AJ162, AJ155, AJ165, AJ158, AJ168, AJ170, AJ178, AJ171, AJ179, AJ174, AJ182, AJ373 |
-| 09 | Reactive forms | AJ187, AJ197, AJ191, AJ201, AJ195, AJ205, AJ208, AJ217, AJ374, AJ379 |
-| 10 | Routes, parameters and a guard | AJ227, AJ237, AJ228, AJ238, AJ232, AJ242, AJ248, AJ259, AJ273, AJ278, AJ282, AJ291, AJ375, AJ380 |
-| 11 | An HTTP interceptor | AJ301, AJ304, AJ376, AJ381 |
-| 12 | OnPush | AJ309, AJ314, AJ377 |
-| 13 | Writing the specs | AJ330, AJ336, AJ332, AJ338, AJ333, AJ339, AJ341, AJ347, AJ345, AJ351, AJ378, AJ382 |
-| 14 | Maintained code | AJ359, AJ365, AJ360, AJ366, AJ361, AJ367, AJ364, AJ370, AJ371 |
+| 07 | Remote data and its errors | AJ134, AJ131, AJ152, AJ140, AJ162, AJ143, AJ132, AJ141, AJ135, AJ144, AJ136, AJ145, AJ148 |
+| 08 | RxJS pipelines, their errors, and how the view consumes them | AJ155, AJ165, AJ158, AJ168, AJ170, AJ178, AJ171, AJ179, AJ174, AJ383, AJ176, AJ184, AJ177, AJ185, AJ373 |
+| 09 | Reactive forms: the model and its validation | AJ187, AJ197, AJ189, AJ199, AJ191, AJ201, AJ193, AJ203, AJ195, AJ205, AJ196, AJ206, AJ207 |
+| 10 | Forms against the API | AJ208, AJ217, AJ209, AJ218, AJ212, AJ221, AJ374, AJ384, AJ379 |
+| 11 | Routes and the URL as state | AJ227, AJ237, AJ228, AJ238, AJ232, AJ242, AJ248, AJ249, AJ259, AJ260, AJ250, AJ261, AJ251, AJ262, AJ255, AJ266, AJ385, AJ380 |
+| 12 | Lazy loading and a guard | AJ273, AJ278, AJ282, AJ291, AJ375 |
+| 13 | The signed-in session: an interceptor and an expired token | AJ302, AJ301, AJ305, AJ304, AJ303, AJ306, AJ376, AJ381 |
+| 14 | OnPush | AJ309, AJ314, AJ377 |
+| 15 | Service specs, and reading a Jasmine suite | AJ328, AJ330, AJ332, AJ333, AJ336, AJ338, AJ339, AJ334, AJ340 |
+| 16 | HTTP and component specs | AJ341, AJ347, AJ344, AJ350, AJ345, AJ351, AJ346, AJ352, AJ378, AJ382 |
+| 17 | Maintained code | AJ359, AJ365, AJ360, AJ366, AJ361, AJ367, AJ362, AJ368, AJ363, AJ369, AJ364, AJ370, AJ371 |
 
 ## Reconciliation
 
-Initial route, 2026-10-21. No published route existed, so nothing was preserved, retired or appended.
-The pilot batch `01-book-catalog` (four `extra` rows, ungraded) was not relabelled and no batch was
-generated. One concept is excluded at concept level, for a dependency the workspace does not install;
-it stays visible above and counts toward no denominator.
+Initial route, 2026-10-21 (`e9756f7d`). No published route existed, so nothing was preserved, retired or
+appended. The pilot batch `01-book-catalog` (four `extra` rows) was not relabelled. One concept is
+excluded at concept level, for a dependency the workspace does not install; it stays visible above and
+counts toward no denominator.
 
-The notes-structure digest was computed with block 00's `Coverage concepts: none` read as an empty
-list (the coverage digest does not depend on it). `validate-practice-plan.py` cannot yet parse that
-line (`REC-383`), so this plan was validated against a copy of the notes plan differing in that one
-line only. Until that row lands, §B's check against the real files fails too, so no planned batch can
-be generated — which the pilot gate above already holds.
+Essential-route refinement, 2026-10-21, on Victor's request that the minimum cover what his goal
+actually needs. Both sources are unchanged (the digests above), the concept mapping is unchanged, and no
+attempt carries a Plan ID of this route, so no history is affected. 381 rows are preserved unchanged.
+
+- **Retired** `AJ182`. Its pass condition asked him to justify leaving an HTTP GET without cleanup, which
+  reads as "a GET never needs it". Coverage keeps two questions apart (`C083`, `C084`): a GET that
+  completes leaks nothing, while one still pending when its screen is destroyed still runs its callback
+  on a screen that is gone. **Appended** `AJ383` as its replacement — same concept, same prerequisite —
+  listed in its position.
+- **Appended** two integrations the widened route closes stages with: `AJ384` (block 16, an edit form
+  against a REST API — the prefill, the disabled `id` in the PUT body, the server's field errors) and
+  `AJ385` (block 18, a paged list whose page and filter live in the query params and reach the API
+  through `HttpParams`).
+- **Essential route widened** from 50 concepts in 118 tasks and 14 stages to 78 concepts in 178 tasks
+  and 17 stages. Ten additions close a gap a listed task already had, since it required a tool nothing
+  listed taught: `C017` `@switch` (`AJ145`), `C015` immutable updates (`AJ033`, `AJ057`), `C021` optional
+  `input()` (`AJ052`), `C065` `HttpErrorResponse` (`AJ212`), `C163` HTTP error tests (`AJ382`), `C006`
+  attribute binding (`AJ061`'s `data-clicks`), `C029` class and style binding (`AJ059`'s host
+  background), `C117` a route parameter is text (`AJ248`, `AJ259`, `AJ375` and `AJ380` look up numeric
+  ids), `C123` one-time notices (`AJ306`) and `C143` cloning the request (`AJ301`). The rest add what
+  working against an API asks of him: `C020` nullish template values; `C041` provider scope and `C054`
+  `asReadonly()`, the signal-service pattern; `C062` `HttpParams`; `C085` the `async` pipe and `C086`
+  `toSignal()`, the two ways a view consumes a stream; `C089` typed forms, `C093` custom validators,
+  `C096` `markAllAsTouched()`, `C098` `getRawValue()` and `C101` server field errors, for a form that
+  submits to an API; `C118` observable params and `C119` query params, for a view that stays right while
+  its URL changes; `C144` session expiry on a `401`, for a JWT client; `C154` reading Jasmine and `C165`
+  `setInput()`, for the specs a maintained codebase holds; `C171` `*ngFor` `trackBy` and `C172`
+  template-driven forms, for maintained code. `C072` `map()`/`tap()` moves from stage 08 to 07 because
+  `AJ140` converts a response with it. The existing integrations `AJ207` and `AJ340` close the new stages
+  09 and 15, and `AJ379` moves after the edit-form tasks because editing a contact prefills its form.
+  Within stages 01, 05, 07 and 15 the first row of a concept another row needs (`AJ001`, `AJ078`,
+  `AJ134`, `AJ328`) is served first.
+- **Left out of the minimum on purpose**, active in the full route: the route-table details (`C127`,
+  `C128`), debugging (block 26, which would pull block 23 in), the rest of the styling block 07 (only
+  `C029`'s bindings are listed), the RxJS operators beyond `map()`/`tap()`, `switchMap()`, the search
+  pipeline and `catchError()`, and change detection past `OnPush`. Custom directives and custom pipes
+  stay listed: block 06 is a prerequisite of block 08, and a custom pipe is a frequent technical-test
+  task.
+
+Validated with `validate-practice-plan.py` against the real sources, and with `--baseline` against the
+published route; cold review `approve-with-tightening`, its twelve tightenings applied.
