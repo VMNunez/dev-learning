@@ -18,3 +18,7 @@ no row is ever deleted. Every figure in `PROGRESS.md` → `### Short exercises` 
 | ATT-0008 | 2026-10-17 | java:junior | 01 | Primitive vs wrapper types | 02-conversions-and-arithmetic | 3 | first | ✅ | — | ai | — | JJ009 |
 | ATT-0009 | 2026-10-17 | java:junior | 01 | Numeric conversions and casts | 02-conversions-and-arithmetic | 4 | first | ✅ | — | ai | — | JJ010 |
 | ATT-0010 | 2026-10-17 | java:junior | 01 | Integer arithmetic | 02-conversions-and-arithmetic | 5 | first | ✅ | — | ai, notes | — | JJ011 |
+| ATT-0011 | 2026-10-21 | angular:junior | 03 | Immutable updates with signals | 01-book-catalog | 1 | extra | ✅ | — | — | — | — |
+| ATT-0012 | 2026-10-21 | angular:junior | 03 | `computed()` | 01-book-catalog | 2 | extra | ✅ | — | — | — | — |
+| ATT-0013 | 2026-10-21 | angular:junior | 04 | `@empty` | 01-book-catalog | 3 | extra | ✅ | — | — | — | — |
+| ATT-0014 | 2026-10-21 | angular:junior | 18 | A route parameter is always text | 01-book-catalog | 4 | extra | ⚠️ | careless | — | pending | — |
