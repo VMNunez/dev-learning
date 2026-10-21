@@ -662,7 +662,8 @@ below are what it showed.
   project's backend, since no Maven is installed globally; and a `.gitignore` (`target/`, IDE files) and a
   `.gitattributes` (`mvnw` LF, `*.cmd` CRLF) as that backend has them. Its root files are the system's
   (§A). He opens the folder in IntelliJ as a Maven project. **No answer edits a `pom.xml` and no exercise
-  adds a dependency**: a concept whose answer is a build-file change, or that needs Docker, a real
+  adds a dependency**: a concept whose answer is a build-file change, or that needs a library the
+  module's list below does not hold (springdoc for OpenAPI, a mapper generator), Docker, a real
   PostgreSQL or a network service, is excluded at planning, at concept level, with its reason — it is
   practised in the projects.
 - **The database is H2, in memory.** Every test context gets an empty database of its own — `@DataJpaTest`
@@ -678,14 +679,25 @@ below are what it showed.
   does not compile stops that batch's tests and no other batch's; the batch `README.md` says so.
 - **Shape.** An exercise is a package of the batch, `practice.loteNN.{File}` — the planned basename,
   `exNNN_slug` (a package name takes no hyphen), or `exextraNN_slug` for unplanned work — under
-  `src/main/java`, mirrored under `src/test/java` for its tests. It holds its own
+  `src/main/java`, mirrored under `src/test/java` for its tests. Those two package folders and its
+  `{File}*` resources are the exercise's files — what §C's `File` names and what the grader reads
+  (`_practice-review-prompt.md`, "every file in that folder"). It holds its own
   `@SpringBootApplication` class, `ExNNNApplication`, given at generation: a slice test takes the
   configuration nearest its package and scanning stops at that package, so every exercise is an
   application of its own and none sees another's beans or entities. **Each isolated exercise brings the
   code and data it needs to be graded alone**; pieces depend on one another only inside a declared
   `integration` row. Configuration is the exercise's own as well: `src/main/resources/{File}.properties`
-  and any `{File}-{profile}.properties`, which its given test loads with `spring.config.name={File}`;
-  the module holds no `application.properties` an exercise answers. The statement is the opening comment
+  and any `{File}-{profile}.properties`, which its given test loads with `spring.config.name={File}` and
+  its `ExNNNApplication.main` sets the same way
+  (`new SpringApplicationBuilder(ExNNNApplication.class).properties("spring.config.name={File}").run(args)`,
+  tried 2026-10-21 with a profile active), so a started application reads what its tests read. **Nothing sits where Boot looks in every context of
+  the module** — no `application.properties`, `schema.sql`, `data.sql` or `db/migration/`: an exercise's
+  SQL scripts live under `src/main/resources/{File}/` and its `{File}.properties` points at them
+  (`spring.sql.init.schema-locations` / `data-locations`, `spring.flyway.locations`), and where the
+  module declares Flyway, every other JPA exercise of the batch sets `spring.flyway.enabled=false` in its
+  `{File}.properties` — with Flyway on the classpath Boot stops generating the schema and runs every
+  migration it finds, in every context (tried 2026-10-21: another exercise's `db/migration` script ran in
+  a `@DataJpaTest`, which then failed on a missing sequence). The statement is the opening comment
   of its main class and ends with `Answer files:`, each carrying its marker (`// Your answer:`,
   `# Your answer:` in a properties file, `-- Your answer:` in a SQL migration) — and each explanation
   the statement asks for its own, in the file the statement names for it, listed there too:
@@ -706,11 +718,15 @@ below are what it showed.
     with `MockMvc` for a controller, `@DataJpaTest` for a repository or a mapping, plain JUnit with
     Mockito for a service, `@RestClientTest` for an outbound call. He pastes what the run printed — its
     `Tests run:` line and any failure — under `// My output:` at the end of the main class. A given test
-    that differs from the generation commit is not evidence. **Where the module declares Spring
-    Security's test support, every web slice in that batch runs behind its filter chain**, so the given
-    test of an exercise that does not practise security runs with the filters off
-    (`@AutoConfigureMockMvc(addFilters = false)`): a right answer is never refused over a rule it was not
-    asked about.
+    that differs from the generation commit is not evidence. **Where the module declares Spring Security,
+    every exercise of that batch is secured by default** — a full context and a started application
+    always, Boot's default chain answering `401`, and a web slice once the module also declares
+    Security's test support (tried 2026-10-21: with the starter alone a `@WebMvcTest` reached the
+    controller while a `@SpringBootTest` with `MockMvc` got `401`). So the given test of an exercise that
+    does not practise security runs with the filters off (`@AutoConfigureMockMvc(addFilters = false)`, on
+    a slice or a full context), and such an exercise whose evidence is a started application ships,
+    given, a `SecurityFilterChain` in its own package that permits every request: a right answer is never
+    refused over a rule it was not asked about.
   - *Observed*: what only a started application or its log shows — the SQL Hibernate sends, an N+1, a
     startup failure and its message, a log line. The statement names the action and what should be seen,
     and he writes what he saw under `// Observed:`.

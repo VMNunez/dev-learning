@@ -143,7 +143,7 @@ stops here: nothing is committed, the batch is repaired or removed, and the repo
 topic's workspace does not exist yet, create it first as §H names and commit it on its own.
 
 **Then rewrite `practice/exercises/INDEX.md` → `## Practice state`** under standard §F, the new batch
-open, **and commit the batch as generated** — that folder plus the root changes §H permits its scaffold
+open, **and commit the batch as generated** — that folder plus the root changes §H permits a batch's generation
 and that section, and nothing else, under `## Commits` — before handing over. From that commit on the
 folder's files are his.
 
@@ -226,7 +226,7 @@ each `git commit`, so no file of a batch folder is staged alongside a system fil
 - the batch folder **as generated** — its `README.md` and the statement-and-skeleton files, before he
   has written a line (authorized 2026-10-13, `REC-332`) —
   `docs(practice): generate {topic} {level} batch {NN}-{slug}`, carrying also the root changes the
-  topic's §H permits its scaffold and `INDEX.md`'s `## Practice state` (1d). At generation only: once that commit exists, no file of that folder
+  topic's §H permits a batch's generation (angular's schematic, spring-boot's `<module>` line) and `INDEX.md`'s `## Practice state` (1d). At generation only: once that commit exists, no file of that folder
   is ever staged by you again.
 - the topic's workspace, once, where its §H names one — every file its creation wrote —
   `chore(practice): {topic} {level} workspace` (authorized 2026-10-20, `REC-376`; spring-boot
