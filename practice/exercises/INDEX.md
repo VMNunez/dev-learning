@@ -8,7 +8,7 @@ is read live. Future routes use the same topic/level layout when their environme
 
 ## Practice state
 
-Derived: 2026-10-21
+Derived: 2026-10-22
 
 | Topic | Essential route | Open batch | Last closed batch |
 |---|---|---|---|
