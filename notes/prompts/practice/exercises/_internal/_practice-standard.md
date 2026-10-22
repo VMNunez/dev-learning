@@ -124,12 +124,15 @@ changing the head identity; published task rows keep their historical block. No 
 The planner reports additions, retirements and unchanged tasks and refreshes digests only after the
 mapping has been reconciled and reviewed. It does not infer success for new IDs from old exercises.
 
-**A change to this section's route rules owes every published route a re-audit** (`REC-387`). The
-digests stale a route only when its sources move, never when this standard does, so a rule added here
-reaches the routes already published only through the change that adds it: that resolution runs
-Route 0 over each published route the rule could fail, or names each one as owed in its own ledger row
-and keeps that row open until each has run. `REC-385` added two rules and named the two routes it
-failed in its closed line only; both owed far more than that line said.
+**A change to this section's route rules owes each published route it could fail a re-audit**
+(`REC-387`). The digests stale a route only when its sources move, never when this standard does, so a
+rule added to §B reaches the routes already published only through the change that adds it. A rule
+`validate-practice-plan.py` enforces is added there too, and the change runs the checker over each
+published route, one command each; a rule it cannot see — like the two marked `REC-385` — owes each
+route a planning run (`practice-session` Route 0) with its cold route reviewer. The resolution runs
+them, or names each route as owed in its own ledger row and keeps that row open until each has run.
+`REC-385` added two rules and named the two routes it failed in its closed line only; both owed far
+more than that line said.
 
 ### Completion
 
