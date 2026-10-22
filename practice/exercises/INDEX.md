@@ -56,11 +56,11 @@ Derived: 2026-10-22
 
 Exercise plan: [Angular junior](angular/junior/PLANNING-junior.md)
 Active planned exercises: 384
-Essential route: 17 stages, 178 tasks
+Essential route: 17 stages, 182 tasks
 Notes structure SHA-256: 23effbefa74f66293ff8dead8c9832b68e324039a1c37867d7094914bfb03709
 Notes plan: notes/angular/coverage/notes-plan-junior.md
 Coverage SHA-256: 090fc3628c0017acfa06c306c24fbf39e9bcffca252e8a2187fd0cba5f0d84d5
-Derived: 2026-10-21
+Derived: 2026-10-22
 
 | Block | Title | Note | Depends on | Bullets | In route |
 |---|---|---|---|---|---|
