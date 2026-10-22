@@ -124,6 +124,13 @@ changing the head identity; published task rows keep their historical block. No 
 The planner reports additions, retirements and unchanged tasks and refreshes digests only after the
 mapping has been reconciled and reviewed. It does not infer success for new IDs from old exercises.
 
+**A change to this section's route rules owes every published route a re-audit** (`REC-387`). The
+digests stale a route only when its sources move, never when this standard does, so a rule added here
+reaches the routes already published only through the change that adds it: that resolution runs
+Route 0 over each published route the rule could fail, or names each one as owed in its own ledger row
+and keeps that row open until each has run. `REC-385` added two rules and named the two routes it
+failed in its closed line only; both owed far more than that line said.
+
 ### Completion
 
 The existing concept first-pass measure remains: every included concept in the block has one
