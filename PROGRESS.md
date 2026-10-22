@@ -344,6 +344,7 @@ topic absent from this table has no graded batch yet, and usually no practice en
 | Route | Blocks first-passed | Concepts attempted | Consolidated | Owing a fix |
 |---|---|---|---|---|
 | **java — junior** | 1/17 (6%) | 8/125 (6%) | 0/125 (0%) | 0 |
+| **angular — junior** | 0/27 (0%) | 0/172 (0%) | 0/172 (0%) | 0 |
 | **spring-boot — junior** | 0/16 (0%) | 0/132 (0%) | 0/132 (0%) | 0 |
 
 ### LeetCode — `practice/leetcode/`
