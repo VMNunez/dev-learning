@@ -8,7 +8,7 @@ is read live. Future routes use the same topic/level layout when their environme
 
 ## Practice state
 
-Derived: 2026-10-22
+Derived: 2026-10-23
 
 | Topic | Essential route | Open batch | Last closed batch |
 |---|---|---|---|
@@ -16,7 +16,7 @@ Derived: 2026-10-22
 | angular — junior | next stage 01 of 17 | — | 01-book-catalog, 2026-10-21 (pilot) |
 | spring-boot — junior | next stage 01 of 15 | — | — |
 
-Rotation: java → angular → spring-boot; next: spring-boot
+Rotation: java → spring-boot → angular; next: java
 Simulations: no route — /simulation-plan LEVEL=junior
 
 ## java — junior
