@@ -11,7 +11,7 @@ has estudiado. Lo escribe `spaced.py`; a mano solo se tocan `## Reglas` y `## Aj
 
 ## Estado
 
-_Calculado por `spaced.py` el 20/10/2026._
+_Calculado por `spaced.py` el 23/10/2026._
 
 **Nivel actual: junior.** Después vendrán middle y senior. Un nivel no empieza hasta que todas las preguntas del anterior estén consolidadas.
 
@@ -27,7 +27,7 @@ Repasos atrasados: 0 · Difíciles (2 fallos o más): ninguna
 
 | Tema | Fase | Prioridad | Preguntas | Aprendidas | Verificadas | Consolidadas |
 |---|---|---|---|---|---|---|
-| Proyecto 7 | 1 | alta | 31 | 0 | 0 | 0 |
+| Proyecto 7 | 1 | máxima | 31 | 0 | 0 | 0 |
 | Spring Boot | 1 | alta | 28 | 0 | 0 | 0 |
 | Angular | 1 | alta | 37 | 0 | 0 | 0 |
 | Java | 1 | alta | 18 | 0 | 0 | 0 |
@@ -52,12 +52,12 @@ Previsión suponiendo que todos los repasos salen bien; se recalcula con cada re
 
 | Día | Repasos | Nuevas | Preguntas nuevas |
 |---|---|---|---|
-| lunes 26/10/2026 | 0 | 4 | ANG-J-001 · 07-timetrack-001 · SB-J-001 · JAVA-J-001 |
-| martes 27/10/2026 | 4 | 4 | ANG-J-003 · 07-timetrack-005 · SB-J-002 · ANG-J-005 |
-| miércoles 28/10/2026 | 4 | 4 | 07-timetrack-007 · JAVA-J-002 · SB-J-003 · ANG-J-007 |
-| jueves 29/10/2026 | 4 | 4 | 07-timetrack-009 · ANG-J-011 · SB-J-004 · JAVA-J-007 |
-| viernes 30/10/2026 | 4 | 4 | 07-timetrack-059 · ANG-J-013 · SB-J-006 · ANG-J-015 |
-| sábado 31/10/2026 | 4 | 4 | 07-timetrack-061 · SQL-J-001 · ARC-J-001 · JAVA-J-012 |
+| lunes 26/10/2026 | 0 | 4 | 07-timetrack-001 · ANG-J-001 · SB-J-001 · 07-timetrack-005 |
+| martes 27/10/2026 | 4 | 4 | JAVA-J-001 · ANG-J-003 · 07-timetrack-007 · SB-J-002 |
+| miércoles 28/10/2026 | 4 | 4 | 07-timetrack-009 · ANG-J-005 · 07-timetrack-059 · JAVA-J-002 |
+| jueves 29/10/2026 | 4 | 4 | SB-J-003 · ANG-J-007 · 07-timetrack-061 · 07-timetrack-062 |
+| viernes 30/10/2026 | 4 | 4 | ANG-J-011 · SB-J-004 · 07-timetrack-105 · JAVA-J-007 |
+| sábado 31/10/2026 | 4 | 4 | ANG-J-013 · 07-timetrack-019 · SB-J-006 · 07-timetrack-020 |
 
 ## Evolución
 
@@ -97,7 +97,9 @@ Aún sin actividad.
   de una fase anterior gana preguntas después, esas van primero.
 - **Orden dentro de la fase:** cada banco reparte sus preguntas, en el orden en que están en el banco
   (de lo básico a lo avanzado), a lo largo de un tramo de la fase según su prioridad: las de prioridad
-  `alta` empiezan el primer día y se terminan al 70 % de la fase; las `media` entran al 10 % y acaban al
+  `máxima` empiezan el primer día y se terminan al 40 % de la fase (el proyecto 7, decidido el
+  23/10/2026: es lo primero que preguntan y da los ejemplos al resto); las `alta` empiezan el primer día
+  y se terminan al 70 %; las `media` entran al 10 % y acaban al
   85 %; las `baja` entran al 20 % y llegan hasta el final. Así lo que más pesa llega antes y, en cuanto
   entran los demás bancos, cada día mezcla temas.
 - **Cuando un banco cambia** (se rehace, gana o pierde ⭐⭐⭐), `spaced.py` lo detecta solo en cada `hoy`,
@@ -161,7 +163,7 @@ Aún sin actividad.
 - Penalización borderline: 0,15
 - Penalización fail: 0,2
 - Repaso máximo tras borderline: 7
-- Reparto por prioridad: alta 0–0,7 · media 0,1–0,85 · baja 0,2–1
+- Reparto por prioridad: máxima 0–0,4 · alta 0–0,7 · media 0,1–0,85 · baja 0,2–1
 
 - Niveles: junior, middle, senior
 
@@ -173,7 +175,7 @@ Fases (nivel | estrellas que entran | nombre; las de middle y senior se añadir�
 
 Fuentes (banco | tema | fase | prioridad; con la misma prioridad, el orden de la lista desempata):
 
-- Fuente: projects/es/07-timetrack.md | Proyecto 7 | 1 | alta
+- Fuente: projects/es/07-timetrack.md | Proyecto 7 | 1 | máxima
 - Fuente: junior/es/spring-boot.md | Spring Boot | 1 | alta
 - Fuente: junior/es/angular.md | Angular | 1 | alta
 - Fuente: junior/es/java.md | Java | 1 | alta
@@ -196,175 +198,175 @@ Fuentes (banco | tema | fase | prioridad; con la misma prioridad, el orden de la
 
 | # | ID | Tema | Fase | Título | Aprendida | Racha | Fallos | Intervalo | Próximo repaso | Estado | Historial |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | ANG-J-001 | Angular | 1 | Qué es Angular |  |  |  |  |  | pendiente |  |
-| 2 | 07-timetrack-001 | Proyecto 7 | 1 | API JSON y separación de Angular |  |  |  |  |  | pendiente |  |
+| 1 | 07-timetrack-001 | Proyecto 7 | 1 | API JSON y separación de Angular |  |  |  |  |  | pendiente |  |
+| 2 | ANG-J-001 | Angular | 1 | Qué es Angular |  |  |  |  |  | pendiente |  |
 | 3 | SB-J-001 | Spring Boot | 1 | Qué es Spring Boot y por qué se usa |  |  |  |  |  | pendiente |  |
-| 4 | JAVA-J-001 | Java | 1 | Primitivos frente a objetos |  |  |  |  |  | pendiente |  |
-| 5 | ANG-J-003 | Angular | 1 | Qué es un componente |  |  |  |  |  | pendiente |  |
-| 6 | 07-timetrack-005 | Proyecto 7 | 1 | Filtrar entradas según el usuario |  |  |  |  |  | pendiente |  |
-| 7 | SB-J-002 | Spring Boot | 1 | Qué es la auto-configuración |  |  |  |  |  | pendiente |  |
-| 8 | ANG-J-005 | Angular | 1 | Inyección de dependencias en Angular |  |  |  |  |  | pendiente |  |
-| 9 | 07-timetrack-007 | Proyecto 7 | 1 | DTOs en lugar de entidades JPA |  |  |  |  |  | pendiente |  |
-| 10 | JAVA-J-002 | Java | 1 | BigDecimal frente a double para dinero |  |  |  |  |  | pendiente |  |
-| 11 | SB-J-003 | Spring Boot | 1 | Inyección por constructor frente a @Autowired en campo |  |  |  |  |  | pendiente |  |
-| 12 | ANG-J-007 | Angular | 1 | Componentes standalone y el array imports |  |  |  |  |  | pendiente |  |
-| 13 | 07-timetrack-009 | Proyecto 7 | 1 | Operaciones explícitas para cambiar de estado |  |  |  |  |  | pendiente |  |
-| 14 | ANG-J-011 | Angular | 1 | Tipos de data binding |  |  |  |  |  | pendiente |  |
-| 15 | SB-J-004 | Spring Boot | 1 | @Transactional y dónde se pone |  |  |  |  |  | pendiente |  |
-| 16 | JAVA-J-007 | Java | 1 | Por qué == falla con Strings |  |  |  |  |  | pendiente |  |
-| 17 | 07-timetrack-059 | Proyecto 7 | 1 | Shell, rutas hijas y carga diferida |  |  |  |  |  | pendiente |  |
-| 18 | ANG-J-013 | Angular | 1 | Qué es un signal |  |  |  |  |  | pendiente |  |
-| 19 | SB-J-006 | Spring Boot | 1 | Qué hace @SpringBootApplication |  |  |  |  |  | pendiente |  |
-| 20 | ANG-J-015 | Angular | 1 | signal() frente a computed() |  |  |  |  |  | pendiente |  |
-| 21 | 07-timetrack-061 | Proyecto 7 | 1 | Página coordinadora y lista presentacional |  |  |  |  |  | pendiente |  |
-| 22 | SQL-J-001 | SQL | 1 | PRIMARY KEY combinada con SERIAL |  |  |  |  |  | pendiente |  |
-| 23 | ARC-J-001 | Arquitectura | 1 | REST en aplicaciones Angular |  |  |  |  |  | pendiente |  |
-| 24 | JAVA-J-012 | Java | 1 | == frente a .equals() |  |  |  |  |  | pendiente |  |
-| 25 | SB-J-014 | Spring Boot | 1 | @Controller frente a @RestController |  |  |  |  |  | pendiente |  |
-| 26 | SEC-J-001 | Seguridad | 1 | Autenticación y autorización |  |  |  |  |  | pendiente |  |
-| 27 | ANG-J-016 | Angular | 1 | effect() y cuándo usarlo |  |  |  |  |  | pendiente |  |
-| 28 | 07-timetrack-062 | Proyecto 7 | 1 | Estado compartido de aprobaciones pendientes |  |  |  |  |  | pendiente |  |
-| 29 | ANG-J-020 | Angular | 1 | signal.set() frente a signal.update() |  |  |  |  |  | pendiente |  |
-| 30 | SB-J-015 | Spring Boot | 1 | @PathVariable frente a @RequestParam |  |  |  |  |  | pendiente |  |
-| 31 | GEN-J-001 | General | 1 | El principio DRY |  |  |  |  |  | pendiente |  |
-| 32 | 07-timetrack-105 | Proyecto 7 | 1 | Contrato JSON y tipos de TypeScript |  |  |  |  |  | pendiente |  |
-| 33 | JAVA-J-018 | Java | 1 | Los cuatro modificadores de acceso |  |  |  |  |  | pendiente |  |
-| 34 | ANG-J-022 | Angular | 1 | El bloque @if |  |  |  |  |  | pendiente |  |
-| 35 | SQL-J-002 | SQL | 1 | Definir una clave foránea |  |  |  |  |  | pendiente |  |
-| 36 | SB-J-016 | Spring Boot | 1 | Arquitectura en capas de Spring Boot |  |  |  |  |  | pendiente |  |
-| 37 | 07-timetrack-019 | Proyecto 7 | 1 | JWT stateless y CSRF |  |  |  |  |  | pendiente |  |
-| 38 | ANG-J-023 | Angular | 1 | @for y track |  |  |  |  |  | pendiente |  |
-| 39 | ARC-J-002 | Arquitectura | 1 | Métodos de petición HTTP |  |  |  |  |  | pendiente |  |
-| 40 | SB-J-017 | Spring Boot | 1 | DTOs frente a devolver entidades JPA |  |  |  |  |  | pendiente |  |
-| 41 | JAVA-J-020 | Java | 1 | Qué es la encapsulación |  |  |  |  |  | pendiente |  |
-| 42 | 07-timetrack-020 | Proyecto 7 | 1 | ID inmutable como identidad del JWT |  |  |  |  |  | pendiente |  |
-| 43 | ANG-J-038 | Angular | 1 | Qué es HttpClient |  |  |  |  |  | pendiente |  |
-| 44 | 06-hr-portal-001 | Proyecto 6 | 1 | Tu HR portal divide `src/app` en `core/`, `pages/`, `shared/` y una carpeta `mod… |  |  |  |  |  | pendiente |  |
-| 45 | SEC-J-002 | Seguridad | 1 | Respuestas 401 y 403 |  |  |  |  |  | pendiente |  |
-| 46 | TS-J-001 | TypeScript | 1 | Qué aporta TypeScript |  |  |  |  |  | pendiente |  |
-| 47 | SQL-J-010 | SQL | 1 | NUMERIC frente a FLOAT para dinero |  |  |  |  |  | pendiente |  |
-| 48 | ANG-J-039 | Angular | 1 | Observable frente a Promise |  |  |  |  |  | pendiente |  |
-| 49 | 07-timetrack-021 | Proyecto 7 | 1 | Del filtro JWT a la autorización |  |  |  |  |  | pendiente |  |
-| 50 | SB-J-018 | Spring Boot | 1 | CORS y el error CORS desde Angular |  |  |  |  |  | pendiente |  |
-| 51 | JS-J-001 | JavaScript | 1 | Var, let y const |  |  |  |  |  | pendiente |  |
-| 52 | GIT-J-001 | Git | 1 | Qué es Git y por qué usarlo |  |  |  |  |  | pendiente |  |
-| 53 | JAVA-J-025 | Java | 1 | Interfaz frente a clase abstracta |  |  |  |  |  | pendiente |  |
-| 54 | ANG-J-040 | Angular | 1 | subscribe() y cuándo desuscribirse |  |  |  |  |  | pendiente |  |
-| 55 | 07-timetrack-022 | Proyecto 7 | 1 | Consultar la cuenta en cada petición |  |  |  |  |  | pendiente |  |
-| 56 | SB-J-019 | Spring Boot | 1 | Por qué devolver ResponseEntity |  |  |  |  |  | pendiente |  |
-| 57 | 06-hr-portal-005 | Proyecto 6 | 1 | Todas las rutas de tu app usan `loadComponent` con un import dinámico. ¿Qué desc… |  |  |  |  |  | pendiente |  |
-| 58 | ARC-J-003 | Arquitectura | 1 | Códigos de estado HTTP |  |  |  |  |  | pendiente |  |
-| 59 | ANG-J-048 | Angular | 1 | Subject frente a BehaviorSubject |  |  |  |  |  | pendiente |  |
-| 60 | 07-timetrack-023 | Proyecto 7 | 1 | Filter chain y seguridad por método |  |  |  |  |  | pendiente |  |
-| 61 | SB-J-024 | Spring Boot | 1 | Anotaciones de Bean Validation y @Valid |  |  |  |  |  | pendiente |  |
-| 62 | SQL-J-015 | SQL | 1 | Qué es una clave foránea |  |  |  |  |  | pendiente |  |
-| 63 | GEN-J-002 | General | 1 | Código síncrono frente a asíncrono |  |  |  |  |  | pendiente |  |
-| 64 | JAVA-J-029 | Java | 1 | Qué es el polimorfismo |  |  |  |  |  | pendiente |  |
-| 65 | ANG-J-050 | Angular | 1 | Cómo funciona el routing en Angular |  |  |  |  |  | pendiente |  |
-| 66 | 07-timetrack-025 | Proyecto 7 | 1 | Contraseñas con BCrypt |  |  |  |  |  | pendiente |  |
-| 67 | SEC-J-003 | Seguridad | 1 | Control de acceso por roles |  |  |  |  |  | pendiente |  |
-| 68 | 06-hr-portal-008 | Proyecto 6 | 1 | Los departamentos se crean y se editan con un formulario enrutado, pero los empl… |  |  |  |  |  | pendiente |  |
-| 69 | ANG-J-051 | Angular | 1 | Qué es un route guard |  |  |  |  |  | pendiente |  |
-| 70 | SB-J-027 | Spring Boot | 1 | JPA frente a Hibernate |  |  |  |  |  | pendiente |  |
-| 71 | JS-J-002 | JavaScript | 1 | Qué es un closure |  |  |  |  |  | pendiente |  |
-| 72 | 07-timetrack-029 | Proyecto 7 | 1 | Secreto JWT fuera del repositorio |  |  |  |  |  | pendiente |  |
-| 73 | JAVA-J-033 | Java | 1 | List, Set y Map |  |  |  |  |  | pendiente |  |
-| 74 | ANG-J-056 | Angular | 1 | Route params frente a query params |  |  |  |  |  | pendiente |  |
-| 75 | GIT-J-002 | Git | 1 | Git frente a GitHub |  |  |  |  |  | pendiente |  |
-| 76 | SB-J-028 | Spring Boot | 1 | Qué te da JpaRepository |  |  |  |  |  | pendiente |  |
-| 77 | ARC-J-008 | Arquitectura | 1 | Los principios SOLID |  |  |  |  |  | pendiente |  |
-| 78 | SQL-J-016 | SQL | 1 | Los tres tipos de relaciones entre tablas |  |  |  |  |  | pendiente |  |
-| 79 | 07-timetrack-075 | Proyecto 7 | 1 | Sesión en localStorage y seguridad |  |  |  |  |  | pendiente |  |
-| 80 | ANG-J-061 | Angular | 1 | Qué es el lazy loading |  |  |  |  |  | pendiente |  |
-| 81 | 06-hr-portal-011 | Proyecto 6 | 1 | ¿Cómo decide la barra lateral qué enlaces mostrar? Y ocultar un enlace, ¿protege… |  |  |  |  |  | pendiente |  |
-| 82 | SB-J-032 | Spring Boot | 1 | Qué es un derived query method |  |  |  |  |  | pendiente |  |
-| 83 | ANG-J-065 | Angular | 1 | Qué es un HTTP interceptor |  |  |  |  |  | pendiente |  |
-| 84 | JAVA-J-034 | Java | 1 | Sobreescribir equals() y hashCode() juntos |  |  |  |  |  | pendiente |  |
-| 85 | 07-timetrack-078 | Proyecto 7 | 1 | Interceptor y bearer token |  |  |  |  |  | pendiente |  |
-| 86 | SB-J-035 | Spring Boot | 1 | @OneToMany frente a @ManyToOne |  |  |  |  |  | pendiente |  |
-| 87 | ANG-J-070 | Angular | 1 | Formularios reactivos frente a template-driven |  |  |  |  |  | pendiente |  |
-| 88 | SEC-J-005 | Seguridad | 1 | Partes y claims del JWT |  |  |  |  |  | pendiente |  |
-| 89 | SQL-J-028 | SQL | 1 | Por qué falla WHERE price = NULL |  |  |  |  |  | pendiente |  |
-| 90 | 07-timetrack-079 | Proyecto 7 | 1 | Caducar la sesión ante un 401 |  |  |  |  |  | pendiente |  |
-| 91 | JS-J-005 | JavaScript | 1 | Igualdad débil frente a estricta |  |  |  |  |  | pendiente |  |
-| 92 | 06-hr-portal-015 | Proyecto 6 | 1 | Tus páginas de empleados y de solicitudes de ausencia siguen un patrón coordinat… |  |  |  |  |  | pendiente |  |
-| 93 | ANG-J-080 | Angular | 1 | ngOnInit y cuándo usarlo |  |  |  |  |  | pendiente |  |
-| 94 | ARC-J-014 | Arquitectura | 1 | MVC en Spring Boot |  |  |  |  |  | pendiente |  |
-| 95 | JAVA-J-041 | Java | 1 | Excepciones checked frente a unchecked |  |  |  |  |  | pendiente |  |
-| 96 | SB-J-029 | Spring Boot | 1 | FetchType.LAZY frente a FetchType.EAGER |  |  |  |  |  | pendiente |  |
-| 97 | GEN-J-008 | General | 1 | Trabajar en un entorno ágil |  |  |  |  |  | pendiente |  |
-| 98 | 07-timetrack-106 | Proyecto 7 | 1 | Recorrido completo del login y la sesión |  |  |  |  |  | pendiente |  |
-| 99 | GIT-J-003 | Git | 1 | Pull frente a fetch |  |  |  |  |  | pendiente |  |
-| 100 | ANG-J-081 | Angular | 1 | Llamadas a la API en ngOnInit frente al constructor |  |  |  |  |  | pendiente |  |
-| 101 | SB-J-030 | Spring Boot | 1 | El problema N+1 |  |  |  |  |  | pendiente |  |
-| 102 | 07-timetrack-031 | Proyecto 7 | 1 | Ocultar entradas ajenas con 404 |  |  |  |  |  | pendiente |  |
-| 103 | 06-hr-portal-023 | Proyecto 6 | 1 | Admins y empleados comparten la única ruta `/leave-requests` y el único `LeaveRe… |  |  |  |  |  | pendiente |  |
-| 104 | ANG-J-086 | Angular | 1 | Qué es un pipe |  |  |  |  |  | pendiente |  |
-| 105 | JAVA-J-047 | Java | 1 | Qué es una lambda |  |  |  |  |  | pendiente |  |
-| 106 | SQL-J-037 | SQL | 1 | Qué es un JOIN |  |  |  |  |  | pendiente |  |
-| 107 | SB-J-042 | Spring Boot | 1 | Cómo funciona la autenticación JWT |  |  |  |  |  | pendiente |  |
-| 108 | 07-timetrack-032 | Proyecto 7 | 1 | Proyectos inactivos: 404 frente a 400 |  |  |  |  |  | pendiente |  |
-| 109 | ANG-J-089 | Angular | 1 | El pipe async |  |  |  |  |  | pendiente |  |
-| 110 | SEC-J-006 | Seguridad | 1 | Cifrado del JWT y datos sensibles |  |  |  |  |  | pendiente |  |
-| 111 | ARC-J-018 | Arquitectura | 1 | Componentes smart y dumb |  |  |  |  |  | pendiente |  |
-| 112 | TS-J-002 | TypeScript | 1 | Interface frente a type |  |  |  |  |  | pendiente |  |
-| 113 | JS-J-006 | JavaScript | 1 | Coerción de tipos implícita |  |  |  |  |  | pendiente |  |
-| 114 | ANG-J-092 | Angular | 1 | Qué es Angular Material |  |  |  |  |  | pendiente |  |
-| 115 | 07-timetrack-034 | Proyecto 7 | 1 | Evitar el autobloqueo del manager |  |  |  |  |  | pendiente |  |
-| 116 | JAVA-J-048 | Java | 1 | Qué es el Stream API |  |  |  |  |  | pendiente |  |
-| 117 | SB-J-043 | Spring Boot | 1 | SecurityFilterChain y qué se configura en él |  |  |  |  |  | pendiente |  |
-| 118 | 06-hr-portal-029 | Proyecto 6 | 1 | Tus diálogos nunca guardan nada por sí mismos. ¿Quién escribe en el servicio cua… |  |  |  |  |  | pendiente |  |
-| 119 | ANG-J-097 | Angular | 1 | MatTableDataSource frente a un array |  |  |  |  |  | pendiente |  |
-| 120 | SQL-J-038 | SQL | 1 | INNER JOIN frente a LEFT JOIN |  |  |  |  |  | pendiente |  |
-| 121 | 07-timetrack-038 | Proyecto 7 | 1 | Generación y reset de contraseñas |  |  |  |  |  | pendiente |  |
-| 122 | GIT-J-011 | Git | 1 | Qué es una rama |  |  |  |  |  | pendiente |  |
-| 123 | SB-J-044 | Spring Boot | 1 | Autenticación frente a autorización |  |  |  |  |  | pendiente |  |
-| 124 | ANG-J-110 | Angular | 1 | Qué es la encapsulación de vistas |  |  |  |  |  | pendiente |  |
-| 125 | JAVA-J-057 | Java | 1 | Qué son los genéricos |  |  |  |  |  | pendiente |  |
-| 126 | 07-timetrack-041 | Proyecto 7 | 1 | Condiciones para aprobar o rechazar |  |  |  |  |  | pendiente |  |
-| 127 | 06-hr-portal-056 | Proyecto 6 | 1 | Tus guards son funciones normales tipadas como `CanActivateFn`, no clases que im… |  |  |  |  |  | pendiente |  |
-| 128 | SB-J-045 | Spring Boot | 1 | BCryptPasswordEncoder y las contraseñas en texto plano |  |  |  |  |  | pendiente |  |
-| 129 | GEN-J-012 | General | 1 | Scrum frente a Kanban |  |  |  |  |  | pendiente |  |
-| 130 | ANG-J-115 | Angular | 1 | Tu experiencia con tests unitarios en Angular |  |  |  |  |  | pendiente |  |
-| 131 | ARC-J-021 | Arquitectura | 1 | Ventajas de la arquitectura en capas |  |  |  |  |  | pendiente |  |
-| 132 | 07-timetrack-084 | Proyecto 7 | 1 | Acciones de Entries según rol y estado |  |  |  |  |  | pendiente |  |
-| 133 | SQL-J-043 | SQL | 1 | Qué hace GROUP BY |  |  |  |  |  | pendiente |  |
-| 134 | ANG-J-116 | Angular | 1 | Qué es TestBed |  |  |  |  |  | pendiente |  |
-| 135 | SEC-J-009 | Seguridad | 1 | Hashing y cifrado |  |  |  |  |  | pendiente |  |
-| 136 | JS-J-012 | JavaScript | 1 | Funciones normales frente a arrow functions |  |  |  |  |  | pendiente |  |
-| 137 | SB-J-046 | Spring Boot | 1 | JWT frente a sesiones del lado del servidor |  |  |  |  |  | pendiente |  |
-| 138 | JAVA-J-058 | Java | 1 | Optional frente a devolver null |  |  |  |  |  | pendiente |  |
-| 139 | 07-timetrack-085 | Proyecto 7 | 1 | Prohibir la revisión de entradas propias |  |  |  |  |  | pendiente |  |
-| 140 | ANG-J-123 | Angular | 1 | Qué es la detección de cambios |  |  |  |  |  | pendiente |  |
-| 141 | 06-hr-portal-057 | Proyecto 6 | 1 | Las rutas de admin llevan `canActivate: [authGuard, adminGuard]`. Explícame qué … |  |  |  |  |  | pendiente |  |
-| 142 | SB-J-056 | Spring Boot | 1 | @ControllerAdvice y cuándo usarlo |  |  |  |  |  | pendiente |  |
-| 143 | ANG-J-124 | Angular | 1 | Default frente a OnPush |  |  |  |  |  | pendiente |  |
-| 144 | 07-timetrack-091 | Proyecto 7 | 1 | Autogestión del manager en Team |  |  |  |  |  | pendiente |  |
-| 145 | GIT-J-012 | Git | 1 | Merge frente a rebase |  |  |  |  |  | pendiente |  |
-| 146 | JAVA-J-061 | Java | 1 | Enum frente a constante String |  |  |  |  |  | pendiente |  |
-| 147 | SQL-J-044 | SQL | 1 | WHERE frente a HAVING |  |  |  |  |  | pendiente |  |
-| 148 | ARC-J-022 | Arquitectura | 1 | DTOs frente a entidades en APIs |  |  |  |  |  | pendiente |  |
-| 149 | SB-J-063 | Spring Boot | 1 | @SpringBootTest y cuándo usarlo |  |  |  |  |  | pendiente |  |
-| 150 | ANG-J-128 | Angular | 1 | Arquitectura Core/Feature/Shared |  |  |  |  |  | pendiente |  |
-| 151 | 07-timetrack-128 | Proyecto 7 | 1 | Acceso ajeno: controles de Angular y Spring |  |  |  |  |  | pendiente |  |
-| 152 | 06-hr-portal-068 | Proyecto 6 | 1 | Un empleado abre las DevTools, edita la sesión guardada y pone el rol a `admin`.… |  |  |  |  |  | pendiente |  |
-| 153 | ANG-J-129 | Angular | 1 | El patrón coordinator |  |  |  |  |  | pendiente |  |
-| 154 | SB-J-064 | Spring Boot | 1 | Mockito y @MockBean |  |  |  |  |  | pendiente |  |
-| 155 | JS-J-013 | JavaScript | 1 | La palabra clave this |  |  |  |  |  | pendiente |  |
-| 156 | JAVA-J-068 | Java | 1 | Qué es una anotación |  |  |  |  |  | pendiente |  |
-| 157 | SEC-J-011 | Seguridad | 1 | CORS y los orígenes |  |  |  |  |  | pendiente |  |
-| 158 | 07-timetrack-129 | Proyecto 7 | 1 | Reabrir una entrada rechazada |  |  |  |  |  | pendiente |  |
-| 159 | ANG-J-131 | Angular | 1 | Estado en un servicio frente al componente |  |  |  |  |  | pendiente |  |
-| 160 | SB-J-093 | Spring Boot | 1 | Test unitario de un servicio con Mockito |  |  |  |  |  | pendiente |  |
-| 161 | SQL-J-045 | SQL | 1 | Contar solo las entradas aprobadas por proyecto |  |  |  |  |  | pendiente |  |
-| 162 | GEN-J-013 | General | 1 | Los roles en Scrum |  |  |  |  |  | pendiente |  |
-| 163 | 07-timetrack-110 | Proyecto 7 | 1 | Stack local con Docker Compose |  |  |  |  |  | pendiente |  |
-| 164 | 06-hr-portal-072 | Proyecto 6 | 1 | Un admin ha escrito algo en el formulario de departamento y hace clic en un enla… |  |  |  |  |  | pendiente |  |
-| 165 | ANG-J-136 | Angular | 1 | Recorrido por el HR portal |  |  |  |  |  | pendiente |  |
-| 166 | ARC-J-023 | Arquitectura | 1 | El patrón repository |  |  |  |  |  | pendiente |  |
-| 167 | JAVA-J-071 | Java | 1 | Qué es Maven |  |  |  |  |  | pendiente |  |
-| 168 | SB-J-069 | Spring Boot | 1 | Containerizar una aplicación Spring Boot |  |  |  |  |  | pendiente |  |
-| 169 | 07-timetrack-112 | Proyecto 7 | 1 | Despliegue público antes de terminar los tests |  |  |  |  |  | pendiente |  |
+| 4 | 07-timetrack-005 | Proyecto 7 | 1 | Filtrar entradas según el usuario |  |  |  |  |  | pendiente |  |
+| 5 | JAVA-J-001 | Java | 1 | Primitivos frente a objetos |  |  |  |  |  | pendiente |  |
+| 6 | ANG-J-003 | Angular | 1 | Qué es un componente |  |  |  |  |  | pendiente |  |
+| 7 | 07-timetrack-007 | Proyecto 7 | 1 | DTOs en lugar de entidades JPA |  |  |  |  |  | pendiente |  |
+| 8 | SB-J-002 | Spring Boot | 1 | Qué es la auto-configuración |  |  |  |  |  | pendiente |  |
+| 9 | 07-timetrack-009 | Proyecto 7 | 1 | Operaciones explícitas para cambiar de estado |  |  |  |  |  | pendiente |  |
+| 10 | ANG-J-005 | Angular | 1 | Inyección de dependencias en Angular |  |  |  |  |  | pendiente |  |
+| 11 | 07-timetrack-059 | Proyecto 7 | 1 | Shell, rutas hijas y carga diferida |  |  |  |  |  | pendiente |  |
+| 12 | JAVA-J-002 | Java | 1 | BigDecimal frente a double para dinero |  |  |  |  |  | pendiente |  |
+| 13 | SB-J-003 | Spring Boot | 1 | Inyección por constructor frente a @Autowired en campo |  |  |  |  |  | pendiente |  |
+| 14 | ANG-J-007 | Angular | 1 | Componentes standalone y el array imports |  |  |  |  |  | pendiente |  |
+| 15 | 07-timetrack-061 | Proyecto 7 | 1 | Página coordinadora y lista presentacional |  |  |  |  |  | pendiente |  |
+| 16 | 07-timetrack-062 | Proyecto 7 | 1 | Estado compartido de aprobaciones pendientes |  |  |  |  |  | pendiente |  |
+| 17 | ANG-J-011 | Angular | 1 | Tipos de data binding |  |  |  |  |  | pendiente |  |
+| 18 | SB-J-004 | Spring Boot | 1 | @Transactional y dónde se pone |  |  |  |  |  | pendiente |  |
+| 19 | 07-timetrack-105 | Proyecto 7 | 1 | Contrato JSON y tipos de TypeScript |  |  |  |  |  | pendiente |  |
+| 20 | JAVA-J-007 | Java | 1 | Por qué == falla con Strings |  |  |  |  |  | pendiente |  |
+| 21 | ANG-J-013 | Angular | 1 | Qué es un signal |  |  |  |  |  | pendiente |  |
+| 22 | 07-timetrack-019 | Proyecto 7 | 1 | JWT stateless y CSRF |  |  |  |  |  | pendiente |  |
+| 23 | SB-J-006 | Spring Boot | 1 | Qué hace @SpringBootApplication |  |  |  |  |  | pendiente |  |
+| 24 | 07-timetrack-020 | Proyecto 7 | 1 | ID inmutable como identidad del JWT |  |  |  |  |  | pendiente |  |
+| 25 | ANG-J-015 | Angular | 1 | signal() frente a computed() |  |  |  |  |  | pendiente |  |
+| 26 | SQL-J-001 | SQL | 1 | PRIMARY KEY combinada con SERIAL |  |  |  |  |  | pendiente |  |
+| 27 | ARC-J-001 | Arquitectura | 1 | REST en aplicaciones Angular |  |  |  |  |  | pendiente |  |
+| 28 | 07-timetrack-021 | Proyecto 7 | 1 | Del filtro JWT a la autorización |  |  |  |  |  | pendiente |  |
+| 29 | JAVA-J-012 | Java | 1 | == frente a .equals() |  |  |  |  |  | pendiente |  |
+| 30 | SB-J-014 | Spring Boot | 1 | @Controller frente a @RestController |  |  |  |  |  | pendiente |  |
+| 31 | SEC-J-001 | Seguridad | 1 | Autenticación y autorización |  |  |  |  |  | pendiente |  |
+| 32 | ANG-J-016 | Angular | 1 | effect() y cuándo usarlo |  |  |  |  |  | pendiente |  |
+| 33 | 07-timetrack-022 | Proyecto 7 | 1 | Consultar la cuenta en cada petición |  |  |  |  |  | pendiente |  |
+| 34 | ANG-J-020 | Angular | 1 | signal.set() frente a signal.update() |  |  |  |  |  | pendiente |  |
+| 35 | 07-timetrack-023 | Proyecto 7 | 1 | Filter chain y seguridad por método |  |  |  |  |  | pendiente |  |
+| 36 | SB-J-015 | Spring Boot | 1 | @PathVariable frente a @RequestParam |  |  |  |  |  | pendiente |  |
+| 37 | GEN-J-001 | General | 1 | El principio DRY |  |  |  |  |  | pendiente |  |
+| 38 | 07-timetrack-025 | Proyecto 7 | 1 | Contraseñas con BCrypt |  |  |  |  |  | pendiente |  |
+| 39 | JAVA-J-018 | Java | 1 | Los cuatro modificadores de acceso |  |  |  |  |  | pendiente |  |
+| 40 | ANG-J-022 | Angular | 1 | El bloque @if |  |  |  |  |  | pendiente |  |
+| 41 | SQL-J-002 | SQL | 1 | Definir una clave foránea |  |  |  |  |  | pendiente |  |
+| 42 | 07-timetrack-029 | Proyecto 7 | 1 | Secreto JWT fuera del repositorio |  |  |  |  |  | pendiente |  |
+| 43 | SB-J-016 | Spring Boot | 1 | Arquitectura en capas de Spring Boot |  |  |  |  |  | pendiente |  |
+| 44 | ANG-J-023 | Angular | 1 | @for y track |  |  |  |  |  | pendiente |  |
+| 45 | 07-timetrack-075 | Proyecto 7 | 1 | Sesión en localStorage y seguridad |  |  |  |  |  | pendiente |  |
+| 46 | ARC-J-002 | Arquitectura | 1 | Métodos de petición HTTP |  |  |  |  |  | pendiente |  |
+| 47 | SB-J-017 | Spring Boot | 1 | DTOs frente a devolver entidades JPA |  |  |  |  |  | pendiente |  |
+| 48 | 07-timetrack-078 | Proyecto 7 | 1 | Interceptor y bearer token |  |  |  |  |  | pendiente |  |
+| 49 | JAVA-J-020 | Java | 1 | Qué es la encapsulación |  |  |  |  |  | pendiente |  |
+| 50 | ANG-J-038 | Angular | 1 | Qué es HttpClient |  |  |  |  |  | pendiente |  |
+| 51 | 06-hr-portal-001 | Proyecto 6 | 1 | Tu HR portal divide `src/app` en `core/`, `pages/`, `shared/` y una carpeta `mod… |  |  |  |  |  | pendiente |  |
+| 52 | SEC-J-002 | Seguridad | 1 | Respuestas 401 y 403 |  |  |  |  |  | pendiente |  |
+| 53 | TS-J-001 | TypeScript | 1 | Qué aporta TypeScript |  |  |  |  |  | pendiente |  |
+| 54 | 07-timetrack-079 | Proyecto 7 | 1 | Caducar la sesión ante un 401 |  |  |  |  |  | pendiente |  |
+| 55 | SQL-J-010 | SQL | 1 | NUMERIC frente a FLOAT para dinero |  |  |  |  |  | pendiente |  |
+| 56 | ANG-J-039 | Angular | 1 | Observable frente a Promise |  |  |  |  |  | pendiente |  |
+| 57 | SB-J-018 | Spring Boot | 1 | CORS y el error CORS desde Angular |  |  |  |  |  | pendiente |  |
+| 58 | 07-timetrack-106 | Proyecto 7 | 1 | Recorrido completo del login y la sesión |  |  |  |  |  | pendiente |  |
+| 59 | JS-J-001 | JavaScript | 1 | Var, let y const |  |  |  |  |  | pendiente |  |
+| 60 | GIT-J-001 | Git | 1 | Qué es Git y por qué usarlo |  |  |  |  |  | pendiente |  |
+| 61 | 07-timetrack-031 | Proyecto 7 | 1 | Ocultar entradas ajenas con 404 |  |  |  |  |  | pendiente |  |
+| 62 | JAVA-J-025 | Java | 1 | Interfaz frente a clase abstracta |  |  |  |  |  | pendiente |  |
+| 63 | ANG-J-040 | Angular | 1 | subscribe() y cuándo desuscribirse |  |  |  |  |  | pendiente |  |
+| 64 | SB-J-019 | Spring Boot | 1 | Por qué devolver ResponseEntity |  |  |  |  |  | pendiente |  |
+| 65 | 07-timetrack-032 | Proyecto 7 | 1 | Proyectos inactivos: 404 frente a 400 |  |  |  |  |  | pendiente |  |
+| 66 | 06-hr-portal-005 | Proyecto 6 | 1 | Todas las rutas de tu app usan `loadComponent` con un import dinámico. ¿Qué desc… |  |  |  |  |  | pendiente |  |
+| 67 | ARC-J-003 | Arquitectura | 1 | Códigos de estado HTTP |  |  |  |  |  | pendiente |  |
+| 68 | ANG-J-048 | Angular | 1 | Subject frente a BehaviorSubject |  |  |  |  |  | pendiente |  |
+| 69 | 07-timetrack-034 | Proyecto 7 | 1 | Evitar el autobloqueo del manager |  |  |  |  |  | pendiente |  |
+| 70 | SB-J-024 | Spring Boot | 1 | Anotaciones de Bean Validation y @Valid |  |  |  |  |  | pendiente |  |
+| 71 | SQL-J-015 | SQL | 1 | Qué es una clave foránea |  |  |  |  |  | pendiente |  |
+| 72 | GEN-J-002 | General | 1 | Código síncrono frente a asíncrono |  |  |  |  |  | pendiente |  |
+| 73 | 07-timetrack-038 | Proyecto 7 | 1 | Generación y reset de contraseñas |  |  |  |  |  | pendiente |  |
+| 74 | JAVA-J-029 | Java | 1 | Qué es el polimorfismo |  |  |  |  |  | pendiente |  |
+| 75 | ANG-J-050 | Angular | 1 | Cómo funciona el routing en Angular |  |  |  |  |  | pendiente |  |
+| 76 | 07-timetrack-041 | Proyecto 7 | 1 | Condiciones para aprobar o rechazar |  |  |  |  |  | pendiente |  |
+| 77 | SEC-J-003 | Seguridad | 1 | Control de acceso por roles |  |  |  |  |  | pendiente |  |
+| 78 | 06-hr-portal-008 | Proyecto 6 | 1 | Los departamentos se crean y se editan con un formulario enrutado, pero los empl… |  |  |  |  |  | pendiente |  |
+| 79 | ANG-J-051 | Angular | 1 | Qué es un route guard |  |  |  |  |  | pendiente |  |
+| 80 | SB-J-027 | Spring Boot | 1 | JPA frente a Hibernate |  |  |  |  |  | pendiente |  |
+| 81 | 07-timetrack-084 | Proyecto 7 | 1 | Acciones de Entries según rol y estado |  |  |  |  |  | pendiente |  |
+| 82 | JS-J-002 | JavaScript | 1 | Qué es un closure |  |  |  |  |  | pendiente |  |
+| 83 | 07-timetrack-085 | Proyecto 7 | 1 | Prohibir la revisión de entradas propias |  |  |  |  |  | pendiente |  |
+| 84 | JAVA-J-033 | Java | 1 | List, Set y Map |  |  |  |  |  | pendiente |  |
+| 85 | ANG-J-056 | Angular | 1 | Route params frente a query params |  |  |  |  |  | pendiente |  |
+| 86 | GIT-J-002 | Git | 1 | Git frente a GitHub |  |  |  |  |  | pendiente |  |
+| 87 | SB-J-028 | Spring Boot | 1 | Qué te da JpaRepository |  |  |  |  |  | pendiente |  |
+| 88 | ARC-J-008 | Arquitectura | 1 | Los principios SOLID |  |  |  |  |  | pendiente |  |
+| 89 | SQL-J-016 | SQL | 1 | Los tres tipos de relaciones entre tablas |  |  |  |  |  | pendiente |  |
+| 90 | 07-timetrack-091 | Proyecto 7 | 1 | Autogestión del manager en Team |  |  |  |  |  | pendiente |  |
+| 91 | ANG-J-061 | Angular | 1 | Qué es el lazy loading |  |  |  |  |  | pendiente |  |
+| 92 | 07-timetrack-128 | Proyecto 7 | 1 | Acceso ajeno: controles de Angular y Spring |  |  |  |  |  | pendiente |  |
+| 93 | 06-hr-portal-011 | Proyecto 6 | 1 | ¿Cómo decide la barra lateral qué enlaces mostrar? Y ocultar un enlace, ¿protege… |  |  |  |  |  | pendiente |  |
+| 94 | SB-J-032 | Spring Boot | 1 | Qué es un derived query method |  |  |  |  |  | pendiente |  |
+| 95 | 07-timetrack-129 | Proyecto 7 | 1 | Reabrir una entrada rechazada |  |  |  |  |  | pendiente |  |
+| 96 | ANG-J-065 | Angular | 1 | Qué es un HTTP interceptor |  |  |  |  |  | pendiente |  |
+| 97 | JAVA-J-034 | Java | 1 | Sobreescribir equals() y hashCode() juntos |  |  |  |  |  | pendiente |  |
+| 98 | 07-timetrack-110 | Proyecto 7 | 1 | Stack local con Docker Compose |  |  |  |  |  | pendiente |  |
+| 99 | SB-J-035 | Spring Boot | 1 | @OneToMany frente a @ManyToOne |  |  |  |  |  | pendiente |  |
+| 100 | ANG-J-070 | Angular | 1 | Formularios reactivos frente a template-driven |  |  |  |  |  | pendiente |  |
+| 101 | SEC-J-005 | Seguridad | 1 | Partes y claims del JWT |  |  |  |  |  | pendiente |  |
+| 102 | 07-timetrack-112 | Proyecto 7 | 1 | Despliegue público antes de terminar los tests |  |  |  |  |  | pendiente |  |
+| 103 | SQL-J-028 | SQL | 1 | Por qué falla WHERE price = NULL |  |  |  |  |  | pendiente |  |
+| 104 | JS-J-005 | JavaScript | 1 | Igualdad débil frente a estricta |  |  |  |  |  | pendiente |  |
+| 105 | 06-hr-portal-015 | Proyecto 6 | 1 | Tus páginas de empleados y de solicitudes de ausencia siguen un patrón coordinat… |  |  |  |  |  | pendiente |  |
+| 106 | ANG-J-080 | Angular | 1 | ngOnInit y cuándo usarlo |  |  |  |  |  | pendiente |  |
+| 107 | ARC-J-014 | Arquitectura | 1 | MVC en Spring Boot |  |  |  |  |  | pendiente |  |
+| 108 | JAVA-J-041 | Java | 1 | Excepciones checked frente a unchecked |  |  |  |  |  | pendiente |  |
+| 109 | SB-J-029 | Spring Boot | 1 | FetchType.LAZY frente a FetchType.EAGER |  |  |  |  |  | pendiente |  |
+| 110 | GEN-J-008 | General | 1 | Trabajar en un entorno ágil |  |  |  |  |  | pendiente |  |
+| 111 | GIT-J-003 | Git | 1 | Pull frente a fetch |  |  |  |  |  | pendiente |  |
+| 112 | ANG-J-081 | Angular | 1 | Llamadas a la API en ngOnInit frente al constructor |  |  |  |  |  | pendiente |  |
+| 113 | SB-J-030 | Spring Boot | 1 | El problema N+1 |  |  |  |  |  | pendiente |  |
+| 114 | 06-hr-portal-023 | Proyecto 6 | 1 | Admins y empleados comparten la única ruta `/leave-requests` y el único `LeaveRe… |  |  |  |  |  | pendiente |  |
+| 115 | ANG-J-086 | Angular | 1 | Qué es un pipe |  |  |  |  |  | pendiente |  |
+| 116 | JAVA-J-047 | Java | 1 | Qué es una lambda |  |  |  |  |  | pendiente |  |
+| 117 | SQL-J-037 | SQL | 1 | Qué es un JOIN |  |  |  |  |  | pendiente |  |
+| 118 | SB-J-042 | Spring Boot | 1 | Cómo funciona la autenticación JWT |  |  |  |  |  | pendiente |  |
+| 119 | ANG-J-089 | Angular | 1 | El pipe async |  |  |  |  |  | pendiente |  |
+| 120 | SEC-J-006 | Seguridad | 1 | Cifrado del JWT y datos sensibles |  |  |  |  |  | pendiente |  |
+| 121 | ARC-J-018 | Arquitectura | 1 | Componentes smart y dumb |  |  |  |  |  | pendiente |  |
+| 122 | TS-J-002 | TypeScript | 1 | Interface frente a type |  |  |  |  |  | pendiente |  |
+| 123 | JS-J-006 | JavaScript | 1 | Coerción de tipos implícita |  |  |  |  |  | pendiente |  |
+| 124 | ANG-J-092 | Angular | 1 | Qué es Angular Material |  |  |  |  |  | pendiente |  |
+| 125 | JAVA-J-048 | Java | 1 | Qué es el Stream API |  |  |  |  |  | pendiente |  |
+| 126 | SB-J-043 | Spring Boot | 1 | SecurityFilterChain y qué se configura en él |  |  |  |  |  | pendiente |  |
+| 127 | 06-hr-portal-029 | Proyecto 6 | 1 | Tus diálogos nunca guardan nada por sí mismos. ¿Quién escribe en el servicio cua… |  |  |  |  |  | pendiente |  |
+| 128 | ANG-J-097 | Angular | 1 | MatTableDataSource frente a un array |  |  |  |  |  | pendiente |  |
+| 129 | SQL-J-038 | SQL | 1 | INNER JOIN frente a LEFT JOIN |  |  |  |  |  | pendiente |  |
+| 130 | GIT-J-011 | Git | 1 | Qué es una rama |  |  |  |  |  | pendiente |  |
+| 131 | SB-J-044 | Spring Boot | 1 | Autenticación frente a autorización |  |  |  |  |  | pendiente |  |
+| 132 | ANG-J-110 | Angular | 1 | Qué es la encapsulación de vistas |  |  |  |  |  | pendiente |  |
+| 133 | JAVA-J-057 | Java | 1 | Qué son los genéricos |  |  |  |  |  | pendiente |  |
+| 134 | 06-hr-portal-056 | Proyecto 6 | 1 | Tus guards son funciones normales tipadas como `CanActivateFn`, no clases que im… |  |  |  |  |  | pendiente |  |
+| 135 | SB-J-045 | Spring Boot | 1 | BCryptPasswordEncoder y las contraseñas en texto plano |  |  |  |  |  | pendiente |  |
+| 136 | GEN-J-012 | General | 1 | Scrum frente a Kanban |  |  |  |  |  | pendiente |  |
+| 137 | ANG-J-115 | Angular | 1 | Tu experiencia con tests unitarios en Angular |  |  |  |  |  | pendiente |  |
+| 138 | ARC-J-021 | Arquitectura | 1 | Ventajas de la arquitectura en capas |  |  |  |  |  | pendiente |  |
+| 139 | SQL-J-043 | SQL | 1 | Qué hace GROUP BY |  |  |  |  |  | pendiente |  |
+| 140 | ANG-J-116 | Angular | 1 | Qué es TestBed |  |  |  |  |  | pendiente |  |
+| 141 | SEC-J-009 | Seguridad | 1 | Hashing y cifrado |  |  |  |  |  | pendiente |  |
+| 142 | JS-J-012 | JavaScript | 1 | Funciones normales frente a arrow functions |  |  |  |  |  | pendiente |  |
+| 143 | SB-J-046 | Spring Boot | 1 | JWT frente a sesiones del lado del servidor |  |  |  |  |  | pendiente |  |
+| 144 | JAVA-J-058 | Java | 1 | Optional frente a devolver null |  |  |  |  |  | pendiente |  |
+| 145 | ANG-J-123 | Angular | 1 | Qué es la detección de cambios |  |  |  |  |  | pendiente |  |
+| 146 | 06-hr-portal-057 | Proyecto 6 | 1 | Las rutas de admin llevan `canActivate: [authGuard, adminGuard]`. Explícame qué … |  |  |  |  |  | pendiente |  |
+| 147 | SB-J-056 | Spring Boot | 1 | @ControllerAdvice y cuándo usarlo |  |  |  |  |  | pendiente |  |
+| 148 | ANG-J-124 | Angular | 1 | Default frente a OnPush |  |  |  |  |  | pendiente |  |
+| 149 | GIT-J-012 | Git | 1 | Merge frente a rebase |  |  |  |  |  | pendiente |  |
+| 150 | JAVA-J-061 | Java | 1 | Enum frente a constante String |  |  |  |  |  | pendiente |  |
+| 151 | SQL-J-044 | SQL | 1 | WHERE frente a HAVING |  |  |  |  |  | pendiente |  |
+| 152 | ARC-J-022 | Arquitectura | 1 | DTOs frente a entidades en APIs |  |  |  |  |  | pendiente |  |
+| 153 | SB-J-063 | Spring Boot | 1 | @SpringBootTest y cuándo usarlo |  |  |  |  |  | pendiente |  |
+| 154 | ANG-J-128 | Angular | 1 | Arquitectura Core/Feature/Shared |  |  |  |  |  | pendiente |  |
+| 155 | 06-hr-portal-068 | Proyecto 6 | 1 | Un empleado abre las DevTools, edita la sesión guardada y pone el rol a `admin`.… |  |  |  |  |  | pendiente |  |
+| 156 | ANG-J-129 | Angular | 1 | El patrón coordinator |  |  |  |  |  | pendiente |  |
+| 157 | SB-J-064 | Spring Boot | 1 | Mockito y @MockBean |  |  |  |  |  | pendiente |  |
+| 158 | JS-J-013 | JavaScript | 1 | La palabra clave this |  |  |  |  |  | pendiente |  |
+| 159 | JAVA-J-068 | Java | 1 | Qué es una anotación |  |  |  |  |  | pendiente |  |
+| 160 | SEC-J-011 | Seguridad | 1 | CORS y los orígenes |  |  |  |  |  | pendiente |  |
+| 161 | ANG-J-131 | Angular | 1 | Estado en un servicio frente al componente |  |  |  |  |  | pendiente |  |
+| 162 | SB-J-093 | Spring Boot | 1 | Test unitario de un servicio con Mockito |  |  |  |  |  | pendiente |  |
+| 163 | SQL-J-045 | SQL | 1 | Contar solo las entradas aprobadas por proyecto |  |  |  |  |  | pendiente |  |
+| 164 | GEN-J-013 | General | 1 | Los roles en Scrum |  |  |  |  |  | pendiente |  |
+| 165 | 06-hr-portal-072 | Proyecto 6 | 1 | Un admin ha escrito algo en el formulario de departamento y hace clic en un enla… |  |  |  |  |  | pendiente |  |
+| 166 | ANG-J-136 | Angular | 1 | Recorrido por el HR portal |  |  |  |  |  | pendiente |  |
+| 167 | ARC-J-023 | Arquitectura | 1 | El patrón repository |  |  |  |  |  | pendiente |  |
+| 168 | JAVA-J-071 | Java | 1 | Qué es Maven |  |  |  |  |  | pendiente |  |
+| 169 | SB-J-069 | Spring Boot | 1 | Containerizar una aplicación Spring Boot |  |  |  |  |  | pendiente |  |
 | 170 | GIT-J-013 | Git | 1 | Resolver un conflicto de merge |  |  |  |  |  | pendiente |  |
 | 171 | ANG-J-144 | Angular | 1 | JWT en una app Angular + Spring Boot |  |  |  |  |  | pendiente |  |
 | 172 | 06-hr-portal-076 | Proyecto 6 | 1 | ¿Por qué añadir el token en un interceptor en vez de añadir la cabecera en la ll… |  |  |  |  |  | pendiente |  |
