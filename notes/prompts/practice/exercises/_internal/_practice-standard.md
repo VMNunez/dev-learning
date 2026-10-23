@@ -411,8 +411,9 @@ Correctly answered concepts return too: an unaided `✅` on a first attempt is `
 
 Only when Victor names no topic. One short proposal with its reason; he may override it, and no ritual
 comments on the choice he makes instead. The order is Victor's, ruled on 2026-10-21 (`REC-382`) for his
-exercise block — `HORARIO.md` §1, in the `Documents/main` folder above this repository; a change to it is
-a change to this section, made by hand under the ledger. **Every step reads the position from
+exercise block — `HORARIO.md` §1, in the `Documents/main` folder above this repository — and its
+rotation re-ruled on 2026-10-23 (`REC-398`); a change to it is a change to this section, made by hand
+under the ledger. **Every step reads the position from
 `INDEX.md` → `## Practice state` (below), never from a conversation.**
 
 1. **An open batch is the only proposal** (§C). The oldest open batch is named with the exercises of its
@@ -427,7 +428,8 @@ a change to this section, made by hand under the ledger. **Every step reads the 
    anything is proposed — written only by the state's writers, never here. The cadence decides only what is proposed: a simulation he asks
    for is the simulation track's to serve or to hold.
 3. **Otherwise the next topic of the rotation, from its essential route.** The rotation is java →
-   angular → spring-boot. Its members are those of the three with a §H section and a published plan at
+   spring-boot → angular, the job's backend stack first and java ahead of the spring-boot stages that
+   use it (Victor, 2026-10-23, `REC-398`). Its members are those of the three with a §H section and a published plan at
    the level — spring-boot, whose section `REC-386` wrote, joins once its plan is published. The next topic is the member after the topic
    of the most recently closed batch, wrapping round — any batch of a member counts, a pilot, a requested
    batch or a reinforcement included — and with no closed batch, the first member. Topics interleave, one
