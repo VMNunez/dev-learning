@@ -28,7 +28,8 @@ Read first, each to EOF, stating `N lines, read to EOF` for each in your report:
   fields are not yours to read; say `heads only` for it instead of the EOF line.
 - For the index's `## Practice state` (§F), whatever the mode and the batch, a pilot included: the header
   lines and the table of every batch folder's `README.md` under each topic and level the section covers, the
-  `## Essential route` of each published plan there, and the simulation route
+  `## Essential route` of each published plan there with the `Kind` and `Concepts` of the inventory rows it
+  lists — whether a listed variant is owed or waived (§B) — and the simulation route
   `practice/simulations/{level}/PLANNING-{level}.md` — its §0 and §2 and the steps' `Review history` —
   when it exists. Those parts only, for the state and never for grading: say `state only` for each
   instead of the EOF line.

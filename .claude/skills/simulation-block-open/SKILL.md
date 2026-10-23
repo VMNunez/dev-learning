@@ -26,8 +26,8 @@ Resolve LEVEL from Victor's message, else from `practice/simulations/PLANNING.md
 5. open `practice/simulations/MISTAKES.md` rows for this track and recent friction.
 6. `PROGRESS.md`, the coverage-standard digest rule, and every coverage path in route §1's manifest.
 7. on a track's first Angular or Spring Boot step, whose `Prerequisites` names short-exercise stages, that topic's
-   `practice/exercises/{topic}/{LEVEL}/PLANNING-{LEVEL}.md` → `## Essential route` and
-   `practice/exercises/ATTEMPTS.md`.
+   `practice/exercises/{topic}/{LEVEL}/PLANNING-{LEVEL}.md` → `## Essential route`, with the `Kind` and
+   `Concepts` of the inventory rows it lists, and `practice/exercises/ATTEMPTS.md`.
 
 If the route is missing, say `No existe la ruta de {LEVEL}. Corre /simulation-plan LEVEL={LEVEL}.` and
 stop. Prefer route+disk over doctrine §0; report a disagreement, never repair it.
@@ -52,7 +52,9 @@ allowing another timed attempt. Never trust the literal `Plan status: current` w
 
 Before Moment 3 on an Angular or Spring Boot step that is its track's first row and has no recorded attempt,
 check every short-exercise stage its `Prerequisites` names (simulation standard invariant 15): a stage is passed when every ID it lists has an `ATTEMPTS.md`
-row with `First result: ✅` or a dated `Fix verified`, its `Plan ID` that ID. An unpassed stage, or the
+row with `First result: ✅` or a dated `Fix verified`, its `Plan ID` that ID — or is a `variant` the
+exercise standard waives: an attempt on a row of its concept listed before it, its `first` or an earlier variant,
+answered `✅` with `Help` `—` or `notes` (`_practice-standard.md` §B, `REC-398`). An unpassed stage, or the
 exercise plan the topic lacks, makes the step `blocked`: name the first unpassed stage and that
 `practice-session` serves it. Read it live and write nothing.
 

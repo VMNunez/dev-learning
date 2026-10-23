@@ -119,7 +119,9 @@ topic. A planning request (Route 0) is never held back by a pilot, graded or not
 ### 1c — Compose the batch
 
 From the persistent plan, `ATTEMPTS.md` and existing batch manifests, under standard §C: size from the time he stated (30 minutes when he
-stated none), one checkable objective, the composition split, the difficulty adaptation read off the
+stated none), one checkable objective, the composition — while the essential route is not passed, its
+owed rows alone, a listed variant only while neither its concept's `first` nor a variant of it listed earlier was answered autonomously
+(`REC-398`); the split otherwise — the difficulty adaptation read off the
 `Why` column, and the no-repeat rule — or, on a reinforcement request, §C's reinforcement entry,
 which replaces all of these but the size and the objective. If a concept is owing a fix (standard §E), name it in one line —
 "tienes pendiente corregir `X` del lote `Y`" — and continue; it is never a gate.
@@ -189,7 +191,7 @@ corrected code. Then exactly one line of next step:
 |---|---|
 | `PARTIAL — …` | name the unanswered exercises; nothing was written |
 | any `⚠️` / `❌` | he rewrites those answers in the same files and says they are corrected — that run is `verify` |
-| all `✅`, or `VERIFIED` with none left `pending` | nothing owed; a later batch will bring variants |
+| all `✅`, or `VERIFIED` with none left `pending` | nothing owed now; a later batch brings the variants standard §B owes — on the essential route, only for a concept not answered autonomously |
 | `void` rows | say which exercise was defective and why; it is not his failure and the concept is still owed |
 | a pilot batch graded | its rows are in `ATTEMPTS.md` and no figure moved; name what it showed about the environment, which goes into the topic's §H, closed by its `Pilot folded:` line, before a second batch — the route may be planned (Route 0) before or after |
 | `recount pending — replan` in the report | the grade is recorded and the `PROGRESS.md` row was not recounted; name the stale source and its owner (`/notes-plan {topic} {level}`, then asking to plan) — the planner triggers the recount |
@@ -269,6 +271,6 @@ Route 2 (on a pilot batch the `PROGRESS.md` and `Esencial` rows read `n/a — pi
 | Resultado | 4/5 ✅ · 1 ❌ (`HashMap` iteration order, por `concept`) |
 | Histórico | `ATT-0012`–`ATT-0016` |
 | PROGRESS.md | java junior: bloques 2/17 → 2/17 · conceptos 14/125 → 18/125 · consolidados 3 → 3 · pendientes de corregir 0 → 1 |
-| Esencial | 12/118 tareas · 4/50 conceptos consolidados · mínimo: pendiente |
+| Esencial | 12/118 tareas (5 variantes exentas) · 4/50 conceptos consolidados · mínimo: pendiente |
 | Siguiente | corrige el 4 en su archivo y di que está corregido |
 | Commits | míos: ATTEMPTS.md + PROGRESS.md + INDEX.md (`## Practice state`) · tuyos: las respuestas que queden sin comitear (comandos abajo), o ninguno |

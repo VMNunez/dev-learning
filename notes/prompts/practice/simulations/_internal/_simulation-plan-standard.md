@@ -220,8 +220,9 @@ left a requirement unmet or scored 1 on a non-core dimension and still earned th
 14. A `current` route is never attempted against a moved coverage manifest or unadjudicated progress snapshot.
 15. An Angular or Spring Boot track's first step at this level — its first row under section 5, while
     that step's `Review history` records no attempt — is never attempted before every short-exercise stage its
-    `Prerequisites` names is passed — every ID the stage lists passed, as `_practice-standard.md` §B →
-    Completion defines it, read off `practice/exercises/ATTEMPTS.md` — and `simulation-block-open` checks
+    `Prerequisites` names is passed — every ID the stage lists passed or, a variant, waived, as
+    `_practice-standard.md` §B → "Conditional variants" defines it, read off `practice/exercises/ATTEMPTS.md`
+    and the `Kind` and `Concepts` of the plan rows the stage lists — and `simulation-block-open` checks
     it live before Moment 3. Later steps of the track are paced by the round cadence alone
     (`_practice-standard.md` §F).
 

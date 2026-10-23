@@ -32,7 +32,11 @@ It writes plans and navigation only; statements, skeletons, answers and grades b
    to write: a route concept it needs is one of its concepts or listed earlier, or is a call its own
    text names, or, used only for the task's setting, is supplied — each named in the section's opening
    prose with the task IDs, or the stage, that use it (§B). Then weigh the minimum against the goal (§B, "Goal fit"), list what that work needs, and write
-   in `## Reconciliation` what the minimum covers and what it leaves out on purpose and why.
+   in `## Reconciliation` what the minimum covers and what it leaves out on purpose and why. The minimum
+   is a set of target stages closed under their prerequisites (`REC-398`): pick the targets the goal
+   needs, list every stage a target needs — never cutting one to shorten the minimum, which shrinks by
+   tasks and never by concepts — size each stage at about one batch, and name in `## Reconciliation`
+   which stages are targets and, for every other stage, the target that needs it.
 4. On reconciliation, keep all published IDs and unchanged task rows. A listed essential ID that is
    retired is replaced in place by its replacement. Retire changed/removed tasks,
    append replacements and adjust dependencies of replacement rows without rewriting historical rows.
@@ -57,7 +61,9 @@ It writes plans and navigation only; statements, skeletons, answers and grades b
    concepts or listed earlier, or a named call or a supplied piece under §B — declared in the
    section's prose, never what the row practises, and, for a supplied piece, never what its pass
    condition asks him to get right; and whether the minimum covers what the goal needs, with
-   `## Reconciliation` recording what it leaves out and why. It must persist
+   `## Reconciliation` recording what it leaves out and why — its target stages named, every other
+   listed stage needed by one, no stage a target needs left out, and each stage about one batch
+   (`REC-398`). It must persist
    findings and `approve`, `approve-with-tightening` or `reject`, with EOF evidence. Never self-approve.
    Apply approved tightenings. A rejection permits one repair/review round; if still rejected, retain
    the existing route and park the candidate at the scratch path. When no published route exists,

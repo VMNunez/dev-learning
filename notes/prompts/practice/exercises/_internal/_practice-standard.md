@@ -158,6 +158,14 @@ outside it stays active, and is served on request or once the route is passed. I
 time, and a plan built without it serves the inventory in notes order — the failure this section exists
 for. The checker fails a plan that lacks it.
 
+**The minimum is a set of target stages closed under their prerequisites** (Victor, 2026-10-23,
+`REC-398`: *"no puedo hacer ejercicios sin haber visto conceptos previos que se necesiten"*). A
+**target** stage holds work the goal needs (Goal fit below); every other stage is listed because a target
+needs what it teaches, under the closure and taught-before rules below, and **a prerequisite is never cut**
+to shorten the minimum. The minimum shrinks by tasks — fewer rows to a stage, a variant served only on a
+failure (Conditional variants below) — never by concepts. A stage holds about one batch of work at §C's
+size: the `first` rows it serves, and the `integration` that closes it.
+
 - One table, `Stage | Title | Tasks`: `Stage` a two-digit number, unique, in serving order; `Tasks` the
   stage's IDs, comma-separated, in serving order. Every ID is an active inventory row and appears once
   in the whole section.
@@ -182,27 +190,40 @@ for. The checker fails a plan that lacks it.
   hired for the role `ROADMAP.md` and `_shared-context.md` describe writes unaided in this topic — never
   coverage order or a block's size. A concept that work needs is listed (in angular: a stream consumed
   by the view, a form's server-side field errors, a URL's query params); one it does not need is left to
-  the full route. The plan's `## Reconciliation` section records the judgement each time this section
-  is authored, changed or re-audited: what the minimum covers for that goal, and what it leaves out on purpose and
-  why.
+  the full route. That judgement picks the target stages; a stage a target needs is listed whatever the
+  goal says of it on its own (`REC-398`). The plan's `## Reconciliation` section records the judgement each time this section
+  is authored, changed or re-audited: what the minimum covers for that goal, which stages are targets and,
+  for every other stage, the target that needs it, and what it leaves out on purpose and why.
 - **The ladder.** Every concept a listed row names is an *essential concept*, and the section lists that
   concept's `first` row and at least one of its `variant` rows. Every stage lists at least one
   `integration` row, so each stage ends by combining what it taught; the last stages may consist of
   cross-block integrations alone — small problems of the shape a technical test asks.
+- **Conditional variants** (Victor, 2026-10-23, `REC-398`; `HORARIO.md` §1: *"la variante de un concepto
+  solo sale si falla el primero"*). A listed `variant` is **owed** only once its concept's listed `first`
+  and every `variant` of it listed before it have a non-`void` attempt and none of them was answered
+  autonomously (§E) — an `integration` naming the concept is not one of them. Once one was, the variant is **waived**: owed nothing and served
+  nowhere on the route, it stays an active inventory row that the full route serves once the essential
+  route is passed. A `first` and an `integration` are always owed, so every stage still closes on its
+  integration. **A stage is passed** when every ID it lists is passed (Completion above) or waived, and
+  **the essential route is passed** when every stage is.
 - **Reconciliation.** A listed ID that a replan retires is replaced, in the same position, by the row
   that replaces it; a listed ID is never silently dropped.
 
-The checker covers the section's shape, closure, order and ladder. The two rules marked `REC-385` are
-not mechanical, so `validate-practice-plan.py` stays as it is: it reads a row's `Concepts` and `After`,
-never what its `Task` asks, and holds no goal. The planner applies them and its cold reviewer checks
-them, walking every listed row (`_practice-plan-prompt.md`, steps 3 and 6).
+The checker covers the section's shape, closure, order and ladder — a conditional variant is still
+listed, so the ladder check stands. The two rules marked `REC-385`, and the target stages of `REC-398`,
+are not mechanical, so `validate-practice-plan.py` stays as it is: it reads a row's `Concepts` and
+`After`, never what its `Task` asks, and holds no goal. The planner applies them and its cold reviewer
+checks them, walking every listed row (`_practice-plan-prompt.md`, steps 3 and 6). Whether a variant is
+owed is read off `ATTEMPTS.md` when a batch is composed or a state derived, never written in the plan.
 
-**The essential route is passed** when every listed ID is passed, as §B's Completion defines a planned
-exercise passed. **The route's
-minimum is met** when, in addition, every essential concept is *consolidated* (§E), and every listed
-`integration` row was first answered `✅` with `Help: —` — or, where it was not, a later `integration`
-attempt naming the same heads was. The grading report states `essential passed / listed`,
-`consolidated essential concepts / essential concepts` and whether the minimum is met, and the session
+**The route's minimum is met** when the essential route is passed and every listed `integration` row
+was first answered autonomously (§E) — or, where it was not, a later `integration` attempt naming the
+same heads was (`HORARIO.md` §1: *"un lote se supera cuando su ejercicio de integración sale sin
+ayuda"*). Consolidation is not part of it (`REC-398`): a concept answered autonomously at its `first` is
+owed no variant, and the minimum is proven by the timed simulations, not by more exercises. The grading
+report states `essential passed / listed` — a waived variant counted with the passed and the number
+waived named beside it —, `consolidated essential concepts / essential concepts` and whether the
+minimum is met, and the session
 report `essential passed / listed`, each apart from the planned and first-pass figures; none of them
 enters the `PROGRESS.md` row (§G).
 
@@ -258,19 +279,23 @@ waits on it: the proposal passes the topic over, and the line is owed under the 
   list with a stream without opening the notes" — never the topic's name.
 - **Composition.** Use the active plan rows in table order, respecting `After` prerequisites —
   **except while the plan's essential route (§B) is not passed**: then a proposed batch,
-  or one requested for the topic as a whole ("ejercicios de java") with no block or concept named, takes
-  its advancing share from the unpassed listed IDs in the section's order — the difficulty adaptation
-  below included, which picks its next planned transfer/integration among them — and table order
-  resumes once the route is passed. Eligibility is unchanged, so a listed variant still waits for a
-  later batch than its first and the next eligible listed ID is taken meanwhile. From the route passed
-  until its minimum is met, such a batch's revisit share goes first to the essential concepts not yet
-  consolidated and, for each listed `integration` not yet answered `✅` with `Help: —`, to an unplanned
-  integration (`Plan ID: —`) naming the same heads.
+  or one requested for the topic as a whole ("ejercicios de java") with no block or concept named, is
+  the essential route alone (`REC-398`) — its eligible IDs that are owed and not passed, in the section's
+  order, so what an earlier stage still owes, its `integration` and the variants its failed `first` rows
+  owe, comes before the next stage's rows. It has no revisit share: a concept answered autonomously is
+  owed no variant, and a failed one is revisited by the variant it owes. The difficulty adaptation below
+  still picks among those IDs, and its prerequisite remediation still comes first. Table order and the
+  split below resume once the route is passed. Eligibility is unchanged, so a listed variant also waits
+  for a later batch than its first — and, being conditional, for the grade of its concept's listed `first` and of every variant of it listed before it — and the next
+  eligible listed ID is taken meanwhile. From the route passed until its minimum is met, such a batch's
+  revisit share goes first, for each listed `integration` not yet answered autonomously (§E), to an
+  unplanned integration (`Plan ID: —`) naming the same heads.
   Roughly three fifths of the time budget advances unpassed planned tasks; the rest revisits failures
   and correctly answered concepts oldest first, among concepts *attempted* (§E) — an `extra` row alone
   never puts a concept there. With no attempted concept — no history, or none but `extra` or `void`
   rows — use eligible planned tasks only.
-  A prerequisite task needs a non-void attempt; a planned variant additionally needs a different
+  A prerequisite task needs a non-void attempt, or is a listed variant the essential route waives (§B,
+  `REC-398`); a planned variant additionally needs a different
   batch from its first exercise. Integrations require all their concepts *attempted* (§E), which an
   `extra` row never makes them. Never emit a
   plan ID already present in an ungraded batch: resume that batch, or choose other eligible work.
@@ -401,9 +426,16 @@ Derived per concept, from the rows above and never stored:
   first row of a kind other than `extra` (a higher `ATT` id under a different `Batch`; a second batch on the same day counts),
   with `First result: ✅` and `Help: —`. Only this state lowers a concept's priority in §F. A fix and a
   later unaided variant are two different pieces of evidence and are never added together.
+- **answered autonomously** — said of one row: `First result: ✅` with `Help` `—` or `notes`. Reading
+  documentation is compatible with autonomy, and receiving the solution or step-by-step guidance is practice
+  and no proof of it (`HORARIO.md` §2, Victor's counting rules of 2026-10-23 for §1's minimum); a hint,
+  feedback or AI help is read the same way, as the simulation track reads a hint. It is the test of the essential route's
+  conditional variants and of its minimum (§B, `REC-398`); every other state here keeps `Help: —`.
 
 Correctly answered concepts return too: an unaided `✅` on a first attempt is `attempted`, not
-`consolidated`, until a later variant confirms it.
+`consolidated`, until a later variant confirms it. On the essential route a concept answered
+autonomously at its `first` is owed no variant (§B), so it stays `attempted` until a later integration or
+reinforcement confirms it — reported, and never a gate on the route or its minimum.
 
 ---
 
@@ -433,9 +465,8 @@ under the ledger. **Every step reads the position from
    the level — spring-boot, whose section `REC-386` wrote, joins once its plan is published. The next topic is the member after the topic
    of the most recently closed batch, wrapping round — any batch of a member counts, a pilot, a requested
    batch or a reinforcement included — and with no closed batch, the first member. Topics interleave, one
-   batch each, bound to no weekday. What the batch holds is §C's composition, which takes its advancing
-   share from the essential route while that route is not passed, and never the absence of a coverage
-   `✅`. A concept owing a fix is named in one line, never a gate.
+   batch each, bound to no weekday. What the batch holds is §C's composition, which is the essential
+   route's owed rows while that route is not passed, and never the absence of a coverage `✅`. A concept owing a fix is named in one line, never a gate.
 4. **A topic that cannot be served now is passed over, never a refusal of the session.** A member held
    by a pilot batch without its `Pilot folded:` line (§C) or by a stale source is named in one line with
    what holds it and who owes it — the source to `/notes-plan {topic} {level}` — and the next member is
@@ -456,15 +487,16 @@ The first section of `INDEX.md`, above the routes: the position the proposal rea
 `practice-session` when it generates a batch, and by the cold grader on every run that writes — `grade`,
 `verify` (a dated fix can pass a planned ID) and `recount`, pilot batches and stale sources included.
 **Each writer rewrites the section whole from primary state** — the batch folders' `README.md` tables,
-`ATTEMPTS.md`, each published plan's `## Essential route`, §H, and the simulation route of that level —
+`ATTEMPTS.md`, each published plan's `## Essential route` with the `Kind` and `Concepts` of the inventory
+rows it lists (whether a variant is waived, §B), §H, and the simulation route of that level —
 so no writer patches another's cell; a proposal that finds the section missing derives it the same way
 and writes it. Never written by hand or by the planner.
 
 - `Derived: YYYY-MM-DD`.
 - One table, `Topic | Essential route | Open batch | Last closed batch`, one row per topic and level that
   has a §H section and a plan or a batch:
-  - `Essential route` — `next stage NN of MM`, every stage before it passed (a stage is passed when every
-    ID it lists is, §B → Completion); `passed`; or `no plan`. `(plan stale — replan)` is appended when
+  - `Essential route` — `next stage NN of MM`, every stage before it passed (every ID it lists passed or
+    waived, §B → "Conditional variants"); `passed`; or `no plan`. `(plan stale — replan)` is appended when
     this writer's own validation of that route, this run, found its sources moved; a route it did not
     validate carries no mark, and 1b's live validation holds it (step 4).
   - `Open batch` — each open batch (§C) by folder and generation date, or `—`.
