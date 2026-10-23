@@ -141,7 +141,8 @@ decide anything.
   on 2026-07-16 (`146b982e`), and these rules outrank `ROADMAP.md`, so the stale copy was the one a
   session would have obeyed (`REC-309`); until 2026-10-21 it still named simulations a stage that
   condition opened (`REC-392`). LeetCode has no block in the day: it stays behind its gates.
-- **Interview-prep block — the spaced review, with the notes it needs.** It follows the spaced-review
+- **Interview-prep block — the spaced review, with the notes it needs.** From 2026-10-26 it shares one
+  block with the job search, which takes the block's first minutes (`HORARIO.md` §1). It follows the spaced-review
   schedule (Victor, 2026-10-20): "¿qué toca hoy?" opens it, and `interview-prep-block-open` answers with
   the day's reviews and new questions from `notes/interview-prep/spaced/` — see "The spaced review of
   the question banks" below. **Notes have no block of their own** (Victor, 2026-10-21): he opens them in
@@ -152,8 +153,9 @@ decide anything.
   (SQL is last because it is already practised daily in the SQL block).
 - **Job-search block — applications every day.** Offers, a CV tailored to each, applications and their
   follow-up (`/cv`, `/cover-letter`, `/tracker`), replacing the June rule of CV + applications on
-  Fridays; on a day with nothing useful left to do for the search, it practises one concrete gap an offer
-  or an interview showed (`HORARIO.md` §1).
+  Fridays. From 2026-10-26 it opens the block it shares with the interview prep: its first minutes, or
+  more on a day an offer asks for a tailored CV, and the interview prep has the rest (`HORARIO.md` §1,
+  replacing the 2026-10-20 rule that a day with nothing left for the search practised a concrete gap).
 
 **HR-screen practice has an event trigger, not a clock trigger.** When application work starts, or a
 real HR call is scheduled, run `/hr-screen` before that first call. Re-run it before later calls while
