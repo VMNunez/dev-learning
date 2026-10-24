@@ -34,7 +34,8 @@ counterparts where applicable. Supplied scaffolding may use already-familiar syn
 requires mastering an unintroduced concept or teaches framework behavior as Java scope.
 
 Each concept has one first and one transfer task, and each included block has one integration;
-JJ270–JJ285 add seven stage integrations and nine combined problems for the essential route.
+JJ270–JJ285 add seven stage integrations and nine combined problems, written for the essential route,
+which since 2026-10-24 lists only `JJ278` of the nine.
 Two block-06 concepts — access modifiers (`protected`) and `final` (methods, classes) — have a
 second transfer, JJ268 and JJ269, placed in block 08 because that half needs inheritance.
 Expected output never depends on the iteration order of a hash-based collection: statements print
@@ -506,15 +507,20 @@ remain authoritative in coverage. Escaped pipe characters in heads decode to the
 
 ## Essential route
 
-The route's minimum, as a ladder (standard §B, `REC-374`): each concept gets a first exercise and a
-later variant, and each stage closes with an exercise that combines what it taught; the last stage is
-small problems of the shape a technical test asks. A request for Java with no block or concept named
-is served from here, in this order, until the route is passed. Tasks outside it stay active as
-optional review.
+The route's minimum, as a ladder (standard §B, `REC-374`, `REC-398`): every concept listed here has its
+`first` exercise and a later variant, and each stage closes with an exercise that combines what it taught.
+A listed variant is served only when its concept's `first`, and every variant of it listed earlier, was not
+answered autonomously; otherwise it is waived and stays in the full route. A request for Java with no
+block or concept named is served from here, in this order, until the route is passed. Tasks outside it
+stay active as optional review. Which stages are targets, and what each other stage is listed for, is the
+2026-10-24 judgement in `## Reconciliation`.
 
-The ladder follows the notes only where teaching allows (`REC-387`): control flow comes before text,
-because every text task branches; generics and `Optional` as a return type come before enums; and
-`C006`'s variant, `JJ021`, waits for stage 04's null guard.
+The ladder follows the notes only where teaching allows (`REC-387`, `REC-400`): control flow shares the
+first stage with values and comes before text, because every text task branches; records, `final` and
+immutability come before access levels and `static`, since stage 03 asks for no modifier beyond the
+`private` that encapsulation itself teaches and for no `static` member; generics and `Optional` as a
+return type come before enums, which share stage 08 with the date-time types and close it; and `C006`'s
+variant, `JJ021`, waits for stage 02's null guard.
 
 **What a listed task may use before its stage teaches it** (standard §B, `REC-385`). Everything else a
 listed row asks him to write is one of its concepts or the concept of a row listed earlier.
@@ -524,70 +530,69 @@ listed row asks him to write is one of its concepts or the concept of a row list
   - until `JJ037`, each line that prints a label together with a value (`C021`'s `+`) — he writes the
     value it prints;
   - the declared locals `JJ012` and `JJ024` read, and the line that prints `JJ012`'s result (`C003`,
-    taught by the stage's third row, `JJ006`) — he writes the boolean expression;
+    taught by the stage's seventh row, `JJ006`) — he writes the boolean expression;
   - the `if` / `else` around the code he writes in `JJ006`, `JJ018` and `JJ024` (`C022`);
-  - every array or list that holds a row's given data before stage 12 (`C068`, `C069`, `C070`,
-    `C076`), built by the statement and read with an enhanced `for` or through the named `get` calls
+  - every array or list that holds a row's given data before stage 09 (`C068`, `C069`, `C070`), and
+    every unmodifiable list, set or map a row is given before `JJ153` (`C076`), built by the statement and read with an enhanced `for` or through the named `get` calls
     below, never indexed or modified by him; the raw collection `JJ133` and `JJ139` give him to type;
     `JJ048`'s counted loop runs over a stated numeric range, and `JJ054`'s retries count attempts
     against two stated numbers — the attempts allowed and the one that succeeds — with no sequence;
-  - the validator method `JJ055` edits (`C028`) — every other answer before stage 04 is written inside
+  - the validator method `JJ055` edits (`C028`) — every other answer before stage 02 is written inside
     the supplied `main`, with no method of his own;
-  - in stages 04 and 05, the line of the supplied `main` that creates one instance of the exercise's
-    class, `ex`, through which his methods are called (`C036`, stage 06), so every method he declares
-    there is an instance method and needs no `static` (`C042`, stage 06); the calls are supplied save
-    the one `JJ064` repairs and any `JJ065` makes explicit, which are his, written
-    `ex.<name>(<arguments>)`;
+  - in stage 02, the line of the supplied `main` that creates one instance of the exercise's class, `ex`,
+    through which his methods are called (`C036`, stage 03), so every method he declares there is an
+    instance method and needs no `static` (`C042`, stage 04); the calls are supplied save the one
+    `JJ064` repairs and any `JJ065` makes explicit, which are his, written `ex.<name>(<arguments>)`;
   - the `try` / `catch` that runs each parse case of `JJ043` and reports a rejected one, and the
-    isolated cases of `JJ153` and `JJ170` that print each rejected operation's exception (`C088`, stage 14);
-  - the line that prints an identity comparison (`C046`) in `JJ072`, `JJ085` and `JJ093`;
+    isolated cases of `JJ153` and `JJ170` that print each rejected operation's exception, and the isolated
+    case of `JJ255` that prints the rejection of a text in another pattern (`C088`, stage 11);
+  - the line that prints an identity comparison (`C046`, stage 04) in `JJ072`, `JJ085` and `JJ093`;
   - the anonymous comparator `JJ243` replaces (`C055`).
 - *Named* — a call the statement tells him to make, with its shape:
-  - `Objects.requireNonNull(value, "name")` in `JJ063`, `JJ068` and `JJ069` (`C038`, stage 06);
-  - `super(...)` in `JJ109` and `JJ115` (`C061`, stage 09);
+  - `Objects.requireNonNull(value, "name")` in `JJ063` and `JJ068` (`C038`, stage 03);
+  - `super(...)` in `JJ109` and `JJ115` (`C061`, stage 06);
   - `get(key)` on a `Map` and `get(index)` on a `List` in `JJ136`, `JJ137`, `JJ138`, `JJ142` and
-    `JJ144` (`C070`, `C072`, stage 12), and `isPresent()` with `get()` on an `Optional` in `JJ137`,
+    `JJ144` (`C070`, `C072`, stage 09), and `isPresent()` with `get()` on an `Optional` in `JJ137`,
     `JJ143` and `JJ144`;
   - `new ArrayList<>()`, `new HashSet<>()` and `new HashMap<>()` in `JJ147`, `JJ148` and `JJ149`
     (`C073`, taught by the stage's sixth row, `JJ150`);
   - the function `k -> new ArrayList<>()` that creates an empty group in `JJ151`, `JJ168` and `JJ179`
-    (`C098`, stage 15): the statement gives that argument with its shape; which accumulator call
+    (`C098`, stage 13): the statement gives that argument with its shape; which accumulator call
     receives it is his answer;
-  - `toLowerCase(Locale.ROOT)` in `JJ031`, `JJ148` and `JJ284` wherever their rule ignores case
-    (`C018`, outside the minimum).
+  - `toLowerCase(Locale.ROOT)` in `JJ031` and `JJ148` wherever their rule ignores case (`C018`, outside
+    the minimum).
 - `JJ156` and `JJ173` remove through the iterator's own `remove`: `removeIf` takes a lambda, which
-  stage 15 teaches. Stage 07 compares Strings, wrappers and records; writing `equals` for a class is
-  stage 13's.
-- Before stage 06 no row's policy is a throw (`C038`): the unknown input of `JJ057`, the rejected texts
-  of `JJ040` and `JJ063` and the missing price of `JJ021` each take a stated value or message. Through
-  stage 07 the mutable object a final field or record component holds (`JJ084`, `JJ086`, `JJ101`,
-  `JJ107`) is a `StringBuilder` or a supplied class with a setter, never a collection. In stage 00
-  every repair changes a supplied literal or operand, never adds a declaration or an operator.
+  stage 13 teaches. Stage 04 compares Strings, wrappers and records; writing `equals` for a class is
+  stage 10's.
+- Before stage 03 no row's policy is a throw (`C038`): the unknown input of `JJ057`, the rejected texts
+  of `JJ040` and `JJ063` and the missing price of `JJ021` each take a stated value or message. Before
+  stage 09 the mutable object a final field or record component holds (`JJ084`, `JJ086`, `JJ101`,
+  `JJ107`) is a `StringBuilder` or a supplied class with a setter, never a collection. `JJ001`–`JJ004`,
+  ahead of `JJ012` and `JJ006`, repair by changing a supplied literal or operand, never by adding a
+  declaration or an operator.
+- Money a listed row handles — a price, a balance, a total — is a whole number of units or cents, never
+  a `BigDecimal` or a `double`: exact decimal money (`C013`, `C014`) is outside the minimum, and so is
+  floating point (`C011`).
 
 | Stage | Title | Tasks |
 |---|---|---|
-| 00 | Starting point: running a program | JJ001, JJ003, JJ002, JJ004, JJ005 |
-| 01 | Values, operators and exact numbers | JJ012, JJ024, JJ006, JJ018, JJ008, JJ020, JJ009, JJ010, JJ022, JJ011, JJ023, JJ016, JJ028, JJ017, JJ029, JJ030 |
-| 02 | Control flow | JJ046, JJ052, JJ048, JJ054, JJ049, JJ055, JJ051, JJ057, JJ058 |
-| 03 | Text | JJ031, JJ038, JJ033, JJ040, JJ036, JJ043, JJ037, JJ044, JJ270 |
-| 04 | Methods and null | JJ059, JJ064, JJ060, JJ065, JJ063, JJ021, JJ069 |
-| 05 | References and the call stack | JJ070, JJ073, JJ071, JJ074, JJ068, JJ072, JJ075, JJ076 |
-| 06 | Classes and objects | JJ077, JJ078, JJ092, JJ093, JJ079, JJ094, JJ080, JJ095, JJ081, JJ096, JJ083, JJ098, JJ084, JJ099, JJ085, JJ100, JJ086, JJ101, JJ107 |
-| 07 | Equality | JJ087, JJ102, JJ088, JJ103, JJ089, JJ104, JJ090, JJ105, JJ271 |
-| 08 | Interfaces and abstract classes | JJ108, JJ114, JJ113, JJ119, JJ109, JJ115, JJ110, JJ116, JJ111, JJ117, JJ120 |
-| 09 | Inheritance, composition and polymorphism | JJ121, JJ126, JJ122, JJ127, JJ123, JJ128, JJ125, JJ130, JJ268, JJ124, JJ129, JJ131 |
-| 10 | Generics and Optional as a return type | JJ132, JJ138, JJ133, JJ139, JJ136, JJ142, JJ137, JJ143, JJ144 |
-| 11 | Enums | JJ245, JJ248, JJ246, JJ249, JJ247, JJ250, JJ251 |
-| 12 | Arrays, lists, sets and maps | JJ146, JJ163, JJ147, JJ148, JJ149, JJ150, JJ152, JJ164, JJ165, JJ166, JJ167, JJ169, JJ153, JJ170, JJ156, JJ173, JJ272 |
-| 13 | Hashing and map accumulation | JJ151, JJ168, JJ158, JJ175, JJ159, JJ176, JJ179 |
-| 14 | Exceptions | JJ181, JJ183, JJ180, JJ190, JJ192, JJ189, JJ184, JJ193, JJ185, JJ194, JJ186, JJ195, JJ187, JJ196, JJ188, JJ197, JJ198 |
-| 15 | Functional interfaces and lambdas | JJ203, JJ199, JJ200, JJ201, JJ202, JJ213, JJ209, JJ210, JJ211, JJ212, JJ204, JJ214, JJ274 |
-| 16 | Ordering | JJ160, JJ177, JJ231, JJ243, JJ273 |
-| 17 | Optional pipelines | JJ205, JJ215, JJ206, JJ207, JJ216, JJ217, JJ219 |
-| 18 | Streams | JJ221, JJ220, JJ233, JJ232, JJ222, JJ234, JJ223, JJ235, JJ224, JJ236, JJ225, JJ237, JJ226, JJ238, JJ230, JJ242, JJ275 |
-| 19 | Collecting to maps | JJ229, JJ241, JJ244 |
-| 20 | Dates and times | JJ252, JJ257, JJ253, JJ258, JJ255, JJ260, JJ285 |
-| 21 | Combined problems | JJ276, JJ277, JJ278, JJ279, JJ280, JJ281, JJ282, JJ283, JJ284 |
+| 00 | Values and control flow | JJ001, JJ003, JJ002, JJ004, JJ012, JJ024, JJ006, JJ018, JJ008, JJ020, JJ009, JJ010, JJ022, JJ011, JJ023, JJ046, JJ052, JJ048, JJ054, JJ049, JJ055, JJ051, JJ057, JJ058 |
+| 01 | Text | JJ031, JJ038, JJ033, JJ040, JJ036, JJ043, JJ037, JJ044, JJ270 |
+| 02 | Methods, null and references | JJ059, JJ064, JJ060, JJ065, JJ063, JJ021, JJ070, JJ073, JJ071, JJ074, JJ068, JJ072, JJ075, JJ076 |
+| 03 | Classes, records and immutability | JJ077, JJ078, JJ092, JJ093, JJ079, JJ094, JJ080, JJ095, JJ084, JJ099, JJ085, JJ100, JJ086, JJ101, JJ107 |
+| 04 | Access levels, static and equality | JJ081, JJ096, JJ083, JJ098, JJ087, JJ102, JJ088, JJ103, JJ089, JJ104, JJ090, JJ105, JJ271 |
+| 05 | Interfaces and abstract classes | JJ108, JJ114, JJ113, JJ119, JJ109, JJ115, JJ110, JJ116, JJ111, JJ117, JJ120 |
+| 06 | Inheritance, composition and polymorphism | JJ121, JJ126, JJ122, JJ127, JJ123, JJ128, JJ125, JJ130, JJ268, JJ124, JJ129, JJ131 |
+| 07 | Generics and Optional as a return type | JJ132, JJ138, JJ133, JJ139, JJ136, JJ142, JJ137, JJ143, JJ144 |
+| 08 | Date-time types and enums | JJ252, JJ257, JJ255, JJ260, JJ245, JJ248, JJ246, JJ249, JJ247, JJ250, JJ251 |
+| 09 | Arrays, lists, sets and maps | JJ146, JJ163, JJ147, JJ148, JJ149, JJ150, JJ164, JJ165, JJ166, JJ167, JJ272 |
+| 10 | Collection contracts, hashing and map accumulation | JJ152, JJ169, JJ153, JJ170, JJ156, JJ173, JJ151, JJ168, JJ158, JJ175, JJ159, JJ176, JJ179 |
+| 11 | Throwing, catching and custom exceptions | JJ181, JJ183, JJ180, JJ190, JJ192, JJ189, JJ185, JJ194, JJ278 |
+| 12 | Resources, causes, swallowed failures and stack traces | JJ184, JJ193, JJ186, JJ195, JJ187, JJ196, JJ188, JJ197, JJ198 |
+| 13 | Functional interfaces and lambdas | JJ203, JJ199, JJ200, JJ201, JJ202, JJ213, JJ209, JJ210, JJ211, JJ212, JJ204, JJ214, JJ274 |
+| 14 | Ordering and Optional pipelines | JJ160, JJ177, JJ231, JJ243, JJ205, JJ215, JJ206, JJ207, JJ216, JJ217, JJ219 |
+| 15 | Streams: building pipelines | JJ221, JJ220, JJ233, JJ232, JJ222, JJ234, JJ223, JJ235, JJ230, JJ242, JJ275 |
+| 16 | Streams: aggregating, matching and collecting to maps | JJ224, JJ236, JJ225, JJ237, JJ226, JJ238, JJ229, JJ241, JJ244 |
 
 ## Reconciliation
 
@@ -622,7 +627,8 @@ on the route reviewer's findings: `JJ012` / `JJ024` moved before `JJ006`, `JJ068
 before `JJ216`, `C076` listed, and stages 04–05 call his methods through an instance the supplied
 `main` creates, so no `static` is asked before stage 06.
 
-Goal fit (standard §B): the goal is a junior Angular + Spring Boot role at a Spanish consultancy, whose
+Goal fit, 2026-10-22 (standard §B; its minimum superseded 2026-10-24, below — what it leaves out
+still stands): the goal is a junior Angular + Spring Boot role at a Spanish consultancy, whose
 take-home is a small Spring Boot API reviewed live (`_shared-context.md`, `ROADMAP.md`), so the
 minimum is the Java such code is written in, unaided: typed values and exact money; branches, loops
 and switch expressions; parsing and building text; methods with a null boundary; references and the
@@ -650,3 +656,64 @@ stream row collects with `toList()` and never mutates it); `C121` (`LocalDate` a
 give a month's range in stage 20); `C123` (a reading skill used on every unfamiliar call, not
 written); and block 16, whose annotations a junior reads rather than writes — the spring-boot route
 practises the ones he meets.
+
+2026-10-24 (`REC-400`): replanned to `REC-398`'s minimum — target stages closed under their
+prerequisites, compressed by tasks and never by a concept a target needs, a listed variant served only
+when its concept's `first` and every variant of it listed earlier were not answered autonomously. The 22
+stages became 17, each holding about one 50-minute exercise block of first-pass work (`HORARIO.md` §1) —
+its `first` rows, with the variants already owed, and the integration that closes it: 39 to 62 minutes
+at §C's budget of about 6 minutes an exercise and 15–20 an integration — so at §C's 30-minute default a
+stage spans about two batches (`REC-406`); should that row keep the 30-minute default, this route is
+re-sized to it, which changes how many stages and integrations it lists, never which concepts. Merged:
+values with control flow (stage 00, closed by `JJ058`), methods with references (stage 02, closed by
+`JJ076`), ordering with `Optional` pipelines (stage 14, closed by `JJ219`), and the dates stage's `C119`
+and `C122` rows with the enums (stage 08, closed by `JJ251`). Split, each half closed by an integration
+the inventory already holds: classes into records, `final` and immutability (stage 03, `JJ107`) before
+access levels, `static` and equality (stage 04, `JJ271`); collections into lists, sets and maps (09,
+`JJ272`) and contracts, hashing and accumulation (10, `JJ179`); exceptions into throwing, catching and
+custom types (11, closed by `JJ278`, moved from the combined problems) and resources, causes, swallowed
+failures and traces (12, `JJ198`); streams into building pipelines (15, `JJ275`) and aggregating,
+matching and collecting to maps (16, `JJ244`). Unlisted, 19 IDs and none retired: the integrations of
+the merged stages, `JJ005`, `JJ030`, `JJ069`, `JJ273` and `JJ285`; `JJ016`, `JJ017`, `JJ028` and
+`JJ029` (`C013`, `C014`); `JJ253` and `JJ258` (`C120`); and the combined problems `JJ276`, `JJ277` and
+`JJ279`–`JJ284`. 204 listed tasks (from 223), 93 essential concepts (from 96). No inventory row was
+changed or retired, no attempt relabelled and no batch edited; source fingerprints unchanged. Re-audit
+round 2, on the route reviewer's finding that spring-boot's minimum writes dates (`SB088`, `SB127`,
+`SB217`): `C119` and `C122` listed again, in stage 08.
+
+Goal fit, 2026-10-24 (standard §B, `REC-398`): the target stages are `HORARIO.md` §1's Java interview
+core — classes and records (stages 03–04), interfaces and inheritance (05–06), `equals` / `hashCode`
+(10, on stage 04's value equality, which its `equals` builds on), collections (09–10), exceptions
+(11–12), lambdas and `Optional` (07, 13 and 14) and streams (15–16) — and stage 08, whose date-time types
+and enums the core does not name but spring-boot's minimum asks him to write, while a spring-boot stage
+waits for the java stage that teaches what it asks (`REC-398`'s ruling 4): a `LocalDate` field he maps
+(`SB088`, stage 05), the `timestamp` of the error body he builds (`SB127`, stage 04), date constraints
+(`SB217`, stage 03), a date text shape (`SB031`, `SB048`, stage 02), enum constants he maps and reorders
+(`SB068`, `SB084`, stage 05) and enum states his exception carries (`SB135`, stage 04). The other three
+stages are listed because those targets need what they teach. Stage 00 (values and control flow): every
+target row declares locals, compares, branches and loops (`C003`, `C009`, `C022`, `C024`, `C025`);
+`C006` is what stage 04's wrapper equality compares (`JJ089`); `C008` is the overflow stage 14's `JJ160`
+must not cause by subtracting, and `C005` and `C007` are what `C008`'s own rows use (`JJ011` promotes
+with a cast, `JJ023` computes in `long`); `C027` is the switch stage 08's `JJ247` writes over an enum;
+`C002` is the compiler rejection every row annotating a commented-out line relies on (`JJ084`, `JJ099`,
+`JJ081`, `JJ245`) and the compile-time check stage 11's checked exceptions add (`JJ180`, `JJ189`), and
+`C001` is the `javac` that rejection comes from (`JJ002`). Stage 01 (text): `C020` is the parse whose
+failure stage 11's `JJ183` catches; `C021` is the builder stages 02 and 03 mutate (`JJ070`, `JJ072`,
+`JJ084`, `JJ086`) and the `+` of every label line from `JJ037` on; `C015` is the returned String the
+later text transformations keep (`JJ148`, `JJ200`); `C017` is the empty-name rule of stage 13's `JJ200`.
+Stage 02 (methods, null and references): every target row declares and calls methods (`C028`); `C029` is
+the overload stage 06's `JJ123` sets against an override; `C032` is the null boundary that stage 03's
+invariants (`JJ079`), stage 04's null-safe equality (`JJ090`) and stage 07's `Optional` contract
+(`JJ143`) replace; `C033` is why stage 03's `JJ101` sees its object change through the reference its
+constructor received; `C034` is the frame stage 12's traces name (`JJ188`); `C035` is the shared object
+behind stage 03's shallow immutability (`JJ086`), stage 10's mutable elements (`JJ170`) and mutated keys
+(`JJ159`). Left out on purpose, beside what the 2026-10-22 judgement above already left: `C013` and
+`C014`, since no listed row and no spring-boot stage 01–09 row asks him to write decimal arithmetic — a
+listed amount is a whole number (the prose above), and spring-boot's prices and totals sit in code its
+statements supply (`SB048`, `SB052`, `SB209`, `SB243`, `SB244`), so comparing a decimal total there is
+`REC-402`'s to supply or keep whole; `C120`, since no target row and no spring-boot stage 01–09 row
+measures an interval; `C121`, whose 2026-10-22 reason named the dates stage, since no row of either
+minimum needs a whole-month value; and the combined problems `JJ276`, `JJ277` and `JJ279`–`JJ284`, whose
+concepts the stages already practise — the take-home shape is the timed simulations', which prove the
+minimum (`HORARIO.md` §1) — so `C111`, whose loop-or-stream choice the 2026-10-22 judgement placed in
+`JJ281`, leaves with them. `JJ278` stays, closing stage 11.

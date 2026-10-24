@@ -23,11 +23,11 @@ Simulations: no route — /simulation-plan LEVEL=junior
 
 Exercise plan: [Java junior](java/junior/PLANNING-junior.md)
 Active planned exercises: 285
-Essential route: 22 stages, 223 tasks
+Essential route: 17 stages, 204 tasks
 Notes structure SHA-256: 7ce0128dc0f8cf59aca6b22f2663bef9f9dd785e4acef79d79b74d259424f5e2
 Notes plan: notes/java/coverage/notes-plan-junior.md
 Coverage SHA-256: bad12930637587f5cce0f4c3bad990572d29c6e9c4ea340a6e4a2627a188508a
-Derived: 2026-10-22
+Derived: 2026-10-24
 
 | Block | Title | Note | Depends on | Bullets | In route |
 |---|---|---|---|---|---|
