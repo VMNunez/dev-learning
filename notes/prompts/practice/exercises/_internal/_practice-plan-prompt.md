@@ -38,7 +38,7 @@ It writes plans and navigation only; statements, skeletons, answers and grades b
    is a set of target stages closed under their prerequisites (`REC-398`): pick the targets the goal
    needs, list every stage a target needs — never cutting one to shorten the minimum, which shrinks by
    tasks and never by concepts — size each stage at about one batch of work, its `first` rows and the
-   integration that closes it, which §B serves across two batches — and name in `## Reconciliation`
+   integration that closes it, which §B serves across two batches or more — and name in `## Reconciliation`
    which stages are targets and, for every other stage, the target that needs it. Then write the
    stages' waits (§B, "A stage can wait for something outside its route", `REC-401`): a concept of
    another published route that a listed row asks him to write, which no earlier stage of this route

@@ -164,15 +164,17 @@ for. The checker fails a plan that lacks it.
 needs what it teaches, under the closure and taught-before rules below, and **a prerequisite is never cut**
 to shorten the minimum. The minimum shrinks by tasks — fewer rows to a stage, a variant served only on a
 failure (Conditional variants below) — never by concepts. A stage holds about one batch of work at §C's
-default size: the `first` rows it serves, and the `integration` that closes it. **It is served across
-two batches, never one** (`REC-408`): an integration needs its concepts *attempted* (§C), which only a
-grade makes them (§E), so it opens the topic's next batch, beside the variants a failed `first` came to
-owe and the next stage's `first` rows. The delay is the point — the integration is answered after the
-feedback on what it combines, and usually a rotation later, so it tests recall rather than code still on
-the screen — and it costs little: each stage's integration rides with the next stage's work, so a whole
-route still takes about one batch per stage when every `first` is answered autonomously (measured
-2026-10-25 over the three published routes: 19, 13 and 19 batches for 17, 14 and 17 stages), and more
-as variants fall due.
+default size: the `first` rows it serves, and the `integration` that closes it. **A stage that teaches a
+concept is served across two batches or more, never one** (`REC-408`): an integration needs its concepts
+*attempted* (§C), which only a grade makes them (§E), so it waits for a batch after the one that served
+the `first` rows it combines — usually the topic's next — and is served there beside what else is owed:
+the stage's later `first` rows, the variants a failed `first` came to owe, and the next stage's `first`
+rows. The delay is the point — the integration is answered after the feedback on what it combines, and
+usually a rotation later, so it tests recall rather than code still on the screen — and it costs little:
+each stage's integration rides with the next stage's work, so a whole route still takes about one batch
+per stage when every `first` is answered autonomously (measured 2026-10-25 by simulating this composition
+over the three published routes at 50 minutes a batch, 17.5 an integration and every wait met: 19, 13
+and 19 batches for 17, 14 and 17 stages), and more as variants fall due.
 
 - One table, `Stage | Title | Tasks`: `Stage` a two-digit number, unique, in serving order; `Tasks` the
   stage's IDs, comma-separated, in serving order. Every ID is an active inventory row and appears once
@@ -253,8 +255,8 @@ owed is read off `ATTEMPTS.md` when a batch is composed or a state derived, neve
 
 **The route's minimum is met** when the essential route is passed and every listed `integration` row
 was first answered autonomously (§E) — or, where it was not, a later `integration` attempt naming the
-same heads was (`HORARIO.md` §1: *"una etapa se supera cuando su ejercicio de integración sale sin
-ayuda"*). Consolidation is not part of it (`REC-398`): a concept answered autonomously at its `first` is
+same heads was (`HORARIO.md` §1: *"para el mínimo, el ejercicio de integración de cada etapa tiene
+que salir sin ayuda"*). Consolidation is not part of it (`REC-398`): a concept answered autonomously at its `first` is
 owed no variant, and the minimum is proven by the timed simulations, not by more exercises. The grading
 report states `essential passed / listed` — a waived variant counted with the passed and the number
 waived named beside it —, `consolidated essential concepts / essential concepts` and whether the
