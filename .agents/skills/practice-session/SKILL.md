@@ -118,8 +118,8 @@ topic. A planning request (Route 0) is never held back by a pilot, graded or not
 
 ### 1c — Compose the batch
 
-From the persistent plan, `ATTEMPTS.md` and existing batch manifests, under standard §C: size from the time he stated (30 minutes when he
-stated none), one checkable objective, the composition — while the essential route is not passed, its
+From the persistent plan, `ATTEMPTS.md` and existing batch manifests, under standard §C: size from the time he stated (about 50 minutes,
+one exercise block, when he stated none), one checkable objective, the composition — while the essential route is not passed, its
 owed rows alone, a listed variant only while neither its concept's `first` nor a variant of it listed earlier was answered autonomously
 (`REC-398`); the split otherwise — the difficulty adaptation read off the
 `Why` column, and the no-repeat rule — or, on a reinforcement request, §C's reinforcement entry,
@@ -253,7 +253,7 @@ Route 1 includes the plan path, `Plan: passed/active tasks` and `Esencial: passe
 pilot` on a pilot batch — alongside:
 
 ```
-Práctica: java junior · bloque 10 — Collections, hashing, and ordering · 30 min · 5 ejercicios
+Práctica: java junior · bloque 10 — Collections, hashing, and ordering · 50 min · 6 ejercicios
 Por qué: toca java en la rotación — el último lote cerrado fue de angular
 Objetivo: elegir entre `List`, `Set` y `Map` y recorrerlos sin abrir la nota
 Lote: practice/exercises/java/junior/03-collections/

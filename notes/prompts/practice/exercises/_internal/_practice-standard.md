@@ -164,7 +164,7 @@ for. The checker fails a plan that lacks it.
 needs what it teaches, under the closure and taught-before rules below, and **a prerequisite is never cut**
 to shorten the minimum. The minimum shrinks by tasks — fewer rows to a stage, a variant served only on a
 failure (Conditional variants below) — never by concepts. A stage holds about one batch of work at §C's
-size: the `first` rows it serves, and the `integration` that closes it.
+default size: the `first` rows it serves, and the `integration` that closes it.
 
 - One table, `Stage | Title | Tasks`: `Stage` a two-digit number, unique, in serving order; `Tasks` the
   stage's IDs, comma-separated, in serving order. Every ID is an active inventory row and appears once
@@ -272,9 +272,11 @@ waits on it: the proposal passes the topic over, and the line is owed under the 
   served as kind `extra`: recorded, never
   counted toward a first pass, the second with one line saying it is outside the checklist. This track
   never authors a bullet.
-- **Size.** From the time Victor states when he opens the session; with none stated, assume 30 minutes
-  and never ask. Budget about 6 minutes per isolated exercise and 15–20 per integration exercise; never
-  more than 8 exercises.
+- **Size.** From the time Victor states when he opens the session; with none stated — and on every planning
+  run, which sizes stages and never reads a session's stated time — assume about 50 minutes, one exercise block (`HORARIO.md` §1), and never ask
+  (Victor, 2026-10-25, `REC-406`, replacing the 30 minutes of 2026-10-05, set when short exercises had
+  no block of their own). Budget about 6 minutes per isolated exercise and 15–20 per integration
+  exercise; never more than 8 exercises.
 - **One objective.** Every batch states a single checkable objective in its `README.md` — "transform a
   list with a stream without opening the notes" — never the topic's name.
 - **Composition.** Use the active plan rows in table order, respecting `After` prerequisites —
