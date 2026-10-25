@@ -450,8 +450,8 @@ rotation re-ruled on 2026-10-23 (`REC-398`), and an owed simulation review or co
 open batch on 2026-10-25 (`REC-391`); a change to it is a change to this section, made by hand under the
 ledger. **Every step reads the position from `INDEX.md` → `## Practice state` (below), never from a
 conversation — and its `Simulations:` line is checked against the simulation route before step 1**,
-because no simulation ritual writes it and `/simulation-plan` and the timed attempts move the route
-with no state writer running (`REC-391`). Where the line reads `no route` and a route exists, names a
+because no simulation ritual writes it and `/simulation-plan`, the timed attempts and their reviews move
+the route with no state writer running (`REC-391`). Where the line reads `no route` and a route exists, names a
 step whose state on the route differs from the one it records, or names an earlier latest attempt than
 the route records, it is stale, and it is re-derived from the route as it stands, under the rules of
 the `Simulations:` bullet below, before anything is proposed — written only by the state's writers,
@@ -525,7 +525,7 @@ and writes it. Never written by hand or by the planner.
   the first attempt on, one simulation is due per completed round — every member having closed a batch
   graded on a later day than the route's latest recorded attempt — and the round counts new timed
   attempts only: a step already attempted and awaiting review or `correction-required` is `due` at once,
-  whatever the round — `HORARIO.md` §1 gives the correction the next day — and §F step 1 puts it ahead
+  whatever the round — `HORARIO.md` §1 puts its review (*la corrección*) on the next day and the fixing of what failed between simulations — and §F step 1 puts it ahead
   of an open batch (`REC-391`). Which step is next, and whether it is ready, stays the
   simulation route's: a track's first-step stage prerequisite (`_simulation-plan-standard.md` §5) is
   checked live by `simulation-block-open`, never read off this line; the line applies the same test only
