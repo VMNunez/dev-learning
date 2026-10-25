@@ -37,7 +37,8 @@ It writes plans and navigation only; statements, skeletons, answers and grades b
    in `## Reconciliation` what the minimum covers and what it leaves out on purpose and why. The minimum
    is a set of target stages closed under their prerequisites (`REC-398`): pick the targets the goal
    needs, list every stage a target needs — never cutting one to shorten the minimum, which shrinks by
-   tasks and never by concepts — size each stage at about one batch, and name in `## Reconciliation`
+   tasks and never by concepts — size each stage at about one batch of work, its `first` rows and the
+   integration that closes it, which §B serves across two batches — and name in `## Reconciliation`
    which stages are targets and, for every other stage, the target that needs it. Then write the
    stages' waits (§B, "A stage can wait for something outside its route", `REC-401`): a concept of
    another published route that a listed row asks him to write, which no earlier stage of this route
@@ -70,8 +71,8 @@ It writes plans and navigation only; statements, skeletons, answers and grades b
    section's prose, never what the row practises, and, for a supplied piece, never what its pass
    condition asks him to get right; and whether the minimum covers what the goal needs, with
    `## Reconciliation` recording what it leaves out and why — its target stages named, every other
-   listed stage needed by one, no stage a target needs left out, and each stage about one batch
-   (`REC-398`); and whether every concept of another route a row asks him to write — not taught earlier
+   listed stage needed by one, no stage a target needs left out, and each stage about one batch of
+   work (`REC-398`, `REC-408`); and whether every concept of another route a row asks him to write — not taught earlier
    here, neither supplied nor a named call — is a wait of its stage or an earlier one, every wait
    needed by a listed row of its stage, and every testing stage waiting for its project step
    (`REC-401`). It must persist
