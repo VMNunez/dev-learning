@@ -5,8 +5,9 @@ description: >
   WHENEVER Victor asks to practise in his own words ("vamos a hacer ejercicios de repaso de práctica",
   "quiero practicar", "hazme ejercicios de streams", "ejercicios de java"), asks for reinforcement on something he is unsure of ("refuerzo de Optional", "no me siento seguro con equals y hashCode"), or asks to create/update a topic-level exercise plan ("planifica los ejercicios de java junior"), or says a batch is ready
   ("listo, corrige los ejercicios", "ya he hecho el lote", "he corregido los fallos"). He never types a
-  command: naming no topic makes it propose what to practise and why, from the practice state — the open
-  batch first, then a due simulation, then the next topic of his rotation;
+  command: naming no topic makes it propose what to practise and why, from the practice state — an owed
+  simulation review or correction first, then the open batch, then a due simulation, then the next topic
+  of his rotation;
   naming a topic, a block or a concept generates exactly that, with no proposal and no counter-suggestion.
   When a batch is answered it grades nothing itself — it dispatches one COLD grader, because this skill
   runs in the session where the concept may have just been explained to him — and the grader writes the
@@ -80,11 +81,13 @@ and review result; commit the accepted plan and INDEX. Do not generate an exerci
   nothing here.
 - **He named nothing** — choose under standard §F from `practice/exercises/INDEX.md` →
   `## Practice state`; where that section is missing, derive it as §F states and write it first,
-  committed alone (`docs(practice): derive the practice state`). Open the reply with **one line**: what,
-  and why. The proposal is not a question. On an open batch, name it and its exercises with no
-  `ATTEMPTS.md` row, generate nothing and end at the report; on a due simulation, say
-  `vamos con una simulación` is the door, generate nothing and end at the report; on a topic, carry
-  straight on to 1b.
+  committed alone (`docs(practice): derive the practice state`). Check its `Simulations:` line against
+  the simulation route first, as §F states (`REC-391`). Open the reply with **one line**: what, and why.
+  The proposal is not a question. On an owed simulation review or correction, say
+  `vamos con una simulación` is the door, name any open batch in one line, generate nothing and end at
+  the report; on an open batch, name it and its exercises with no `ATTEMPTS.md` row, generate nothing
+  and end at the report; on any other due simulation, say `vamos con una simulación` is the door,
+  generate nothing and end at the report; on a topic, carry straight on to 1b.
 
 **The topic must have an environment section** in standard §H. If it has none, say so in one line, name
 the topics that do, and stop. The proposal path never lands on one (§F).

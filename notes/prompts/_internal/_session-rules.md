@@ -126,7 +126,8 @@ decide anything.
   proposes or generates a batch for the practical topics beyond SQL from a persistent topic-level
   exercise plan — or, once per topic and level before that plan exists, as a pilot batch
   (`_practice-standard.md` §C) — then grades it cold when he says it is ready. What it proposes when he
-  names nothing — the open batch, a due simulation, the rotation's next topic — is that standard's §F.
+  names nothing — an owed simulation review or correction, the open batch, a due simulation, the
+  rotation's next topic — is that standard's §F.
   Proposing is the default door, never the only one: a topic he names is served as asked. The contract
   is `notes/prompts/practice/exercises/_internal/_practice-standard.md`; the SQL track keeps its own
   flow. A timed simulation may take this block and the project block together (`HORARIO.md` §1).

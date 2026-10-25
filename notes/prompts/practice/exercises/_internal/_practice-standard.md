@@ -238,8 +238,8 @@ and days, and it is graded once, when he says it is finished (`REC-332`).
 **One open batch at a time, across topics** (Victor, 2026-10-21, `REC-382`). A batch is **open** from its
 generation commit until it is **graded** — every exercise of its table has a row in `ATTEMPTS.md`. A
 `PARTIAL` return leaves it open; a `pending` fix does not, since owing a fix is named and never a gate
-(§F). On the proposal path an open batch is the only proposal: it is continued, across as many days as
-it takes, and nothing new is generated. A topic, block or concept he names is still served, and the open
+(§F). On the proposal path an open batch is the only proposal once no simulation review or correction
+is owed (§F step 1): it is continued, across as many days as it takes, and nothing new is generated. A topic, block or concept he names is still served, and the open
 batch is named in one line.
 
 **Three entries, one component.** Called **with** a topic, a block or a single concept, the batch is that —
@@ -445,22 +445,29 @@ reinforcement confirms it — reported, and never a gate on the route or its min
 
 Only when Victor names no topic. One short proposal with its reason; he may override it, and no ritual
 comments on the choice he makes instead. The order is Victor's, ruled on 2026-10-21 (`REC-382`) for his
-exercise block — `HORARIO.md` §1, in the `Documents/main` folder above this repository — and its
-rotation re-ruled on 2026-10-23 (`REC-398`); a change to it is a change to this section, made by hand
-under the ledger. **Every step reads the position from
-`INDEX.md` → `## Practice state` (below), never from a conversation.**
+exercise block — `HORARIO.md` §1, in the `Documents/main` folder above this repository — its
+rotation re-ruled on 2026-10-23 (`REC-398`), and an owed simulation review or correction put ahead of an
+open batch on 2026-10-25 (`REC-391`); a change to it is a change to this section, made by hand under the
+ledger. **Every step reads the position from `INDEX.md` → `## Practice state` (below), never from a
+conversation — and its `Simulations:` line is checked against the simulation route before step 1**,
+because no simulation ritual writes it and `/simulation-plan` and the timed attempts move the route
+with no state writer running (`REC-391`). Where the line reads `no route` and a route exists, names a
+step whose state on the route differs from the one it records, or names an earlier latest attempt than
+the route records, it is stale, and it is re-derived from the route as it stands, under the rules of
+the `Simulations:` bullet below, before anything is proposed — written only by the state's writers,
+never here.
 
-1. **An open batch is the only proposal** (§C). The oldest open batch is named with the exercises of its
+1. **An owed simulation review or correction, and otherwise an open batch.** A `Simulations:` line
+   reading `due` on a step the route holds `attempted` — awaiting its review — or `correction-required`
+   is the proposal even with a batch open (Victor, 2026-10-25, `REC-391`): that review or correction,
+   handed to its own flow — `vamos con una simulación` is the door, `simulation-block-open` names the
+   moment — with the open batch named in one line and left open, and nothing generated here. Otherwise
+   **an open batch is the only proposal** (§C): the oldest open batch is named with the exercises of its
    table that have no `ATTEMPTS.md` row, and continued; nothing is generated.
-2. **Otherwise a simulation that is due** — the state's `Simulations:` line reads `due`, or it reads
-   `no route` or `waiting — step N ({track}) blocked: …` and, re-derived as below from the route as it
-   stands, would read `due` — `/simulation-plan` moves either line with no state writer running. The proposal is
-   that test, handed to its own flow — `vamos con una simulación` is the door, `simulation-block-open`
-   names the moment — and nothing is generated here. Before proposing it, re-read step N's state and the
-   route's latest attempt date; where either differs from what the line names, the line is stale, and it
-   is re-derived from the route as it stands, under the rules of the `Simulations:` bullet below, before
-   anything is proposed — written only by the state's writers, never here. The cadence decides only what is proposed: a simulation he asks
-   for is the simulation track's to serve or to hold.
+2. **Otherwise a simulation that is due** — the `Simulations:` line, checked as above, reads `due`. The
+   proposal is that test, handed to its own flow — `vamos con una simulación` is the door,
+   `simulation-block-open` names the moment — and nothing is generated here. The cadence decides only
+   what is proposed: a simulation he asks for is the simulation track's to serve or to hold.
 3. **Otherwise the next topic of the rotation, from its essential route.** The rotation is java →
    spring-boot → angular, the job's backend stack first and java ahead of the spring-boot stages that
    use it (Victor, 2026-10-23, `REC-398`). Its members are those of the three with a §H section and a published plan at
@@ -517,8 +524,9 @@ and writes it. Never written by hand or by the planner.
   attempt the round clause does not apply: an area's first simulation waits only for its stages. From
   the first attempt on, one simulation is due per completed round — every member having closed a batch
   graded on a later day than the route's latest recorded attempt — and the round counts new timed
-  attempts only: a step already attempted and awaiting review or `correction-required` is `due` at once, whatever the round, since its review and correction go in the
-  next programming block (`HORARIO.md` §1). Which step is next, and whether it is ready, stays the
+  attempts only: a step already attempted and awaiting review or `correction-required` is `due` at once,
+  whatever the round — `HORARIO.md` §1 gives the correction the next day — and §F step 1 puts it ahead
+  of an open batch (`REC-391`). Which step is next, and whether it is ready, stays the
   simulation route's: a track's first-step stage prerequisite (`_simulation-plan-standard.md` §5) is
   checked live by `simulation-block-open`, never read off this line; the line applies the same test only
   so that it never reads `due` on a step the opener would hold.
