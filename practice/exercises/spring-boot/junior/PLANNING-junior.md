@@ -560,8 +560,8 @@ exercise that combines what it taught; stage 12 is technical tests alone, one fe
 shape a take-home asks for, and stage 13 is where he starts writing tests. A listed variant is served
 only when its concept's `first`, and every variant of it listed earlier, was not answered autonomously;
 otherwise it is waived and stays in the full route. Each stage holds about one 50-minute exercise block
-of first-pass work at §C's budget — its `first` rows, with the variants they come to owe, and the
-integration that closes it: 27 to 60 minutes at §C's budget of about 6 minutes an exercise and 15–20 an
+of first-pass work at §C's budget — its `first` rows and the integration that closes it — a variant a
+failed `first` comes to owe is served in a later batch —: 27 to 60 minutes at §C's budget of about 6 minutes an exercise and 15–20 an
 integration, three to seven exercises. Which stages are targets, and what
 the minimum leaves out, is the 2026-10-25 judgement in `## Reconciliation`.
 
@@ -609,6 +609,7 @@ java's):
   SB073 and SB088;
 - stage 09 — `C098` and `C102`, the `orElseThrow` and `orElseGet` SB106 asks for;
 - stage 10 — `C047`, the sort key SB110 compares;
+- stage 12 — `C117`, the closed state SB292 compares;
 - stage 13 — `07-timetrack Step 8`, where he first writes JUnit and Mockito tests of a service
   (`HORARIO.md` §1); its statements supply the code under test.
 
@@ -616,8 +617,8 @@ What java's minimum leaves out is never asked: every `import` line is supplied (
 writes imports), and SB132's statement gives the full name of the package it scopes its advice to; the loop
 header `for (ConstraintViolation<?> violation : ex.getConstraintViolations())` is named in SB220 (java `C065`);
 and no row does decimal arithmetic (java `C013`): SB048's `price` is a supplied `BigDecimal` he only
-annotates, SB209's price field is supplied, and the prices and totals SB052, SB243 and SB244 compute or
-compare are whole cents in a `long`.
+annotates, SB209's price field is supplied, and the prices, totals and refund amounts SB052, SB243, SB244 and
+SB256 compute or compare are whole cents in a `long`.
 
 A request for Spring Boot with no block or concept named is served from here, in this order, until the
 route is passed; every other task stays active, served on request or once the route is passed.
@@ -635,7 +636,7 @@ route is passed; every other task stays active, served on request or once the ro
 | 09 | Repositories: inherited, derived and written queries | SB090, SB091, SB094, SB096, SB105, SB106, SB109, SB111, SB120 | java C098, java C102 |
 | 10 | Sorting and pagination | SB095, SB099, SB110, SB114, SB121 | java C047 |
 | 11 | The transaction boundary and what loads inside it | SB056, SB224, SB225, SB101, SB072, SB228, SB116, SB229, SB232 | — |
-| 12 | Technical tests: one feature end to end | SB290, SB291, SB292 | — |
+| 12 | Technical tests: one feature end to end | SB290, SB291, SB292 | java C117 |
 | 13 | Unit tests with Mockito | SB233, SB234, SB242, SB244, SB245, SB253, SB256 | 07-timetrack Step 8 |
 | 14 | Slice and full-context tests | SB235, SB237, SB238, SB240, SB243, SB239, SB246, SB248, SB249, SB251, SB254, SB250, SB255 | — |
 
@@ -715,7 +716,7 @@ listed earlier were not answered autonomously. Sized at about one 50-minute exer
 one: the first endpoints split into mapping and binding (01, closed by SB294, appended for it) and the
 response (02, SB054); domain exceptions and the error contract (05, SB142) moved ahead of parameter
 validation and its failures (06, SB223), which takes SB211 and SB219 from the input-validation stage (04,
-SB222), since SB127's `400` handler builds on SB126's field errors; entities split into one entity's
+SB222), since SB212 answers parameter failures in the `fieldErrors` shape SB126 builds; entities split into one entity's
 mapping (07, SB088) and its relationships (08, SB089); repositories into inherited, derived and written
 queries (09, SB120) and sorting and paging (10, SB121); testing into unit tests with Mockito (13, SB256),
 with SB242 and SB253, whose decorative tests are a service's, and the slices and the full context (14,
@@ -741,4 +742,5 @@ reads rather than writes, so precedence, `@Value` against a properties record, t
 startup work and logging stay in the full route; Spring Security and the JWT are project 07's own stack,
 built in its Steps 3 and 4 and exercised there every day, so the chain, the browser rules, login, the token,
 authorization and their secured slice tests — and SB293 and SB257 with them — stay in the full route; and
-maintained code is read in a consultancy's first weeks, never written in a take-home.
+maintained code is read in a consultancy's first weeks, never written in a take-home. So the route opens
+once java's stage 09 is passed (`C070`); stages 03, 05 and 09 then hold for java stages 10, 11 and 14.
