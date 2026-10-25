@@ -124,7 +124,7 @@ topic. A planning request (Route 0) is never held back by a pilot, graded or not
 From the persistent plan, `ATTEMPTS.md` and existing batch manifests, under standard §C: size from the time he stated (about 50 minutes,
 one exercise block, when he stated none), one checkable objective, the composition — while the essential route is not passed, its
 owed rows alone, a listed variant only while neither its concept's `first` nor a variant of it listed earlier was answered autonomously
-(`REC-398`); the split otherwise — the difficulty adaptation read off the
+(`REC-398`), and nothing from a stage whose wait on another route's concept or a project step is unmet, or from a later one (`REC-401`: on the proposal path a topic left with nothing to serve before such a stage is §F step 4, passed over; a request for the topic as a whole is served past it, in order, with one line naming each unmet wait it serves past); the split otherwise — the difficulty adaptation read off the
 `Why` column, and the no-repeat rule — or, on a reinforcement request, §C's reinforcement entry,
 which replaces all of these but the size and the objective. If a concept is owing a fix (standard §E), name it in one line —
 "tienes pendiente corregir `X` del lote `Y`" — and continue; it is never a gate.

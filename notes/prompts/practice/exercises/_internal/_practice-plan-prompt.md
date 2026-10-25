@@ -9,7 +9,9 @@ It writes plans and navigation only; statements, skeletons, answers and grades b
 1. Read the standard to EOF, the selected-level topic coverage and notes plan to EOF, the existing
    exercise plan if any, INDEX and ATTEMPTS, and `ROADMAP.md` and
    `notes/prompts/_internal/_shared-context.md` to EOF for the goal the essential route is weighed
-   against (§B, "Goal fit"). Read prior-level coverage only to classify a dependency,
+   against (§B, "Goal fit"). For the stage waits (§B, `REC-401`), read each other published route's
+   plan at this level — its concept mapping and its `## Essential route` with the rows it lists — and
+   the §15 step headings of the active project's `PLANNING.md`. Read prior-level coverage only to classify a dependency,
    never to add it to the selected-level denominator. Count lines and report EOF reads. Require a
    supported topic **and level** in §H, current source mapping and recomputed coverage digest.
    Missing or stale source: report the exact source and `/notes-plan {topic} {level}`, write no plan
@@ -36,7 +38,12 @@ It writes plans and navigation only; statements, skeletons, answers and grades b
    is a set of target stages closed under their prerequisites (`REC-398`): pick the targets the goal
    needs, list every stage a target needs — never cutting one to shorten the minimum, which shrinks by
    tasks and never by concepts — size each stage at about one batch, and name in `## Reconciliation`
-   which stages are targets and, for every other stage, the target that needs it.
+   which stages are targets and, for every other stage, the target that needs it. Then write the
+   stages' waits (§B, "A stage can wait for something outside its route", `REC-401`): a concept of
+   another published route that a listed row asks him to write, which no earlier stage of this route
+   teaches and the statement neither supplies nor names as a call, is a wait of that stage unless an
+   earlier stage already waits on it; a testing stage waits for the project step where he first writes
+   that kind of test.
 4. On reconciliation, keep all published IDs and unchanged task rows. A listed essential ID that is
    retired is replaced in place by its replacement. Retire changed/removed tasks,
    append replacements and adjust dependencies of replacement rows without rewriting historical rows.
@@ -52,7 +59,8 @@ It writes plans and navigation only; statements, skeletons, answers and grades b
    repair the candidate before review.
 6. Dispatch one **cold reviewer**, `deep`, under `_agent-runtime-standard.md`, with only the proposed
    route, its sources, `ROADMAP.md` and `_shared-context.md`, the standard, the prior route (if any),
-   and a writable scratch report path.
+   the plan of each route and the `PLANNING.md` of each project its waits name, and a writable scratch
+   report path.
    Ask it to read each to EOF and judge scope completeness, exercise variety and feasibility,
    progression, pass conditions, history preservation and all validation results — and whether the
    essential route's stages climb from simple to combined without a gap. Two checks it makes on the
@@ -63,7 +71,10 @@ It writes plans and navigation only; statements, skeletons, answers and grades b
    condition asks him to get right; and whether the minimum covers what the goal needs, with
    `## Reconciliation` recording what it leaves out and why — its target stages named, every other
    listed stage needed by one, no stage a target needs left out, and each stage about one batch
-   (`REC-398`). It must persist
+   (`REC-398`); and whether every concept of another route a row asks him to write — not taught earlier
+   here, neither supplied nor a named call — is a wait of its stage or an earlier one, every wait
+   needed by a listed row of its stage, and every testing stage waiting for its project step
+   (`REC-401`). It must persist
    findings and `approve`, `approve-with-tightening` or `reject`, with EOF evidence. Never self-approve.
    Apply approved tightenings. A rejection permits one repair/review round; if still rejected, retain
    the existing route and park the candidate at the scratch path. When no published route exists,
@@ -75,8 +86,8 @@ It writes plans and navigation only; statements, skeletons, answers and grades b
    existing route tables and the `## Practice state` section, which is not the planner's (§F). Invoke the cold grader in `recount` mode when existing attempts need a new
    projection, or when this run published a route or changed its `## Essential route`, so
    `## Practice state`, which every recount rewrites, sees it; it alone owns PROGRESS cells. Do not grade or alter history in this route.
-8. Return the plan path, totals, exclusions, reconciliation delta, validation result, cold-review
-   token and any blocked condition. The calling skill commits the system-written plan and INDEX
+8. Return the plan path, totals, exclusions, reconciliation delta, the stage waits, validation result,
+   cold-review token and any blocked condition. The calling skill commits the system-written plan and INDEX
    under the session contract. A plan-only request ends here; a practice request continues to its
    batch only after the route is accepted and current.
 

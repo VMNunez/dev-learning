@@ -46,10 +46,47 @@ def sources(root, topic, level):
     return bullets, blocks, scope, structure, notes
 
 
-def table(content, heading):
+def rows(content, heading):
     section = content.split("## " + heading + "\n", 1)[1].split("\n## ", 1)[0]
     return [[html.unescape(c.strip()) for c in line.strip().strip("|").split("|")]
-            for line in section.splitlines() if line.startswith("| ")][1:]
+            for line in section.splitlines() if line.startswith("| ")]
+
+
+def table(content, heading):
+    return rows(content, heading)[1:]
+
+
+def waits(cell):
+    return [] if cell == "—" else [w.strip() for w in cell.split(",")]
+
+
+def resolve(root, topic, level, wait):
+    """Why a stage's wait (standard §B, REC-401) does not resolve, or None when it does."""
+    step = re.fullmatch(r"([0-9]{2}-[a-z0-9-]+) Step ([0-9]+[a-z]?)", wait)
+    if step:
+        path = root / f"projects/{step.group(1)}/PLANNING.md"
+        if not path.is_file():
+            return "waits for a project with no PLANNING.md: " + wait
+        heading = r"^#{3,4} Step " + re.escape(step.group(2)) + " — "
+        return None if re.search(heading, text(path), re.M) else "waits for a step its project does not plan: " + wait
+    concept = re.fullmatch(r"([a-z][a-z-]*) ([A-Z][A-Z0-9]*)", wait)
+    if not concept or concept.group(1) == topic:
+        return "malformed wait, or a wait on its own route: " + wait
+    path = root / f"practice/exercises/{concept.group(1)}/{level}/PLANNING-{level}.md"
+    other = text(path) if path.is_file() else ""
+    if "\n## Essential route\n" not in other:
+        return "waits for a route with no published essential route: " + wait
+    cid = concept.group(2)
+    if not any(r[0] == cid and r[3] == "included" for r in table(other, "Concept mapping")):
+        return "waits for a concept that route does not include: " + wait
+    firsts = {r[0] for r in table(other, "Exercise inventory")
+              if len(r) == 10 and r[3] == "first" and r[9] == "active" and r[2].strip() == cid}
+    stages = rows(other, "Essential route")
+    if not any(t.strip() in firsts for s in stages[1:] if len(s) > 2 for t in s[2].split(",")):
+        return "waits for a concept whose first exercise that route's essential route does not list: " + wait
+    if stages and len(stages[0]) == 4 and any(w.split(" ", 1)[0] == topic for s in stages[1:] if len(s) == 4 for w in waits(s[3])):
+        return "waits for a route that waits for it: " + wait
+    return None
 
 
 def preserved(base, plan, errors):
@@ -63,20 +100,28 @@ def preserved(base, plan, errors):
                 errors.append("published row rewritten: " + old[0])
 
 
-def essential(plan, tasks, check):
-    """The mandatory essential route (standard §B, REC-375): closed, ordered, a ladder of stages."""
+def essential(plan, tasks, check, root, topic, level):
+    """The mandatory essential route (standard §B, REC-375): closed, ordered, a ladder of stages,
+    each wait outside the route resolved (REC-401)."""
     if "\n## Essential route\n" not in plan:
         check(False, "plan has no essential route (standard section B)")
         return {}
-    rows = table(plan, "Essential route")
-    check(bool(rows), "essential route has no stage")
+    lines = rows(plan, "Essential route")
+    head, body = (lines[0], lines[1:]) if lines else ([], [])
+    check(head[:3] == ["Stage", "Title", "Tasks"] and head[3:] in ([], ["Waits for"]),
+          "essential route header must be Stage | Title | Tasks, optionally | Waits for")
+    check(bool(body), "essential route has no stage")
     by_task = {r[0]: r for r in tasks}
-    listed, stages = [], []
-    for row in rows:
-        check(len(row) == 3, "essential route row needs three cells")
-        if len(row) != 3:
+    listed, stages, waiting = [], [], 0
+    for row in body:
+        check(len(row) == len(head), "essential route row needs one cell per header column")
+        if len(row) != len(head) or len(row) < 3:
             continue
-        stage, _, ids = row
+        stage, _, ids = row[:3]
+        for wait in waits(row[3]) if len(row) == 4 else []:
+            problem = resolve(root, topic, level, wait)
+            check(problem is None, f"{problem} (stage {stage})")
+        waiting += len(row) == 4 and row[3] != "—"
         check(bool(re.fullmatch(r"[0-9]{2}", stage)) and all(s < stage for s in stages), "invalid, duplicate or out-of-order essential stage: " + stage)
         stages.append(stage)
         ids = [x.strip() for x in ids.split(",") if x.strip()]
@@ -97,7 +142,8 @@ def essential(plan, tasks, check):
         kinds = {by_task[t][3] for t in listed if t in by_task and by_task[t][3] != "integration"
                  and cid in [c.strip() for c in by_task[t][2].split(",")]}
         check({"first", "variant"} <= kinds, "essential concept lacks a listed first and variant: " + cid)
-    return {"essential_stages": len(stages), "essential_tasks": len(listed), "essential_concepts": len(concepts)}
+    return {"essential_stages": len(stages), "essential_tasks": len(listed), "essential_concepts": len(concepts),
+            "essential_waiting_stages": waiting}
 
 
 def validate(root, topic, level, candidate=None, baseline=None):
@@ -169,7 +215,7 @@ def validate(root, topic, level, candidate=None, baseline=None):
         if disposition == "included":
             kinds = {r[3] for r in active if cid in [x.strip() for x in r[2].split(",")]}
             check({"first", "variant"} <= kinds, "concept lacks first and transfer practice: " + cid)
-    route = essential(plan, tasks, check)
+    route = essential(plan, tasks, check, root, topic, level)
     return errors, {"coverage_sha256": scope, "notes_structure_sha256": structure,
                     "coverage_concepts": len(heads), "included": sum(r[3] == "included" for r in concepts),
                     "excluded": sum(r[3] == "excluded" for r in concepts), "active_exercises": len(active),

@@ -168,9 +168,11 @@ default size: the `first` rows it serves, and the `integration` that closes it.
 
 - One table, `Stage | Title | Tasks`: `Stage` a two-digit number, unique, in serving order; `Tasks` the
   stage's IDs, comma-separated, in serving order. Every ID is an active inventory row and appears once
-  in the whole section.
+  in the whole section. A route with a stage that waits for something outside it (below) adds a fourth
+  column, `Waits for`, holding `—` on every stage that waits for nothing; a route with no waiting stage
+  may leave the column out.
 - **Closure and order.** Every ID a listed row names in `After` is itself listed, earlier in the section.
-  The route is therefore servable on its own, from its first stage.
+  The route is therefore servable on its own, from its first stage, save for the waits below.
 - **What a listed task asks him to write is taught before it** (`REC-385`). Closure over `After` is not
   enough: a row's `Task` and `Pass condition` can ask for a tool its `Concepts` do not name — the first
   angular route asked for `@switch` in a row whose concepts did not include it, and for `map()` a stage
@@ -186,6 +188,27 @@ default size: the `first` rows it serves, and the `integration` that closes it.
   condition asks him to get right. A tool no concept of this route owns — another topic's, or a helper
   no coverage bullet names, such as RxJS's `of()` — is outside this rule, and the statement names it
   where the task needs it.
+- **A stage can wait for something outside its route** (Victor, 2026-10-23, `REC-398` rulings (3) and
+  (4); `REC-401`). Closure and the taught-before rule hold inside one route. A stage whose listed rows ask
+  him to write a concept another route teaches, or to write a kind of test a project has not yet taught
+  him, also waits for that, and its `Waits for` cell names each wait, comma-separated, in one of two forms:
+  - `{topic} {concept ID}` — an included concept of another published route at the same level, such as
+    `java C044`. It is met when the stage of that route's `## Essential route` that lists the concept's
+    `first` row is passed, with every stage before it. The cell names the concept, never that route's
+    stage number, because a replan of that route may renumber its stages and never renumbers a concept
+    ID. A stage waits on such a concept when one of its listed rows asks him to write it and no earlier
+    stage of this route teaches it or already waits on it; a concept the statement supplies, or a call its text names, needs no
+    wait — the taught-before rule's two exceptions.
+  - `{NN-slug} Step N` — a §15 step of that project's `PLANNING.md`, such as `07-timetrack Step 8`, met
+    when that step's heading carries `✅`: a testing stage waits for the project step where he first
+    writes that kind of test, and its statements supply the code under test.
+
+  **A waiting stage holds the route there.** While any of its waits is unmet, no ID of it or of any later
+  stage is served from the essential route — a later stage is never served around it, since the
+  taught-before rule lets a later row ask what the waiting stage teaches — and what earlier stages still
+  owe is served as usual; a request for the topic as a whole is served past it, with a warning, and
+  one naming a block or a concept is served as asked (§C). Whether a wait is met is read live, off that route's plan and
+  `ATTEMPTS.md` or off the project's step heading, and never written into the plan.
 - **Goal fit** (`REC-385`). The minimum is weighed against the goal it is the floor of: what a junior
   hired for the role `ROADMAP.md` and `_shared-context.md` describe writes unaided in this topic — never
   coverage order or a block's size. A concept that work needs is listed (in angular: a stream consumed
@@ -207,12 +230,16 @@ default size: the `first` rows it serves, and the `integration` that closes it.
   integration. **A stage is passed** when every ID it lists is passed (Completion above) or waived, and
   **the essential route is passed** when every stage is.
 - **Reconciliation.** A listed ID that a replan retires is replaced, in the same position, by the row
-  that replaces it; a listed ID is never silently dropped.
+  that replaces it; a listed ID is never silently dropped. A wait that stops resolving — the other
+  route's replan dropped that concept's `first` row from its essential route — fails this route's
+  checker, so this route's next planning run rewrites it.
 
 The checker covers the section's shape, closure, order and ladder — a conditional variant is still
-listed, so the ladder check stands. The two rules marked `REC-385`, and the target stages of `REC-398`,
-are not mechanical, so `validate-practice-plan.py` stays as it is: it reads a row's `Concepts` and
-`After`, never what its `Task` asks, and holds no goal. The planner applies them and its cold reviewer
+listed, so the ladder check stands — and resolves every wait (`REC-401`): the other route has a
+published plan whose essential route lists that concept's `first` row and which waits for nothing of
+this route, or the project's `PLANNING.md` plans that step. The two rules marked `REC-385`, the target
+stages of `REC-398` and whether a stage needs a wait are not mechanical: `validate-practice-plan.py`
+reads a row's `Concepts` and `After`, never what its `Task` asks, and holds no goal. The planner applies them and its cold reviewer
 checks them, walking every listed row (`_practice-plan-prompt.md`, steps 3 and 6). Whether a variant is
 owed is read off `ATTEMPTS.md` when a batch is composed or a state derived, never written in the plan.
 
@@ -284,7 +311,12 @@ waits on it: the proposal passes the topic over, and the line is owed under the 
   or one requested for the topic as a whole ("ejercicios de java") with no block or concept named, is
   the essential route alone (`REC-398`) — its eligible IDs that are owed and not passed, in the section's
   order, so what an earlier stage still owes, its `integration` and the variants its failed `first` rows
-  owe, comes before the next stage's rows. It has no revisit share: a concept answered autonomously is
+  owe, comes before the next stage's rows. Nothing is taken from a stage whose wait (§B) is unmet or
+  from any stage after it: a proposal that finds nothing else to serve passes the topic over (§F step
+  4), and a request for the topic as a whole is served, in the section's order, the owed rows from that
+  waiting stage on — from the first stage that still owes any, which a waiting stage already passed does
+  not — with one line naming each unmet wait it serves past; a wait is a prerequisite, and a request may override one with one warning
+  (below). It has no revisit share: a concept answered autonomously is
   owed no variant, and a failed one is revisited by the variant it owes. The difficulty adaptation below
   still picks among those IDs, and its prerequisite remediation still comes first. Table order and the
   split below resume once the route is passed. Eligibility is unchanged, so a listed variant also waits
@@ -455,7 +487,8 @@ the route with no state writer running (`REC-391`). Where the line reads `no rou
 step whose state on the route differs from the one it records, or names an earlier latest attempt than
 the route records, it is stale, and it is re-derived from the route as it stands, under the rules of
 the `Simulations:` bullet below, before anything is proposed — written only by the state's writers,
-never here.
+never here. Likewise a ` — waits for` naming a project step (§B, `REC-401`) is checked against that
+step's heading before step 3; one now carrying `✅` holds nothing, whatever the cell says.
 
 1. **An owed simulation review or correction, and otherwise an open batch.** A `Simulations:` line
    reading `due` on a step the route holds `attempted` — awaiting its review — or `correction-required`
@@ -479,7 +512,10 @@ never here.
 4. **A topic that cannot be served now is passed over, never a refusal of the session.** A member held
    by a pilot batch without its `Pilot folded:` line (§C) or by a stale source is named in one line with
    what holds it and who owes it — the source to `/notes-plan {topic} {level}` — and the next member is
-   proposed. Where what holds it is the agent's own work, the session never waits on it: the fold line is
+   proposed. So is a member held by a stage wait (§B, `REC-401`) — its composition finds nothing to serve
+   before a stage whose wait is unmet — named with what that stage waits for, which nobody owes: it
+   clears when the other route passes the stage that teaches the concept, or the project step is marked
+   `✅`. With every member held, the proposal is those lines, and nothing is generated. Where what holds it is the agent's own work, the session never waits on it: the fold line is
    owed under the recommendation ledger, so an `## Open` row naming it is opened if none does, and the
    proposal carries on. A stale or absent exercise plan holds nothing — the practice request replans
    first (§B).
@@ -497,7 +533,8 @@ The first section of `INDEX.md`, above the routes: the position the proposal rea
 `verify` (a dated fix can pass a planned ID) and `recount`, pilot batches and stale sources included.
 **Each writer rewrites the section whole from primary state** — the batch folders' `README.md` tables,
 `ATTEMPTS.md`, each published plan's `## Essential route` with the `Kind` and `Concepts` of the inventory
-rows it lists (whether a variant is waived, §B), §H, and the simulation route of that level —
+rows it lists (whether a variant is waived, §B) and its `Waits for` column, the §15 step heading of each
+project a wait names (`REC-401`), §H, and the simulation route of that level —
 so no writer patches another's cell; a proposal that finds the section missing derives it the same way
 and writes it. Never written by hand or by the planner.
 
@@ -505,7 +542,11 @@ and writes it. Never written by hand or by the planner.
 - One table, `Topic | Essential route | Open batch | Last closed batch`, one row per topic and level that
   has a §H section and a plan or a batch:
   - `Essential route` — `next stage NN of MM`, every stage before it passed (every ID it lists passed or
-    waived, §B → "Conditional variants"); `passed`; or `no plan`. `(plan stale — replan)` is appended when
+    waived, §B → "Conditional variants"); `passed`; or `no plan`. When stage `NN`, or a stage before it, has an
+    unmet wait (§B, `REC-401`) — the proposal holds the route at the first such stage — ` — waits for`
+    follows with each of those unmet waits as its cell writes it, a concept wait with the
+    other route's stage that lists its `first` row in parentheses: `next stage 01 of 09 — waits for java
+    C044 (stage 03)`. `(plan stale — replan)` is appended when
     this writer's own validation of that route, this run, found its sources moved; a route it did not
     validate carries no mark, and 1b's live validation holds it (step 4).
   - `Open batch` — each open batch (§C) by folder and generation date, or `—`.
@@ -560,7 +601,9 @@ no table in `INDEX.md` has no row. The legend prose beside the table has no auto
 ## H — Environment and grading, per topic
 
 A topic is served only when it has a section here. Asked for one that has none, `practice-session` says
-so in one line, names the topics that do, and generates nothing. A section is added by hand, under the
+so in one line, names the topics that do, and generates nothing. **typescript and javascript never get
+one** (Victor, 2026-10-23, `REC-398` ruling (5)): typescript is practised inside the angular route, whose
+rows teach or supply the typescript they ask, and javascript not at all. A section is added by hand, under the
 recommendation ledger — the environments differ in kind, which is why "adding a topic is only its
 route" is false: git needs a throwaway repository whose resulting history is the answer, html and css
 need rendering, angular and spring-boot need a small base app with isolated attempts.
