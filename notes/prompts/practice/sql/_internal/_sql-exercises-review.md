@@ -630,7 +630,7 @@ your report with the exact list of what you modified, so whoever stages them doe
 - `PROGRESS.md`
 - `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md`
 - `practice/sql/PLANNING.md` — **only if 4d fired.** Name it explicitly when it did. It is the one file
-  a caller does not expect to have changed, and the one `sql-block-open` reads first the next morning;
+  a caller does not expect to have changed, and the one `sql-block-open` reads first at SQL's next turn;
   omitted from this list, its rewritten §0 is simply never committed.
 - `practice/sql/MISTAKES.md` — only if Step 5 touched it.
 

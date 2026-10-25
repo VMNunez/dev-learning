@@ -90,7 +90,7 @@ the need to hand-tune anything *else* about a batch, the thing that needs changi
 it with `{PLAN}`'s `Coverage SHA-256`. On a mismatch print one line — "Ruta desactualizada: coverage ha
 cambiado desde el último `/sql-plan {LEVEL}`" — and **continue**. A stale route still names a real step
 with a real count; it just may not map the newest bullets. That is a planning debt, not a reason to
-refuse a batch, and stopping here would block the daily block on a prompt run Victor has to schedule.
+refuse a batch, and stopping here would block SQL's turn of the exercise rotation on a prompt run Victor has to schedule.
 
 **The path table — a readable projection of the junior route's §1, not a second source of truth.** It is
 here so a topic-to-file mapping can be read at a glance without opening the route; `{FILE}` still
@@ -279,9 +279,10 @@ nobody reads it at the start of the next run.
 
 My profile is in `notes/prompts/_internal/_shared-context.md`.
 
-I have one SQL block a day. I write answers directly in the SQL file in pgAdmin
-(PostgreSQL), then paste it into review mode. This block feeds the timed technical test
-simulations — so exercises should reflect the kind of SQL a real consultancy test includes.
+SQL is one topic of my exercise block's rotation — its turn comes round once a round, not daily. I
+write answers directly in the SQL file in pgAdmin (PostgreSQL), then paste it into review mode. This
+practice feeds the timed technical test simulations — so exercises should reflect the kind of SQL a
+real consultancy test includes.
 
 SQL is not isolated from the rest of the stack. Where relevant, connect a concept to its
 Spring Boot or JPA equivalent in the exercise description (e.g. transactions → @Transactional,

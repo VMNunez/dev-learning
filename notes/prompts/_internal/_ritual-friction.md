@@ -47,9 +47,10 @@ touched, the output nobody read, the step done by hand anyway — never "it is h
 A row that only records a feeling cannot be ruled on and will be kept forever for that reason. Escape a
 literal table pipe as `\|`.
 
-`Block` is one of `exercises`, `project`, `sql`, `interview-prep`, `job-search` — the daily blocks named by
+`Block` is one of `exercises`, `project`, `interview-prep`, `job-search` — the daily blocks named by
 what is done in them, never by their hour (`_session-rules.md` → "Daily study blocks", `REC-389`) — or
-`machinery` for a ritual that runs outside the daily loop.
+`machinery` for a ritual that runs outside the daily loop. A SQL ritual's row takes `exercises`: SQL is
+a topic of that block's rotation, and `sql` left this list when its own block did (`REC-410`).
 
 `Status` is `open` until `REC-054` (c) rules on that ritual, then `ruled YYYY-MM-DD — kept` /
 `— thinned: {what was cut}` / `— deleted: {commit}`, written to every row naming that ritual at once.

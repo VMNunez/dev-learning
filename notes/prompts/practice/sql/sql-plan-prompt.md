@@ -43,12 +43,14 @@ If a required role cannot be dispatched, stop unless its instruction explicitly 
 - `MISTAKES = practice/sql/MISTAKES.md`
 - `STANDARD = notes/prompts/practice/sql/_internal/_sql-plan-standard.md`
 - `CONTEXT = notes/prompts/_internal/_shared-context.md`
-- `ROADMAP = ROADMAP.md` → one section only: the SQL block's — the section carrying the SQL topic
+- `ROADMAP = ROADMAP.md` → one section only: the SQL section — the one carrying the SQL topic
   table, whose heading `_roadmap-standard.md` fixes — with the screening floor stated under that table,
   the test-relevant topics it puts first (the only thing in the file a `Why here` can be falsified
-  against). Nothing else in the file bears on route ordering. A step is sized in sessions of the daily
-  SQL block, whose length is `HORARIO.md` §1's and is read by no ceiling below; until `REC-392` this key
-  also named ROADMAP's daily schedule for it, which `_roadmap-standard.md` makes a pointer at that file.
+  against). Nothing else in the file bears on route ordering. A step is sized in SQL turns of the
+  exercise block's rotation (`_session-rules.md` → "Daily study blocks"), whose length is `HORARIO.md`
+  §1's and is read by no ceiling below; until `REC-392` this key also named ROADMAP's daily schedule for
+  it, which `_roadmap-standard.md` makes a pointer at that file, and until `REC-410` SQL had a daily block
+  of its own.
 
 `PLAN` is a committed source of truth. It is not a temporary worklist.
 

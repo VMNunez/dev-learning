@@ -131,7 +131,7 @@ Launch **both** `role-appropriate` subagents in a single message so they run in 
 >    count exactly the same. A bare `✅ 05-task-manager` is an *old* marker, never a malformed one.
 > 3. **A drill marker is not a project marker.** A bullet whose only marker is `✅ sql:{file-slug}` was
 >    drilled in graded exercises, not built. It is still a gap **for a project** and not a gap **for the
->    SQL block** — say which of the two when you list it.
+>    SQL exercises** — say which of the two when you list it.
 > 4. **Markers record demonstration, never study.** An unmarked bullet means *not yet demonstrated*, not
 >    *not yet studied* — Victor may know it well from `notes/`. Never write "not yet learned".
 >
@@ -274,14 +274,18 @@ Update the study-block sections to match the canonical values in `_roadmap-stand
 ("Canonical study-block references"):
 
 **Headings and the daily schedule first.** Every block section carries the heading the standard's
-"What ROADMAP.md contains" lists, and a section headed by an hour is renamed in place, its content kept.
+"What ROADMAP.md contains" lists, and a section headed by an hour is renamed in place, its content kept
+— as is the SQL section still headed `## SQL block — SQL exercises`, which becomes `## Exercise block —
+SQL exercises` (`REC-410`); any sentence in the file that still treats SQL as a block of its own — under
+the screening floor, or as the reason SQL sits late in the notes order — is reworded to SQL's turn of the
+exercise block's rotation.
 The `Daily schedule` section is the standard's pointer at `HORARIO.md` §1 and the session rules' "Daily
 study blocks" — a table of hours there is a stale copy of the day and is replaced by the pointer. A
 simulation passage still sitting inside the SQL section moves out to `## Technical test simulations`,
 its strategy and target kept, before the two bullets below hold either section to the standard. These
 are the one restructuring this run makes; Step 5's in-place rule governs everything else.
 
-**SQL block — SQL exercises:** reconcile the SQL topic table against the SQL topic list that
+**Exercise block — SQL exercises:** reconcile the SQL topic table against the SQL topic list that
 subagent 2a returned from coverage-junior.md — add missing topics, remove out-of-scope topics. For the
 ✅ / ⏳ / 🔜 markers, derive each row's marker by `_roadmap-standard.md` → "Canonical study-block
 references", SQL topic-table bullet — a row is a coverage heading, read off the route's §3 statuses through its
@@ -484,7 +488,7 @@ Include both the doer's edits (Steps 1–5) and the two reviewers' fixes (Step 6
 reported by 2a. Split them into two groups; the split is the point, not the length:
 
 - *Gaps the plan already owns* — for each, name what closes it (a project in the sequence, the SQL
-  block, the interview-prep block and the notes opened in it). Group by topic, max 3 per topic, ranked by what interviewers at NTT
+  exercises, the interview-prep block and the notes opened in it). Group by topic, max 3 per topic, ranked by what interviewers at NTT
   Data, Capgemini, and similar companies actually ask junior Angular + Spring Boot candidates.
   Nothing to decide here — this group is a status line.
 - *Gaps nothing in ROADMAP closes* — **no limit**, but bounded by 2a's contracted report rather than by

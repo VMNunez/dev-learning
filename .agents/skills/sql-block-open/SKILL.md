@@ -1,8 +1,10 @@
 ---
 name: sql-block-open
 description: >
-  Orient the daily SQL block before a single query is written, WHENEVER Victor opens it ("vamos
-  con el SQL", "abro el bloque de SQL", "¿por dónde iba en SQL?", "what's next in SQL"). It reads
+  Orient the SQL block — SQL's turn of the exercise block's rotation, never a daily block of its own
+  since 2026-10-26 — before a single query is written, WHENEVER Victor opens it ("vamos con el SQL",
+  "abro el bloque de SQL", "¿por dónde iba en SQL?", "what's next in SQL"), including when
+  practice-session hands him SQL's turn. It reads
   practice/sql/PLANNING.md §0, the level's route file, the current exercise file and its PROGRESS.md
   row, MISTAKES.md and the notes plan, and answers the questions the block always starts with: which step is open, which file,
   how many exercises are still unanswered, which Moment comes next, and whether this step's study note
@@ -29,8 +31,9 @@ trigger declared resolved, or write outside its declared writer set, follow
 breach log"; do not restate or widen that trigger here.
 
 
-Victor is starting the SQL block. Give him the state of the track in one screen, then get out of
-the way.
+Victor is starting the SQL block — SQL's turn of the exercise rotation, which comes round once a round
+rather than daily (`_session-rules.md` → "Daily study blocks"). Give him the state of the
+track in one screen, then get out of the way.
 
 **Write nothing.** No file, no commit, not even a "Last updated" fix. This skill is a lens, and a lens
 that edits is a skill nobody trusts to run first. If something is stale or contradictory, say so in one
@@ -159,7 +162,7 @@ English file is the canonical source when the note is *written*; it is not the r
 
 ---
 
-## 3 — Surface the open mistakes, and yesterday's friction
+## 3 — Surface the open mistakes, and the last SQL block's friction
 
 The three or four open rows of `MISTAKES.md` with the highest `Times`, one line each: concept and what
 went wrong. Not the whole table.
@@ -169,7 +172,8 @@ rusty, it feels learned. Naming them at the start of the block is the cheap vers
 point.
 
 **Then the most recent `## Fricción` rows** — what cost him time in the last block or two without ever
-being graded wrong (written by `sql-block-close`). One line, prefixed `Ayer te frenó:`. It is the
+being graded wrong (written by `sql-block-close`). One line, prefixed `La última vez te frenó:` — the
+last SQL block may be days back. It is the
 cheapest possible intervention: the concept is named while the file is still open in front of him, and
 it is the one class of weakness no grader can report.
 
@@ -193,7 +197,7 @@ Step 0 — Querying basics · junior · 20/30 first-pass puntuados
 Archivo: practice/sql/junior/02-execution-order-set-ops.sql — 10 escritos, 3 respondidos, 0 corregidos
 Siguiente: Moment 3 — responder los 7 que faltan en pgAdmin (~35 min al ritmo de este archivo)
 Teoría: la nota de este step (05-order-by-limit) sigue `pending` — `/notes-audit TOPIC=sql LEVEL=junior NOTE=05`
-Ayer te frenó: `NULLS LAST` — abriste la nota para decidir dónde caen los NULL
+La última vez te frenó: `NULLS LAST` — abriste la nota para decidir dónde caen los NULL
 Ojo: este archivo corre en la base de datos `practice_junior_02_execution_order_set_ops`; ejecuta su bloque SETUP dentro de ella si aún no lo has hecho
 ```
 

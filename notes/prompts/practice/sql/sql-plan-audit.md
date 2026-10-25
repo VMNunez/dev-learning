@@ -6,7 +6,7 @@ Run this **inside the supported agent runtime**. It audits and extends the SQL p
 `_sql-plan-standard.md`, fixes what falls short, and commits — hands-off.
 
 Why it exists: the projects have `plan-audit` and the concept lists have `coverage-audit`, but the
-files that decide what gets drilled in the daily SQL block rot fastest — every closed step, every new
+files that decide what gets drilled in each SQL turn of the exercise rotation rot fastest — every closed step, every new
 coverage section and every prompt change leaves them slightly less true.
 
 **The plan is two files** (`_sql-plan-standard.md`, Section A) and this prompt audits both:

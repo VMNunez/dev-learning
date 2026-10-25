@@ -1,12 +1,13 @@
 ---
 name: sql-block-close
 description: >
-  Close the daily SQL block in under a minute, WHENEVER Victor ends it ("cierro el bloque", "lo
+  Close the SQL block — SQL's turn of the exercise block's rotation, never a daily block of its own
+  since 2026-10-26 — in under a minute, WHENEVER Victor ends it ("cierro el bloque", "lo
   dejo por hoy", "hasta aquí el SQL", "se acabó la hora", "done for today"). It records the one thing
   the whole track otherwise drops: **friction without failure** — the concept that cost him twenty
   minutes and that he then got right, which scores ✅ and vanishes, even though it is exactly what will
   stall him in an interview. The graded tables of MISTAKES.md only ever see what a grader marked
-  ⚠️/❌. This skill writes the `## Fricción` rows, states where tomorrow's block starts so the opener
+  ⚠️/❌. This skill writes the `## Fricción` rows, states where the next SQL block starts so the opener
   confirms rather than rediscovers, and hands over the commit for his .sql. It asks nothing and blocks on nothing: friction
   is taken from what he already said, never extracted with questions. Do NOT use it to grade (that is
   sql-grade), to close a step (sql-step-close), to generate exercises (/sql-exercises), or to open the
@@ -63,7 +64,7 @@ what Victor already stated, e.g. `40 repasados en pgAdmin · 0 respuestas nuevas
 Without a stated number, say `repaso en pgAdmin, cantidad no indicada`; never infer it from the
 file's total, ask for it, or treat it as graded work or route progress. If both happened, report
 saved answers and the stated revision separately. Keep `pendientes en el archivo` as a disk count.
-**No encouragement, pace assessment, or suggestion about tomorrow's length.**
+**No encouragement, pace assessment, or suggestion about the next block's length.**
 
 ---
 
@@ -108,16 +109,16 @@ first. That is a real signal replacing a made-up one.
 
 ---
 
-## 2 — Where tomorrow starts
+## 2 — Where the next SQL block starts
 
-One line, in the shape `sql-block-open` will print tomorrow, so that opener confirms instead of
+One line, in the shape `sql-block-open` will print at SQL's next turn, so that opener confirms instead of
 rediscovering:
 
 ```
-Mañana: Step 0 · practice/sql/junior/02-execution-order-set-ops.sql · Moment 3 — quedan 7 por responder
+Próxima vez: Step 0 · practice/sql/junior/02-execution-order-set-ops.sql · Moment 3 — quedan 7 por responder
 ```
 
-Derive tomorrow's file and Moment from the current route and the table `sql-block-open` uses,
+Derive the next block's file and Moment from the current route and the table `sql-block-open` uses,
 not from a closed file revised today. **Do not run the next Moment.**
 
 ---
@@ -142,7 +143,7 @@ Four lines, one table only if friction was recorded. No preamble, no encourageme
 
 ```
 Bloque cerrado · Step 0 · 3 respondidos hoy, 7 pendientes
-Mañana: Moment 3 — responder los 7 que faltan en 02-execution-order-set-ops.sql
+Próxima vez: Moment 3 — responder los 7 que faltan en 02-execution-order-set-ops.sql
 Fricción: 1 fila nueva
 ```
 

@@ -32,8 +32,10 @@ Read first, each to EOF, stating `N lines, read to EOF` for each in your report:
   lists — whether a listed variant is owed or waived (§B) — and its `Waits for` column, the §15 step
   heading of each project a wait names (whether it carries `✅`, `REC-401`), and the simulation route
   `practice/simulations/{level}/PLANNING-{level}.md` — its §0 and §2 and the steps' `Review history` —
-  when it exists. Those parts only, for the state and never for grading: say `state only` for each
-  instead of the EOF line.
+  when it exists, and, for the `sql` row (§F step 3, `REC-410`), whether
+  `practice/sql/{level}/PLANNING-{level}.md` exists and the exercise headers of each
+  `practice/sql/{level}/*.sql` file with the grading markers on them, by `grep`, never an answer. Those
+  parts only, for the state and never for grading: say `state only` for each instead of the EOF line.
 
 **You never edit a file inside `{BATCH}`.** Not to fix an answer, not to add a marker. A wrong answer
 stays wrong on disk until he rewrites it.

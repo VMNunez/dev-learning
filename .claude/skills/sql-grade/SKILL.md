@@ -155,7 +155,7 @@ puts them on your side:
 - `practice/sql/PLANNING.md`, **when the subagent's report says its 4d fired** — closing a step rewrites
   the doctrine's §0 quick reference. Take the list from the subagent's report; it ends with the exact
   files it modified. This one is easy to miss because a close reads like a route-file change, and §0 is
-  the first thing `sql-block-open` reads the next morning.
+  the first thing `sql-block-open` reads at SQL's next turn.
 - `notes/prompts/_internal/_run-tracker.md` — **only** the `Exercises` cell for `{LEVEL}` in
   `## SQL exercise track`, rewritten after every return of the subagent, `BLOCKED` included, in the shape
   that section defines: `X/Y steps closed — {outcome}`, both numbers read from `{PLAN}` §3 as the subagent

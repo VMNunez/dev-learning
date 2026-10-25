@@ -14,7 +14,8 @@ One doctrine, three routes. The doctrine is written once because a step loop tha
 different at middle than at junior is a step loop nobody trusts; the route is per level because the
 coverage checklist is.
 
-**What this plan is.** The learning path for the daily SQL block: which topics get drilled, **in what
+**What this plan is.** The learning path for SQL's turns of the exercise rotation (`_session-rules.md` →
+"Daily study blocks"; a daily block of its own until `REC-410`): which topics get drilled, **in what
 order and why**, which exercise file each produces, how many exercises, when to pause and revise, and
 what "done" means for each step. It exists so that no SQL session starts with "¿y hoy qué hago?".
 
@@ -50,12 +51,12 @@ and that is why nothing checked it.)
 Its two inputs, and it never invents beyond them:
 - **`notes/sql/coverage/{LEVEL}.md`** — what must be learned at the level the route serves. Every step
   claims bullets of it; a concept that belongs to SQL and is missing goes *there*, never into this plan.
-- **`ROADMAP.md`** — why, read at one section only: the SQL block's, the one carrying the SQL topic
+- **`ROADMAP.md`** — why, read at one section only: the SQL section, the one carrying the SQL topic
   table (the objective this ordering serves: a junior Angular + Java role in Spain, technical screening
   first, and the screening floor stated under that table). The rest of the file cannot falsify a
-  route-ordering decision. The block the pace has to fit is the daily SQL block, whose length is
-  `HORARIO.md` §1's; `_roadmap-standard.md` makes ROADMAP's daily schedule a pointer there since
-  `REC-392`, so it is not read for it.
+  route-ordering decision. The block the pace has to fit is the exercise block on SQL's turn of its
+  rotation, whose length is `HORARIO.md` §1's; `_roadmap-standard.md` makes ROADMAP's daily schedule a
+  pointer there since `REC-392`, so it is not read for it.
 
 ---
 

@@ -119,39 +119,45 @@ conversation starts in — never because a clock reached an hour. A block that r
 twice, or not at all on a given day is normal and is not drift. Nothing in the system may read a time to
 decide anything.
 
-- **Exercise block — short practice exercises, one open batch at a time.** From 2026-10-26 short
-  exercises have a block of their own (`HORARIO.md` §1), superseding the 2026-10-05 ruling that they had
-  none (`REC-274`). He still asks in his own words — "vamos a practicar", "hazme ejercicios de
-  streams" — and a request made outside the block is served the same: the `practice-session` skill
-  proposes or generates a batch for the practical topics beyond SQL from a persistent topic-level
-  exercise plan — or, once per topic and level before that plan exists, as a pilot batch
-  (`_practice-standard.md` §C) — then grades it cold when he says it is ready. What it proposes when he
-  names nothing — an owed simulation review or correction, the open batch, a due simulation, the
-  rotation's next topic — is that standard's §F.
+- **Exercise block — the exercise rotation, SQL included, one open batch at a time.** From 2026-10-26
+  short exercises have a block of their own (`HORARIO.md` §1), superseding the 2026-10-05 ruling that
+  they had none (`REC-274`), and SQL has no other: its block is gone and it is the rotation's fourth
+  topic, java → spring-boot → angular → sql (Victor, 2026-10-25, `REC-410`). He still asks in his own
+  words — "vamos a practicar", "hazme ejercicios de streams", "vamos con los ejercicios" — and a request
+  made outside the block is served the same: the `practice-session` skill proposes or generates a batch
+  for the practical topics beyond SQL from a persistent topic-level exercise plan — or, once per topic
+  and level before that plan exists, as a pilot batch (`_practice-standard.md` §C) — then grades it cold
+  when he says it is ready. What it proposes when he names nothing — an owed simulation review or
+  correction, the open batch, a due simulation, the rotation's next topic — is that standard's §F.
   Proposing is the default door, never the only one: a topic he names is served as asked. The contract
-  is `notes/prompts/practice/exercises/_internal/_practice-standard.md`; the SQL track keeps its own
-  flow. A timed simulation may take this block and the project block together (`HORARIO.md` §1).
+  is `notes/prompts/practice/exercises/_internal/_practice-standard.md`. A timed simulation may take
+  this block and the project block together (`HORARIO.md` §1).
+  - **SQL's turn is served by its own flow, never by `practice-session`.** When the rotation reaches
+    SQL, or he says "vamos con el SQL", the batch is the next of its level route, through
+    `sql-block-open`, `/sql-exercises`, `sql-grade`, `sql-step-close` and `sql-block-close`; those
+    rituals keep their names, and the *block* they open and close is that turn. Which SQL batch is open
+    or closed, for the rotation, is read off the track's own files (§F). **Which SQL topics come first
+    and when LeetCode may start are `ROADMAP.md`'s to state, never this bullet's** — the screening floor
+    under its SQL table and its LeetCode gates — and **when a timed simulation is due is the simulation
+    route's and `_practice-standard.md` §F's**, at `HORARIO.md` §1's pace; a simulation is no later
+    stage of SQL practice. None of the three is restated here. The SQL bullet these rules carried
+    restated ROADMAP's switch condition — "until all SQL topics are solid" — until 2026-10-09, although
+    `ROADMAP.md` had replaced it on 2026-07-16 (`146b982e`), and these rules outrank `ROADMAP.md`, so the
+    stale copy was the one a session would have obeyed (`REC-309`); until 2026-10-21 it still named
+    simulations a stage that condition opened (`REC-392`). LeetCode has no block in the day: it stays
+    behind its gates.
 - **Project block — the active project with the coding agent.** The agent guides, Victor implements.
   Goal: depend less on AI over time.
-- **SQL block — SQL exercises.** **Which SQL topics come first and when LeetCode may start are
-  `ROADMAP.md`'s to state, never this bullet's** — the screening floor under its SQL table and its
-  LeetCode gates — and **when a timed simulation is due is the simulation route's and
-  `_practice-standard.md` §F's**, at `HORARIO.md` §1's pace; a simulation is no later stage of this
-  block. None of the three is restated here. This bullet carried its own copy of ROADMAP's switch
-  condition — "until all SQL topics are solid" — until 2026-10-09, although `ROADMAP.md` had replaced it
-  on 2026-07-16 (`146b982e`), and these rules outrank `ROADMAP.md`, so the stale copy was the one a
-  session would have obeyed (`REC-309`); until 2026-10-21 it still named simulations a stage that
-  condition opened (`REC-392`). LeetCode has no block in the day: it stays behind its gates.
 - **Interview-prep block — the spaced review, with the notes it needs.** From 2026-10-26 it shares one
   block with the job search, which takes the block's first minutes (`HORARIO.md` §1). It follows the spaced-review
   schedule (Victor, 2026-10-20): "¿qué toca hoy?" opens it, and `interview-prep-block-open` answers with
   the day's reviews and new questions from `notes/interview-prep/spaced/` — see "The spaced review of
   the question banks" below. **Notes have no block of their own** (Victor, 2026-10-21): he opens them in
-  this block when a question fails or a topic is new to him, and in the exercise or SQL block when a doubt
+  this block when a question fails or a topic is new to him, and in the exercise block when a doubt
   comes up while solving an exercise (`sql-block-open` may also name the SQL step's note before its
   exercises). Notes study order (most important for interviews first):
   **angular → spring-boot → java → architecture → security → typescript → sql → javascript → css → git**
-  (SQL is last because it is already practised daily in the SQL block).
+  (SQL is last because it is already practised as a topic of the exercise rotation).
 - **Job-search block — applications every day.** Offers, a CV tailored to each, applications and their
   follow-up (`/cv`, `/cover-letter`, `/tracker`), replacing the June rule of CV + applications on
   Fridays. From 2026-10-26 it opens the block it shares with the interview prep: its first minutes, or
@@ -1156,7 +1162,7 @@ everything commits on the branch you're on — is simpler to remember than a spl
   merge is named here because it is performed on ordinary project branches, by whoever is merging
   rather than by machinery work; `notes/prompts/README.md` still owns the rest of that script's
   trigger list, and this bullet adds no other entry to it.
-- SQL block: work in `practice/sql/` on the active branch and commit there. The SQL section of
+- SQL exercises: work in `practice/sql/` on the active branch and commit there. The SQL section of
   `PROGRESS.md` (`## Practice completed` → `### Exercise route`) moves as the track runs — never left for
   `progress-update-prompt` — and is written by the prompt or skill that moved it and committed by it, or
   by the skill that dispatched the write (`sql-grade`, for its cold subagent), never in the same commit
@@ -1170,7 +1176,7 @@ everything commits on the branch you're on — is simpler to remember than a spl
 - Update PROGRESS.md when a learning plan step is completed — not on every commit, not just at session end (see "After every learning plan step is completed")
 - For SQL: the SQL section moves with the track itself — when a route is planned, a batch generated and
   a file graded — never deferred to a step's close, whose ritual only repairs a `Total` that no longer
-  adds up (see the SQL block bullet under "Study materials follow the active branch")
+  adds up (see the SQL exercises bullet under "Study materials follow the active branch")
 - Commit PROGRESS.md from the root of the repo, not from inside the project folder
 - **Authoring is recorded when the prose is finished, not when the block closes.** `## Authoring progress`
   is `authoring-progress-recount`'s, and it is invoked by whatever finished the prose — `/notes-audit`,

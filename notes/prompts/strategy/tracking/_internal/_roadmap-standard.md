@@ -85,7 +85,7 @@ stacks) do come from `_shared-context.md` and are checked like any other.
 - Phase table — its status markers (✅ / ⏳ / 🔜), and its two block columns, which follow the block
   sections they project
 - Project sequence (which project comes next and why)
-- SQL topic table and the screening floor (SQL block)
+- SQL topic table and the screening floor (the exercise block's SQL section)
 - Technical test simulations — their own section: the strategy, the target and the pointer to the
   simulation track
 - Notes study order (interview-prep block)
@@ -93,10 +93,13 @@ stacks) do come from `_shared-context.md` and are checked like any other.
 
 **No section heading carries an hour, and the block sections carry these headings** — each named by
 what is done in it, as `_session-rules.md` → "Daily study blocks" names the blocks: `## Daily schedule`,
-`## Project block — active project`, `## SQL block — SQL exercises`, `## Technical test simulations`
+`## Project block — active project`, `## Exercise block — SQL exercises`, `## Technical test simulations`
 and `## Interview-prep block — spaced review and notes`. `roadmap-review-prompt.md` cites them by name,
 so they change only together with it; the SQL prompts cite the SQL section by its content instead. Until `REC-392` the three block sections were headed by
-the June day's hours, and the simulations sat inside the SQL one as its `Stage 2`.
+the June day's hours, and the simulations sat inside the SQL one as its `Stage 2`; until `REC-410` the
+SQL section was `## SQL block — SQL exercises`, SQL having had a block of its own before it became the
+fourth topic of the exercise block's rotation. The section still carries only SQL: the other three
+topics of the rotation have no ROADMAP section, their routes and order being `_practice-standard.md`'s.
 
 ## Level-aware sequencing
 
@@ -143,7 +146,7 @@ Rules for project sections:
 
 ## Canonical study-block references
 
-**SQL block — SQL topic table.** Kept in sync against the SQL section of `notes/coverage/junior.md`:
+**SQL section — SQL topic table.** Kept in sync against the SQL section of `notes/coverage/junior.md`:
 - Add any SQL topic present in coverage-junior.md but missing from the ROADMAP table.
 - Remove any topic that coverage-junior.md marks as out of scope.
 - Status markers (✅ / ⏳ / 🔜) come from `practice/sql/junior/PLANNING-junior.md`. A row is a coverage
@@ -156,13 +159,13 @@ Rules for project sections:
   it is how the table drifted in both directions at once — row 1 left at ⏳ with `01-basics.sql` closed
   40/40, JOINs left at ⏳ with `03-joins.sql` deleted and never regenerated.
 
-**SQL block — the screening floor.** Under the SQL table the section names the test-relevant topics —
+**SQL section — the screening floor.** Under the SQL table the section names the test-relevant topics —
 JOINs · GROUP BY/aggregates · subqueries/CTEs · NULL handling · DML basics — as the ones the SQL route
 puts first, because they are what consultancy tests ask, with window functions, indexes and PostgreSQL
 specifics after them; and it says the full table still gates LeetCode. **The floor is a priority, never
-a switch**: the SQL block stays SQL exercises on every day it runs, so the section names no stage the
-block moves on to — no `Stage` label on the SQL topics or on LeetCode — and no reduced cadence for the
-topics after the floor. It was the switch condition
+a switch**: every SQL turn of the rotation stays SQL exercises, so the section names no stage SQL
+practice moves on to — no `Stage` label on the SQL topics or on LeetCode — and no reduced cadence for
+the topics after the floor. It was the switch condition
 that opened `Stage 2` until `REC-392`, once `HORARIO.md` §1 had moved the timed simulations out of the
 SQL block and given each area's first one its own gate (Victor, 2026-10-21).
 
@@ -207,14 +210,15 @@ factually wrong — all four resolve against `## Projects`, `Practice completed`
 once the five gates are met, where LeetCode goes is a change to `HORARIO.md`, which is Victor's.
 
 **Phase plan — the two block columns.** The phase table's columns are `Project`, `SQL` and
-`Interview prep` — named by block, never by hour (`Project (08:00)`, `SQL → Practice (12:30)` and
-`Interview prep (13:30)` until `REC-392`). The `SQL` and `Interview prep` cells say where each block is
-expected to stand during a phase. They are a projection of the two block sections, never a second
+`Interview prep` — named by what is done, never by hour (`Project (08:00)`, `SQL → Practice (12:30)` and
+`Interview prep (13:30)` until `REC-392`). The `SQL` and `Interview prep` cells say where SQL practice
+and the interview-prep block are expected to stand during a phase. They are a projection of those two
+sections — the exercise block's SQL section and the interview-prep one — never a second
 statement of them: a cell may name the topics in hand, and it never carries an order that block's own
 section does not state. Two checks, over every row not yet ✅ — a ✅ row describes a phase that is over,
 and these two checks leave it as it stands:
 - **SQL.** A cell names SQL topics and nothing else — never a simulation, which has its own section and
-  is no stage of the SQL block, and never LeetCode, which has no block. A cell that carries one has it
+  is no stage of SQL practice, and never LeetCode, which has no block. A cell that carries one has it
   removed, and a row left naming no topic — for that or any other reason — reads `Remaining SQL
   topics`. No row puts a topic outside the
   screening floor — `Remaining SQL topics` included — in an earlier phase than the row that completes
