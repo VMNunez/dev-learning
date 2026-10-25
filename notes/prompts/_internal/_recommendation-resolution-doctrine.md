@@ -40,6 +40,10 @@ re-measures *from a map that misdirects it*. Cite the sentence: a quoted anchor 
 that does not delete the thing being cited, and a grep for it costs one command. **Where a row
 already carries numbers, correcting them is part of step 1's measurement**, not a courtesy — and
 correcting them in the row is what step 2 means by *in writing*.
+**Also `REC-401`, from the artefact's side: a reference one artefact makes into another that a different
+writer replans names that artefact's stable ID, never its position** — a short-exercise stage wait cites
+the java concept ID, because `REC-400`'s replan had renumbered java's stages two days before the row
+proposed citing a stage number.
 
 **A pointer is not a read, and the family is the cheapest test.** A `## Configuration` block naming an
 authority (`TOPIC = one registered topic from _topic-ownership.md`) puts nothing in the run's hands;
