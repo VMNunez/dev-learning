@@ -69,14 +69,14 @@ the `@AutoConfigureMockMvc(addFilters = false)` line, supplied. No answer edits 
 
 Statements are in English; his comments and explanations are in Spanish.
 
-**Target: 293 active exercises = 132 first applications + 132 transfers + 29 integrations.**
+**Target: 294 active exercises = 132 first applications + 132 transfers + 30 integrations.**
 16 blocks (00–15), all in route, 132 included concepts and 8 excluded at concept level, out of 140.
 Each included concept has one first and one transfer task. Every block with two or more included
 concepts has at least one integration of its own (block 06 has five, SB293 among them); blocks 10, 12 and 15, which own
 one concept each, are joined to an earlier block's concept in a cross-block integration; block 00, whose
 one concept — what Boot adds to the framework — has no neighbour to combine with at its altitude, has
-none. SB290–SB293 are four technical tests, each one feature end to end, that close the essential route's
-stages 08 and 14. These are planned tasks, not completed work or a daily quota. A task passes on
+none. SB290–SB293 are four technical tests, each one feature end to end: SB290–SB292 make the essential
+route's stage 12, and SB293, a secured API, stays in the full route. These are planned tasks, not completed work or a daily quota. A task passes on
 a correct attempt or a verified correction; consolidation still requires a later unaided success.
 Attempts live only in `practice/exercises/ATTEMPTS.md`; this plan stores no mutable progress counts.
 
@@ -86,7 +86,7 @@ Attempts live only in `practice/exercises/ATTEMPTS.md`; this plan stores no muta
 |---|---|---|---|---|---|
 | 00 | What Spring Boot is and how this topic is organised | notes/spring-boot/junior/es/00-introduccion-spring-boot.md | none | 1 | 2 |
 | 01 | Creating, configuring and starting a Spring Boot application | notes/spring-boot/junior/es/01-basicos.md | 00 | 11 | 17 |
-| 02 | REST controllers: the HTTP boundary | notes/spring-boot/junior/es/02-controladores-rest.md | 00, 01 | 18 | 36 |
+| 02 | REST controllers: the HTTP boundary | notes/spring-boot/junior/es/02-controladores-rest.md | 00, 01 | 18 | 37 |
 | 03 | Spring Data JPA: entities and relationship mapping | notes/spring-boot/junior/es/03-spring-data-jpa.md | 00, 01 | 16 | 34 |
 | 04 | Repositories and queries | notes/spring-boot/junior/es/04-repositorios-y-consultas.md | 02, 03 | 15 | 32 |
 | 05 | Exception handling and the error contract | notes/spring-boot/junior/es/05-manejo-excepciones.md | 02, 04 | 10 | 23 |
@@ -546,63 +546,98 @@ authoritative in coverage. An excluded concept stays in its block's count and en
 | SB291 | 08 | C056, C048, C112 | integration | integration | SB099, SB091, SB225 | ex291_member_list_endpoint | A technical-test feature end to end over supplied `Member` and `Loan` entities: `GET /api/members?status=…&page=…` answers a page of mapped members, and `GET /api/members/{id}` a member with their loans, or `404`; the mapping happens inside the service's transaction. | The given test finds the page, the loans, and the `404` in the API's error shape, with the open session off. | active |
 | SB292 | 05 | C016, C031, C065 | integration | integration | SB023, SB056, SB125 | ex292_close_ticket_endpoint | A technical-test feature end to end: `PATCH /api/tickets/{id}/close` closes an open ticket without a `save()` call and answers `409` when it is already closed. | The given test finds the ticket closed in the table and `409` on the second call. | active |
 | SB293 | 06 | C089, C096, C074 | integration | integration | SB161, SB168, SB146 | ex293_secured_api | A technical-test feature end to end: `POST /api/auth/login` answers a signed token, and `GET /api/books` needs one while `DELETE /api/books/{id}` needs `ADMIN`. | The given test logs in, calls both endpoints with and without the token and with each role, and finds each status. | active |
+| SB294 | 02 | C016, C017, C018 | integration | integration | SB023, SB024, SB025 | ex294_note_endpoints | Write `NoteController` over a supplied in-memory `NoteService` whose methods the statement lists: `GET /api/notes` with an optional `tag` filter, `GET /api/notes/{id}`, `POST /api/notes` binding a `NoteRequest` record (`title`, `body`, `tags`), and `PUT /api/notes/{id}` replacing a note from the same record — one class-level prefix, each method mapped to the verb its operation calls for. | The given test lists every note and the notes tagged `work`, reads note 2, creates a note and replaces note 2, finding each result in the JSON it gets back; `DELETE /api/notes/2` answers `405`; the controller parses no text by hand. | active |
 
 ## Essential route
 
-The route's minimum, as a ladder (standard §B): 84 of the 132 included concepts — what a junior
-Spring Boot developer joining a Spanish consultancy writes unaided in a technical test and its review:
-a REST endpoint with its DTOs, validation and error contract, the entities and repository behind it, the
-transaction around them, their tests, the configuration that starts them, and a stateless JWT security
-chain an Angular client can call — in 15 stages and 192 tasks. Each stage gives every
-concept a first exercise and a later variant, then closes with an exercise that combines what it taught;
-stage 08 is technical tests alone, one feature end to end of the shape a take-home asks for, and stage
-14 pairs the secured-API technical test SB293 with SB257, the secured slice tests such a take-home is
-reviewed with; both are placed as soon as their prerequisites are served. Stage 09 is where he starts writing tests, and stage
-15 is the maintained code he will read in his first weeks.
+The route's minimum, as a ladder (standard §B, `REC-398`): 51 of the 132 included concepts —
+`HORARIO.md` §1's Spring Boot minimum, what a junior writes unaided in a consultancy's take-home, a small
+REST API, and defends in its review: the endpoint with its binding and statuses, the DTO boundary, the
+validated input, domain exceptions and one error contract, the entities and repositories behind it, the
+transaction around them, one feature end to end, and its tests with Mockito and the slices — in 14 stages
+and 118 tasks. Each stage gives every concept a `first` exercise and a later variant, then closes with an
+exercise that combines what it taught; stage 12 is technical tests alone, one feature end to end of the
+shape a take-home asks for, and stage 13 is where he starts writing tests. A listed variant is served
+only when its concept's `first`, and every variant of it listed earlier, was not answered autonomously;
+otherwise it is waived and stays in the full route. Each stage holds about one 50-minute exercise block
+of first-pass work at §C's budget — its `first` rows, with the variants they come to owe, and the
+integration that closes it: 27 to 60 minutes at §C's budget of about 6 minutes an exercise and 15–20 an
+integration, three to seven exercises. Which stages are targets, and what
+the minimum leaves out, is the 2026-10-25 judgement in `## Reconciliation`.
 
-**What a listed task asks him to write is listed before it.** Every tool a listed task needs from him is
-one of its own concepts or the concept of a task listed earlier, with two exceptions named here with the
-tasks that use them. A call the task's own text names, with its shape, is his to write and is never what
-that task practises: the `authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password))`
-call in SB161, before the two forms of that token are taught in SB167; the `mockMvc.perform(…)`
-request with its `status()` and `jsonPath(…)` assertions in SB235, before SB237 and SB238 teach
-them; and the authority text `ROLE_MANAGER` SB158's statement gives, before SB149 explains the
-prefix. jjwt's builder and parser calls (SB168, SB169) and `@Transactional` (SB056, SB224,
-SB225, SB232, SB291, SB292) belong to no concept of this route (the library, and the `spring` topic),
-and the statement names them where the task needs them. Where a task's setting uses a route concept
-listed later, or one the route does not list, the statement supplies that piece as given code and he
-writes only what the task asks for: the class-level `@RequestMapping` prefix and the method signatures
-of SB023's controller; the request and response records SB035's mapper converts; the `@Entity`
-annotation on SB059's `Invoice`; the schema scripts of SB075, SB080 and SB084 with their
-`spring.sql.init.*` locations, and the `ddl-auto=validate` line of SB080 and SB084; the
-`spring.jpa.open-in-view=false` line of SB225 and SB291; the `@PreAuthorize` already on SB144's
-method; the `SecurityFilterChain` bean around SB146's rules; the servlet filters SB145, SB164,
-SB174, SB179 and SB183 work beside, and the JWT filter whose one line SB167 changes, before
-SB163 teaches the filter; the `@WebMvcTest` class around SB234's bean override; and, in a batch
-whose module declares Spring Security, the `@AutoConfigureMockMvc(addFilters = false)` line in the
-skeleton of each test he writes in stage 09. The domain classes stages 01 and 02 hand him (SB033's
-`Team`, SB035's `Book`, SB050's `Order`, SB055's `Member`) are plain classes, not entities.
+**What a listed task asks him to write is listed before it.** Every tool a listed task needs from him that
+is a concept of this route is one of its own concepts or the concept of a task listed earlier, with two
+exceptions named here with the tasks that use them.
+
+- *Named* — a call the statement tells him to make, with its shape, never what the task practises: the
+  `mockMvc.perform(…)` request with its `status()` and `jsonPath(…)` assertions in SB235, before SB237
+  and SB238 teach them; and `@SpringBootTest(properties = "app.feature.audit=true")` in SB250 (this route's
+  `C124`, outside the minimum). `@Transactional` (SB056, SB224, SB225, SB228, SB232, SB291, SB292) belongs to no
+  concept of this route (the `spring` topic's), and the statement names it where the task needs it.
+- *Supplied* — where a task's setting uses a route concept listed later, or one the route does not list,
+  the statement writes that piece out as code and he writes only what the task asks for: the class-level
+  `@RequestMapping` prefix and the method signatures of SB023's controller; the request and response
+  records SB035's mapper converts; the `@Entity` annotation on SB059's `Invoice`; the schema scripts of
+  SB075, SB080 and SB084 with their `spring.sql.init.*` locations, and the `ddl-auto=validate` line of
+  SB080 and SB084; the `spring.jpa.open-in-view=false` line of SB225 and SB291; the `@WebMvcTest` class
+  around SB234's bean override, whole but for the one override line he writes; and, in a batch whose module declares Spring Security, the
+  `@AutoConfigureMockMvc(addFilters = false)` line in the skeleton of each test he writes in stages 13
+  and 14. The domain classes stages 01–03 hand him (SB294's `Note`, SB033's `Team`, SB035's `Book`,
+  SB050's `Order`, SB055's `Member`) are plain classes, not entities, and the class SB253 quotes tests a
+  service with Mockito, in the shapes SB242 taught, so stage 13 asks for no slice before stage 14 teaches one.
+
+**What it asks of the java route** (standard §B, `REC-401`). Writing an annotation Spring defines is the
+Spring Boot concept that annotation belongs to, never java's `Annotation metadata` (java `C124`): no listed row
+declares an annotation type or reads one. Every other java concept a listed row asks him to write is a
+wait of its stage or of an earlier one, named once, at the first stage that asks it (the IDs below are
+java's):
+
+- stage 01 — `C028`, the controller methods SB024, SB041 and SB294 declare, and `C036`, SB294's
+  controller class; `C006` and `C032`, the absent `maxPrice` of SB024 and `tag` of SB294, bound as
+  `null`; `C044`, the records SB025, SB042 and SB294 bind; `C062` and `C070`, their `List<String> tags`
+  and the list SB024 returns;
+- stage 02 — `C003`, the location SB029 declares; `C009`, `C022` and `C025`, SB045's early `400` and
+  SB044's two answers; `C042`, the static factories SB028 calls; `C066`, the `ResponseEntity<BookResponse>`
+  SB027 returns; `C067`, the empty result SB027 and SB054 answer with `404`;
+- stage 03 — `C021`, SB035's joined full name; `C024`, `C063`, `C073` and `C075`, the lists SB033, SB050
+  and SB052 build; `C005` and `C008`, SB052's total; `C043`, SB049's final fields; `C051` and `C056`, the
+  interface SB052 implements; `C119` and `C122`, the date SB031 writes as `21/10/2026`;
+- stage 05 — `C057`, `C061`, `C086` and `C090`, the exception types SB125 and SB135 declare and throw;
+  `C085`, the unchecked failures SB123 and SB137 tell apart; `C072`, the `fieldErrors` map SB126 and
+  SB127 build; `C116`, the states SB135 carries;
+- stage 07 — `C037`, `C039` and `C040`, the fields, accessors and `protected` constructor of SB057,
+  SB073 and SB088;
+- stage 09 — `C098` and `C102`, the `orElseThrow` and `orElseGet` SB106 asks for;
+- stage 10 — `C047`, the sort key SB110 compares;
+- stage 13 — `07-timetrack Step 8`, where he first writes JUnit and Mockito tests of a service
+  (`HORARIO.md` §1); its statements supply the code under test.
+
+What java's minimum leaves out is never asked: every `import` line is supplied (java `C031`; the IDE
+writes imports), and SB132's statement gives the full name of the package it scopes its advice to; the loop
+header `for (ConstraintViolation<?> violation : ex.getConstraintViolations())` is named in SB220 (java `C065`);
+and no row does decimal arithmetic (java `C013`): SB048's `price` is a supplied `BigDecimal` he only
+annotates, SB209's price field is supplied, and the prices and totals SB052, SB243 and SB244 compute or
+compare are whole cents in a `long`.
 
 A request for Spring Boot with no block or concept named is served from here, in this order, until the
 route is passed; every other task stays active, served on request or once the route is passed.
 
-| Stage | Title | Tasks |
-|---|---|---|
-| 01 | The first endpoints: verbs, path, query, body and status | SB021, SB023, SB022, SB024, SB025, SB028, SB027, SB029, SB038, SB040, SB039, SB041, SB042, SB045, SB044, SB046, SB054 |
-| 02 | The DTO boundary | SB035, SB034, SB032, SB031, SB033, SB052, SB051, SB049, SB048, SB050, SB055 |
-| 03 | Validating the input | SB206, SB208, SB209, SB207, SB211, SB214, SB216, SB217, SB215, SB219, SB222 |
-| 04 | Domain exceptions and the error contract | SB122, SB125, SB123, SB126, SB127, SB212, SB132, SB135, SB133, SB136, SB137, SB220, SB223, SB142 |
-| 05 | Mapping entities and their relationships | SB059, SB057, SB060, SB068, SB064, SB065, SB067, SB070, SB075, SB073, SB076, SB084, SB080, SB081, SB083, SB086, SB088, SB089 |
-| 06 | Repositories: inherited, derived, written and paged queries | SB090, SB091, SB094, SB096, SB095, SB099, SB105, SB106, SB109, SB111, SB110, SB114, SB120, SB121 |
-| 07 | The transaction boundary and what loads inside it | SB056, SB224, SB225, SB101, SB072, SB228, SB116, SB229, SB232 |
-| 08 | Technical tests: one feature end to end | SB290, SB291, SB292 |
-| 09 | Testing: unit, slice and full context | SB233, SB234, SB235, SB237, SB238, SB240, SB243, SB239, SB242, SB244, SB245, SB246, SB248, SB249, SB251, SB254, SB250, SB253, SB255, SB256 |
-| 10 | Configuration, profiles, startup work and logging | SB005, SB007, SB009, SB271, SB272, SB273, SB268, SB013, SB015, SB017, SB274, SB275, SB276, SB269, SB019, SB277 |
-| 11 | The security chain and the browser | SB144, SB146, SB145, SB150, SB154, SB155, SB156, SB157, SB173, SB175, SB174, SB179, SB183, SB184, SB185, SB186, SB202 |
-| 12 | Login and the JWT | SB158, SB159, SB162, SB161, SB168, SB167, SB164, SB163, SB170, SB187, SB188, SB191, SB190, SB197, SB196, SB193, SB192, SB199, SB203, SB204 |
-| 13 | Authorization, refusals and secured slice tests | SB147, SB149, SB151, SB165, SB236, SB176, SB178, SB180, SB194, SB247, SB205 |
-| 14 | Technical tests: a secured API and its tests | SB293, SB257 |
-| 15 | Maintained code | SB278, SB279, SB280, SB281, SB282, SB283, SB284, SB285, SB286 |
+| Stage | Title | Tasks | Waits for |
+|---|---|---|---|
+| 01 | Controllers: mapping the verbs and binding the request | SB021, SB023, SB022, SB024, SB025, SB038, SB040, SB039, SB041, SB042, SB294 | java C006, java C028, java C032, java C036, java C044, java C062, java C070 |
+| 02 | Responses: statuses, not found and the created location | SB028, SB027, SB029, SB045, SB044, SB046, SB054 | java C003, java C009, java C022, java C025, java C042, java C066, java C067 |
+| 03 | The DTO boundary | SB035, SB034, SB032, SB031, SB033, SB052, SB051, SB049, SB048, SB050, SB055 | java C005, java C008, java C021, java C024, java C043, java C051, java C056, java C063, java C073, java C075, java C119, java C122 |
+| 04 | Validating the request body | SB206, SB208, SB209, SB207, SB214, SB216, SB217, SB215, SB222 | — |
+| 05 | Domain exceptions and the error contract | SB122, SB125, SB123, SB126, SB127, SB132, SB135, SB133, SB136, SB137, SB142 | java C057, java C061, java C072, java C085, java C086, java C090, java C116 |
+| 06 | Validating parameters, and every validation failure in one shape | SB211, SB212, SB219, SB220, SB223 | — |
+| 07 | Mapping an entity | SB059, SB057, SB060, SB068, SB075, SB073, SB076, SB084, SB088 | java C037, java C039, java C040 |
+| 08 | Relationships, cascades and fetching | SB064, SB065, SB067, SB070, SB080, SB081, SB083, SB086, SB089 | — |
+| 09 | Repositories: inherited, derived and written queries | SB090, SB091, SB094, SB096, SB105, SB106, SB109, SB111, SB120 | java C098, java C102 |
+| 10 | Sorting and pagination | SB095, SB099, SB110, SB114, SB121 | java C047 |
+| 11 | The transaction boundary and what loads inside it | SB056, SB224, SB225, SB101, SB072, SB228, SB116, SB229, SB232 | — |
+| 12 | Technical tests: one feature end to end | SB290, SB291, SB292 | — |
+| 13 | Unit tests with Mockito | SB233, SB234, SB242, SB244, SB245, SB253, SB256 | 07-timetrack Step 8 |
+| 14 | Slice and full-context tests | SB235, SB237, SB238, SB240, SB243, SB239, SB246, SB248, SB249, SB251, SB254, SB250, SB255 | — |
 
 ## Reconciliation
 
@@ -612,7 +647,8 @@ each for a reason §H states — a `pom.xml` change no answer makes, a library o
 does not hold, or a classpath-root resource every exercise of a batch would share; they stay visible
 above and count toward no denominator.
 
-**What the minimum covers, weighed against the goal** (standard §B, "Goal fit"). The goal is the role
+**What the minimum covered, weighed against the goal, 2026-10-21** (standard §B, "Goal fit"; its minimum
+superseded 2026-10-25, below — what it leaves out still stands, its stage numbers as they stood then). The goal is the role
 `ROADMAP.md` and `_shared-context.md` describe: a junior at a Spanish consultancy whose decisive stages
 are a 2–4 hour take-home — a small Spring Boot API — and its live review, and whose Spring Boot
 simulation type is "REST endpoint + service + repository + basic validation". So the 84
@@ -669,3 +705,40 @@ serves an API rather than consuming one).
 
 Validated with `validate-practice-plan.py` against the real sources; cold review `approve-with-tightening`,
 its thirty-one tightenings applied — among them `C126`, the choice of test, added to the minimum.
+
+2026-10-25 (`REC-402`): replanned to `REC-398`'s minimum — `HORARIO.md` §1's Spring Boot row, the former
+stages 01–09 (endpoints, DTO, validation, errors, JPA, repositories, transactions, one complete feature,
+testing with Mockito and slices) — as target stages closed under their prerequisites, compressed by tasks
+and never by a concept, a listed variant served only when its concept's `first` and every variant of it
+listed earlier were not answered autonomously. Sized at about one 50-minute exercise block each (§C,
+`REC-406`), the nine stages became fourteen, each part closed by an integration the inventory holds save
+one: the first endpoints split into mapping and binding (01, closed by SB294, appended for it) and the
+response (02, SB054); domain exceptions and the error contract (05, SB142) moved ahead of parameter
+validation and its failures (06, SB223), which takes SB211 and SB219 from the input-validation stage (04,
+SB222), since SB127's `400` handler builds on SB126's field errors; entities split into one entity's
+mapping (07, SB088) and its relationships (08, SB089); repositories into inherited, derived and written
+queries (09, SB120) and sorting and paging (10, SB121); testing into unit tests with Mockito (13, SB256),
+with SB242 and SB253, whose decorative tests are a service's, and the slices and the full context (14,
+SB255). Each stage's waits on the java route are written (`REC-401`), resolved against its replanned route
+of 2026-10-24, and stage 13 waits for project 07's Step 8. Unlisted, 75 IDs and none retired: the former
+stages 10–15 — configuration, profiles, startup work and logging; the security chain and the browser;
+login and the JWT; authorization, refusals and secured slice tests; the secured-API technical test SB293
+with SB257; and maintained code. 118 listed tasks (from 192), 51 essential concepts (from 84), 294 active
+tasks (SB294 appended). No published row was changed or retired, no attempt relabelled and no batch
+edited; source fingerprints unchanged.
+
+**Goal fit, 2026-10-25** (standard §B, `REC-398`): every one of the fourteen stages is a target —
+`HORARIO.md` §1's Spring Boot minimum, ruled by Victor on 2026-10-23, its areas falling as endpoints
+01–02, DTO 03, validation 04 and 06, errors 05–06, JPA 07–08, repositories 09–10, transactions 11, one
+complete feature 12, and testing with Mockito and the slices 13–14 — so no stage is listed only for what
+another needs, and every prerequisite a target has inside this route is a stage of it, listed before it.
+What the targets need from java waits for java's route, as the section's prose names. Left out on purpose,
+beside what the 2026-10-21 judgement above already left: the former stages 10–15. The minimum is proven by
+the timed simulations, whose Spring Boot type is a REST endpoint with its service, repository, basic
+validation and tests (`HORARIO.md` §1: *"El mínimo de cada área lo marca superar su simulación"*), and the
+full route stays as optional material. A take-home starts from a generated project whose configuration he
+reads rather than writes, so precedence, `@Value` against a properties record, typed lists, profiles,
+startup work and logging stay in the full route; Spring Security and the JWT are project 07's own stack,
+built in its Steps 3 and 4 and exercised there every day, so the chain, the browser rules, login, the token,
+authorization and their secured slice tests — and SB293 and SB257 with them — stay in the full route; and
+maintained code is read in a consultancy's first weeks, never written in a take-home.

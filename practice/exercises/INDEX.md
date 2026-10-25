@@ -98,12 +98,12 @@ Derived: 2026-10-22
 ## spring-boot — junior
 
 Exercise plan: [Spring Boot junior](spring-boot/junior/PLANNING-junior.md)
-Active planned exercises: 293
-Essential route: 15 stages, 192 tasks
+Active planned exercises: 294
+Essential route: 14 stages, 118 tasks
 Notes structure SHA-256: 52268abf9d309c37c6ee57c4a8456aa7351877cf6ef97bf84376c38a1d93e8d4
 Notes plan: notes/spring-boot/coverage/notes-plan-junior.md
 Coverage SHA-256: b7cb1dbcde90bef75bb05fb7fe680d9ec762b6d627b0c4340eed48e174e4285c
-Derived: 2026-10-21
+Derived: 2026-10-25
 
 | Block | Title | Note | Depends on | Bullets | In route |
 |---|---|---|---|---|---|
