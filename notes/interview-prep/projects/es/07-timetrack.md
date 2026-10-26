@@ -228,7 +228,7 @@ Los enlaces llevan a las preguntas originales. Los números son sus identificado
 
 **[07-timetrack-001] ¿Por qué usaste Spring Boot para servir una API JSON en vez de generar las páginas HTML desde el servidor con MVC?** ⭐⭐⭐
 
-Porque el frontend iba a ser Angular, y Angular ya construye las pantallas en el navegador, así que no tenía sentido que el servidor también generara HTML. Decidí que el backend solo devolviera JSON: todos los controladores son `@RestController` y no hay plantillas como Thymeleaf. Así tengo dos aplicaciones independientes que solo comparten el contrato de la API, y mientras se respete ese contrato puedo cambiar o arrancar una sin tocar la otra.
+Porque el frontend lo hice con Angular, y Angular ya se encarga de pintar las pantallas. Entonces el backend no necesita generar HTML: recibe las peticiones en los controladores, aplica la lógica en los servicios y devuelve los datos en JSON. Así el frontend y el backend quedan separados, y puedo cambiar uno sin afectar al otro mientras la API siga igual.
 
 <a id="07-timetrack-002"></a>
 

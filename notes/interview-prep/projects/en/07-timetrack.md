@@ -228,7 +228,7 @@ Links lead to the original questions. The numbers are their identifiers, not the
 
 **[07-timetrack-001] Why did you make Spring Boot a JSON API instead of using it to render the View as a server-side MVC application?** ⭐⭐⭐
 
-Because the frontend was going to be Angular, and Angular already builds the screens in the browser, so it made no sense for the server to render HTML as well. I decided the backend would only return JSON: every controller is a `@RestController` and there are no templates like Thymeleaf. That gives me two independent apps that only share the API contract, and as long as that contract holds, I can change or start one without touching the other.
+Because I built the frontend with Angular, and Angular already takes care of drawing the screens. So the backend doesn't need to generate HTML: it receives the requests in the controllers, applies the logic in the services and returns the data as JSON. That way the frontend and the backend stay separate, and I can change one without affecting the other as long as the API stays the same.
 
 <a id="07-timetrack-002"></a>
 
