@@ -200,7 +200,7 @@ Los enlaces llevan a las preguntas originales. Los números son sus identificado
 
 **[SB-J-001] ¿Qué es Spring Boot y qué te aporta frente a Spring a secas o frente a Java puro?** ⭐⭐⭐ [refined]
 
-Spring es el framework y me da cosas como la inyección de dependencias o las transacciones. Spring Boot va por encima y me ahorra casi toda la configuración: añado un starter, que es un paquete de dependencias, por ejemplo el de web o el de JPA, y me trae todas las librerías que necesito ya configuradas. Además trae un Tomcat dentro, así que la aplicación arranca sin instalar ningún servidor. Con Java puro tendría que montar todo eso yo a mano. En TimeTrack, por ejemplo, solo añadí los starters de web, JPA, seguridad y validación.
+Spring es el framework y me da cosas como la inyección de dependencias o las transacciones. Spring Boot va por encima y me ahorra casi toda la configuración: añado un starter, que es un paquete de dependencias, por ejemplo el de web o el de JPA, y me trae todas las librerías que necesito ya configuradas. Además trae un Tomcat dentro, así que la aplicación arranca sin instalar ningún servidor. Con Java puro tendría que montar todo eso yo a mano.
 
 ---
 
