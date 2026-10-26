@@ -294,7 +294,7 @@ Links lead to the original questions. The numbers are their identifiers, not the
 
 **[ANG-J-001] What is Angular?** ⭐⭐⭐
 
-Angular is a framework by Google, based on TypeScript, for building what are known as Single Page Applications (SPAs): the browser loads the application once and, from then on, Angular changes the view without reloading the whole page and, when it needs data, asks the backend for it. It comes with almost everything built in: components, routing, forms and an HTTP client, so you don't have to pick a library for each thing. I used it in TimeTrack, where the Angular frontend consumes the JSON API of my Spring Boot backend.
+Angular is a framework by Google, based on TypeScript, for building what are known as Single Page Applications (SPAs): the browser loads the application once and, from then on, Angular changes the view without reloading the whole page and, when it needs data, asks the backend for it. It comes with almost everything built in: components, routing, forms and an HTTP client for making requests, so you don't have to pick a library for each thing.
 
 <a id="ANG-J-002"></a>
 
