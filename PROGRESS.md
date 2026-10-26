@@ -191,11 +191,11 @@ change a bank). Per-topic progress, the next days and week-by-week evolution are
 
 | Phase | Level | Scope | Questions | Learned | Verified | Consolidated | Status |
 |---|---|---|---|---|---|---|---|
-| 1 | junior | ⭐⭐⭐ — Proyecto 7, Spring Boot, Angular, Java, SQL, Seguridad, Arquitectura, TypeScript, General, JavaScript, Git, Proyecto 6 | 194 | 0/194 (0%) | 0 | 0 | open · last new projected 2026-12-22 · fully verified ~2026-12-29 |
+| 1 | junior | ⭐⭐⭐ — Proyecto 7, Spring Boot, Angular, Java, SQL, Seguridad, Arquitectura, TypeScript, General, JavaScript, Git, Proyecto 6 | 194 | 3/194 (2%) | 0 | 0 | open · last new projected 2026-12-22 · fully verified ~2026-12-29 |
 | 2 | junior | ⭐⭐⭐ — Proyecto 5, Proyecto 3, CSS, Proyecto 4, Proyecto 2, Proyecto 1 | 103 | 0/103 (0%) | 0 | 0 | locked until phase 1 is fully verified |
 | 3 | junior | ⭐⭐ | — | — | — | — | to be planned with Victor when phase 2 ends |
 
-Overdue reviews: 0 · Hard questions (2+ fails): none · Updated 2026-10-20.
+Overdue reviews: 0 · Hard questions (2+ fails): none · Updated 2026-10-26.
 
 <!-- spaced.py: end -->
 

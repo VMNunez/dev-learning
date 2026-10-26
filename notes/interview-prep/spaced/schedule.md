@@ -11,13 +11,13 @@ has estudiado. Lo escribe `spaced.py`; a mano solo se tocan `## Reglas` y `## Aj
 
 ## Estado
 
-_Calculado por `spaced.py` el 23/10/2026._
+_Calculado por `spaced.py` el 26/10/2026._
 
 **Nivel actual: junior.** Después vendrán middle y senior. Un nivel no empieza hasta que todas las preguntas del anterior estén consolidadas.
 
 | Fase | Preguntas | Aprendidas | Verificadas | Consolidadas | Situación |
 |---|---|---|---|---|---|
-| 1 · junior · ⭐⭐⭐ Núcleo para el primer empleo | 194 | 0 (0%) | 0 | 0 | abierta · última nueva prevista 22/12/2026 · verificada entera hacia el 29/12/2026 |
+| 1 · junior · ⭐⭐⭐ Núcleo para el primer empleo | 194 | 3 (2%) | 0 | 0 | abierta · última nueva prevista 22/12/2026 · verificada entera hacia el 29/12/2026 |
 | 2 · junior · ⭐⭐⭐ Resto de bancos y proyectos | 103 | 0 (0%) | 0 | 0 | se abre cuando estén verificadas todas las de la fase anterior (previsto: empieza hacia el 30/12/2026) |
 | 3 · junior · ⭐⭐ Profundización (por planificar) | 0 | 0 (—) | 0 | 0 | por planificar contigo cuando termine la fase anterior |
 
@@ -27,9 +27,9 @@ Repasos atrasados: 0 · Difíciles (2 fallos o más): ninguna
 
 | Tema | Fase | Prioridad | Preguntas | Aprendidas | Verificadas | Consolidadas |
 |---|---|---|---|---|---|---|
-| Proyecto 7 | 1 | máxima | 31 | 0 | 0 | 0 |
-| Spring Boot | 1 | alta | 28 | 0 | 0 | 0 |
-| Angular | 1 | alta | 37 | 0 | 0 | 0 |
+| Proyecto 7 | 1 | máxima | 31 | 1 | 0 | 0 |
+| Spring Boot | 1 | alta | 28 | 1 | 0 | 0 |
+| Angular | 1 | alta | 37 | 1 | 0 | 0 |
 | Java | 1 | alta | 18 | 0 | 0 | 0 |
 | SQL | 1 | media | 14 | 0 | 0 | 0 |
 | Seguridad | 1 | media | 9 | 0 | 0 | 0 |
@@ -52,7 +52,7 @@ Previsión suponiendo que todos los repasos salen bien; se recalcula con cada re
 
 | Día | Repasos | Nuevas | Preguntas nuevas |
 |---|---|---|---|
-| lunes 26/10/2026 | 0 | 4 | 07-timetrack-001 · ANG-J-001 · SB-J-001 · 07-timetrack-005 |
+| lunes 26/10/2026 | 0 | 1 | 07-timetrack-005 |
 | martes 27/10/2026 | 4 | 4 | JAVA-J-001 · ANG-J-003 · 07-timetrack-007 · SB-J-002 |
 | miércoles 28/10/2026 | 4 | 4 | 07-timetrack-009 · ANG-J-005 · 07-timetrack-059 · JAVA-J-002 |
 | jueves 29/10/2026 | 4 | 4 | SB-J-003 · ANG-J-007 · 07-timetrack-061 · 07-timetrack-062 |
@@ -63,7 +63,9 @@ Previsión suponiendo que todos los repasos salen bien; se recalcula con cada re
 
 Una fila por semana de estudio, sacada del historial de cada pregunta.
 
-Aún sin actividad.
+| Semana del | Nuevas | Repasos | PASS | BORDERLINE | FAIL | Aprendidas (acum.) | Verificadas (acum.) |
+|---|---|---|---|---|---|---|---|
+| 26/10/2026 | 3 | 0 | 0 | 0 | 0 | 3 | 0 |
 
 <!-- spaced.py: fin de lo generado -->
 
@@ -198,9 +200,9 @@ Fuentes (banco | tema | fase | prioridad; con la misma prioridad, el orden de la
 
 | # | ID | Tema | Fase | Título | Aprendida | Racha | Fallos | Intervalo | Próximo repaso | Estado | Historial |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | 07-timetrack-001 | Proyecto 7 | 1 | API JSON y separación de Angular |  |  |  |  |  | pendiente |  |
-| 2 | ANG-J-001 | Angular | 1 | Qué es Angular |  |  |  |  |  | pendiente |  |
-| 3 | SB-J-001 | Spring Boot | 1 | Qué es Spring Boot y por qué se usa |  |  |  |  |  | pendiente |  |
+| 1 | 07-timetrack-001 | Proyecto 7 | 1 | API JSON y separación de Angular | 2026-10-26 | 0 | 0 | 1 | 2026-10-27 | en repaso | 2026-10-26 aprendida |
+| 2 | ANG-J-001 | Angular | 1 | Qué es Angular | 2026-10-26 | 0 | 0 | 1 | 2026-10-27 | en repaso | 2026-10-26 aprendida |
+| 3 | SB-J-001 | Spring Boot | 1 | Qué es Spring Boot y por qué se usa | 2026-10-26 | 0 | 0 | 1 | 2026-10-27 | en repaso | 2026-10-26 aprendida |
 | 4 | 07-timetrack-005 | Proyecto 7 | 1 | Filtrar entradas según el usuario |  |  |  |  |  | pendiente |  |
 | 5 | JAVA-J-001 | Java | 1 | Primitivos frente a objetos |  |  |  |  |  | pendiente |  |
 | 6 | ANG-J-003 | Angular | 1 | Qué es un componente |  |  |  |  |  | pendiente |  |
