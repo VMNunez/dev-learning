@@ -216,6 +216,14 @@ INSERT INTO reviews (book_id, customer_id, rating, comment, reviewed_at) VALUES
 
 -- Your answer:
 
+SELECT title, price,
+	  CASE
+	    WHEN price < 10 THEN 'budget'
+		  WHEN price >= 10 AND price < 15 THEN 'standard'
+		  WHEN price > 15 THEN 'premium'
+		  ELSE 'unpriced'
+	  END AS price_band
+FROM books ORDER BY title ASC;
 
 -- Exercise 2 [Intro]: Every country, once
 -- List every country that appears either as an author's country or as a publisher's country.
@@ -224,7 +232,10 @@ INSERT INTO reviews (book_id, customer_id, rating, comment, reviewed_at) VALUES
 -- Expected result shape: one column (country), one row per distinct country
 
 -- Your answer:
-
+SELECT country  FROM authors WHERE country IS NOT NULL
+UNION 
+SELECT country FROM publishers WHERE country IS NOT NULL
+ORDER BY country ASC;
 
 -- Exercise 3 [Intro]: Most expensive first, unpriced last
 -- Return title and price for every book, from most expensive to cheapest.
@@ -232,7 +243,7 @@ INSERT INTO reviews (book_id, customer_id, rating, comment, reviewed_at) VALUES
 -- Expected result shape: 18 rows — title, price; the 3 unpriced books are the last 3 rows
 
 -- Your answer:
-
+SELECT title, price FROM books ORDER BY price DESC NULLS LAST;
 
 -- Exercise 4 [Standard]: The alias WHERE cannot see
 -- Return title, price, and price * 1.21 AS price_with_vat, only for books whose price_with_vat is above 15.
@@ -241,7 +252,11 @@ INSERT INTO reviews (book_id, customer_id, rating, comment, reviewed_at) VALUES
 -- Expected result shape: title, price, price_with_vat — only the books above 15 with VAT
 
 -- Your answer:
+-- SELECT title, price, price * 1.21 AS price_with_vat FROM books WHERE price_with_vat > 15;
+-- ERROR:  column "price_with_vat" does not exist
+-- LINE 1: ..., price * 1.21 AS price_with_vat FROM books WHERE price_with...
 
+SELECT title, price, price * 1.21 AS price_with_vat FROM books WHERE price * 1.21 > 15;
 
 -- Exercise 5 [Standard]: The alias ORDER BY can see
 -- From order_items, return id, order_id, and quantity * unit_price AS line_total,
@@ -251,7 +266,16 @@ INSERT INTO reviews (book_id, customer_id, rating, comment, reviewed_at) VALUES
 -- Expected result shape: one row per order item (22 rows) — id, order_id, line_total
 
 -- Your answer:
-
+-- Your answer:
+-- The order is :
+-- 1) FROM
+-- 2) WHERE
+-- 3) GROUP BY
+-- 4) HAVING
+-- 5) SELECT ( IN THIS STEP line_total starts)
+-- 6) ORDER BY
+-- 7) LIMIT
+SELECT id, order_id, quantity * unit_price AS line_total FROM order_items ORDER BY line_total DESC, id;
 
 -- Exercise 6 [Standard]: Reviewed, never ordered
 -- Return the ids of customers who wrote at least one review but never placed an order.
@@ -259,7 +283,9 @@ INSERT INTO reviews (book_id, customer_id, rating, comment, reviewed_at) VALUES
 -- Expected result shape: one column (customer_id)
 
 -- Your answer:
-
+SELECT DISTINCT customer_id FROM reviews 
+EXCEPT
+SELECT customer_id FROM orders;
 
 -- Exercise 7 [Standard]: The four cheapest — the same four every time
 -- Return id, title and price of the 4 cheapest books that have a price.
