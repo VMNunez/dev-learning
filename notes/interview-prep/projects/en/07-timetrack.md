@@ -252,7 +252,7 @@ I chose `201` for creates because `ProjectController`, `UserController` and `Tim
 
 **[07-timetrack-005] How does `TimeEntryService.findByFilter` stop an employee from querying another user's entries while still allowing a manager to filter across users?** ⭐⭐⭐
 
-I decided that the service must check the caller's role and replace the supplied `userId` with the authenticated user's ID for non-managers. Managers keep the requested filter, and the service passes the resulting criteria to `TimeEntrySpecifications` before mapping the page to responses.
+In the service I first check whether the person making the request is a manager. If not, I ignore the `userId` that comes in and replace it with the id of the logged-in user, so an employee only sees their own entries even if they send someone else's id. If it is a manager, I respect the filter they asked for, and if they ask for none they see everyone's. I did it in the backend because anyone can send the request by hand, for example from Postman, with another user's id.
 
 <a id="07-timetrack-006"></a>
 

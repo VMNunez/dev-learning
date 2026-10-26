@@ -252,7 +252,7 @@ Elegí `201` al crear porque `ProjectController`, `UserController` y `TimeEntryC
 
 **[07-timetrack-005] ¿Cómo impide `TimeEntryService.findByFilter` que un empleado consulte entradas ajenas sin quitar al manager la posibilidad de filtrar por usuario?** ⭐⭐⭐
 
-Decidí que el servicio compruebe el rol del solicitante y sustituya el `userId` recibido por el ID del usuario autenticado cuando no sea manager. Los managers conservan el filtro solicitado; después, el servicio pasa esos criterios a `TimeEntrySpecifications` y transforma la página en respuestas.
+En el servicio miro primero si quien hace la petición es manager. Si no lo es, ignoro el `userId` que llega y lo cambio por el id del usuario que ha iniciado sesión, así un empleado solo ve sus entradas aunque mande el id de otro. Si es manager, respeto el filtro que haya pedido, y si no pide ninguno ve las de todos. Lo hice en el backend porque cualquiera puede mandar la petición a mano, por ejemplo desde Postman, con el id de otro usuario.
 
 <a id="07-timetrack-006"></a>
 
