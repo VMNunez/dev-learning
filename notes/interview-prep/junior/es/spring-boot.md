@@ -202,8 +202,6 @@ Los enlaces llevan a las preguntas originales. Los números son sus identificado
 
 Spring es el framework y me da cosas como la inyección de dependencias o las transacciones. Spring Boot va por encima y me ahorra casi toda la configuración: añado un starter, por ejemplo el de web o el de JPA, y Boot configura solo lo que hace falta. Además trae un Tomcat dentro, así que la aplicación arranca sin instalar ningún servidor. Con Java puro tendría que montar todo eso yo a mano. En TimeTrack, por ejemplo, solo añadí los starters de web, JPA, seguridad y validación.
 
-> **Consejo de entrevista:** separa las dos capas en voz alta — "Spring es el framework; Boot, la capa que trae las decisiones de configuración ya tomadas" — y luego nombra las tres cosas que añade Boot: auto-configuración, starters y servidor embebido.
-
 ---
 
 <a id="SB-J-002"></a>

@@ -202,8 +202,6 @@ Links lead to the original questions. The numbers are their identifiers, not the
 
 Spring is the framework, and it gives me things like dependency injection or transactions. Spring Boot sits on top and saves me almost all the setup: I add a starter, for example the web or the JPA one, and Boot configures what is needed on its own. It also comes with a Tomcat inside, so the application starts without installing any server. With plain Java I would have to set all of that up by hand. In TimeTrack, for example, I only added the web, JPA, security and validation starters.
 
-> **Junior tip:** separate the two layers out loud — "Spring is the framework, Boot is the layer that comes with the setup decisions already made" — then name the three things Boot adds: auto-configuration, starters and the embedded server.
-
 ---
 
 <a id="SB-J-002"></a>
