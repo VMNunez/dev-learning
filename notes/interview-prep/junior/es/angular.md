@@ -6,11 +6,11 @@
 
 Empieza por la primera vuelta. Dentro de cada vuelta, sigue los temas de arriba abajo y trabaja un grupo pequeño de preguntas cada vez. Si una pregunta requiere un concepto de otra vuelta, consulta esa pregunta y vuelve al punto donde estabas.
 
-| Vuelta | Prioridad | Preguntas |
-|---|---|---:|
-| [1. Imprescindibles](#study-pass-1) | ⭐⭐⭐ | 37 |
-| [2. Profundización](#study-pass-2) | ⭐⭐ | 94 |
-| [3. Detalles](#study-pass-3) | ⭐ | 13 |
+| Vuelta                              | Prioridad | Preguntas |
+| ----------------------------------- | --------- | --------: |
+| [1. Imprescindibles](#study-pass-1) | ⭐⭐⭐    |        37 |
+| [2. Profundización](#study-pass-2)  | ⭐⭐      |        94 |
+| [3. Detalles](#study-pass-3)        | ⭐        |        13 |
 
 Lee la pregunta, intenta responder sin mirar, contrasta tu respuesta con la escrita y vuelve a explicarla con tus palabras. En el siguiente bloque, recupera alguna pregunta anterior sin consultar la respuesta.
 
@@ -428,7 +428,7 @@ Una función que se ejecuta automáticamente cuando cambia cualquier signal que 
 ```typescript
 import { toSignal } from '@angular/core/rxjs-interop';
 
-employees$ = this.employeeService.getAll();                // Observable del servicio
+employees$ = this.employeeService.getAll(); // Observable del servicio
 employees = toSignal(this.employees$, { initialValue: [] }); // Signal para la plantilla
 ```
 
@@ -826,7 +826,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
 
   return next(req).pipe(
-    catchError(err => {
+    catchError((err) => {
       if (err.status === 401) {
         authService.logout();
         router.navigate(['/login']);
@@ -851,9 +851,7 @@ Inyectando un `LoadingService` y activando un signal antes de la petición y des
 export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
   const loadingService = inject(LoadingService);
   loadingService.start();
-  return next(req).pipe(
-    finalize(() => loadingService.stop())
-  );
+  return next(req).pipe(finalize(() => loadingService.stop()));
 };
 ```
 
@@ -925,7 +923,7 @@ function sinEspaciosValidator(control: AbstractControl): ValidationErrors | null
 }
 
 // se usa igual que cualquier validador integrado
-nombre: new FormControl('', [Validators.required, sinEspaciosValidator])
+nombre: new FormControl('', [Validators.required, sinEspaciosValidator]);
 ```
 
 En la plantilla lo compruebas igual que los errores integrados: `control.hasError('sinEspacios')`. Para lógica que necesita una llamada HTTP — como comprobar si un email ya está registrado — usa un validador asíncrono.
@@ -943,7 +941,7 @@ Un validador asíncrono devuelve un `Observable<ValidationErrors | null>` o `Pro
 
 ```typescript
 // los validadores asíncronos van como tercer argumento de FormControl
-email: new FormControl('', [Validators.required, Validators.email], [emailExisteValidator])
+email: new FormControl('', [Validators.required, Validators.email], [emailExisteValidator]);
 ```
 
 Angular muestra un estado `PENDING` mientras espera y solo aplica el error cuando el observable completa. Añade siempre `debounceTime` dentro del validador para no lanzar una petición HTTP en cada pulsación de tecla.

@@ -13,11 +13,11 @@ Preguntas específicas de las decisiones de implementación tomadas en este proy
 
 Empieza por la primera vuelta. Dentro de cada vuelta, sigue los temas de arriba abajo y trabaja un grupo pequeño de preguntas cada vez. Si una pregunta requiere un concepto de otra vuelta, consulta esa pregunta y vuelve al punto donde estabas.
 
-| Vuelta | Prioridad | Preguntas |
-|---|---|---:|
-| [1. Imprescindibles](#study-pass-1) | ⭐⭐⭐ | 31 |
-| [2. Profundización](#study-pass-2) | ⭐⭐ | 94 |
-| [3. Detalles](#study-pass-3) | ⭐ | 16 |
+| Vuelta                              | Prioridad | Preguntas |
+| ----------------------------------- | --------- | --------: |
+| [1. Imprescindibles](#study-pass-1) | ⭐⭐⭐    |        31 |
+| [2. Profundización](#study-pass-2)  | ⭐⭐      |        94 |
+| [3. Detalles](#study-pass-3)        | ⭐        |        16 |
 
 Lee la pregunta, intenta responder sin mirar, contrasta la respuesta con tu código y vuelve a explicarla con tus palabras. En el siguiente bloque, recupera alguna pregunta anterior sin consultar la respuesta.
 
@@ -811,6 +811,7 @@ Elegí marcar cada diálogo como `saving` y desactivar sus controles hasta que l
 **[07-timetrack-096] ¿Por qué el filtro de proyectos de Entries solo muestra proyectos activos a los empleados, aunque algunas de sus entradas correspondan a proyectos inactivos?** ⭐⭐
 
 Elegí usar en el filtro la lista de proyectos que el endpoint permite ver a los empleados: un proyecto archivado desaparece de ahí, pero el empleado puede seguir consultando sus entradas por mes y estado. La lista de entradas está paginada, así que el navegador no puede deducir de las entradas del empleado los IDs de todos los proyectos inactivos; incluirlos requeriría otra consulta limitada al usuario actual.
+
 ### Transversal
 
 <a id="07-timetrack-107"></a>
