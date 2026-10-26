@@ -78,6 +78,8 @@ appearing in the fewest exercises", which was a proxy for nothing.
 | Fecha | Step | Coverage section | Concepto | Qué te frenó | Resuelto |
 |-------|------|------------------|----------|--------------|----------|
 | 2026-09-30 | junior:0 | Common string functions | `\|\|` concatenation | en el #17 no entendías cómo `\|\|` junta columnas y texto fijo entre comillas | sí |
+| 2026-10-26 | junior:0 | Querying basics | `SELECT`, `FROM`, and column aliases | en el ejercicio 5 olvidaste el `FROM` y no entendías por qué la columna `id` "no existía" | sí |
+| 2026-10-26 | junior:0 | Set operations | `INTERSECT` and `EXCEPT` | en el ejercicio 6 no entendías qué quita `EXCEPT` ni por qué restar `orders` deja a los que nunca pidieron; lo resolviste con listas de ids concretas | sí |
 | 2026-09-30 | junior:0 | Querying basics | `DISTINCT ON` | en el #18 necesitaste la explicación de `DISTINCT` vs `DISTINCT ON` y de cómo el `ORDER BY` decide qué fila se queda | sí |
 | 2026-09-30 | junior:0 | Querying basics | alias scope vs execution order | en el #19 dudaste en qué cláusulas se puede usar un alias del `SELECT` y en cuáles no | sí |
 | 2026-09-30 | junior:0 | PostgreSQL specifics | `::` cast operator | en el #37 no entendías `created_at::date` ni si equivalía a `CAST(... AS DATE)` | sí |
