@@ -8,11 +8,11 @@ Coverage SHA-256: b7cb1dbcde90bef75bb05fb7fe680d9ec762b6d627b0c4340eed48e174e428
 
 Empieza por la primera vuelta. Dentro de cada vuelta, sigue los temas de arriba abajo y trabaja un grupo pequeño de preguntas cada vez. Si una pregunta requiere un concepto de otra vuelta, consulta esa pregunta y vuelve al punto donde estabas.
 
-| Vuelta | Prioridad | Preguntas |
-|---|---|---:|
-| [1. Imprescindibles](#study-pass-1) | ⭐⭐⭐ | 28 |
-| [2. Profundización](#study-pass-2) | ⭐⭐ | 61 |
-| [3. Detalles](#study-pass-3) | ⭐ | 10 |
+| Vuelta                              | Prioridad | Preguntas |
+| ----------------------------------- | --------- | --------: |
+| [1. Imprescindibles](#study-pass-1) | ⭐⭐⭐    |        28 |
+| [2. Profundización](#study-pass-2)  | ⭐⭐      |        61 |
+| [3. Detalles](#study-pass-3)        | ⭐        |        10 |
 
 Lee la pregunta, intenta responder sin mirar, contrasta tu respuesta con la escrita y vuelve a explicarla con tus palabras. En el siguiente bloque, recupera alguna pregunta anterior sin consultar la respuesta.
 
@@ -182,7 +182,7 @@ Los enlaces llevan a las preguntas originales. Los números son sus identificado
 **Seguridad y JWT**
 
 - [055 — Filtro JWT que rechaza tokens válidos](#SB-J-055)
-- [086 — hasRole y el prefijo ROLE_](#SB-J-086)
+- [086 — hasRole y el prefijo ROLE\_](#SB-J-086)
 
 **Gestión de excepciones**
 
@@ -384,6 +384,7 @@ public class DataInitializer implements CommandLineRunner {
 Respuesta de alerta: "Lo meto en el constructor de un servicio." — El constructor se ejecuta mientras el contexto todavía se está construyendo, antes de que la aplicación esté lista, y sin una comprobación previa la carga inicial se repite en cada reinicio.
 
 ---
+
 ## REST controllers
 
 <a id="SB-J-014"></a>
@@ -623,6 +624,7 @@ En una aplicación Spring MVC como el proyecto 07 elegiría `RestClient`: es el 
 Respuesta de alerta: "`WebClient`, porque es el moderno." — Es el cliente reactivo: en una aplicación MVC bloqueante mete WebFlux y otro modelo de programación para una sola llamada, mientras que la respuesta síncrona actual es `RestClient`.
 
 ---
+
 ## Spring Data JPA
 
 <a id="SB-J-027"></a>
@@ -968,6 +970,7 @@ int deactivateAll(@Param("ids") Collection<Long> ids);
 Respuesta de alerta: "Le añado `nativeQuery = true`." — El lenguaje de la consulta no es el problema: JPQL o nativa, una consulta de escritura necesita `@Modifying` y una transacción, y una nativa además pierde la comprobación al arrancar.
 
 ---
+
 ## Seguridad y JWT
 
 <a id="SB-J-042"></a>
@@ -1218,6 +1221,7 @@ return org.springframework.security.core.userdetails.User
 Respuesta de alerta: "El rol estará mal en la base de datos, así que cambiaría los datos del usuario." — Los datos están bien; el desajuste está entre cómo se construye la authority y cómo la compara `hasRole`, y ningún cambio en la fila del usuario arregla el código que construye las authorities.
 
 ---
+
 ## Gestión de excepciones
 
 <a id="SB-J-056"></a>
@@ -1361,6 +1365,7 @@ Vienen de tipos de validación distintos. `MethodArgumentNotValidException` se l
 > **Consejo de entrevista:** relaciona cada excepción con dónde está la restricción — en los campos del DTO o en los parámetros del método — y di que cada una necesita su propio handler. Nombrar `HandlerMethodValidationException` demuestra que conoces el Spring actual, no solo los tutoriales antiguos.
 
 ---
+
 ## Transacciones
 
 <a id="SB-J-092"></a>
@@ -1424,6 +1429,7 @@ public void importEntries(Path file) throws IOException {
 Respuesta de alerta: "Sí, cualquier excepción la revierte." — Por defecto solo las no comprobadas: una excepción comprobada confirma lo que se había escrito, y lo mismo pasa con una `RuntimeException` que se traga dentro del método; así es como una operación fallida acaba guardada a medias.
 
 ---
+
 ## Testing
 
 <a id="SB-J-063"></a>
@@ -1562,6 +1568,7 @@ void findById_returnsProject() {
 Respuesta de alerta: "Está bien, el informe de cobertura marca esas líneas como cubiertas." — La cobertura solo dice que las líneas se ejecutaron; sin una aserción sobre lo que produjeron, una regla rota sigue dejando el informe en verde.
 
 ---
+
 ## Tooling
 
 <a id="SB-J-069"></a>
