@@ -294,7 +294,7 @@ Los enlaces llevan a las preguntas originales. Los números son sus identificado
 
 **[ANG-J-001] ¿Qué es Angular?** ⭐⭐⭐
 
-Angular es un framework de Google, basado en TypeScript, para hacer lo que se conoce como Single Page Applications (SPA): el navegador carga la aplicación una vez y, a partir de ahí, Angular cambia la vista sin recargar la página completa y, cuando necesita datos, se los pide al backend. Trae casi todo integrado: componentes, routing, formularios y cliente HTTP para hacer peticiones, así que no tienes que elegir librerías para cada cosa.
+Angular es un framework de Google, basado en TypeScript, para hacer lo que se conoce como Single Page Applications (SPA): el navegador carga la aplicación una vez y, a partir de ahí, Angular cambia la vista sin recargar la página completa y, cuando necesita datos, se los pide al backend. Trae casi todo integrado: componentes, routing, formularios, inyección de dependencias y cliente HTTP para hacer peticiones, así que no tienes que elegir librerías para cada cosa.
 
 <a id="ANG-J-002"></a>
 
