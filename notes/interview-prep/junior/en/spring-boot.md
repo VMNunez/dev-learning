@@ -200,7 +200,7 @@ Links lead to the original questions. The numbers are their identifiers, not the
 
 **[SB-J-001] What is Spring Boot, and what does it give you over plain Spring or plain Java?** ⭐⭐⭐
 
-Spring is the framework, and it gives me things like dependency injection or transactions. Spring Boot sits on top and saves me almost all the setup: I add a starter, for example the web or the JPA one, and Boot configures what is needed on its own. It also comes with a Tomcat inside, so the application starts without installing any server. With plain Java I would have to set all of that up by hand. In TimeTrack, for example, I only added the web, JPA, security and validation starters.
+Spring is the framework, and it gives me things like dependency injection or transactions. Spring Boot sits on top and saves me almost all the setup: I add a starter, which is a bundle of dependencies, for example the web or the JPA one, and it brings me all the libraries I need, already configured. It also comes with a Tomcat inside, so the application starts without installing any server. With plain Java I would have to set all of that up by hand. In TimeTrack, for example, I only added the web, JPA, security and validation starters.
 
 ---
 
