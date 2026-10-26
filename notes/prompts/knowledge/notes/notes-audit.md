@@ -335,7 +335,7 @@ elsewhere. Merge A's returned section pairs into
 the retained list, replacing renamed pairs, then re-dispatch B with that list and its original inputs.
 An unresolved repair or a second B request leaves the entry pending and the run blocked, with the
 changed spans reported and no pair commit. This is the same single content-repair allowance used
-below for T/C claim mismatches, not another retry for each stage; trace-only retries do not spend it.
+below for T/C mismatches, not another retry for each stage; trace-only retries do not spend it.
 
 ## Stage T — translator
 
@@ -387,11 +387,12 @@ Dispatch `_notes-review-es-prompt.md` for the resolved paths, with:
 It reads Spanish independently, fixes quality, verifies that Spanish alone achieves the pedagogical
 contract, verifies both files exist, changes only the selected status, then commits the English file,
 Spanish file, and plan atomically. A structural pedagogical gap blocks completion and returns the
-entry to the English stages, as does a claim mismatch stage T or stage C reports against
-`LINK_TARGETS` in prose this run may change (one in an append-only run's frozen prose is reported, never
-repaired — "Append-only mode" item 1). **In an `ES_AUTHORED` section its source is Spanish:** use
+entry to the English stages, as does a sentence stage T or stage C reports false at write time — a
+claim mismatch against `LINK_TARGETS` or any other false fact, each called a mismatch below — in prose
+this run may change (one in an append-only run's frozen prose is reported, never repaired —
+"Append-only mode" item 1). **In an `ES_AUTHORED` section its source is Spanish:** use
 the Spanish-source repair gate above, then run B → T → C again; never send it to a B-only repair
-whose changed English T would fail to mirror. Else the sentence is `en/`-canonical and false at write time, so it is repaired by one
+whose changed English T would fail to mirror. Else the sentence is `en/`-canonical, so it is repaired by one
 re-dispatch of Stage B, naming each reported sentence, not carried into the commit. **The repair runs
 where the mismatch is reported, and every stage after B runs again behind it** (`REC-269`): an ordinary mismatch
 stage T reports goes to Stage B **before** Stage C is dispatched, and an ordinary mismatch stage C reports has

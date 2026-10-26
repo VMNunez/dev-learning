@@ -202,8 +202,8 @@ Exact command contracts live in the [README public interface index](../README.md
 _cross-topic-inbox.md is the durable edge between topic owners: every coverage run files foreign-topic proposals there — the two producers and the read-only /coverage-verify gate alike — and the owning /coverage run consumes its heading; /coverage-audit reads every heading and routes into it too. An inline coverage-bullet-add creates a durable /notes-plan remap debt rather than editing a fingerprinted plan by hand.
 
 Inside `/notes-audit`, A's Spanish-authored section list reaches B, T and C. A defect B reports in
-that list, or a T/C claim mismatch there, returns to A for Spanish-first repair → B → T → C; ordinary
-English claim mismatches return to B → T → C. Both routes share one content-repair allowance, and
+that list, or a T/C mismatch there (a `LINK_TARGETS` claim or any other sentence false at write time), returns to A for Spanish-first repair → B → T → C; ordinary
+English mismatches return to B → T → C. Both routes share one content-repair allowance, and
 an unresolved defect blocks the pair commit. The README's notes component rows own the role fences.
 
 ---
