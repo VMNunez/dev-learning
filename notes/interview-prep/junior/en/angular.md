@@ -294,7 +294,7 @@ Links lead to the original questions. The numbers are their identifiers, not the
 
 **[ANG-J-001] What is Angular?** ⭐⭐⭐
 
-A TypeScript-based frontend framework by Google for building web applications. It includes everything built-in: routing, forms, HTTP client, and a component system — unlike React, which is just a UI library.
+Angular is a framework by Google, based on TypeScript, for building single-page web applications (SPAs): the browser loads the application once and, from then on, Angular changes the view without reloading the page and fetches the data from the backend. It comes with almost everything built in: components, routing, forms and an HTTP client, so you don't have to pick a library for each thing. I used it in TimeTrack, where the Angular frontend consumes the JSON API of my Spring Boot backend.
 
 <a id="ANG-J-002"></a>
 
@@ -306,7 +306,7 @@ Angular is a full framework with opinions on how to structure everything. React 
 
 **[ANG-J-003] What is a component in Angular?** ⭐⭐⭐
 
-The basic building block of the UI. Each component is a TypeScript class with a template (HTML), styles (CSS), and a selector. In Angular 17+, components are standalone by default — they declare their own imports instead of belonging to a module. Components communicate with each other through `input()` and `output()`.
+The basic building block of the UI. Each component is a TypeScript class with a template (HTML), styles (CSS), and a selector. Since Angular 19, components are standalone by default — they declare their own imports instead of belonging to a module. Components communicate with each other through `input()` and `output()`.
 
 <a id="ANG-J-004"></a>
 
