@@ -152,7 +152,7 @@ Concepts needed to build, test, explain, and debug a conventional Spring Boot RE
 - Test database fidelity — an in-memory replacement is fast but can hide PostgreSQL-specific behaviour, so database-sensitive integration tests need deliberately configured real infrastructure
 - Test configuration and profiles — override external dependencies and settings for tests without weakening production configuration or relying on a developer's local environment
 - Tests that cannot fail — recognise the mocked-collaborator test that asserts only on its own stubbing, the interaction check with no state assertion, and the slice test whose subject is itself replaced by a mock, because such a test reports green regardless of the production code
-- Unit vs slice vs full-context tests — choose an isolated class test, a focused Spring layer, or the complete application context according to the mechanism and configuration risk under test
+- Unit vs slice vs full-context tests — choose an isolated class test, a focused Spring layer, or the complete application context according to the mechanism and configuration risk under test ✅ 07-timetrack — the backend suite holds no `@SpringBootTest`: the scaffold `TimetrackApplicationTests` is deleted and the throttle is tested as a plain class
 
 ## Configuration and profiles
 

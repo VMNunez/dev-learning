@@ -423,7 +423,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 
 ### Spring testing foundations
 
-- Plain unit test vs Spring test context — instantiate a class directly when only its logic matters and load the container only when bean wiring or framework behaviour is the risk
+- Plain unit test vs Spring test context — instantiate a class directly when only its logic matters and load the container only when bean wiring or framework behaviour is the risk ✅ 07-timetrack — `LoginAttemptServiceTest` builds `LoginAttemptService` with `new` and loads no application context
 - Spring TestContext Framework — build and cache an application context for tests while integrating lifecycle callbacks, profiles, properties, and dependency injection
 - JUnit Jupiter TestContext integration — use `SpringExtension` or the composed `@SpringJUnitConfig` annotation so JUnit activates Spring's test lifecycle before `@ContextConfiguration` supplies the context definition
 - `@ContextConfiguration` — declare the configuration classes or resources that a framework-level test context needs without loading a complete Boot application
@@ -590,7 +590,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - Test database fidelity — an in-memory replacement is fast but can hide PostgreSQL-specific behaviour, so database-sensitive integration tests need deliberately configured real infrastructure
 - Test configuration and profiles — override external dependencies and settings for tests without weakening production configuration or relying on a developer's local environment
 - Tests that cannot fail — recognise the mocked-collaborator test that asserts only on its own stubbing, the interaction check with no state assertion, and the slice test whose subject is itself replaced by a mock, because such a test reports green regardless of the production code
-- Unit vs slice vs full-context tests — choose an isolated class test, a focused Spring layer, or the complete application context according to the mechanism and configuration risk under test
+- Unit vs slice vs full-context tests — choose an isolated class test, a focused Spring layer, or the complete application context according to the mechanism and configuration risk under test ✅ 07-timetrack — the backend suite holds no `@SpringBootTest`: the scaffold `TimetrackApplicationTests` is deleted and the throttle is tested as a plain class
 
 ### Configuration and profiles
 
@@ -640,7 +640,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - Operators and short-circuit evaluation — use arithmetic, comparison, logical, and assignment operators and explain why `&&` and `||` may skip the right operand
 - `if` / `else` — select one branch from boolean conditions and order conditions so specific or exceptional cases are not hidden by broader ones
 - Conditional (ternary) operator — `condition ? a : b` chooses one of two values as an expression, unlike an `if` / `else` statement, which does not itself produce a value
-- `for`, enhanced `for`, `while`, and `do-while` — choose counted iteration, element traversal, pre-checked repetition, or post-checked repetition according to the loop contract
+- `for`, enhanced `for`, `while`, and `do-while` — choose counted iteration, element traversal, pre-checked repetition, or post-checked repetition according to the loop contract ✅ 07-timetrack — `LoginAttemptServiceTest` records exactly five failures with a counted `for (int i = 0; i < 5; i++)`
 - `break`, `continue`, and `return` — distinguish leaving a loop, skipping to its next iteration, and leaving the current method
 - Classic `switch` fall-through — without `break`, a matching statement case continues into later cases and can create a hidden logic bug
 - Switch expressions — arrow cases can produce a value without fall-through, and an expression must cover every possible input
@@ -793,6 +793,13 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - Build lifecycle — distinguish `clean`, `compile`, `test`, `package`, and `install` and know that a later lifecycle phase runs the earlier phases
 - Dependency scopes — distinguish compile, runtime, test, and provided classpaths so libraries are available only where intended ✅ 07-timetrack
 - Maven Wrapper — use the repository's pinned Maven launcher so local and CI builds use a consistent Maven version
+
+### Unit testing mechanics
+
+JUnit and AssertJ are plain Java libraries; this section owns how a test class runs and asserts, while General owns testing vocabulary and Spring Boot owns test slices and context tests.
+
+- JUnit 5 test lifecycle — the JUnit Platform discovers `@Test` methods under `src/test/java` and creates a fresh instance of the test class for every method, so field state never leaks from one test into the next ✅ 07-timetrack — `LoginAttemptServiceTest` holds five `@Test` methods under `src/test/java` that `mvn test` discovers and runs one by one
+- AssertJ fluent assertions — `assertThat(actual)` followed by a type-specific check (`isTrue()`, `isEqualTo(...)`, `containsExactly(...)`) reads as the expectation and prints the actual value on failure, which is why Spring Boot's test starter ships it beside JUnit's own `assertEquals` ✅ 07-timetrack — `LoginAttemptServiceTest` asserts every `isBlocked` result with `assertThat(...).isTrue()` or `.isFalse()`
 
 ## Architecture
 
@@ -2370,12 +2377,12 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - End-to-end test — verify a critical user journey through a complete running application surface with the highest realism and cost
 - Test-level selection — choose unit, integration, or end-to-end scope from the risk being proved rather than using one level for every defect
 - Testing pyramid — use many focused tests and fewer broad expensive tests as a trade-off heuristic, not a mandatory numeric ratio
-- Arrange–Act–Assert vs Given–When–Then — recognise equivalent structural and domain-oriented ways to separate setup, behaviour, and verification
-- Meaningful assertion — verify an observable result or interaction that would fail if the behaviour regressed, not merely that code executed
+- Arrange–Act–Assert vs Given–When–Then — recognise equivalent structural and domain-oriented ways to separate setup, behaviour, and verification ✅ 07-timetrack — each `LoginAttemptServiceTest` method separates the recorded failures, the `isBlocked` call and the `assertThat` with blank lines
+- Meaningful assertion — verify an observable result or interaction that would fail if the behaviour regressed, not merely that code executed ✅ 07-timetrack — `reset_unblocksTheKeyImmediately` first asserts the key is blocked, so its final `isFalse()` cannot pass on a key that was never blocked
 - Test setup and teardown — create the required starting state and clean shared resources without hiding the scenario behind excessive fixtures
-- Test isolation and order independence — make each test establish its own state so running it alone or in another order produces the same result
+- Test isolation and order independence — make each test establish its own state so running it alone or in another order produces the same result ✅ 07-timetrack — every `LoginAttemptServiceTest` method builds its own `LoginAttemptService`, so no failure counter carries from one test to the next
 - Deterministic tests — control time, randomness, network, and mutable external data when they would make the same test alternate between pass and fail
-- Happy-path, boundary, invalid-input, and error-path tests — select representative cases that expose different failure modes rather than multiplying similar examples
+- Happy-path, boundary, invalid-input, and error-path tests — select representative cases that expose different failure modes rather than multiplying similar examples ✅ 07-timetrack — `LoginAttemptServiceTest` asserts four failures leave a key unblocked and the fifth blocks it
 - Regression test — preserve a previously failing scenario so the same defect cannot return unnoticed
 - Mock vs stub — use a stub to supply controlled responses and a mock when interaction verification is part of the behaviour contract
 - State-based vs interaction-based verification — prefer observable state or output unless the collaborator call itself is the required outcome

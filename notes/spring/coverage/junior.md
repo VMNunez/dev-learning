@@ -69,7 +69,7 @@ Core Spring Framework mechanisms a junior Java developer must understand to read
 
 ## Spring testing foundations
 
-- Plain unit test vs Spring test context — instantiate a class directly when only its logic matters and load the container only when bean wiring or framework behaviour is the risk
+- Plain unit test vs Spring test context — instantiate a class directly when only its logic matters and load the container only when bean wiring or framework behaviour is the risk ✅ 07-timetrack — `LoginAttemptServiceTest` builds `LoginAttemptService` with `new` and loads no application context
 - Spring TestContext Framework — build and cache an application context for tests while integrating lifecycle callbacks, profiles, properties, and dependency injection
 - JUnit Jupiter TestContext integration — use `SpringExtension` or the composed `@SpringJUnitConfig` annotation so JUnit activates Spring's test lifecycle before `@ContextConfiguration` supplies the context definition
 - `@ContextConfiguration` — declare the configuration classes or resources that a framework-level test context needs without loading a complete Boot application

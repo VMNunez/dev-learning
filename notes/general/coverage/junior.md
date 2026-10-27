@@ -81,12 +81,12 @@ Framework-neutral concepts a junior or junior-mid developer must understand acro
 - End-to-end test — verify a critical user journey through a complete running application surface with the highest realism and cost
 - Test-level selection — choose unit, integration, or end-to-end scope from the risk being proved rather than using one level for every defect
 - Testing pyramid — use many focused tests and fewer broad expensive tests as a trade-off heuristic, not a mandatory numeric ratio
-- Arrange–Act–Assert vs Given–When–Then — recognise equivalent structural and domain-oriented ways to separate setup, behaviour, and verification
-- Meaningful assertion — verify an observable result or interaction that would fail if the behaviour regressed, not merely that code executed
+- Arrange–Act–Assert vs Given–When–Then — recognise equivalent structural and domain-oriented ways to separate setup, behaviour, and verification ✅ 07-timetrack — each `LoginAttemptServiceTest` method separates the recorded failures, the `isBlocked` call and the `assertThat` with blank lines
+- Meaningful assertion — verify an observable result or interaction that would fail if the behaviour regressed, not merely that code executed ✅ 07-timetrack — `reset_unblocksTheKeyImmediately` first asserts the key is blocked, so its final `isFalse()` cannot pass on a key that was never blocked
 - Test setup and teardown — create the required starting state and clean shared resources without hiding the scenario behind excessive fixtures
-- Test isolation and order independence — make each test establish its own state so running it alone or in another order produces the same result
+- Test isolation and order independence — make each test establish its own state so running it alone or in another order produces the same result ✅ 07-timetrack — every `LoginAttemptServiceTest` method builds its own `LoginAttemptService`, so no failure counter carries from one test to the next
 - Deterministic tests — control time, randomness, network, and mutable external data when they would make the same test alternate between pass and fail
-- Happy-path, boundary, invalid-input, and error-path tests — select representative cases that expose different failure modes rather than multiplying similar examples
+- Happy-path, boundary, invalid-input, and error-path tests — select representative cases that expose different failure modes rather than multiplying similar examples ✅ 07-timetrack — `LoginAttemptServiceTest` asserts four failures leave a key unblocked and the fifth blocks it
 - Regression test — preserve a previously failing scenario so the same defect cannot return unnoticed
 - Mock vs stub — use a stub to supply controlled responses and a mock when interaction verification is part of the behaviour contract
 - State-based vs interaction-based verification — prefer observable state or output unless the collaborator call itself is the required outcome

@@ -16,7 +16,7 @@ Framework behaviour remains in Spring Boot coverage; examples here may use Sprin
 - Operators and short-circuit evaluation — use arithmetic, comparison, logical, and assignment operators and explain why `&&` and `||` may skip the right operand
 - `if` / `else` — select one branch from boolean conditions and order conditions so specific or exceptional cases are not hidden by broader ones
 - Conditional (ternary) operator — `condition ? a : b` chooses one of two values as an expression, unlike an `if` / `else` statement, which does not itself produce a value
-- `for`, enhanced `for`, `while`, and `do-while` — choose counted iteration, element traversal, pre-checked repetition, or post-checked repetition according to the loop contract
+- `for`, enhanced `for`, `while`, and `do-while` — choose counted iteration, element traversal, pre-checked repetition, or post-checked repetition according to the loop contract ✅ 07-timetrack — `LoginAttemptServiceTest` records exactly five failures with a counted `for (int i = 0; i < 5; i++)`
 - `break`, `continue`, and `return` — distinguish leaving a loop, skipping to its next iteration, and leaving the current method
 - Classic `switch` fall-through — without `break`, a matching statement case continues into later cases and can create a hidden logic bug
 - Switch expressions — arrow cases can produce a value without fall-through, and an expression must cover every possible input
@@ -169,3 +169,10 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - Build lifecycle — distinguish `clean`, `compile`, `test`, `package`, and `install` and know that a later lifecycle phase runs the earlier phases
 - Dependency scopes — distinguish compile, runtime, test, and provided classpaths so libraries are available only where intended ✅ 07-timetrack
 - Maven Wrapper — use the repository's pinned Maven launcher so local and CI builds use a consistent Maven version
+
+## Unit testing mechanics
+
+JUnit and AssertJ are plain Java libraries; this section owns how a test class runs and asserts, while General owns testing vocabulary and Spring Boot owns test slices and context tests.
+
+- JUnit 5 test lifecycle — the JUnit Platform discovers `@Test` methods under `src/test/java` and creates a fresh instance of the test class for every method, so field state never leaks from one test into the next ✅ 07-timetrack — `LoginAttemptServiceTest` holds five `@Test` methods under `src/test/java` that `mvn test` discovers and runs one by one
+- AssertJ fluent assertions — `assertThat(actual)` followed by a type-specific check (`isTrue()`, `isEqualTo(...)`, `containsExactly(...)`) reads as the expectation and prints the actual value on failure, which is why Spring Boot's test starter ships it beside JUnit's own `assertEquals` ✅ 07-timetrack — `LoginAttemptServiceTest` asserts every `isBlocked` result with `assertThat(...).isTrue()` or `.isFalse()`
