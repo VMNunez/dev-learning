@@ -9,8 +9,8 @@ that is reference-only lives in its own file and is linked from here.
 ## Non-negotiables (read first)
 
 - **Victor chooses the teaching mode before new work starts** — every new task, problem, or meaningful
-  step begins with the three help levels under "How to guide me", unless his message already selects one.
-  Never silently increase the help level. Code is shown only in Level 3 or after Victor explicitly moves
+  step begins with the four help levels under "How to guide me", unless his message already selects one.
+  Never silently increase the help level. Code is shown only in Level 3 or 4 or after Victor explicitly moves
   there, and still one small explained change at a time rather than a full solution dump.
 - **Teach against the active plan** — work toward the current `PLANNING.md` step; never invent off-scope tasks.
 - **No git side effects on code** — when writing project code, never run git/CLI commands; only write them for Victor to run, and **he always makes code commits himself**. **Exception:** when writing/refining notes (`notes/`), the prompt system (`notes/prompts/`), platform skills/commands, the SQL tracking files the prompt system writes (`practice/sql/PLANNING.md`, `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` and `practice/sql/MISTAKES.md` — the `.sql` exercise files themselves stay Victor's, at every level), the simulation artifacts the prompt system writes (`practice/simulations/PLANNING.md`, `practice/simulations/{LEVEL}/PLANNING-{LEVEL}.md`, `practice/simulations/MISTAKES.md`, `practice/simulations/TRACKER.md`, and the timed-test spec files — Victor's submitted solution code is never included), the short-exercise tracking files the prompt system writes (`practice/exercises/{topic}/{level}/PLANNING-{level}.md` (authorized 2026-10-06), `practice/exercises/INDEX.md` and `practice/exercises/ATTEMPTS.md`, authorized 2026-10-05, and each batch folder under `practice/exercises/{topic}/{level}/` **as generated** — its `README.md` and the statement-and-skeleton files, committed once, at generation, before he has written a line (authorized 2026-10-13, `REC-332`); every later change inside that folder is Victor's answers and stays his — and, where a topic's `_practice-standard.md` §H names a workspace — angular, each batch an application (authorized 2026-10-20, `REC-376`), and spring-boot, each batch a Maven module (authorized by Victor 2026-10-21, `REC-386`) — that topic's workspace root files, committed once as created, plus each batch's root changes §H permits, committed with the batch as generated; for those environments alone the agent also **runs** the commands §H names — angular's workspace scaffold, each batch's application schematic and its dry run, and `ng build` / `ng test` over the **untouched** generated batch; spring-boot's `mvnw test` over the **untouched** generated batch — and never `ng serve`, never a Spring Boot application, and never his answers), the shared interview-practice weakness sink (`practice/interview/MISTAKES.md`, written and consumed by the interview-practice prompts), any project's `PROJECT-BACKLOG.md` (authorized 2026-07-29 — the file is written by `review-audit`, the `backlog-task-open` skill (its `⏸ Deferred` marker), the `backlog-task-close` skill (and either of them raising a task for a defect noticed while triaging or closing), and the `slice-review` skill (the tasks its cold review of the slices a closed step or fix touched verifies, `REC-244`), never by Victor, so it commits directly whenever it is updated, in any flow, not just inside the review pipeline), the repository's root `PROGRESS.md`, `ROADMAP.md` (granted 2026-07-09 to the `roadmap-review` orchestrator, **broadened 2026-09-08 to any flow**: the file is machinery the prompts write, never Victor, so it commits directly like the rest of this list — the earlier orchestrator-only limit was what forced `REC-216` to hand back a one-file commit after every other site of the same fix had landed. The `roadmap-review` **conditional survives for that pipeline**: a run of it commits only when both its reviewers finished and every fix landed cleanly, and prints the command instead on anything uncertain — a whole-file rewrite carries a risk a targeted correction does not), `projects/briefs/project-brief-{NN}.md` (added 2026-08-05 — written only by the `project-brief` prompt, never by Victor, and it is the decision `PLANNING.md` is then built from), any project's `PLANNING.md`, `PROGRESS.md` and `README.md` (authorized 2026-08-01 — the prompts and rituals write these, so they commit directly in any flow, superseding the earlier rule that handed them back to Victor and the narrower `progress-update` / `roadmap-review` orchestrator-only permission), or the session-rule files, the active coding agent may run the commits directly. **One authorization reaches outside this repository** (added 2026-09-07, `REC-220`): `dev/portfolio/VMNunez/README.md` and that repo's platform adapter / gap list — pipeline output written **between them** by `portfolio-audit`'s ✅-Ready step (the README alone) and `profile-readme-prompt` (both), and by nobody else — are committed **inside that repo**, with `git -C {resolved absolute path}`, never staged into this repo's index and never folded into a learning-repo commit. It is the same boundary, applied consistently: those files are the agent's output, and the separate repo governs *where* the commit runs, not who runs it. **Pushing that repo is always Victor's** — publishing to a public GitHub profile is outward-facing in a way the commit is not — as is everything else in it, including `job-search/**`, which no prompt commits. **The boundary is authorship, not folder: anything Victor produces himself — project code, SQL answers, short-exercise answers, timed-simulation solutions, and leetcode solutions — is never auto-committed**; the agent and prompts only print the commands for him. The exceptions above cover system machinery and task/tracking artifacts the agent writes, never his solution work. **`Co-Authored-By` follows the same authorship boundary** (Victor, 2026-09-24, replacing the blanket ban of `REC-232`): a commit the agent runs over content the agent wrote — prompt pipelines (`plan-audit`, `readme-audit`, …), skills and rituals, TODO resolutions, notes, ledger and other machinery — carries the co-author trailer the platform adapter or harness instructs; anything Victor authored — project code, SQL answers, short-exercise answers, timed-simulation solutions, leetcode solutions — never carries one, and the commit commands handed to him for that work never include it. PR descriptions keep their own rule under "Pull request descriptions". Commits are atomic (one logical change). **Before every notes/prompts commit, run `git status` right before `git add` and right before `git commit`** — confirm only authorized prompt-system paths are staged, and unstage anything else.
@@ -188,7 +188,7 @@ open.
 ## How to guide me
 
 - The goal is to teach, not just to build or give answers
-- **Offer the same three help levels at the start of every new task, problem, or meaningful step, then
+- **Offer the same four help levels at the start of every new task, problem, or meaningful step, then
   wait for Victor's choice.** If his message already clearly selects a level, do not ask again; proceed
   at that level. He may move up or down at any time, including using Level 3 for one difficult part and
   returning to Level 1 for the next.
@@ -202,26 +202,39 @@ open.
      does, why this approach is used, which existing code it connects to, and the important alternative
      or common mistake when one matters. Wait for Victor to implement or confirm understanding before
      giving the next step; never dump the whole task at once.
-- **The three levels are offered in Victor's own words, verbatim, as the last block of the message.**
-  The wording below is his, dictated 2026-09-01, and is copied exactly — numbered `1)` `2)` `3)` so he
+  4. **Level 4 — Teacher.** Build the work with him piece by piece, in the order a programmer actually
+     writes it — skeleton first, then the next line — never the whole step, nor even a whole test, at
+     once. Each message carries one piece (one to three lines): the file and the exact place it goes,
+     the slice of the **original code** the piece touches or exercises, and a simple explanation of what
+     it does and why it goes there, plus a learner-readable doc link for each new concept. He writes
+     it, the agent reads the file and reviews it, and only then comes the next piece; questions between
+     pieces are welcome. Where it can be run, each piece is run — and a test is also seen red against
+     deliberately broken code. Once he has built a pattern once, the next case of it is proposed for him
+     to write alone, stated only as what it must satisfy. **A topic he has never practised opens in this
+     level without asking**, and he may still switch. Added 2026-10-27 at Victor's request, after the
+     first Mockito tests of project 07 were taught this way — *"el modo profesor me encanta y me gustaría
+     habilitarlo siempre que lo necesite"*.
+- **The four levels are offered in Victor's own words, verbatim, as the last block of the message.**
+  The wording below is his, dictated 2026-09-01 and extended with `4)` on 2026-10-27, and is copied exactly — numbered `1)` `2)` `3)` `4)` so he
   can answer with a single digit, in Spanish, never through a picker widget (`AskUserQuestion` was
   explicitly rejected 2026-08-24, because a dialog cannot be re-read later in the scrollback when he
   wants to switch mid-task):
 
   ```
-  ### Tres modos
+  ### Cuatro modos
 
   Dime cómo lo quieres:
 
   1) **Objetivo** — te digo solo qué debe cumplir el resultado y lo escribes tú entero.
   2) **Pistas** — te voy dando la firma o el nombre del método en cada paso, sin el código.
   3) **Código a revisar** — te doy la versión final y la criticas tú.
+  4) **Profesor** — lo construimos pieza a pieza en el orden en que se escribe: te explico cada pieza fácil, la escribes y la reviso antes de la siguiente.
 
   Puedes cambiar de modo a mitad sin problema.
   ```
 
-  `1)`, `2)` and `3)` *are* Level 1, Level 2 and Level 3 above — the same contract, in the presentation
-  he asked for; a bare `3` in his next message selects Level 3 and nothing else. Level 3 keeps its
+  `1)`, `2)`, `3)` and `4)` *are* Level 1, Level 2, Level 3 and Level 4 above — the same contract, in the
+  presentation he asked for; a bare `3` in his next message selects Level 3 and nothing else. Level 3 keeps its
   one-step-at-a-time rule: "la versión final" is the final shape of **the step in hand**, never the whole
   task dumped at once. Stated 2026-09-01 on the `as NewTransaction` task of project 03 — *"asi es como me
   gusta que lo pongas, quiero que guardes ese formato en el repositorio para que siempre persista"*.
@@ -232,7 +245,7 @@ open.
   a step, inspect the actual files and relevant diff rather than accepting the chat report alone. State
   whether the implementation is correct and why; if anything is wrong, stay on that step and guide the
   correction at the currently selected help level. Only after the code passes this check may the next
-  step and its three help-level choices be offered. This applies at all three levels, not only when code
+  step and its four help-level choices be offered. This applies at all four levels, not only when code
   was supplied by the agent.
 - **The git commands come last, once every verification step has passed.** While tests remain, no
   `git add` / `git commit` is offered: given early, Victor saves them and can commit code that is not
@@ -358,7 +371,7 @@ open.
   the explanation, does not exempt the message that delivers the code — it names it again, directly
   above the block. There is no exemption for "same file as two messages ago" or for a two-line
   change.
-- The three levels apply to everything: classes, methods, XML, dependencies, configuration, CSS, SQL,
+- The four levels apply to everything: classes, methods, XML, dependencies, configuration, CSS, SQL,
   tests, and debugging. Even at Level 3, before each code block explain what the small change is for and
   where the mechanism comes from; Victor wants to work like a real programmer who understands the source
   of a solution rather than copy-pasting it.

@@ -252,7 +252,7 @@ Before sending, verify all five are present:
       the step where the defect enters; 2. why it is invisible from the frame Victor would open,
       including the second-order trap; 3. the general principle in one quotable line; 4. one or two
       reasoned design/security nuances, argued, never a caveat list.
-- [ ] **The three guidance modes**, as the closing block, in the verbatim numbered `1)` `2)` `3)`
+- [ ] **The four guidance modes**, as the closing block, in the verbatim numbered `1)` `2)` `3)` `4)`
       Spanish wording fixed by `_session-rules.md` -> "How to guide me" -- copied exactly, never paraphrased.
       **Unless Victor has already answered it** — a mode picked in the message opening this task, or the
       implementation delegated to you by his own instruction for the session: then one line naming that
