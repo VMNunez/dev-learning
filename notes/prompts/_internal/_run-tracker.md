@@ -106,7 +106,7 @@ audits it together with the level-neutral doctrine (`practice/sql/PLANNING.md`).
 
 | Level | SQL plan | sql-plan-audit | Exercises |
 |---|---|---|---|
-| junior | 2026-10-08 — completed, second run — 14 steps · 15 files · 216 first-pass · 152/152 bullets; SHA bded1b85; cold review 17 findings, 13 applied; history gate passed | 2026-10-08 — completed, second run — `SCOPE = full`; 152/152 bullets, no new step; 4/4 specialists + 3 hand-over dispatches; history gate passed (`a75755e2`) | 0/14 steps closed — 2026-10-02 practice run: Step 0 batch (10) written in `02-execution-order-set-ops.sql`, awaiting answers |
+| junior | 2026-10-08 — completed, second run — 14 steps · 15 files · 216 first-pass · 152/152 bullets; SHA bded1b85; cold review 17 findings, 13 applied; history gate passed | 2026-10-08 — completed, second run — `SCOPE = full`; 152/152 bullets, no new step; 4/4 specialists + 3 hand-over dispatches; history gate passed (`a75755e2`) | 1/14 steps closed — 2026-10-27 review: step 0 closed (`02-execution-order-set-ops.sql` graded 9/10); next Step 1, `03-joins.sql` |
 | middle | | | |
 | senior | | | |
 
