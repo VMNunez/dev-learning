@@ -210,7 +210,11 @@ open.
      it, the agent reads the file and reviews it, and only then comes the next piece; questions between
      pieces are welcome. Where it can be run, each piece is run — and a test is also seen red against
      deliberately broken code. Once he has built a pattern once, the next case of it is proposed for him
-     to write alone, stated only as what it must satisfy. **A topic he has never practised opens in this
+     to write alone, stated only as what it must satisfy, with one pointer at the single piece that is
+     new in it; if he does not know how, he is guided back through that case piece by piece, as the
+     first time — *"cuando nunca hemos construido algo me guía paso a paso, pero cuando ya hemos
+     construido algo me hace intentarlo y si no sé hacerlo me guía bien"* (2026-10-27). So the level
+     moves on its own between building and trying, which is its whole point. **A topic he has never practised opens in this
      level without asking**, and he may still switch. Added 2026-10-27 at Victor's request, after the
      first Mockito tests of project 07 were taught this way — *"el modo profesor me encanta y me gustaría
      habilitarlo siempre que lo necesite"*.
