@@ -56,12 +56,12 @@ whether it exists, how many statements it holds, how many are answered: those ar
 | | |
 |---|---|
 | **Current level** | junior — route file `practice/sql/junior/PLANNING-junior.md` (the six rows below refer to it) |
-| **Current step** | Step 0 — Querying basics (20/30 first-pass scored: `01-basics.sql` cerrado; los 10 restantes son de `02-execution-order-set-ops.sql`) |
+| **Current step** | Step 1 — JOINs (0/22 first-pass scored, en `03-joins.sql`, dos runs de 11) |
 | **Current branch** | the active feature branch (study materials follow it — see §7) |
-| **Done condition** | `Review: sql-grade scores ≥ 80% on 02-execution-order-set-ops.sql` |
+| **Done condition** | `Review: sql-grade scores ≥ 80% on 03-joins.sql` |
 | **Next revision point** | R1 (route §1) — fires when Step 1 closes, i.e. when its `Review:` done condition passes on `03-joins.sql` |
 | **Blocked on** | nothing — qué Moment toca se lee del archivo (`sql-block-open`), no de esta fila |
-| **Last updated** | 2026-10-08 |
+| **Last updated** | 2026-10-27 |
 
 ---
 
