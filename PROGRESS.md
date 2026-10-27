@@ -245,10 +245,10 @@ exercise never counts toward the junior route, and a junior file never appears i
 
 | Level | Corrected | Route progress | Steps closed |
 |---|---|---|---|
-| **Junior** | 40/50 (80%) | 20/216 (9%) | 0/14 |
+| **Junior** | 50/50 (100%) | 30/216 (14%) | 1/14 |
 | **Middle** | — | — | — |
 | **Senior** | — | — | — |
-| **Total** | — | **20/216 (9%)** | **0/14** |
+| **Total** | — | **30/216 (14%)** | **1/14** |
 
 The `Total` row spans levels, so today its route figure equals Junior — the only planned route. It
 exists so the number stays honest the day a second route appears: middle exercises add to the total
@@ -272,7 +272,7 @@ collapsed "12 files pending" row would hide exactly what is left to do. A row ap
 | Step | File | Corrected | First-pass / target | Status |
 |---|---|---|---|---|
 | 0 | `01-basics.sql` | 40/40 | 20/20 | closed ✅ — graded 2026-07-22; 20 first-pass + 20 `[Repaso]`, only the first-pass ones move the route |
-| 0 | `02-execution-order-set-ops.sql` | 0/10 | 0/10 | not started |
+| 0 | `02-execution-order-set-ops.sql` | 10/10 | 10/10 | closed ✅ — graded 2026-10-27, 9/10 (90%) |
 | 1 | `03-joins.sql` | — | 0/22 | not started |
 | 2 | `04-aggregates.sql` | — | 0/20 | not started |
 | 3 | `05-join-pitfalls.sql` | — | 0/12 | not started |
@@ -286,7 +286,7 @@ collapsed "12 files pending" row would hide exactly what is left to do. A row ap
 | 11 | `13-indexes.sql` | — | 0/12 | not started |
 | 12 | `14-live-database.sql` | — | 0/12 | not started |
 | 13 | `15-report-queries.sql` | — | 0/8 | not started |
-| **Total** | **15 files** | — | **20/216 (9%)** | **0/14 steps closed** |
+| **Total** | **15 files** | — | **30/216 (14%)** | **1/14 steps closed** |
 
 #### Middle — `practice/sql/middle/`
 
