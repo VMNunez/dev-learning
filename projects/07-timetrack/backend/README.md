@@ -6,7 +6,7 @@ Security, Spring Data JPA. Project overview and live demo: [../README.md](../REA
 
 [API](#api-endpoints) · [Schema](#database-schema) · [Patterns and source](#key-patterns) · [Tradeoffs](#tradeoffs) · [Run](#how-to-run-alone) · [Tests](#tests)
 
-**Testing status:** DTO validation tests are implemented; the service unit tests are planned.
+**Testing status:** DTO validation and `LoginAttemptService` tests are implemented; the other service unit tests are planned.
 
 ---
 
@@ -396,7 +396,7 @@ API available at `http://localhost:8080`
 
 ## Tests
 
-The DTO validation tests use JUnit 5 + AssertJ; the service tests are planned as plain JUnit 5 + Mockito unit tests, with no Spring context and no database. `TimetrackApplicationTests.contextLoads()` is the generated check that the Spring context starts.
+The tests are plain JUnit 5 + AssertJ classes with no Spring context and no database; the planned service tests add Mockito for the repositories.
 
 - `ValidationMessagesTest` — the request DTOs' Bean Validation messages come from
   `ValidationMessages.properties` as capitalised sentences, every violation on a field is reported, and a
@@ -406,5 +406,5 @@ The DTO validation tests use JUnit 5 + AssertJ; the service tests are planned as
 - `ProjectServiceTest` *(planned)* — duplicate-name refusal and the case-insensitive rename that exempts a project's own current name
 - `AuthServiceTest` *(planned)* — login's success and failure paths, including the throttling keys and the reset on a successful login
 - `ReportServiceTest` *(planned)* — the summary's approved hours reconciling with the by-project total, and empty-month zeros
-- `LoginAttemptServiceTest` *(planned)* — the block threshold and the independence between two keys
+- `LoginAttemptServiceTest` — four failures leave a key open and the fifth blocks it, a blocked key leaves another key open, `reset` unblocks at once, and an unknown key is never blocked
 - `UserDetailsServiceImplTest` *(planned)* — the inactive-user `isEnabled() == false` mapping that backs per-request revocation
