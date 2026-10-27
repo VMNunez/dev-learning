@@ -75,7 +75,7 @@ in `02-execution-order-set-ops.sql` — a step's target is the sum of its files'
 | File | Step(s) | Written | Answered | Scored | First-pass target | Status |
 |------|---------|---------|----------|--------|-------------------|--------|
 | `01-basics.sql` | 0 | 40 *(20 review)* | 40 | **20** *(+20 review, uncounted)* | 20 | **closed** — all 40 answers graded correct on 2026-07-22 (40/40), of which the 20 first-pass ones are what the Scored column counts. Legacy schema (v1); no more exercises are added here |
-| `02-execution-order-set-ops.sql` | 0 | 10 | 0 | 0 | 10 | written, not answered — regenerated 2026-10-02 after the 2026-08-04 deletion; nothing to grade until its 10 statements are answered (Moment 3) |
+| `02-execution-order-set-ops.sql` | 0 | 10 | 10 | **10** | 10 | **closed** — graded 2026-10-27, 9/10 (90%); #1 `❌ Revisado` (its gap is in `MISTAKES.md`), the other nine `✅ Corregido` |
 | `03-joins.sql` | 1 | 0 | 0 | 0 | 22 | deleted 2026-07-22 — to regenerate |
 | `04-aggregates.sql` | 2 | 0 | 0 | 0 | 20 | to create |
 | `05-join-pitfalls.sql` | 3 | 0 | 0 | 0 | 12 | to create |
@@ -105,9 +105,10 @@ in `02-execution-order-set-ops.sql` — a step's target is the sum of its files'
 
 **First-pass total when the track is done: 216 exercises across 15 files.** Review batches add on top
 and are deliberately not budgeted. Track-wide today: **50 written** — 40 in `01-basics.sql` and 10 in
-`02-execution-order-set-ops.sql` — and 40 answered and graded, all of them in `01-basics.sql`, of which
-only its 20 first-pass exercises count: the route stands at **20 first-pass scored of 216**, and the
-other 20 are that file's review batch. Every file from `03-` on is still to generate.
+`02-execution-order-set-ops.sql` — and all 50 answered and graded (`02-` on 2026-10-27), of which only
+the 20 first-pass exercises of `01-basics.sql` and the 10 of `02-` count: the route stands at **30
+first-pass scored of 216**, and the other 20 are `01-basics.sql`'s review batch. Every file from `03-` on
+is still to generate.
 
 **Two header formats exist on disk, and that is deliberate** — do not "fix" either one by hand.
 `01-basics.sql`, written before the exercise prompt existed, is the only file in the legacy format (the
@@ -270,7 +271,7 @@ mechanical:
 
 ---
 
-### Step 0 — Querying basics ⏳ (20/30 first-pass scored, +20 review)
+### Step 0 — Querying basics ✅ (30/30 first-pass scored, +20 review)
 
 **Why here:** first, because every later step writes a `SELECT ... WHERE ... ORDER BY` around its own
 topic — and because execution order is the mental model joins, aggregation and windows are all
@@ -278,9 +279,9 @@ explained against.
 **Exercises:** dos archivos, uno por esquema.
 - `practice/sql/junior/01-basics.sql` — **cerrado**: 40 respondidas (20 first-pass #01–#20 + 20 de repaso
   #21–#40), **40/40 correctas** el 2026-07-22. Esquema v1 (el viejo). No se le añade nada más.
-- `practice/sql/junior/02-execution-order-set-ops.sql` — 10, **escritas y sin responder**. Se generó el
-  2026-07-22, se borró el 2026-08-04 sin responder y se regeneró el 2026-10-02: los 10 enunciados están
-  en disco y ninguno tiene respuesta todavía.
+- `practice/sql/junior/02-execution-order-set-ops.sql` — **cerrado**: 10 respondidas y corregidas el
+  2026-10-27, **9/10 correctas** (90%). Se generó el 2026-07-22, se borró el 2026-08-04 sin responder y
+  se regeneró el 2026-10-02.
 **Coverage:** `Querying basics`, `Ordering and pagination`, `Set operations`, `Filtering and NULL handling` (its four non-`NULL` bullets: alias visibility in `WHERE`, `LIKE`/`ILIKE`, `IN` vs `OR`, and `BETWEEN` ranges — every bullet about three-valued logic is Step 4) — except the three join-dependent bullets (qualified column references, `SELECT *` vs named columns, `UNION` vs `JOIN`), which are Step 1's, and quoted identifiers, which is Step 12's
 **Reinforces:** — (first step)
 **Moment 2 config:** `TOPIC = basics`, `COUNT = 10`  *(hecho: el lote se regeneró el 2026-10-02)*
@@ -313,26 +314,26 @@ existía.)
 
 **Coverage bullets:**
 
-- [ ] `SELECT`, `FROM`, and column aliases — `SELECT` defines the result expressions, `FROM` supplies rows, and `AS` names a result expression without changing the source column
-- [ ] SQL execution order — `FROM + JOIN → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT`; the foundation for understanding why aliases work in `ORDER BY` but not in `WHERE` or `HAVING`
+- [x] `SELECT`, `FROM`, and column aliases — `SELECT` defines the result expressions, `FROM` supplies rows, and `AS` names a result expression without changing the source column
+- [x] SQL execution order — `FROM + JOIN → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT`; the foundation for understanding why aliases work in `ORDER BY` but not in `WHERE` or `HAVING`
 - [ ] `WHERE` operators and precedence — comparisons, `NOT`, `AND`, and `OR` build row predicates; `NOT` binds before `AND`, and `AND` before `OR`, so use parentheses whenever the intended grouping is not immediately obvious
-- [ ] Computed expressions — arithmetic and string expressions can produce derived result columns; give them aliases and account for operand types such as integer division
-- [ ] `CASE WHEN` in `SELECT` — derive one output value per row from ordered conditions
-- [ ] `SELECT DISTINCT` — removes duplicate rows from the result; PostgreSQL treats `NULL` as a duplicate and keeps only one; use to explore unique values in a column
-- [ ] `DISTINCT ON` — PostgreSQL-specific; keeps one row per group while returning multiple columns; the column inside `DISTINCT ON (...)` must be the leftmost column in `ORDER BY`
-- [ ] `ORDER BY` with `NULLS FIRST` / `NULLS LAST` — PostgreSQL treats `NULL` as the largest value by default; `ASC` puts `NULL` last, `DESC` puts `NULL` first; override with `NULLS FIRST` or `NULLS LAST`
+- [x] Computed expressions — arithmetic and string expressions can produce derived result columns; give them aliases and account for operand types such as integer division
+- [x] `CASE WHEN` in `SELECT` — derive one output value per row from ordered conditions
+- [x] `SELECT DISTINCT` — removes duplicate rows from the result; PostgreSQL treats `NULL` as a duplicate and keeps only one; use to explore unique values in a column
+- [x] `DISTINCT ON` — PostgreSQL-specific; keeps one row per group while returning multiple columns; the column inside `DISTINCT ON (...)` must be the leftmost column in `ORDER BY`
+- [x] `ORDER BY` with `NULLS FIRST` / `NULLS LAST` — PostgreSQL treats `NULL` as the largest value by default; `ASC` puts `NULL` last, `DESC` puts `NULL` first; override with `NULLS FIRST` or `NULLS LAST`
 - [ ] No guaranteed row order without `ORDER BY` — a result set is an unordered set, so `GROUP BY`, an index scan, or insertion order can make rows look sorted while the engine stays free to return them differently on the next run; an order a caller depends on has to be stated, never inherited from how the rows happened to be produced ✅ 07-timetrack
-- [ ] Multi-column sorting — PostgreSQL resolves `ORDER BY` keys from left to right, so later keys break ties from earlier ones and each key can choose `ASC` or `DESC` ✅ 07-timetrack
-- [ ] `LIMIT` always with `ORDER BY` — without `ORDER BY`, `LIMIT` returns an arbitrary set of rows that can change between queries; always pair them
-- [ ] Stable ordering — pagination needs a deterministic tie-breaker such as the primary key after a non-unique sort column; otherwise equal values can move between pages ✅ 07-timetrack
-- [ ] `OFFSET` for pagination — `LIMIT 10 OFFSET 20` skips 20 rows and returns the next 10; formula: `OFFSET = (page − 1) × page_size`
-- [ ] `FETCH FIRST n ROWS ONLY` — the SQL-standard row-limiting clause, written as `OFFSET n ROWS FETCH NEXT m ROWS ONLY`; PostgreSQL accepts both it and `LIMIT`, but Oracle and other engines a consultancy account may run accept only the standard form
-- [ ] `UNION` vs `UNION ALL` — remove duplicates across compatible result sets or retain every row and avoid unnecessary duplicate elimination
-- [ ] `UNION` column rules — align column counts and compatible types across branches while taking result column names from the first query
-- [ ] `INTERSECT` and `EXCEPT` — `INTERSECT` keeps rows present in both results and `EXCEPT` keeps rows from the first result that are absent from the second; both remove duplicates unless `ALL` is requested
-- [ ] `WHERE` cannot use aliases — `WHERE` runs before `SELECT`, so column aliases do not exist yet; you must repeat the expression rather than use the alias
-- [ ] `LIKE` vs `ILIKE` — `LIKE` is case-sensitive; `ILIKE` is PostgreSQL-specific and case-insensitive; `%` matches any sequence of characters, `_` matches exactly one character
-- [ ] `IN` vs multiple `OR` — `IN (list)` is cleaner and optimized internally by PostgreSQL; preferred when checking against more than two values
+- [x] Multi-column sorting — PostgreSQL resolves `ORDER BY` keys from left to right, so later keys break ties from earlier ones and each key can choose `ASC` or `DESC` ✅ 07-timetrack
+- [x] `LIMIT` always with `ORDER BY` — without `ORDER BY`, `LIMIT` returns an arbitrary set of rows that can change between queries; always pair them
+- [x] Stable ordering — pagination needs a deterministic tie-breaker such as the primary key after a non-unique sort column; otherwise equal values can move between pages ✅ 07-timetrack
+- [x] `OFFSET` for pagination — `LIMIT 10 OFFSET 20` skips 20 rows and returns the next 10; formula: `OFFSET = (page − 1) × page_size`
+- [x] `FETCH FIRST n ROWS ONLY` — the SQL-standard row-limiting clause, written as `OFFSET n ROWS FETCH NEXT m ROWS ONLY`; PostgreSQL accepts both it and `LIMIT`, but Oracle and other engines a consultancy account may run accept only the standard form
+- [x] `UNION` vs `UNION ALL` — remove duplicates across compatible result sets or retain every row and avoid unnecessary duplicate elimination
+- [x] `UNION` column rules — align column counts and compatible types across branches while taking result column names from the first query
+- [x] `INTERSECT` and `EXCEPT` — `INTERSECT` keeps rows present in both results and `EXCEPT` keeps rows from the first result that are absent from the second; both remove duplicates unless `ALL` is requested
+- [x] `WHERE` cannot use aliases — `WHERE` runs before `SELECT`, so column aliases do not exist yet; you must repeat the expression rather than use the alias
+- [x] `LIKE` vs `ILIKE` — `LIKE` is case-sensitive; `ILIKE` is PostgreSQL-specific and case-insensitive; `%` matches any sequence of characters, `_` matches exactly one character
+- [x] `IN` vs multiple `OR` — `IN (list)` is cleaner and optimized internally by PostgreSQL; preferred when checking against more than two values
 - [ ] `BETWEEN` with timestamps — both endpoints are inclusive, so a date-only upper bound silently excludes later times on that date; use a half-open range such as `created_at >= start AND created_at < next_day` to preserve index use and include the whole period
 
 **Pending additions:** none
@@ -973,7 +974,7 @@ without raising the count, and a row that reads `closed ✅` is never set back (
 
 | Step | Topic | Exercises file | Scored / target | Status | Técnicas que desbloquea al cerrar |
 |------|-------|----------------|-----------------|--------|-----------------------------------|
-| 0 | Querying basics | `01-basics.sql` + `02-execution-order-set-ops.sql` | 20 / 30 *(01: 20/20 closed, 40/40 correct 2026-07-22 incl. 20 repaso; 02: 0/10)* | in progress ⏳ | `SELECT`/`WHERE`/`ORDER BY`, orden de ejecución, operaciones de conjuntos |
+| 0 | Querying basics | `01-basics.sql` + `02-execution-order-set-ops.sql` | 30 / 30 *(01: 20/20 closed, 40/40 correct 2026-07-22 incl. 20 repaso; 02: 10/10 closed, 9/10 correct 2026-10-27)* | closed ✅ | `SELECT`/`WHERE`/`ORDER BY`, orden de ejecución, operaciones de conjuntos |
 | 1 | JOINs | `03-joins.sql` | 0 / 22 | not started | JOINs de todo tipo |
 | 2 | Aggregates and grouping | `04-aggregates.sql` | 0 / 20 | not started | `GROUP BY` / `HAVING` / agregados |
 | 3 | JOIN pitfalls | `05-join-pitfalls.sql` | 0 / 12 | not started | Diagnóstico de fan-out y multiplicación de filas |
@@ -988,8 +989,8 @@ without raising the count, and a row that reads `closed ✅` is never set back (
 | 12 | Live database and errors | `14-live-database.sql` | 0 / 12 | not started | — |
 | 13 | Report queries (capstone) | `15-report-queries.sql` | 0 / 8 | not started | — |
 
-**20 of 216 first-pass exercises scored** (Step 0's `#01–#20`, all correct), plus a
-20-exercise review batch that does not count. This table is the record of each step's status — the
+**30 of 216 first-pass exercises scored** (Step 0's 20 in `01-basics.sql`, all correct, and its 10 in
+`02-execution-order-set-ops.sql`, 9 correct), plus a 20-exercise review batch that does not count. This table is the record of each step's status — the
 one the readiness line below and the simulation track read — and `PROGRESS.md` → `### Exercise route`
 is its projection (doctrine invariant 15). Both are updated by the doctrine §4 ritual, in the same
 commit. Review batches never change a row here.
@@ -1002,7 +1003,7 @@ fila y se lleva su técnica consigo** — un reorder no puede dejar la readiness
 significa que ese step no desbloquea ninguna técnica sobre la que un test pueda medirse; los Steps 12 y
 13 son ese caso, uno es operar contra una base viva y el otro es la integración de todo lo anterior.
 
-**Estado hoy (2026-08-28): 0 steps `closed ✅` → ninguna simulación SQL todavía.** El primer test toca al
+**Estado hoy (2026-10-27): 1 step `closed ✅` (Step 0) → ninguna simulación SQL todavía.** El primer test toca al
 cerrar el **Step 2**: basics + joins + `GROUP BY` ya es un examen real.
 
 ---
