@@ -6,7 +6,7 @@ Security, Spring Data JPA. Project overview and live demo: [../README.md](../REA
 
 [API](#api-endpoints) · [Schema](#database-schema) · [Patterns and source](#key-patterns) · [Tradeoffs](#tradeoffs) · [Run](#how-to-run-alone) · [Tests](#tests)
 
-**Testing status:** DTO validation and `LoginAttemptService` tests are implemented; the other service unit tests are planned.
+**Testing status:** DTO validation, `LoginAttemptService` and `UserDetailsServiceImpl` tests are implemented; the other service unit tests are planned.
 
 ---
 
@@ -396,7 +396,7 @@ API available at `http://localhost:8080`
 
 ## Tests
 
-The tests are plain JUnit 5 + AssertJ classes with no Spring context and no database; the planned service tests add Mockito for the repositories.
+The tests are plain JUnit 5 + AssertJ classes with no Spring context and no database; a service with a repository gets a Mockito mock of it, and Surefire loads Mockito as a Java agent at JVM start.
 
 - `ValidationMessagesTest` — the request DTOs' Bean Validation messages come from
   `ValidationMessages.properties` as capitalised sentences, every violation on a field is reported, and a
@@ -407,4 +407,4 @@ The tests are plain JUnit 5 + AssertJ classes with no Spring context and no data
 - `AuthServiceTest` *(planned)* — login's success and failure paths, including the throttling keys and the reset on a successful login
 - `ReportServiceTest` *(planned)* — the summary's approved hours reconciling with the by-project total, and empty-month zeros
 - `LoginAttemptServiceTest` — four failures leave a key open and the fifth blocks it, a blocked key leaves another key open, `reset` unblocks at once, and an unknown key is never blocked
-- `UserDetailsServiceImplTest` *(planned)* — the inactive-user `isEnabled() == false` mapping that backs per-request revocation
+- `UserDetailsServiceImplTest` — the stored hash and `ROLE_` authority reach `UserDetails`, an inactive user maps to `isEnabled() == false` (the source of per-request revocation), an email in any letter case finds the same user, and an unknown email or id throws `UsernameNotFoundException`
