@@ -1003,8 +1003,10 @@ fila y se lleva su técnica consigo** — un reorder no puede dejar la readiness
 significa que ese step no desbloquea ninguna técnica sobre la que un test pueda medirse; los Steps 12 y
 13 son ese caso, uno es operar contra una base viva y el otro es la integración de todo lo anterior.
 
-**Estado hoy (2026-10-27): 1 step `closed ✅` (Step 0) → ninguna simulación SQL todavía.** El primer test toca al
-cerrar el **Step 2**: basics + joins + `GROUP BY` ya es un examen real.
+**Estado hoy (2026-10-27): 1 step `closed ✅` (Step 0) → ninguna simulación SQL todavía.** Desbloqueado
+(Step 0): `SELECT`/`WHERE`/`ORDER BY`, orden de ejecución, operaciones de conjuntos. Todavía no JOINs
+(Step 1) ni `GROUP BY` (Step 2). El primer test toca al cerrar el **Step 2**: basics + joins + `GROUP BY`
+ya es un examen real.
 
 ---
 
