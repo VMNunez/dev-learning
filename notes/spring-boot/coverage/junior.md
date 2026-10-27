@@ -141,7 +141,7 @@ Concepts needed to build, test, explain, and debug a conventional Spring Boot RE
 
 ## Testing
 
-- Plain service unit tests — use JUnit and Mockito without a Spring context when the risk is business logic and collaborator interaction rather than framework wiring
+- Plain service unit tests — use JUnit and Mockito without a Spring context when the risk is business logic and collaborator interaction rather than framework wiring ✅ 07-timetrack — `UserDetailsServiceImplTest` runs the real `UserDetailsServiceImpl` against a mocked `UserRepository` under `MockitoExtension`, with no application context
 - Mockito mock vs context bean override — `@Mock` creates a standalone test double, while replacing a bean in a Spring test context uses `@MockitoBean`; `@MockBean` is the legacy Boot annotation from a different package and is still what maintained projects import
 - `@WebMvcTest` — loads a focused MVC slice; collaborators must be supplied through explicit mock bean overrides or imports rather than being replaced automatically
 - Security in an MVC slice test — the slice applies the security filter chain, so requests are rejected before reaching the controller unless the test supplies an authenticated principal or the chain is deliberately excluded

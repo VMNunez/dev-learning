@@ -76,7 +76,7 @@ Framework-neutral concepts a junior or junior-mid developer must understand acro
 
 - Big O recognition — compare constant and linear growth in ordinary collection operations while remembering that real input sizes and constants still matter
 
-- Unit test — verify a small behaviour boundary quickly and isolate collaborators only when that keeps the test focused
+- Unit test — verify a small behaviour boundary quickly and isolate collaborators only when that keeps the test focused ✅ 07-timetrack — `UserDetailsServiceImplTest` replaces the database-backed `UserRepository` with a stub so the email-to-`UserDetails` mapping is tested alone
 - Integration test — verify selected real components working together across a meaningful boundary
 - End-to-end test — verify a critical user journey through a complete running application surface with the highest realism and cost
 - Test-level selection — choose unit, integration, or end-to-end scope from the risk being proved rather than using one level for every defect
@@ -89,7 +89,7 @@ Framework-neutral concepts a junior or junior-mid developer must understand acro
 - Happy-path, boundary, invalid-input, and error-path tests — select representative cases that expose different failure modes rather than multiplying similar examples ✅ 07-timetrack — `LoginAttemptServiceTest` asserts four failures leave a key unblocked and the fifth blocks it
 - Regression test — preserve a previously failing scenario so the same defect cannot return unnoticed
 - Mock vs stub — use a stub to supply controlled responses and a mock when interaction verification is part of the behaviour contract
-- State-based vs interaction-based verification — prefer observable state or output unless the collaborator call itself is the required outcome
+- State-based vs interaction-based verification — prefer observable state or output unless the collaborator call itself is the required outcome ✅ 07-timetrack — `UserDetailsServiceImplTest` asserts the returned username, hash and `ROLE_EMPLOYEE` authority and never verifies the repository call
 - Flaky test — identify a test whose result changes without a relevant code change and fix the nondeterministic cause instead of normalising retries
 - False positive vs false negative — distinguish a test that passes despite a defect from one that fails despite correct behaviour
 - Coverage percentage vs test quality — use coverage to find unexecuted code, never as proof that assertions are meaningful or risks are covered

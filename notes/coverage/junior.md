@@ -579,7 +579,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 
 ### Testing
 
-- Plain service unit tests — use JUnit and Mockito without a Spring context when the risk is business logic and collaborator interaction rather than framework wiring
+- Plain service unit tests — use JUnit and Mockito without a Spring context when the risk is business logic and collaborator interaction rather than framework wiring ✅ 07-timetrack — `UserDetailsServiceImplTest` runs the real `UserDetailsServiceImpl` against a mocked `UserRepository` under `MockitoExtension`, with no application context
 - Mockito mock vs context bean override — `@Mock` creates a standalone test double, while replacing a bean in a Spring test context uses `@MockitoBean`; `@MockBean` is the legacy Boot annotation from a different package and is still what maintained projects import
 - `@WebMvcTest` — loads a focused MVC slice; collaborators must be supplied through explicit mock bean overrides or imports rather than being replaced automatically
 - Security in an MVC slice test — the slice applies the security filter chain, so requests are rejected before reaching the controller unless the test supplies an authenticated principal or the chain is deliberately excluded
@@ -800,6 +800,7 @@ JUnit and AssertJ are plain Java libraries; this section owns how a test class r
 
 - JUnit 5 test lifecycle — the JUnit Platform discovers `@Test` methods under `src/test/java` and creates a fresh instance of the test class for every method, so field state never leaks from one test into the next ✅ 07-timetrack — `LoginAttemptServiceTest` holds five `@Test` methods under `src/test/java` that `mvn test` discovers and runs one by one
 - AssertJ fluent assertions — `assertThat(actual)` followed by a type-specific check (`isTrue()`, `isEqualTo(...)`, `containsExactly(...)`) reads as the expectation and prints the actual value on failure, which is why Spring Boot's test starter ships it beside JUnit's own `assertEquals` ✅ 07-timetrack — `LoginAttemptServiceTest` asserts every `isBlocked` result with `assertThat(...).isTrue()` or `.isFalse()`
+- Mockito test doubles — `@Mock` creates a double whose unstubbed calls return empty defaults, `when(...).thenReturn(...)` programs one answer, and `@InjectMocks` builds the class under test through its constructor with those doubles, all wired by `MockitoExtension` before each test ✅ 07-timetrack — `UserDetailsServiceImplTest` stubs a `@Mock UserRepository`'s `findByEmail` and receives `UserDetailsServiceImpl` from `@InjectMocks`
 
 ## Architecture
 
@@ -2372,7 +2373,7 @@ JUnit and AssertJ are plain Java libraries; this section owns how a test class r
 
 - Big O recognition — compare constant and linear growth in ordinary collection operations while remembering that real input sizes and constants still matter
 
-- Unit test — verify a small behaviour boundary quickly and isolate collaborators only when that keeps the test focused
+- Unit test — verify a small behaviour boundary quickly and isolate collaborators only when that keeps the test focused ✅ 07-timetrack — `UserDetailsServiceImplTest` replaces the database-backed `UserRepository` with a stub so the email-to-`UserDetails` mapping is tested alone
 - Integration test — verify selected real components working together across a meaningful boundary
 - End-to-end test — verify a critical user journey through a complete running application surface with the highest realism and cost
 - Test-level selection — choose unit, integration, or end-to-end scope from the risk being proved rather than using one level for every defect
@@ -2385,7 +2386,7 @@ JUnit and AssertJ are plain Java libraries; this section owns how a test class r
 - Happy-path, boundary, invalid-input, and error-path tests — select representative cases that expose different failure modes rather than multiplying similar examples ✅ 07-timetrack — `LoginAttemptServiceTest` asserts four failures leave a key unblocked and the fifth blocks it
 - Regression test — preserve a previously failing scenario so the same defect cannot return unnoticed
 - Mock vs stub — use a stub to supply controlled responses and a mock when interaction verification is part of the behaviour contract
-- State-based vs interaction-based verification — prefer observable state or output unless the collaborator call itself is the required outcome
+- State-based vs interaction-based verification — prefer observable state or output unless the collaborator call itself is the required outcome ✅ 07-timetrack — `UserDetailsServiceImplTest` asserts the returned username, hash and `ROLE_EMPLOYEE` authority and never verifies the repository call
 - Flaky test — identify a test whose result changes without a relevant code change and fix the nondeterministic cause instead of normalising retries
 - False positive vs false negative — distinguish a test that passes despite a defect from one that fails despite correct behaviour
 - Coverage percentage vs test quality — use coverage to find unexecuted code, never as proof that assertions are meaningful or risks are covered
