@@ -207,7 +207,7 @@ INSERT INTO reviews (book_id, customer_id, rating, comment, reviewed_at) VALUES
 -- EXERCISES: basics
 -- ================================================================
 
--- Exercise 1 [Intro]: Price band with CASE WHEN
+-- Exercise 1 [Intro]: Price band with CASE WHEN ❌ Revisado 2026-10-27
 -- For every book, return its title, its price, and a column price_band:
 -- 'budget' under 10, 'standard' from 10 up to (not including) 15, 'premium' from 15 up.
 -- A book with no price must be labelled 'unpriced' — it must never fall into another band.
@@ -217,15 +217,16 @@ INSERT INTO reviews (book_id, customer_id, rating, comment, reviewed_at) VALUES
 -- Your answer:
 
 SELECT title, price,
-	  CASE
-	    WHEN price < 10 THEN 'budget'
-		  WHEN price >= 10 AND price < 15 THEN 'standard'
-		  WHEN price > 15 THEN 'premium'
-		  ELSE 'unpriced'
-	  END AS price_band
+	CASE
+    WHEN price IS NULL THEN 'unpriced'
+    WHEN price < 10 THEN 'budget'
+    WHEN price < 15 THEN 'standard'
+  ELSE 'premium'
+END AS price_band
+
 FROM books ORDER BY title ASC;
 
--- Exercise 2 [Intro]: Every country, once
+-- Exercise 2 [Intro]: Every country, once ✅ Corregido 2026-10-27
 -- List every country that appears either as an author's country or as a publisher's country.
 -- Each country appears exactly once, and NULL is not a country — leave it out.
 -- Order alphabetically.
@@ -237,7 +238,7 @@ UNION
 SELECT country FROM publishers WHERE country IS NOT NULL
 ORDER BY country ASC;
 
--- Exercise 3 [Intro]: Most expensive first, unpriced last
+-- Exercise 3 [Intro]: Most expensive first, unpriced last ✅ Corregido 2026-10-27
 -- Return title and price for every book, from most expensive to cheapest.
 -- Books with no price go at the very end, not at the top.
 -- Expected result shape: 18 rows — title, price; the 3 unpriced books are the last 3 rows
@@ -245,7 +246,7 @@ ORDER BY country ASC;
 -- Your answer:
 SELECT title, price FROM books ORDER BY price DESC NULLS LAST;
 
--- Exercise 4 [Standard]: The alias WHERE cannot see
+-- Exercise 4 [Standard]: The alias WHERE cannot see ✅ Corregido 2026-10-27
 -- Return title, price, and price * 1.21 AS price_with_vat, only for books whose price_with_vat is above 15.
 -- First, in a comment, write the query that filters on price_with_vat directly, and the exact error
 -- PostgreSQL gives for it. Then write the version that runs.
@@ -258,7 +259,7 @@ SELECT title, price FROM books ORDER BY price DESC NULLS LAST;
 
 SELECT title, price, price * 1.21 AS price_with_vat FROM books WHERE price * 1.21 > 15;
 
--- Exercise 5 [Standard]: The alias ORDER BY can see
+-- Exercise 5 [Standard]: The alias ORDER BY can see ✅ Corregido 2026-10-27
 -- From order_items, return id, order_id, and quantity * unit_price AS line_total,
 -- ordered by line_total from highest to lowest (use the alias), then by id.
 -- Above your query, in a comment, write the order in which PostgreSQL executes the clauses
@@ -277,7 +278,7 @@ SELECT title, price, price * 1.21 AS price_with_vat FROM books WHERE price * 1.2
 -- 7) LIMIT
 SELECT id, order_id, quantity * unit_price AS line_total FROM order_items ORDER BY line_total DESC, id;
 
--- Exercise 6 [Standard]: Reviewed, never ordered
+-- Exercise 6 [Standard]: Reviewed, never ordered ✅ Corregido 2026-10-27
 -- Return the ids of customers who wrote at least one review but never placed an order.
 -- Use a set operation, not a JOIN and not a subquery.
 -- Expected result shape: one column (customer_id)
@@ -287,25 +288,25 @@ SELECT DISTINCT customer_id FROM reviews
 EXCEPT
 SELECT customer_id FROM orders;
 
--- Exercise 7 [Standard]: The four cheapest — the same four every time
+-- Exercise 7 [Standard]: The four cheapest — the same four every time ✅ Corregido 2026-10-27
 -- Return id, title and price of the 4 cheapest books that have a price.
 -- Several books share the same price, so ORDER BY price LIMIT 4 alone can hand back a different
 -- 4th row on another run. Write the version that always returns the same four rows.
 -- Expected result shape: exactly 4 rows — id, title, price
 
 -- Your answer:
+SELECT id, title, price FROM books WHERE price IS NOT NULL ORDER BY price, id LIMIT 4;
 
-
--- Exercise 8 [Standard]: Catalogue page 3
+-- Exercise 8 [Standard]: Catalogue page 3 ✅ Corregido 2026-10-27
 -- The shop's catalogue shows 5 books per page, sorted by price from highest to lowest
 -- (unpriced books at the end), and a book must never move between pages when prices tie.
 -- Return page 3 of that catalogue: id, title, price.
 -- Expected result shape: exactly 5 rows — positions 11 to 15 of the full sorted list
 
 -- Your answer:
+SELECT id, title, price FROM books ORDER BY price DESC NULLS LAST, id LIMIT 5 OFFSET 10;
 
-
--- Exercise 9 [Challenge]: Where do authors and publishers meet?
+-- Exercise 9 [Challenge]: Where do authors and publishers meet? ✅ Corregido 2026-10-27
 -- Return one row per country (NULL excluded) that has authors, publishers, or both, with a column
 -- presence: 'authors and publishers', 'authors only' or 'publishers only'.
 -- Use only set operations — no JOIN, no subquery, no CASE.
@@ -313,12 +314,23 @@ SELECT customer_id FROM orders;
 -- Expected result shape: two columns (country, presence), one row per country
 
 -- Your answer:
-
+(SELECT country, 'authors and publishers' AS presence FROM authors WHERE country IS NOT NULL
+INTERSECT
+SELECT country,'authors and publishers' AS presence FROM publishers WHERE country IS NOT NULL)
+UNION
+(SELECT country, 'authors only' AS presence FROM authors WHERE country IS NOT NULL
+EXCEPT
+SELECT country,'authors only' AS presence FROM publishers WHERE country IS NOT NULL)
+UNION
+(SELECT country, 'publishers only' AS presence FROM publishers WHERE country IS NOT NULL
+EXCEPT
+SELECT country,'publishers only' AS presence FROM authors WHERE country IS NOT NULL)
+ORDER BY presence, country;
 
 -- Why I chose this approach (one line — e.g. "LEFT JOIN keeps authors with zero books; INNER would drop them"):
+-- INTERSECT keeps the countries found in both tables, each EXCEPT keeps the countries of one table that are missing from the other, and UNION stacks the three labelled groups before one final ORDER BY.
 
-
--- Exercise 10 [Challenge]: Customer activity timeline
+-- Exercise 10 [Challenge]: Customer activity timeline ✅ Corregido 2026-10-27
 -- Build one timeline of customer activity, stacking orders and reviews into a single result with
 -- three columns: customer_id, activity_at, activity.
 -- For an order, activity is 'purchase' (completed), 'pending order' (pending) or 'cancelled order' (cancelled).
@@ -328,7 +340,22 @@ SELECT customer_id FROM orders;
 -- Expected result shape: 26 rows (14 orders + 12 reviews) — customer_id, activity_at, activity
 
 -- Your answer:
-
+(SELECT customer_id, order_date AS activity_at, 
+  CASE
+    WHEN status = 'completed' THEN 'purchase'
+    WHEN status = 'pending' THEN 'pending order'
+    WHEN status = 'cancelled' THEN 'cancelled order'
+  END AS activity
+FROM orders)
+UNION ALL
+(SELECT customer_id, reviewed_at AS activity_at,
+  CASE
+    WHEN rating >= 4 THEN 'positive review'
+    WHEN rating < 4 THEN 'critical review'
+  END AS activity
+FROM reviews)
+ORDER BY customer_id, activity_at, activity;
 
 -- Why I chose this approach (one line — e.g. "LEFT JOIN keeps authors with zero books; INNER would drop them"):
+-- UNION ALL stacks both queries without removing duplicates, so no order or review is lost (UNION would drop identical rows), and a CASE WHEN in each branch maps status and rating to the activity labels.
 
