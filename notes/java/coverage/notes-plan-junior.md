@@ -2,13 +2,13 @@
 
 Plan status: current
 Coverage: notes/java/coverage/junior.md
-Coverage SHA-256: bad12930637587f5cce0f4c3bad990572d29c6e9c4ea340a6e4a2627a188508a
-Generated: 2026-09-16
-Study order: the entry number is the reading order, 00 → 17, and it is identical to the number in the filename — the `NN` of `## NN` is always the `NN-` prefix of that entry’s `English:` and `Spanish:` files. The legacy files that broke this correspondence were renumbered on 2026-08-21, together with every repository-relative link that targeted them; `notes-plan-prompt.md` → Planning algorithm step 6 makes the match a standing requirement, so a future entry inserted into this route renumbers what follows it instead of leaving a gap or a remap table. On 2026-08-26 entry 12 was split into 12 (behaviour as a value) and 13 (streams and collectors) because one file carried two mental models, and entries 13–16 were renumbered to 14–17 with every repository-relative link that targeted them; entry 13's pair is the one prefix the route still owes a file, and its `Action: create` reserves the number.
+Coverage SHA-256: 86fe1a439f519d1d6ffca447bd9ae8b9411729147a0aaa4ed84cefb542a4db38
+Generated: 2026-10-29
+Study order: the entry number is the reading order, 00 → 18, and it is identical to the number in the filename — the `NN` of `## NN` is always the `NN-` prefix of that entry’s `English:` and `Spanish:` files. The legacy files that broke this correspondence were renumbered on 2026-08-21, together with every repository-relative link that targeted them; `notes-plan-prompt.md` → Planning algorithm step 6 makes the match a standing requirement, so a future entry inserted into this route renumbers what follows it instead of leaving a gap or a remap table. On 2026-08-26 entry 12 was split into 12 (behaviour as a value) and 13 (streams and collectors) because one file carried two mental models, and entries 13–16 were renumbered to 14–17 with every repository-relative link that targeted them; entry 13's pair is one of the two prefixes the route still owes a file, and its `Action: create` reserves the number. On 2026-10-29 coverage gained a `Unit testing mechanics` section, and its seven bullets became entry 18, appended after Maven because a test class lives in the `src/test/java` folder and runs in the `test` phase that entry 17 teaches; no existing file moved, and entry 18's `Action: create` reserves the other unwritten prefix.
 
 `Prerequisites` and `Depends on` list the nearest entries a chapter assumes; the full assumed set is their **transitive closure**. Entry 12 relies on entry 07's anonymous inner classes through the chain 09 → 08 → 07, and that is legal without restating 07.
 
-Existing sections that carry no assigned coverage bullet are **preserved** unless another entry owns the concept; the audit neither expands nor removes them on its own initiative. This rule exists so that seventeen independent cold audits do not each reach a different verdict on the same paragraph.
+Existing sections that carry no assigned coverage bullet are **preserved** unless another entry owns the concept; the audit neither expands nor removes them on its own initiative. This rule exists so that the independent cold audits of different entries do not each reach a different verdict on the same paragraph.
 
 ## 00 — Java execution foundations
 
@@ -40,7 +40,7 @@ Must answer:
 - What happens between writing a `.java` file and the JVM executing its bytecode?
 - What is the minimum a Java program needs in order to run at all — a class whose name matches its file, a `public static void main(String[] args)` entry point, and `System.out.println` for output — and why is every token of that signature (`public`, `static`, `String[]`) left for entries 06 and 10 to explain rather than unpacked here?
 - How do compiler errors, runtime exceptions, and logic errors differ, and which one is cheapest to discover?
-- Which learning route runs from values, text, control flow, methods, references and the call stack, objects and equality, contracts, polymorphism, generics, collections, failures, behaviour-as-a-value, streams, enums, dates, annotations, and finally Maven — and why is each step placed before the one that needs it?
+- Which learning route runs from values, text, control flow, methods, references and the call stack, objects and equality, contracts, polymorphism, generics, collections, failures, behaviour-as-a-value, streams, enums, dates, annotations, Maven, and finally unit tests — and why is each step placed before the one that needs it?
 - Where does Java's fixed, compile-checked type system change habits carried over from JavaScript, and where would that comparison mislead rather than help?
 
 Coverage concepts:
@@ -48,7 +48,7 @@ Coverage concepts:
 - [x] Source, bytecode, and JVM execution — recognise that `javac` checks and compiles source into bytecode that a JVM executes, without requiring JVM-internals knowledge
 - [x] Compile-time vs runtime failure — distinguish type and syntax errors rejected by the compiler from exceptions and logic errors that appear while the program runs
 
-Audit note: `00-intro-java.md` is `refined` and frozen — nothing already in it may be rewritten. The topic-introduction invariants it once lacked were written by the 2026-08-20 run and are present today: `## Index of this note` and the seven-section orientation paragraph, `## What Java is, and the job it does in your stack`, `## Five traits that come back in every later chapter`, `## Coming from JavaScript — where the comparison helps, and where it lies`, and `## The route from here to Maven, and why it runs in that order` with its full table. Two defects remain, both correctable in place without restructuring: (a) the route callout still reads "Only `02` is missing today: that number is reserved for the text chapter and the file is not written yet" and leaves `02-strings.md` as the one unlinked route entry, while both files now exist and the entry is `refined` — the only route entry still without a file is `13-streams-collectors.md`, reserved by its `Action: create`; (b) the closing paragraph never states outright what a reader must have settled before opening `01`. Both are Victor's to authorise on a frozen pair — report them, do not rewrite around them. Until he does, defect (b) means entry 00 does not meet topic-introduction requirement 7, and reporting it is not discharging it.
+Audit note: `00-intro-java.md` is `refined` and frozen — nothing already in it may be rewritten. The topic-introduction invariants it once lacked were written by the 2026-08-20 run and are present today: `## Index of this note` and the seven-section orientation paragraph, `## What Java is, and the job it does in your stack`, `## Five traits that come back in every later chapter`, `## Coming from JavaScript — where the comparison helps, and where it lies`, and `## The route from here to Maven, and why it runs in that order` with its full table. Two defects remain, both correctable in place without restructuring: (a) the route callout still reads "Only `02` is missing today: that number is reserved for the text chapter and the file is not written yet" and leaves `02-strings.md` as the one unlinked route entry, while both files now exist and the entry is `refined` — the route entries still without a file are `13-streams-collectors.md` and `18-unit-testing.md`, each reserved by its `Action: create`; (b) the closing paragraph never states outright what a reader must have settled before opening `01`. Both are Victor's to authorise on a frozen pair — report them, do not rewrite around them. Until he does, defect (b) means entry 00 does not meet topic-introduction requirement 7, and reporting it is not discharging it. A third defect was added on 2026-10-29, when coverage gained the unit-testing bullets that became entry 18: (c) `## The route from here to Maven, and why it runs in that order` still ends the route at `17-maven.md` — its heading, its closing route paragraph ("And [17-maven.md](17-maven.md) closes with **Maven**…") and its route table, whose last row is `17-maven.md` — so the introduction does not name `18-unit-testing.md`, where Victor learns to write the tests that Maven runs. It is Victor's to authorise on the frozen pair, like (a) and (b); until he does, entry 00 does not meet topic-introduction requirement 5.
 
 Rationale: What Java is, how source becomes executable, and when failures surface are the orientation every later chapter assumes. The entry-point signature and `System.out.println` are declared scaffolding: every subsequent chapter's examples print something, so the tokens must be recognisable here even though `static`, visibility, and arrays are each owned by a later entry.
 
@@ -333,6 +333,7 @@ Prerequisites: 05
 Must answer:
 
 - What does a class, an object, a field, a constructor, and `this` each contribute to one instance?
+- In a constructor whose parameter is called `name`, like the field it fills, what does `name = name;` actually assign, and how does `this.name = name;` reach the field instead?
 - How do access modifiers and encapsulation stop a caller from breaking an invariant the class promised?
 - A constructor can already assign whatever it is handed, so where does a class actually stop an object that would break its consumers from existing at all, and what does `Objects.requireNonNull(x, "message")` add over a bare assignment?
 - If that same check is written at the point where the field is finally used instead, what still exists in memory in the meantime, and which caller ends up seeing the failure?
@@ -374,7 +375,7 @@ Audit note: four separate conflicts, all requiring prose to move rather than mer
 (c) `### Anonymous class` belongs to entry 07; the surrounding `## Nested classes` framing stays here under the preservation rule, and entry 07's moved section opens with a one-sentence link back to it so the term is not orphaned.
 (d) The access-modifier and static-member bullets are currently also taught in `04-methods.md`; they consolidate here.
 
-Rationale: State, visibility, immutability boundaries, records, and value equality all describe one object standing alone. The compiler-supplied no-argument constructor is declared scaffolding here: the non-instantiable-utility-class bullet cannot be stated without it, so this chapter names the bare fact — a class that declares no constructor is handed a public one — and stops there. When Java supplies it, how `this(...)` chains constructors and why `super(...)` runs first are entry 08's `Constructor defaults and chaining` bullet. `protected` is the one part of the access-modifier bullet this chapter cannot fully discharge, because its meaning is "visible to subclasses" and subclasses arrive in entry 08 — so it is named and bounded here, not silently promised. `toString()` is written here as a method every object already has; that writing it overrides `Object.toString`, and what `@Override` checks, are declared scaffolding owned by entries 07 and 08.
+Rationale: State, visibility, immutability boundaries, records, and value equality all describe one object standing alone. The compiler-supplied no-argument constructor is declared scaffolding here: the non-instantiable-utility-class bullet cannot be stated without it, so this chapter names the bare fact — a class that declares no constructor is handed a public one — and stops there. When Java supplies it, how `this(...)` chains constructors and why `super(...)` runs first are entry 08's `Constructor defaults and chaining` bullet. `protected` is the one part of the access-modifier bullet this chapter cannot fully discharge, because its meaning is "visible to subclasses" and subclasses arrive in entry 08 — so it is named and bounded here, not silently promised. `toString()` is written here as a method every object already has; that writing it overrides `Object.toString`, and what `@Override` checks, are declared scaffolding owned by entries 07 and 08. `final` on a method or a class is stated here only as what it forbids — being overridden, being extended — in one sentence each; what overriding and subclassing are is entry 08's, which is why entry 08 asks what the two remove from its picture.
 
 Handoff: Concrete classes can now hold valid state and compare correctly; entry 07 separates the behaviour a caller needs from the particular class that happens to provide it.
 
@@ -409,6 +410,7 @@ Must answer:
 - Why can a class implement several interfaces but extend only one class?
 - What problem do default methods solve, and how does an implementing class replace that inherited behaviour?
 - What is actually happening in code such as `new Runnable() { ... }`, which appears to instantiate something that has no body?
+- Since `Animal` is abstract, what does `new Animal() { void speak() { … } }` create, and why can a lambda replace `new Runnable() { … }` but never that form?
 - Why did older codebases need anonymous inner classes where modern code writes a lambda, and why is the `new Comparator<>() { ... }` form left as recognition-only until entries 09 and 12 explain its generics and its lambda replacement?
 - What mistake does `@Override` make the compiler catch that would otherwise become a silent runtime bug?
 - What makes an interface a "functional" one, and why does that single-abstract-method shape matter both for reading `new Runnable() { … }` today and for entry 12's lambdas later?
@@ -458,6 +460,7 @@ Must answer:
 - Now that subclasses exist, what does `protected` actually permit that entry 06 could only name?
 - Entry 06 needed the bare fact that a constructor-less class is handed a public no-argument one; now that subclasses exist, when exactly does Java supply it, how does `this(...)` chain one constructor to another, and why must `super(...)` run before the subclass body?
 - Why is overriding resolved at runtime while overloading is decided at compile time, and what bug does confusing the two produce?
+- What does the cast `(Dog) animal` do when `animal` actually holds a `Cat`, and how does `if (animal instanceof Dog dog)` test the type and hand back a variable that needs no cast?
 - When is an `instanceof` pattern variable the honest solution, and when is it a sign the abstraction is wrong?
 - What do `final` classes and `final` methods remove from this picture?
 
@@ -499,6 +502,7 @@ Prerequisites: 08
 Must answer:
 
 - What does `<T>` actually give the compiler that a plain `Object` container does not?
+- What does the `<T>` written before the return type of `static <T> T firstOf(List<T> items)` declare, and how does the compiler decide what `T` is at each call?
 - What safety disappears the moment a collection is declared raw, and what can `<>` infer on its own?
 - Why is `List<Dog>` not a `List<Animal>` when a `Dog` is an `Animal`?
 - How should `?`, `? extends T`, and `? super T` be read in a library signature Victor did not write?
@@ -520,7 +524,7 @@ Coverage concepts:
 Audit note: `09-generics.md` diverges from this contract in three directions.
 (a) It develops **type erasure** as a named mechanism with runtime consequences — middle's bullet — where junior needs only "the type argument is checked at compile time and is not there at runtime".
 (b) It never mentions `?`, `? extends T` or `? super T` at all, so the wildcard-recognition bullet this entry owns is currently unwritten.
-(c) `### Using an Optional`, `### Optional.map() vs Stream.map()` and `### Chaining map() + orElseThrow()` teach `Optional` _usage_, which this entry's own must-answer question defers to entry 12; and `## Bounded type parameters` plus the generic-class and generic-method authoring sections exceed bullets that specify recognition and explicitly exclude advanced generic API design.
+(c) `### Using an Optional`, `### Optional.map() vs Stream.map()` and `### Chaining map() + orElseThrow()` teach `Optional` _usage_, which this entry's own must-answer question defers to entry 12; and `## Bounded type parameters` plus the generic-class authoring section and any generic-method material beyond reading a declared `<T>` and its inference at the call exceed bullets that specify recognition and explicitly exclude advanced generic API design.
 
 Rationale: All of these answer one question — what does this container promise about the values inside it, and how does the compiler enforce that promise? `Optional` appears here as a type to read; operating on it requires lambdas and is therefore entry 12's work. `List<E>` is declared scaffolding here, read only as "an ordered, growable container of `E`"; what a `List` promises and which implementation to choose are entry 10's.
 
@@ -563,8 +567,9 @@ Must answer:
 - Why does finding an element in a `List` cost time proportional to its size while a `HashMap` lookup does not grow with the map, and why is a Big-O label still no substitute for measuring?
 - What do `getOrDefault` and `computeIfAbsent` replace in the manual get-check-put pattern?
 - Why does removing an element during a for-each loop throw, and which two removal mechanisms are safe?
-- What does `removeIf` receive as its argument, and why is that syntax only fully explained in entry 12?
+- What do `removeIf` and `computeIfAbsent` each receive as their argument, and why is that syntax only fully explained in entry 12?
 - Why must `equals` and `hashCode` change together, and what exactly goes wrong in a `HashMap` when only one of them is defined?
+- How are `equals` and `hashCode` written for a class such as `Employee` — the type check, the fields compared, `Objects.hash` over those same fields — and why must both use exactly the same fields?
 - Why does mutating a field of a key already stored in a `HashSet` make that entry unreachable even though it is still inside the set?
 - When does an order belong inside the type as `Comparable` and when does it belong outside as a `Comparator`, and how is an external order written before lambdas are available?
 - Why can a `TreeSet` treat two objects as the same key even when their `equals` says they differ?
@@ -623,6 +628,7 @@ Must answer:
 - What compile-time obligation separates a checked exception from a `RuntimeException`, and what is the exact compiler message when it is ignored?
 - What does a `throw` statement do to the method it appears in, and what does a `throws` clause promise the caller?
 - Using the call-stack model from entry 05, how does an uncaught exception remove frames, and why is "up" the standard word for it even when the diagram is drawn downward?
+- Where does unwinding stop — which `catch` counts as compatible with the thrown type — and what happens to the program when no frame has one and the thread running `main` loses its last frame?
 - What belongs in `try`, in a targeted `catch`, and in `finally`, and what still runs when the `try` block throws?
 - What does try-with-resources do that a `finally` block previously had to do by hand?
 - Why does a caller that has to inspect the message text to decide what went wrong mean the failure needed its own exception type, and what does naming that type let a boundary handler do?
@@ -677,7 +683,7 @@ Must answer:
 
 - How do `Predicate`, `Function`, `Consumer`, and `Supplier` decide what a lambda may accept and must return?
 - How does the anonymous inner class from entry 07 become a lambda, and what did the language have to add for that to be possible?
-- Entry 10 called `list.removeIf(...)` without explaining its argument — which functional interface does `removeIf` accept, and how does the lambda written there match it?
+- Entry 10 called `list.removeIf(...)` and `map.computeIfAbsent(...)` without explaining their arguments — which functional interface does each accept, and how does each lambda written there match it?
 - When is `Employee::getName` exactly equivalent to a lambda, and when is it not?
 - How do `map` and `ifPresent` remove an explicit presence check on an `Optional`?
 - How does `filter` on an `Optional` turn a present-but-rejected value into an empty one, and why does that let a single `orElseThrow` handle both "not found" and "found but not allowed"?
@@ -730,12 +736,15 @@ Must answer:
 
 - Which operations only describe work, and what makes the pipeline actually run?
 - Why does reusing a consumed stream throw instead of starting over?
+- After `employees.stream().filter(...).map(...).toList()` runs, what has happened to `employees` itself, and where do the selected and transformed values live instead?
 - What do `filter`, `map`, `flatMap`, `sorted`, and `distinct` each do to the elements flowing through, and which of them depend on contracts from entries 06 and 10?
 - What does `flatMap` do that `map` cannot, and what real shape — a list of orders each holding a list of lines — makes flattening the natural move rather than a nested loop?
 - Why must a `reduce` operation be associative, and what breaks when it is not?
+- What does the first argument of `reduce(0, Integer::sum)` provide, and why does `reduce` return an `Optional` when that identity is left out?
 - Why is `anyMatch` the honest way to ask "is there at least one", and what does it stop doing the moment it finds a match that `filter(...).toList().isEmpty()` would have carried on doing?
 - What does `findFirst` hand back that `anyMatch` cannot, what does `allMatch` answer instead, and how does the caller's real question decide between the three?
 - When is a plain loop the clearer choice because of branching, early exit, or mutable state?
+- Why is a `map(...)` that also adds to an outside list a bug waiting to happen in a pipeline, and what does the side-effect-free version return instead?
 - Why can the list from `Stream.toList()` not be modified when the one from `Collectors.toList()` sometimes can?
 - What does `Collectors.joining` remove from the hand-written "append a separator unless this is the first element" loop, and what do its optional prefix and suffix arguments produce?
 - What happens when two elements of a stream produce the same key under `Collectors.toMap`, why is the two-argument form therefore a trap, and what does the merge function receive?
@@ -761,7 +770,7 @@ Audit note: the source prose is the stream half of `12-streams-lambdas.md` — `
 
 Rationale: Laziness is the mental model, not "the functional API". A pipeline that describes work and runs once explains, in a single stroke, why an intermediate operation prints nothing, why a consumed stream throws, why `sorted` needs a contract from entry 10, and why the collector — not the stream — decides whether the result can be modified.
 
-Handoff: Streams have filtered and grouped values by whatever a field happened to hold — often a status stored as a `String`, where a typo still compiles; entry 14 closes that hole by making the set of legal values a type the compiler checks.
+Handoff: Streams have filtered and keyed values by whatever a field happened to hold — often a status stored as a `String`, where a typo still compiles; entry 14 closes that hole by making the set of legal values a type the compiler checks.
 
 ## 14 — Enums
 
@@ -836,6 +845,7 @@ Must answer:
 - If a date object cannot change, what does `plusDays(1)` return, and what happens when the result is discarded?
 - Why is `DateTimeFormatter` safer than assembling a date string by hand, and why are the legacy mutable date classes avoided entirely?
 - How does a Javadoc signature reveal the arguments, the return type, the generic parameters read with entry 09's syntax, and the declared exceptions read with entry 11's, before a single line is written?
+- Starting from the class name `YearMonth`, how does Victor reach its Javadoc page for the Java version he runs, and which parts of that page — the method summary, a method's detail block, its `Throws:` section — answer which question?
 
 Coverage concepts:
 
@@ -864,7 +874,7 @@ Action: audit
 English: notes/java/junior/en/16-annotations.md
 Spanish: notes/java/junior/es/16-anotaciones.md
 
-Depends on: 04, 07, 14
+Depends on: 04, 07, 14, 15
 
 Pending additions: none
 
@@ -872,7 +882,7 @@ Narrative role: Generalise from `@Override`, the one annotation Victor has alrea
 
 Learning outcome: Determine where an annotation may appear, how long it is retained, which tool processes it, and where its real contract is documented.
 
-Prerequisites: 04, 07, 14
+Prerequisites: 04, 07, 14, 15
 
 Must answer:
 
@@ -890,7 +900,7 @@ Coverage concepts:
 
 Rationale: Annotation metadata and the method for reading an unfamiliar annotation are one focused unit about declarations that exist for a tool rather than for the JVM. The chapter stays descriptive throughout: writing reflection code, designing a meta-annotation contract, and building an annotation processor are owned by the middle and senior levels.
 
-Handoff: Annotations, libraries, and frameworks all arrive from outside the source tree; entry 17 closes the junior route with the build that resolves, compiles, tests, and packages every one of them.
+Handoff: Annotations, libraries, and frameworks all arrive from outside the source tree; entry 17 turns to the build that resolves, compiles, tests, and packages every one of them.
 
 ## 17 — Maven fundamentals
 
@@ -920,12 +930,12 @@ Must answer:
 - How do `groupId`, `artifactId`, and `version` identify exactly one artifact?
 - Once coordinates identify an artifact in a repository such as Maven Central, which `pom.xml` elements describe the project to a reader (`name`, `description`), which matter only when it is published there for others (`licenses`, `developers`, `scm` — the source-control location), and why does an empty block left by a project generator state less than no block at all?
 - What distinct jobs do dependencies, plugins, properties, and inherited configuration each perform inside a POM?
-- Where does Maven find a library, and how does a dependency Victor never declared end up on the classpath?
+- After Victor finds a library on Maven Central and adds its coordinates to `pom.xml`, where does Maven fetch it from, how does a dependency he never declared end up on the classpath, and what does `mvn dependency:tree` show when one arrives at a version he never chose?
 - Why are the Spring Boot starter and the `spring-boot-starter-parent` block named here only as the concrete case of generic POM inheritance, with what they actually bundle and pin belonging to the Spring Boot notes rather than to Java?
-- Which phases run when `package` is invoked, why does a later phase imply the earlier ones, and what does `clean` remove?
-- What is the `test` phase for, given that writing tests belongs to a different topic, and where will Victor learn to write them?
-- Which scope keeps a testing library out of the shipped application, and what does `provided` assume about the runtime environment?
-- Why does `mvnw` produce a more trustworthy build than whatever Maven happens to be installed on the machine?
+- Which phases run when `package` is invoked, why does a later phase imply the earlier ones, what does `install` add after `package` and where on the machine does its artifact land, and what does `clean` remove?
+- What is the `test` phase for, which source folder does it compile and run, and why is writing the test classes it runs left to entry 18?
+- Which classpaths does each of the four scopes put a library on — why does most code keep the default `compile`, why is a database driver `runtime`, which scope keeps a testing library out of the shipped application, and what does `provided` assume about the runtime environment?
+- Why does `mvnw` produce a more trustworthy build than whatever Maven happens to be installed on the machine, and why does that matter most when a CI server — the machine that builds every pushed commit — must build exactly what Victor built locally?
 
 Coverage concepts:
 
@@ -939,6 +949,61 @@ Coverage concepts:
 
 Audit note: the junior coverage section header assigns starter, parent, and plugin behaviour to Spring Boot coverage, not Java. `17-maven.md` currently explains both as Maven topics — a starter callout inside the POM-structure section and a whole section on `spring-boot-starter-parent` version management. Reduce both to the generic mechanism (POM inheritance, dependency aggregation) with the Spring-specific behaviour deferred. The Maven Wrapper bullet is also barely covered and needs real content.
 
-Rationale: Coordinates, descriptive and publication-only metadata, POM structure, resolution, lifecycle, scopes, and the wrapper describe one complete beginner workflow for building a Java project. The testing references are cross-topic previews only; JUnit itself is owned by `notes/general/`.
+Rationale: Coordinates, descriptive and publication-only metadata, POM structure, resolution, lifecycle, scopes, and the wrapper describe one complete beginner workflow for building a Java project. The testing references here are forward references only: how a JUnit test class runs and asserts is entry 18's, and testing vocabulary itself stays in `notes/general/`.
 
-Handoff: Maven closes the junior journey by turning the language concepts from entries 00–16 into a repeatable compile-test-package workflow, ready for the Spring Boot notes and for middle-level Java design.
+Handoff: Maven turns the language concepts from entries 00–16 into a repeatable compile-test-package workflow, but its `test` phase has nothing of Victor's to run yet; entry 18 writes the test classes that phase discovers and runs.
+
+## 18 — Unit tests with JUnit 5, AssertJ, and Mockito
+
+Status: pending
+
+Studied: pending
+
+Pending study: none
+
+Action: create
+
+English: notes/java/junior/en/18-unit-testing.md
+Spanish: notes/java/junior/es/18-pruebas-unitarias.md
+
+Depends on: 06, 11, 12, 16, 17
+
+Pending additions: none
+
+Narrative role: Close the junior route by writing the code that entry 17's `test` phase runs: a test class that a tool discovers through its annotations and runs one method at a time, whose expectations AssertJ states, and whose collaborators Mockito replaces — so the business rules of a class can be checked without a database or a running application.
+
+Learning outcome: Write and read a JUnit 5 test class that asserts a result or an expected exception with AssertJ, replaces a constructor-supplied collaborator with a Mockito mock programmed through `thenReturn`, `thenAnswer` and argument matchers, and explain each failure that strict stubbing reports.
+
+Prerequisites: 06, 11, 12, 16, 17
+
+Must answer:
+
+- When `mvn test` runs, what finds a method marked `@Test`, which folder must its class sit in to be found, and what does the JUnit Platform do with each method it finds?
+- Why does a field that one test method changes never carry that change into the next test method of the same class, and which bug would a suite suffer if JUnit reused one instance for all of them?
+- How does `assertThat(actual)` followed by a check decide pass or fail, and why do the checks on offer change with the type of `actual` — `isTrue()` on a boolean, `isEqualTo(...)` on any value, `containsExactly(...)` on a list?
+- What does a failing AssertJ assertion print, why does that output read as the expectation that was broken, and why does Spring Boot's test starter ship AssertJ beside JUnit's own `assertEquals`?
+- If the method under test throws, why does calling it directly in the test fail the test before any assertion line is reached, and how does passing the call as a lambda to `assertThatThrownBy` or `assertThrows` change who runs it and when?
+- Which exception type should that assertion name, and why does asserting only that "something was thrown" let the wrong failure pass?
+- When the class under test receives through its constructor a repository that would talk to a real database, how does `@Mock` let the test run without one, and what does a mocked method return when nothing told it what to return?
+- What does `when(repository.findByEmail("ana@mail.com")).thenReturn(Optional.of(user))` record inside the mock, and why does the call written inside `when(...)` not reach any real repository?
+- How does `@InjectMocks` build the class under test, which constructor parameters does it fill with the `@Mock` fields, what does `@ExtendWith(MockitoExtension.class)` do before every test method, and what fails when that line is missing?
+- When the method under test builds a `Project` inside its own body and passes it to `save`, why can the test not name that exact object inside `when(...)`, and what does `any(Project.class)` match instead?
+- Once one argument of a stubbed call uses a matcher, why must every argument of that call use one, what does Mockito throw when they are mixed, and how does `eq(...)` let a literal value take part?
+- If a mocked `save` returns a fixture the test prepared in advance, why can an assertion on the saved object pass even when the class under test built the wrong one, and how does `thenAnswer(invocation -> invocation.getArgument(0))` hand back the very object it received?
+- Under `MockitoExtension`, what happens when the code under test calls a stubbed method with arguments other than the stubbed ones, and why is the result a `PotentialStubbingProblem` instead of the silent empty default a mock otherwise returns?
+- Why does a stub the test never uses fail the test with `UnnecessaryStubbingException`, and what does that protect a test class from as it is edited over months?
+- Where does this chapter stop — what the words mock, stub and fake mean in general, whether a service test should start a Spring context, and how a bean is replaced inside one — and which notes own each of those?
+
+Coverage concepts:
+
+- [ ] JUnit 5 test lifecycle — the JUnit Platform discovers `@Test` methods under `src/test/java` and creates a fresh instance of the test class for every method, so field state never leaks from one test into the next
+- [ ] AssertJ fluent assertions — `assertThat(actual)` followed by a type-specific check (`isTrue()`, `isEqualTo(...)`, `containsExactly(...)`) reads as the expectation and prints the actual value on failure, which is why Spring Boot's test starter ships it beside JUnit's own `assertEquals`
+- [ ] Exception assertions — wrap the call in a lambda for AssertJ's `assertThatThrownBy` or JUnit's `assertThrows`, because an exception escaping a plain call fails the test before any assertion runs, and assert the exception type the caller depends on
+- [ ] Mockito test doubles — `@Mock` creates a double whose unstubbed calls return empty defaults, `when(...).thenReturn(...)` programs one answer, and `@InjectMocks` builds the class under test through its constructor with those doubles, all wired by `MockitoExtension` before each test
+- [ ] Mockito argument matchers — `any(Type.class)` stubs a call whatever object of that type arrives, which is how a collaborator is stubbed when it receives an object the code under test creates internally, and once one argument of a call uses a matcher every argument of that call must, with `eq(...)` wrapping the literal ones
+- [ ] Computed stub answers — `thenAnswer(invocation -> ...)` builds the return value from the real call, so a mocked save can return the very object it was given, whereas `thenReturn` of a prepared fixture makes the result reflect the fixture rather than what the code under test built
+- [ ] Mockito strict stubs — under `MockitoExtension` a stubbed method called with different arguments fails the test with `PotentialStubbingProblem`, and a stub the test never uses fails it with `UnnecessaryStubbingException`, so every stub also checks the arguments the code passes and dead setup cannot linger
+
+Rationale: All seven bullets describe one mechanism — a test is ordinary Java code that a tool instantiates and runs method by method, reading the annotations entry 16 described, while the class under test's collaborators are replaced by objects that record every call and answer it as programmed. The lifecycle, AssertJ and exception assertions come first because a test of a class with no collaborators already needs all three; Mockito follows because a double only matters once the class under test takes a collaborator through its constructor (entry 06); matchers, computed answers and strict stubs come last because each is a rule about stubs already written. Lambdas are a declared prerequisite, not scaffolding: `assertThatThrownBy(() -> ...)` and `thenAnswer(invocation -> ...)` are lambdas matched to functional interfaces (`ThrowingCallable` or `Executable`, and `Answer`) the way entry 12 taught Victor to match one. `Project.class` in `any(Project.class)` and `MockitoExtension.class` in `@ExtendWith(...)` are declared scaffolding, read as the expression that names a class as a value (a class literal); what reflection does with it stays middle scope. The worked examples may come from project 07's backend tests, which the coverage markers name, under a Spring Boot preview callout because the classes they test are Spring services. What a test double is in general belongs to `notes/general/`; whether a test should load a Spring context, and `@MockitoBean`, belong to `notes/spring-boot/` — this chapter owns only how a Java test class runs, asserts and replaces collaborators, as the coverage section header states.
+
+Handoff: The junior Java route closes here: Victor can now write the classes of entries 01–16, build them with entry 17, and prove their rules with tests; the Spring Boot notes take over with when a test needs a Spring context and how a bean is replaced inside one, and middle-level Java picks up concurrent and library-facing design.
