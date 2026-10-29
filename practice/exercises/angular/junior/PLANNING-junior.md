@@ -689,14 +689,21 @@ authoritative in coverage. Escaped pipe characters in heads decode to their lite
 
 ## Essential route
 
-The route's minimum, as a ladder (standard §B): 80 of the 172 concepts — what a junior Angular
-developer joining a Spanish consultancy to work against a Spring Boot REST API is expected to write
-unaided — in 17 stages. Each concept gets a first exercise and a later variant, and each stage closes
-with an exercise that combines what it taught; from stage 03 on, those closing exercises are already
-small features of the kind a technical test asks for, and stages 10, 11, 13 and 16 each end on a small
-technical test end to end, placed as soon as its prerequisites are served. One concept from each block
-an essential block depends on is listed, so no stage waits on a block outside the route. Stage 15 is
-where he starts writing specs.
+The route's minimum, as a ladder (standard §B, `REC-398`): 68 of the 172 included concepts —
+`HORARIO.md` §1's Angular minimum, what a junior Angular developer joining a Spanish consultancy to work
+against a Spring Boot REST API writes unaided in a take-home and defends in its review: one component and
+its bindings, signals, the template's control flow, parent and child, services and their scope, the
+lifecycle and effects, pipes, remote data and its states, the RxJS a screen against an API needs, typed
+reactive forms against the API, routes and the URL as state, and the specs of services, HTTP calls and
+components — in 15 stages and 153 tasks. Each stage gives every concept a `first` exercise and a later
+variant, then closes with an exercise that combines what it taught; stages 11, 12 and 15 each end on a
+small technical test end to end, and stage 14 is where he starts writing specs. A listed variant is
+served only when its concept's `first`, and every variant of it listed earlier, was not answered
+autonomously; otherwise it is waived and stays in the full route. Each stage holds about one 50-minute
+exercise block of first-pass work — its `first` rows and the integration that closes it; a variant a
+failed `first` comes to owe is served in a later batch —: 27 to 62 minutes at §C's budget of about 6
+minutes an exercise and 15–20 an integration, three to eight exercises. Which stages are targets, and what
+the minimum leaves out, is the 2026-10-29 judgement in `## Reconciliation`.
 
 **What a listed task may use before its stage teaches it** (standard §B, `REC-385`). Everything else a
 listed row asks him to write is one of its concepts or the concept of a row listed earlier. An RxJS
@@ -704,57 +711,91 @@ helper no coverage bullet owns (`of()`, `throwError()`, `interval()`, `filter()`
 and is named by the statement where the task needs it.
 
 - *Named* — a call the statement tells him to make, with its shape: `provideHttpClient()` and
-  `provideRouter()` in `AJ001`; `provideHttpClient(withInterceptors([…]))` in the exported
-  configuration of stage 13's rows, and `provideHttpClient()` beside `provideHttpClientTesting()` in the
-  `TestBed` providers of the specs of stages 15 and 16 (`C060`, outside the minimum); `reset()` in
+  `provideRouter()` in `AJ001`; `provideHttpClient()` beside `provideHttpClientTesting()` in the
+  `TestBed` providers of the specs of stages 14 and 15 (`C060`, outside the minimum); `reset()` in
   `AJ199`; `setErrors()` in `AJ212`, `AJ221` and `AJ384` (`C100`, outside the minimum).
-- *Supplied* — written out as code by the statement, never part of his answer (`REC-387` added all but
-  the first four):
+- *Supplied* — written out as code by the statement, never part of his answer:
+  - the demo route each exercise is shown on, which the batch's router registers at generation (§H) —
+    `AJ006` shows its component there and registers no route (`C106`, `C107`, stage 12);
   - the list markup of stage 02's tasks, written before `@for` is taught;
   - the selection stream feeding `AJ155`, and the input stream feeding `AJ158`, `AJ168`, `AJ373` and
     `AJ380`;
   - the `FormArray` inside `AJ206`'s form model (`C090`, outside the minimum);
-  - the navigation call after `AJ184`'s save (`C111`, stage 11);
+  - the navigation call after `AJ184`'s save (`C111`, stage 12);
   - the `date` pipe expression `AJ007` delivers commented out, and the `currency` pipe expression of
-    `AJ015` and `AJ022` (`C056`, stage 06) — he writes the `imports` that make them work;
+    `AJ015` and `AJ022` (`C056`, stage 07) — he writes the `imports` that make them work;
   - the root service whose theme signal `AJ028`'s components read, and the `inject()` in those
     components that reaches it (`C036`, `C037`, stage 05);
   - the route table `AJ227` registers (`C107`, first listed at `AJ228`);
-  - the `OnPush` child that receives `AJ032`'s team (`C021`, stage 04; `C146`, stage 14);
+  - the `OnPush` child that receives `AJ032`'s team (`C021`, stage 04; `C146`, outside the minimum);
   - the data service whose Observable `AJ134` subscribes to (`C061`, the stage's next row);
   - in `AJ383`, the three subscriptions as the statement writes them, the router events and the
-    navigation among them (`C106`, `C111`, stage 11) — he decides and writes how each one ends;
+    navigation among them (`C106`, `C111`, stage 12) — he decides and writes how each one ends;
   - the tokens and classes `AJ084` and `AJ093` provide, and the token `AJ330`'s service injects
     (`C042`, outside the minimum);
-  - the interceptor `AJ302` repairs (`C142`, the stage's next row);
-  - in `AJ339`, the line that gives the component its order id (`C165`, stage 16).
+  - in `AJ339`, the line that gives the component its order id (`C165`, stage 15).
 - The subscriptions `AJ174`, `AJ373` and `AJ383` end with `takeUntilDestroyed()` are made in a
   constructor or a field initializer, where it needs no `DestroyRef` (`C038`, outside the minimum).
 - The Jasmine suite `AJ328` translates builds its counter service with `new`, so his translation writes
   no `TestBed` (`C156`, the stage's next row).
 
+**What it asks of TypeScript** (standard §H, `REC-398` ruling (5)). TypeScript has no route of its own
+and is never a wait: it is practised here, written in the row of the Angular concept that asks for it.
+The listed rows ask him to write:
+
+- the type argument of a generic signature — `signal<Todo[]>` in `AJ027` and `signal<Team>` in `AJ032`
+  (`C015`); the type of a signal input, `input<…>()` in `AJ045` and `AJ051` (`C021`) and
+  `input.required<…>()` in `AJ046`, `AJ052` and `AJ057` (`C022`); the payload type of an output,
+  `output<number>()` in `AJ047` and the outputs of `AJ057` (`C023`) and `AJ061` (`C028`); and
+  `AJ131`'s declared `Observable<Book[]>` return type (`C061`);
+- an object type for an output's payload, declared rather than `any`, in `AJ053` (`C023`);
+- an optional parameter, `AJ128`'s `short` argument of `transform` (`C059`);
+- a `private` member behind a public read-only handle, the writable signal of `AJ112` and `AJ118`
+  (`C054`), whose build error is `AJ112`'s pass condition;
+- null safety without non-null assertions: the `undefined` of an optional input left absent in `AJ045`
+  and `AJ051` (`C021`); the `T | null` an optional `inject()` returns in `AJ087` (`C037`); an optional
+  property and a `null` value read in the template in `AJ038` and `AJ043` (`C020`); a control typed
+  `number | null` in `AJ189` and non-nullable controls in `AJ199` (`C089`); and a validator returning an
+  object or `null` in `AJ193` (`C093`);
+- a discriminated union of a page's states in `AJ145` (`C066`);
+- narrowing an error body whose shape is not guaranteed before reading its fields: `AJ144`'s fallback
+  for a body of another shape (`C065`), and the `fieldErrors` of `AJ212`, `AJ221` and `AJ384` (`C101`);
+- the conversion a type does not perform, because types are erased at run time: a string price
+  converted at the service boundary in `AJ140` (`C061`); a route parameter converted from text in
+  `AJ249` and left as text in `AJ260` (`C117`); and query params converted from text to numbers in
+  `AJ262` and `AJ385`, the second sent on as a zero-based page index (`C119`).
+
+Every listed row's model types — the shape of the data it renders, stores or receives, `AJ152`'s
+`{ data: Book[] }` envelope included — are supplied by its statement; the data types he declares are
+`AJ053`'s payload and `AJ145`'s state union.
+
+**What it waits for** (standard §B, `REC-401`). Stages 14 and 15 wait for `07-timetrack Step 9`, where
+he first writes Angular service specs with `TestBed`, `provideHttpClientTesting()` and
+`HttpTestingController` (`HORARIO.md` §1); their statements supply the code under test. Project 07 writes
+no component spec — its Step 9 tests services only, and component tests start at project 08 — so the
+component specs of `AJ345`, `AJ336`, `AJ339`, `AJ351`, `AJ346`, `AJ352`, `AJ378` and `AJ382` are first written here,
+behind the same wait. No listed row asks him to write a concept of the java or spring-boot routes.
+
 A request for Angular with no block or concept named is served from here, in this order, until the
 route is passed; every other task stays active, served on request or once the route is passed.
 
-| Stage | Title | Tasks |
-|---|---|---|
-| 01 | One screen: a component, its bindings and the start of the app | AJ001, AJ006, AJ007, AJ014, AJ008, AJ016, AJ009, AJ017, AJ010, AJ018, AJ015, AJ003, AJ022 |
-| 02 | State in signals | AJ023, AJ028, AJ024, AJ029, AJ025, AJ030, AJ027, AJ032, AJ033 |
-| 03 | What the template renders | AJ034, AJ039, AJ035, AJ040, AJ036, AJ041, AJ037, AJ042, AJ038, AJ043, AJ044 |
-| 04 | Parent and child, and a directive | AJ045, AJ051, AJ046, AJ052, AJ047, AJ053, AJ059, AJ061, AJ063, AJ069, AJ057 |
-| 05 | Services, provider scope, lifecycle and effects | AJ078, AJ077, AJ086, AJ087, AJ084, AJ093, AJ082, AJ091, AJ095, AJ100, AJ101, AJ106, AJ108, AJ114, AJ112, AJ118, AJ372 |
-| 06 | Pipes | AJ121, AJ125, AJ124, AJ128, AJ129 |
-| 07 | Remote data and its errors | AJ134, AJ131, AJ152, AJ140, AJ162, AJ143, AJ132, AJ141, AJ135, AJ144, AJ136, AJ145, AJ148 |
-| 08 | RxJS pipelines, their errors, and how the view consumes them | AJ155, AJ165, AJ158, AJ168, AJ170, AJ178, AJ171, AJ179, AJ174, AJ383, AJ176, AJ184, AJ177, AJ185, AJ373 |
-| 09 | Reactive forms: the model and its validation | AJ187, AJ197, AJ189, AJ199, AJ191, AJ201, AJ193, AJ203, AJ195, AJ205, AJ196, AJ206, AJ207 |
-| 10 | Forms against the API | AJ208, AJ217, AJ209, AJ218, AJ212, AJ221, AJ374, AJ384, AJ379 |
-| 11 | Routes and the URL as state | AJ227, AJ237, AJ228, AJ238, AJ232, AJ242, AJ249, AJ248, AJ259, AJ260, AJ250, AJ261, AJ251, AJ262, AJ255, AJ266, AJ385, AJ380 |
-| 12 | Lazy loading and a guard | AJ273, AJ278, AJ282, AJ291, AJ375 |
-| 13 | The signed-in session: an interceptor and an expired token | AJ302, AJ301, AJ305, AJ304, AJ303, AJ306, AJ376, AJ381 |
-| 14 | OnPush | AJ309, AJ314, AJ377 |
-| 15 | Service specs, a first component spec, and reading a Jasmine suite | AJ328, AJ330, AJ332, AJ333, AJ345, AJ336, AJ338, AJ339, AJ334, AJ340 |
-| 16 | HTTP and component specs | AJ341, AJ347, AJ344, AJ350, AJ351, AJ346, AJ352, AJ378, AJ382 |
-| 17 | Maintained code | AJ359, AJ365, AJ360, AJ366, AJ361, AJ367, AJ362, AJ368, AJ363, AJ369, AJ364, AJ370, AJ371 |
+| Stage | Title | Tasks | Waits for |
+|---|---|---|---|
+| 01 | One screen: a component, its bindings and the start of the app | AJ001, AJ006, AJ007, AJ014, AJ008, AJ016, AJ009, AJ017, AJ010, AJ018, AJ015, AJ003, AJ022 | — |
+| 02 | State in signals | AJ023, AJ028, AJ024, AJ029, AJ025, AJ030, AJ027, AJ032, AJ033 | — |
+| 03 | What the template renders | AJ034, AJ039, AJ035, AJ040, AJ036, AJ041, AJ037, AJ042, AJ038, AJ043, AJ044 | — |
+| 04 | Parent and child, and a directive | AJ045, AJ051, AJ046, AJ052, AJ047, AJ053, AJ059, AJ061, AJ063, AJ069, AJ057 | — |
+| 05 | Services, `inject()` and provider scope | AJ078, AJ077, AJ086, AJ087, AJ084, AJ093, AJ082, AJ091, AJ094 | — |
+| 06 | Lifecycle, effects and read-only service state | AJ095, AJ100, AJ101, AJ106, AJ108, AJ114, AJ112, AJ118, AJ372 | — |
+| 07 | Pipes | AJ121, AJ125, AJ124, AJ128, AJ129 | — |
+| 08 | Remote data and its errors | AJ134, AJ131, AJ152, AJ140, AJ162, AJ143, AJ132, AJ141, AJ135, AJ144, AJ136, AJ145, AJ148 | — |
+| 09 | RxJS pipelines, their errors, and how the view consumes them | AJ155, AJ165, AJ158, AJ168, AJ170, AJ178, AJ171, AJ179, AJ174, AJ383, AJ176, AJ184, AJ177, AJ185, AJ373 | — |
+| 10 | Reactive forms: the model and its validation | AJ187, AJ197, AJ189, AJ199, AJ191, AJ201, AJ193, AJ203, AJ195, AJ205, AJ196, AJ206, AJ207 | — |
+| 11 | Forms against the API | AJ208, AJ217, AJ209, AJ218, AJ212, AJ221, AJ384, AJ379 | — |
+| 12 | Routes and route params | AJ227, AJ237, AJ228, AJ238, AJ232, AJ242, AJ249, AJ248, AJ259, AJ260, AJ380 | — |
+| 13 | The URL as state: params as streams, query params and one-time notices | AJ250, AJ261, AJ251, AJ262, AJ255, AJ266, AJ385 | — |
+| 14 | Service specs, a first component spec, and reading a Jasmine suite | AJ328, AJ330, AJ332, AJ333, AJ345, AJ336, AJ338, AJ339, AJ334, AJ340 | 07-timetrack Step 9 |
+| 15 | HTTP and component specs | AJ341, AJ347, AJ344, AJ350, AJ351, AJ346, AJ352, AJ378, AJ382 | 07-timetrack Step 9 |
 
 ## Reconciliation
 
@@ -823,9 +864,48 @@ in stage 13's configuration and in the specs of stages 15 and 16, and `setErrors
 removed: 17 stages, 182 listed tasks, 80 essential concepts. No inventory row was changed or retired,
 no attempt relabelled and no batch edited; source fingerprints unchanged.
 
-Goal fit (standard §B): the goal is a junior Angular + Spring Boot role at a Spanish consultancy, whose
-take-home is a small Angular app against a REST API reviewed live (`_shared-context.md`, `ROADMAP.md`).
-The minimum covers what such an app is written with, unaided: bootstrap and one component with its
+Re-size to the minimum, 2026-10-29 (`REC-403`), under standard §B's `REC-398` rules — target stages
+closed under their prerequisites, each about one batch — and `REC-401`'s stage waits, walking every
+listed row. Both sources are unchanged (the digests above), the concept mapping and the inventory are
+unchanged, no attempt carries a Plan ID of this route and no batch was edited.
+
+- **Targets.** Victor's ruling of 2026-10-23 (`HORARIO.md` §1) sets the minimum at the former stages
+  01–11, component to routing, and 15–16, service, component and HTTP specs. Every stage now listed is
+  one of those targets; none is listed only because a target needs it: no listed row's `After`, `Task`
+  or `Pass condition` asks for what the former stages 12–14 and 17 taught (`AJ032`'s `OnPush` child is
+  supplied), and a block's `Depends on` gates no essential row, since composition follows `After`
+  (standard §C).
+- **Re-sized** at §C's 50-minute default. The former stage 05 — eight `first` rows and an integration,
+  about 65 minutes and nine exercises — became stage 05, services, `inject()` and provider scope,
+  closed by `AJ094`, an active inventory row the route did not list, and stage 06, lifecycle, effects
+  and read-only service state, closed by `AJ372` as before. The former stage 11 — eight `first` rows
+  and two integrations, about 83 minutes and ten exercises — became stage 12, routes and route params,
+  closed by `AJ380`, and stage 13, the URL as state, closed by `AJ385`. The former stage 10 had three
+  integrations, about 70 minutes: it drops `AJ374`, whose prefill and validation `AJ384` and `AJ207`
+  already combine, and keeps `AJ384` and `AJ379` as stage 11. Every stage now holds 27 to 62 minutes, three to eight exercises.
+- **Unlisted**, active in the full route, none retired: the former stage 12 (`AJ273`, `AJ278`,
+  `AJ282`, `AJ291`, `AJ375`), stage 13 (`AJ302`, `AJ301`, `AJ305`, `AJ304`, `AJ303`, `AJ306`, `AJ376`,
+  `AJ381`), stage 14 (`AJ309`, `AJ314`, `AJ377`) and stage 17 (`AJ359`–`AJ371`), and `AJ374` — 30 IDs.
+  The essential concepts fall from 80 to 68: `C129`, `C133`, `C142`–`C144`, `C146` and `C168`–`C173`
+  leave it.
+- **Waits.** Stages 14 and 15 wait for `07-timetrack Step 9`; no listed row asks for a concept of the
+  java or spring-boot routes.
+- **TypeScript**, which has no route (standard §H, `REC-398` ruling (5)), is declared in the section:
+  what each listed row asks him to write, at the Angular concept that asks it, and the model types the
+  statements supply.
+- **Cold review** `approve-with-tightening`, round 1; its six tightenings applied — the TypeScript
+  declaration completed, the model-types rule stated, `AJ336` and `AJ339` named among the component
+  specs, the size range corrected, `AJ006`'s demo route declared supplied and `C173`'s reason reworded.
+- 15 stages, 153 listed tasks, 68 essential concepts. `HORARIO.md` §1's Angular row is renumbered by hand
+  from "Etapas 01–11 y 15–16" to "Etapas 01–15".
+
+Validated with `validate-practice-plan.py` against the real sources, and with `--baseline` against the
+published route.
+
+Goal fit (standard §B), re-judged 2026-10-29: the goal is a junior Angular + Spring Boot role at a
+Spanish consultancy, whose take-home is a small Angular app against a REST API reviewed live
+(`_shared-context.md`, `ROADMAP.md`), and Victor set its floor on 2026-10-23 (`REC-398`, `HORARIO.md`
+§1). The minimum covers what such an app is written with, unaided: bootstrap and one component with its
 bindings and `imports`; signals, derivations and immutable updates; template control flow; inputs,
 outputs and an attribute directive with class and style bindings; services with `inject()`, provider
 scope and provider recipes, the lifecycle from construction to destruction, effects and read-only
@@ -833,35 +913,39 @@ service state; built-in and custom pipes; typed HTTP with params, error response
 state; `map()`/`tap()`, `switchMap()`, the search pipeline, `catchError()` and its placement,
 subscription cleanup, the `async` pipe and `toSignal()`; typed reactive forms with built-in and custom
 validators, error display, prefill, disabled values and server field errors; routes, links,
-programmatic navigation, route and query params read as text and as streams, and one-time notices;
-lazy loading and a `CanActivateFn`; an interceptor, a cloned request and session expiry; `OnPush`;
-service, HTTP and component specs with doubles; and the legacy spellings a maintained codebase
-holds. Left to the full route on purpose: `C002` (it lives in the config `C001`'s rows already
-write); `C008` and `C009` (template conveniences an event binding and a signal already cover);
-`C010` (the build rejects a `private` member a template reads, so the error teaches it where it
-happens); `C014` (`C013`'s rows already grade the split — no second signal); `C024` (a typing
-refinement the listed child rows carry without being graded on it); `C025` (the minimum writes the
-input and the output separately); `C026` (a wrapper's design choice, past the children the minimum
-builds); `C027` (explaining the choice, where `C028`'s rows write the directive); `C030`–`C034`
-(styling, which a take-home grades least; `C029`'s bindings are listed); `C035` (the model behind
-`C036` and `C037`, which the rows write); `C038` (bounded above, so no listed row needs a
-`DestroyRef`); `C039` (the maintained style, read rather than written in new code); `C040` and
-`C042` (configuration hardening and typed tokens, supplied where a row needs one); `C045`–`C048`
+programmatic navigation, route and query params read as text and as streams, and one-time notices; and
+service, HTTP and component specs with doubles, with the TypeScript all of it is written in. Targets:
+every listed stage — 01–13 the app, 14–15 its specs; no stage is listed only as a prerequisite. Left to
+the full route on purpose, outside the floor Victor ruled: `C129`–`C131` and `C133` (lazy loading and a
+`CanActivateFn`), `C142`–`C144` (an interceptor, a cloned request and session expiry) and `C146`
+(`OnPush`) — what refines a take-home of a few screens rather than builds it — `C168`–`C172` (the
+legacy spellings a maintained codebase holds, read there rather than written in a new app) and `C173`
+(`Subject` vs `BehaviorSubject`, a look-alike distinction asked in interviews rather than written in an
+app whose services hold signals). And, as
+before: `C002` (it lives in the config `C001`'s rows already write); `C008` and `C009` (template
+conveniences an event binding and a signal already cover); `C010` (the build rejects a `private` member a
+template reads, so the error teaches it where it happens); `C014` (`C013`'s rows already grade the split
+— no second signal); `C024` (a typing refinement the listed child rows carry without being graded on
+it); `C025` (the minimum writes the input and the output separately); `C026` (a wrapper's design choice,
+past the children the minimum builds); `C027` (explaining the choice, where `C028`'s rows write the
+directive); `C030`–`C034` (styling, which a take-home grades least; `C029`'s bindings are listed);
+`C035` (the model behind `C036` and `C037`, which the rows write); `C038` (bounded above, so no listed
+row needs a `DestroyRef`); `C039` (the maintained style, read rather than written in new code); `C040`
+and `C042` (configuration hardening and typed tokens, supplied where a row needs one); `C045`–`C048`
 (timing points past `ngOnInit` and destruction that a CRUD screen rarely needs); `C051`, `C053` and
 `C055` (refinements `C013`'s and `C050`'s rows already touch — `AJ108`'s effect writes no signal);
 `C052` (the timers and listeners the minimum starts are ended by `C049`'s rows); `C057` and `C058`
 (time-zone and locale traps a take-home rarely reaches; the listed pipes print under the default
-locale); `C060` (named where a row needs it — see the section's *Named* line); `C067` and `C068` (the refetch
-and stale-derivation refinements past the four remote UI states `C066`'s rows render); `C063`, `C069`–`C071`, `C073`,
-`C074`, `C076` and `C077` (RxJS past the operators a screen against a REST API needs, as recorded on
-2026-10-21); `C081`, `C082` and `C084` (error-path refinements past `catchError()`'s two placements);
-`C088` (concise syntax over the `FormGroup` the rows write); `C090` (dynamic lists, supplied in
-`AJ206`); `C092` and `C094` (validator subtleties past the built-in and custom rows); `C099`, `C100`
-and `C102`–`C105` (form housekeeping and change streams past submission and server errors);
-`C108`–`C110` and `C112`–`C115` (shell, nested outlets, titles and active links, past the routes and
-links the rows write); `C120`–`C122` and `C124`–`C126` (URL-state refinements past reading route and
-query params); `C127`, `C128`, `C130` and `C131` (route matching and bundle details); `C134`–`C141`
-(guard compositions and edge cases past one guard returning a `UrlTree`); `C145` and `C147`–`C149`
-(change detection past `OnPush`); `C150`–`C153` (block 23, which debugging would pull in); `C155`,
-`C157`, `C161` and `C162` (testing refinements past the harness, doubles, HTTP and fixture rows); and
-`C166` and `C167` (block 26, debugging).
+locale); `C060` (named where a row needs it — see the section's *Named* line); `C067` and `C068` (the
+refetch and stale-derivation refinements past the four remote UI states `C066`'s rows render); `C063`,
+`C069`–`C071`, `C073`, `C074`, `C076` and `C077` (RxJS past the operators a screen against a REST API
+needs, as recorded on 2026-10-21); `C081`, `C082` and `C084` (error-path refinements past
+`catchError()`'s two placements); `C088` (concise syntax over the `FormGroup` the rows write); `C090`
+(dynamic lists, supplied in `AJ206`); `C092` and `C094` (validator subtleties past the built-in and
+custom rows); `C099`, `C100` and `C102`–`C105` (form housekeeping and change streams past submission and
+server errors); `C108`–`C110` and `C112`–`C115` (shell, nested outlets, titles and active links, past
+the routes and links the rows write); `C120`–`C122` and `C124`–`C126` (URL-state refinements past
+reading route and query params); `C127` and `C128` (route matching); `C134`–`C141` (guard compositions
+and edge cases); `C145` and `C147`–`C149` (change detection); `C150`–`C153` (block 23, which debugging
+would pull in); `C155`, `C157`, `C161` and `C162` (testing refinements past the harness, doubles, HTTP
+and fixture rows); and `C166` and `C167` (block 26, debugging).
