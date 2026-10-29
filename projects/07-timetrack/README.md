@@ -116,7 +116,7 @@ I built this project to learn backend development with Spring Boot — my first 
 - Soft delete over hard delete — foreign keys reject deleting a referenced user or project, and archiving preserves their hours; given up: a deactivated account keeps its email, so the same address cannot be registered again
 - docker-compose over a manual local setup — the only prerequisite is Docker, and the API image is the one that gets deployed; given up: a slower edit-run loop, so daily development still runs from IntelliJ against a local database
 - A public deployment over a local-only project — anyone can open the app without cloning it; given up: the free-tier API sleeps when idle and wakes slowly, and the demo data is writable by every visitor
-- Deploying before the unit tests over tests first — a working app was available to open sooner; given up: the first public version shipped with only its validation and frontend unit tests in place, and the service-layer unit tests (JUnit 5 + Mockito, Vitest) still to follow
+- Deploying before the unit tests over tests first — a working app was available to open sooner; given up: the first public version shipped with only its validation and frontend unit tests in place, and the service-layer unit tests (JUnit 6 + Mockito, Vitest) still to follow
 
 ---
 
@@ -175,7 +175,7 @@ The main lessons were enforcing a workflow and ownership on the server, keeping 
 - Comparing JPA entities by id, not by object reference or full `.equals()` — Lombok's `@Data`-generated `equals()` is unreliable for entities
 - `BigDecimal.compareTo()` and `LocalDate.isAfter()`/`isBefore()` — the correct way to compare values that don't support `==`, `<`, `>`, or a safe `.equals()`
 - Soft delete for users and projects, hard delete for DRAFT entries — history keeps its not-null foreign keys pointing at a real row, while a draft holds nothing worth keeping
-- Foreign key `ON DELETE RESTRICT` — can't delete a parent row while a child still references it (SQL state `23503`)
+- Foreign key with PostgreSQL's default `ON DELETE NO ACTION` — can't delete a parent row while a child still references it (SQL state `23503`)
 - `DataIntegrityViolationException` → 409 — the duplicate check gives a readable message, and `saveAndFlush` lets the unique index catch what the check misses
 - `@Transactional` / `@Transactional(readOnly = true)` — an atomic write boundary on every service write method, and read-only intent declared on every pure-read method so the persistence provider can skip dirty checking
 - `Specification<T>` + `JpaSpecificationExecutor` — dynamic optional filters built as predicates, one static factory per filter, `cb.conjunction()` when a filter is absent
@@ -235,7 +235,7 @@ The main lessons were enforcing a workflow and ownership on the server, keeping 
 | ORM | Spring Data JPA + Hibernate |
 | Frontend | Angular 21 + Angular Material |
 | Markup | HTML5 |
-| Testing | JUnit 5 + AssertJ (backend) · Vitest + TestBed (frontend) |
+| Testing | JUnit 6 + AssertJ (backend) · Vitest + TestBed (frontend) |
 | Local setup | Docker + docker-compose |
 | Hosting | Render (API container) · Neon (PostgreSQL) · Netlify (frontend) |
 

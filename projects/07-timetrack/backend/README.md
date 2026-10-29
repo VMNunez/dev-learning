@@ -193,7 +193,7 @@ backend/timetrack/
 │   ├── security/                # SecurityConfig, JwtUtil, JwtFilter, the 401 entry point, login throttling
 │   └── util/                    # EmailNormalizer — one canonical email form for every comparison
 ├── src/main/resources/          # application.properties, application-dev.properties, ValidationMessages.properties
-└── src/test/java/com/victor/timetrack/   # JUnit 5 tests — see Tests
+└── src/test/java/com/victor/timetrack/   # JUnit 6 tests — see Tests
 ```
 
 ---
@@ -396,7 +396,7 @@ API available at `http://localhost:8080`
 
 ## Tests
 
-The tests are plain JUnit 5 + AssertJ classes with no Spring context and no database; a service with a repository gets a Mockito mock of it, and Surefire loads Mockito as a Java agent at JVM start.
+The tests are plain JUnit 6 + AssertJ classes with no Spring context and no database; a service with a repository gets a Mockito mock of it, and Surefire loads Mockito as a Java agent at JVM start.
 
 - `ValidationMessagesTest` — the request DTOs' Bean Validation messages come from
   `ValidationMessages.properties` as capitalised sentences, every violation on a field is reported, and a
