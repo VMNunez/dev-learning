@@ -679,9 +679,15 @@ need rendering, angular and spring-boot need a small base app with isolated atte
   explanation he wrote, the grader's feedback returns that explanation reworded more clearly in Spanish
   and translated into English, for him to read. It is feedback, written in the report and never in his
   file, and it is never help: the attempt's `Help` stays what he declared (§D).
-- **Excluded block.** `17 — Maven fundamentals`: its concepts need a real `pom.xml` and a build, not a
+- **Excluded blocks.** `17 — Maven fundamentals`: its concepts need a real `pom.xml` and a build, not a
   standalone file. `In route: no`. They are practised in the projects, and requested as `extra` they are
   answered in prose or against an existing project's `pom.xml`, never by scaffolding one here.
+  `18 — Unit tests with JUnit 5, AssertJ, and Mockito` (Victor, 2026-10-29, `REC-412`): its concepts
+  need JUnit, AssertJ and Mockito on the classpath, libraries beyond the JDK. `In route: no`. A plain
+  JUnit and Mockito test of a service is practised in the spring-boot route, whose batch module declares
+  Spring Boot's test starter, which brings all three (`spring-boot — junior`, "A batch is a module"), and
+  in the projects; requested as `extra`, they are answered against an existing project's test class,
+  never by adding a library here.
 - **Spring Framework** has no route of its own (`ROADMAP.md` → "Spring Framework — when to start
   (post-job gate)"); the mechanisms Victor already uses are practised inside the spring-boot route
   (`spring-boot — junior`, below).
