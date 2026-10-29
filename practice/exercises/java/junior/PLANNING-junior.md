@@ -4,10 +4,10 @@ Plan status: current
 Topic: java
 Level: junior
 Coverage: notes/java/coverage/junior.md
-Coverage SHA-256: bad12930637587f5cce0f4c3bad990572d29c6e9c4ea340a6e4a2627a188508a
+Coverage SHA-256: 86fe1a439f519d1d6ffca447bd9ae8b9411729147a0aaa4ed84cefb542a4db38
 Notes plan: notes/java/coverage/notes-plan-junior.md
-Notes structure SHA-256: 7ce0128dc0f8cf59aca6b22f2663bef9f9dd785e4acef79d79b74d259424f5e2
-Generated: 2026-10-20
+Notes structure SHA-256: 0b0f1ad681245dba46a4c89849563c507b6ca24fe6cc98ccd3e6baa726b68793
+Generated: 2026-10-29
 
 This is the persistent practice route. The shared contract lives in
 `notes/prompts/practice/exercises/_internal/_practice-standard.md`; `practice-session` plans,
@@ -35,7 +35,8 @@ requires mastering an unintroduced concept or teaches framework behavior as Java
 
 Each concept has one first and one transfer task, and each included block has one integration;
 JJ270–JJ285 add seven stage integrations and nine combined problems, written for the essential route,
-which since 2026-10-24 lists only `JJ278` of the nine.
+which since 2026-10-24 lists only `JJ278` of the nine; JJ286 closes the values stage of the essential
+route (2026-10-29, `REC-409`).
 Two block-06 concepts — access modifiers (`protected`) and `final` (methods, classes) — have a
 second transfer, JJ268 and JJ269, placed in block 08 because that half needs inheritance.
 Expected output never depends on the iteration order of a hash-based collection: statements print
@@ -45,8 +46,9 @@ supplied main and uses fixed instants, never the current time or the system zone
 several top-level types the public ExNNN class is declared first, so the single-file launcher
 runs it.
 
-**Target: 285 exercises = 125 first applications + 127 transfers + 33 integrations.**
-17 included blocks, 125 included concepts and 7 explicitly excluded Maven concepts, out of 132.
+**Target: 286 exercises = 125 first applications + 127 transfers + 34 integrations.**
+17 included blocks, 125 included concepts and 14 explicitly excluded concepts — 7 Maven, 7 unit
+testing — out of 139.
 These are planned tasks, not completed work or a daily quota. A task passes on a correct attempt
 or a verified correction; consolidation still requires a later unaided success. All active tasks
 must pass, with no later unresolved failure, before the route is complete. Attempts live only in
@@ -57,7 +59,7 @@ must pass, with no later unresolved failure, before the route is complete. Attem
 | Block | Title | Spanish note | Depends on | Concepts | Tasks |
 |---|---|---|---|---|---|
 | 00 | Java execution foundations | notes/java/junior/es/00-intro-java.md | none | 2 | 5 |
-| 01 | Values, types, conversion, and arithmetic | notes/java/junior/es/01-variables-tipos.md | 00 | 12 | 25 |
+| 01 | Values, types, conversion, and arithmetic | notes/java/junior/es/01-variables-tipos.md | 00 | 12 | 26 |
 | 02 | Strings and text | notes/java/junior/es/02-cadenas-de-texto.md | 01 | 7 | 16 |
 | 03 | Control flow | notes/java/junior/es/03-flujo-de-control.md | 01, 02 | 6 | 13 |
 | 04 | Methods | notes/java/junior/es/04-metodos.md | 03 | 5 | 11 |
@@ -72,8 +74,9 @@ must pass, with no later unresolved failure, before the route is complete. Attem
 | 13 | Streams, collectors, and ordering | notes/java/junior/es/13-streams-colectores.md | 10, 12 | 12 | 32 |
 | 14 | Enums | notes/java/junior/es/14-enums.md | 03, 06 | 3 | 8 |
 | 15 | Date, time, and API literacy | notes/java/junior/es/15-fechas.md | 01, 04, 06, 09, 11 | 5 | 12 |
-| 16 | Annotations | notes/java/junior/es/16-anotaciones.md | 04, 07, 14 | 2 | 5 |
+| 16 | Annotations | notes/java/junior/es/16-anotaciones.md | 04, 07, 14, 15 | 2 | 5 |
 | 17 | Maven fundamentals | notes/java/junior/es/17-maven.md | 00, 04 | 7 | 0 |
+| 18 | Unit tests with JUnit 5, AssertJ, and Mockito | notes/java/junior/es/18-pruebas-unitarias.md | 06, 11, 12, 16, 17 | 7 | 0 |
 
 ## Concept mapping
 
@@ -214,6 +217,13 @@ remain authoritative in coverage. Escaped pipe characters in heads decode to the
 | C130 | 17 | Build lifecycle | excluded | Maven requires a pom.xml and build environment; §H currently supports standalone JDK exercises only (REC-275). |
 | C131 | 17 | Dependency scopes | excluded | Maven requires a pom.xml and build environment; §H currently supports standalone JDK exercises only (REC-275). |
 | C132 | 17 | Maven Wrapper | excluded | Maven requires a pom.xml and build environment; §H currently supports standalone JDK exercises only (REC-275). |
+| C133 | 18 | JUnit 5 test lifecycle | excluded | JUnit, AssertJ and Mockito are libraries outside the JDK; §H supports standalone JDK exercises only and excludes block 18 (REC-412). |
+| C134 | 18 | AssertJ fluent assertions | excluded | JUnit, AssertJ and Mockito are libraries outside the JDK; §H supports standalone JDK exercises only and excludes block 18 (REC-412). |
+| C135 | 18 | Exception assertions | excluded | JUnit, AssertJ and Mockito are libraries outside the JDK; §H supports standalone JDK exercises only and excludes block 18 (REC-412). |
+| C136 | 18 | Mockito test doubles | excluded | JUnit, AssertJ and Mockito are libraries outside the JDK; §H supports standalone JDK exercises only and excludes block 18 (REC-412). |
+| C137 | 18 | Mockito argument matchers | excluded | JUnit, AssertJ and Mockito are libraries outside the JDK; §H supports standalone JDK exercises only and excludes block 18 (REC-412). |
+| C138 | 18 | Computed stub answers | excluded | JUnit, AssertJ and Mockito are libraries outside the JDK; §H supports standalone JDK exercises only and excludes block 18 (REC-412). |
+| C139 | 18 | Mockito strict stubs | excluded | JUnit, AssertJ and Mockito are libraries outside the JDK; §H supports standalone JDK exercises only and excludes block 18 (REC-412). |
 
 ## Exercise inventory
 
@@ -504,6 +514,7 @@ remain authoritative in coverage. Escaped pipe characters in heads decode to the
 | JJ283 | 13 | C044, C108, C113 | integration | integration | JJ085, JJ224, JJ229 | Ex283.java | From supplied timesheet entries (employee, day number, whole hours) build a map of total hours per employee and the week's grand total, and flag every employee above the stated weekly limit. | Entries are a record; totals per employee come from a toMap collector whose merge function sums the hours; the grand total is a reduce over the entries' hours and equals the sum of the per-employee totals; an employee with a single entry is included; an employee exactly at the limit is not flagged; flagged employees print in name order through lookups, never through the map's iteration order; an empty week prints the stated message; My output matches. | active |
 | JJ284 | 13 | C015, C074, C115 | integration | integration | JJ031, JJ151, JJ231 | Ex284.java | From a supplied paragraph, count how often each word appears, ignoring case and the punctuation marks the statement lists, and print the stated number of most frequent words, ties in alphabetical order. | Every transformed String is taken from a method's return value, never assumed changed in place; counts are accumulated with a map accumulator idiom, a word seen once included; the ranking comes from sorting the entries with a key-extractor comparator by count descending and word ascending, never from the map's iteration order; an empty or punctuation-only paragraph prints the stated empty result; My output matches. | active |
 | JJ285 | 15 | C119, C120, C122 | integration | integration | JJ252, JJ253, JJ255 | Ex285.java | Validate supplied employee records against a fixed today: a birth date as dd/MM/yyyy text and a clock-in and clock-out as local date-time text, each parsed with one explicit formatter; reject a birth date after today and a clock-out before its clock-in, and print each accepted employee's age in whole years and worked time in hours and minutes. | Today is a fixed LocalDate in the supplied main, never the system clock; every text is parsed with one explicitly declared numeric formatter and a text in another pattern is reported as rejected; the age comes from a Period and is exact on the day before the birthday and on the birthday itself; the worked time comes from a Duration and is correct for a shift crossing midnight; a future birth date and an inverted shift are each rejected with the stated message; My output matches. | active |
+| JJ286 | 01 | C005, C007, C008 | integration | integration | JJ008, JJ010, JJ011 | Ex286.java | Three supplied int meter readings, each close to the int maximum and whose sum is not a multiple of three, are one week's pulse counts: compute their total, the average reading with its fractional part, and that average as a whole number of pulses, printing each value on its supplied label line. The supplied Expected output prints the average as Java prints a double this large, in scientific notation (digits followed by `E9`), and the statement says so. | The total is a long because an operand is widened before the addition, so the overflowing int sum is never computed first, and it prints beyond the int range; the average keeps its fractional part because an operand is promoted before the division; the whole number is an explicit cast of that average to int, and a comment names the fraction the cast discards; no branch or loop is needed; My output matches. | active |
 
 ## Essential route
 
@@ -513,14 +524,15 @@ A listed variant is served only when its concept's `first`, and every variant of
 answered autonomously; otherwise it is waived and stays in the full route. A request for Java with no
 block or concept named is served from here, in this order, until the route is passed. Tasks outside it
 stay active as optional review. Which stages are targets, and what each other stage is listed for, is the
-2026-10-24 judgement in `## Reconciliation`.
+2026-10-24 judgement in `## Reconciliation`, whose stage numbers the 2026-10-29 entry there maps to these.
 
-The ladder follows the notes only where teaching allows (`REC-387`, `REC-400`): control flow shares the
-first stage with values and comes before text, because every text task branches; records, `final` and
-immutability come before access levels and `static`, since stage 03 asks for no modifier beyond the
+The ladder follows the notes only where teaching allows (`REC-387`, `REC-400`, `REC-409`): values come
+first, closed by `JJ286`, which needs no branch or loop; control flow is the second stage and comes before
+text, because every text task branches; records, `final` and
+immutability come before access levels and `static`, since stage 04 asks for no modifier beyond the
 `private` that encapsulation itself teaches and for no `static` member; generics and `Optional` as a
-return type come before enums, which share stage 08 with the date-time types and close it; and `C006`'s
-variant, `JJ021`, waits for stage 02's null guard.
+return type come before enums, which share stage 09 with the date-time types and close it; and `C006`'s
+variant, `JJ021`, waits for stage 03's null guard.
 
 **What a listed task may use before its stage teaches it** (standard §B, `REC-385`). Everything else a
 listed row asks him to write is one of its concepts or the concept of a row listed earlier.
@@ -532,41 +544,44 @@ listed row asks him to write is one of its concepts or the concept of a row list
   - the declared locals `JJ012` and `JJ024` read, and the line that prints `JJ012`'s result (`C003`,
     taught by the stage's seventh row, `JJ006`) — he writes the boolean expression;
   - the `if` / `else` around the code he writes in `JJ006`, `JJ018` and `JJ024` (`C022`);
-  - every array or list that holds a row's given data before stage 09 (`C068`, `C069`, `C070`), and
+  - the `static` field the shadowing local of `JJ018` hides (`C042`, stage 05) — he renames or removes the
+    local, never the field;
+  - the additions that push `JJ020`'s counter past the int range, with no loop (`C024`, stage 01);
+  - every array or list that holds a row's given data before stage 10 (`C068`, `C069`, `C070`), and
     every unmodifiable list, set or map a row is given before `JJ153` (`C076`), built by the statement and read with an enhanced `for` or through the named `get` calls
     below, never indexed or modified by him; the raw collection `JJ133` and `JJ139` give him to type;
     `JJ048`'s counted loop runs over a stated numeric range, and `JJ054`'s retries count attempts
     against two stated numbers — the attempts allowed and the one that succeeds — with no sequence;
-  - the validator method `JJ055` edits (`C028`) — every other answer before stage 02 is written inside
+  - the validator method `JJ055` edits (`C028`) — every other answer before stage 03 is written inside
     the supplied `main`, with no method of his own;
-  - in stage 02, the line of the supplied `main` that creates one instance of the exercise's class, `ex`,
-    through which his methods are called (`C036`, stage 03), so every method he declares there is an
-    instance method and needs no `static` (`C042`, stage 04); the calls are supplied save the one
+  - in stage 03, the line of the supplied `main` that creates one instance of the exercise's class, `ex`,
+    through which his methods are called (`C036`, stage 04), so every method he declares there is an
+    instance method and needs no `static` (`C042`, stage 05); the calls are supplied save the one
     `JJ064` repairs and any `JJ065` makes explicit, which are his, written `ex.<name>(<arguments>)`;
   - the `try` / `catch` that runs each parse case of `JJ043` and reports a rejected one, and the
     isolated cases of `JJ153` and `JJ170` that print each rejected operation's exception, and the isolated
-    case of `JJ255` that prints the rejection of a text in another pattern (`C088`, stage 11);
-  - the line that prints an identity comparison (`C046`, stage 04) in `JJ072`, `JJ085` and `JJ093`;
+    case of `JJ255` that prints the rejection of a text in another pattern (`C088`, stage 12);
+  - the line that prints an identity comparison (`C046`, stage 05) in `JJ072`, `JJ085` and `JJ093`;
   - the anonymous comparator `JJ243` replaces (`C055`).
 - *Named* — a call the statement tells him to make, with its shape:
-  - `Objects.requireNonNull(value, "name")` in `JJ063` and `JJ068` (`C038`, stage 03);
-  - `super(...)` in `JJ109` and `JJ115` (`C061`, stage 06);
+  - `Objects.requireNonNull(value, "name")` in `JJ063` and `JJ068` (`C038`, stage 04);
+  - `super(...)` in `JJ109` and `JJ115` (`C061`, stage 07);
   - `get(key)` on a `Map` and `get(index)` on a `List` in `JJ136`, `JJ137`, `JJ138`, `JJ142` and
-    `JJ144` (`C070`, `C072`, stage 09), and `isPresent()` with `get()` on an `Optional` in `JJ137`,
+    `JJ144` (`C070`, `C072`, stage 10), and `isPresent()` with `get()` on an `Optional` in `JJ137`,
     `JJ143` and `JJ144`;
   - `new ArrayList<>()`, `new HashSet<>()` and `new HashMap<>()` in `JJ147`, `JJ148` and `JJ149`
     (`C073`, taught by the stage's sixth row, `JJ150`);
   - the function `k -> new ArrayList<>()` that creates an empty group in `JJ151`, `JJ168` and `JJ179`
-    (`C098`, stage 13): the statement gives that argument with its shape; which accumulator call
+    (`C098`, stage 14): the statement gives that argument with its shape; which accumulator call
     receives it is his answer;
   - `toLowerCase(Locale.ROOT)` in `JJ031` and `JJ148` wherever their rule ignores case (`C018`, outside
     the minimum).
 - `JJ156` and `JJ173` remove through the iterator's own `remove`: `removeIf` takes a lambda, which
-  stage 13 teaches. Stage 04 compares Strings, wrappers and records; writing `equals` for a class is
-  stage 10's.
-- Before stage 03 no row's policy is a throw (`C038`): the unknown input of `JJ057`, the rejected texts
+  stage 14 teaches. Stage 05 compares Strings, wrappers and records; writing `equals` for a class is
+  stage 11's.
+- Before stage 04 no row's policy is a throw (`C038`): the unknown input of `JJ057`, the rejected texts
   of `JJ040` and `JJ063` and the missing price of `JJ021` each take a stated value or message. Before
-  stage 09 the mutable object a final field or record component holds (`JJ084`, `JJ086`, `JJ101`,
+  stage 10 the mutable object a final field or record component holds (`JJ084`, `JJ086`, `JJ101`,
   `JJ107`) is a `StringBuilder` or a supplied class with a setter, never a collection. `JJ001`–`JJ004`,
   ahead of `JJ012` and `JJ006`, repair by changing a supplied literal or operand, never by adding a
   declaration or an operator.
@@ -576,23 +591,24 @@ listed row asks him to write is one of its concepts or the concept of a row list
 
 | Stage | Title | Tasks |
 |---|---|---|
-| 00 | Values and control flow | JJ001, JJ003, JJ002, JJ004, JJ012, JJ024, JJ006, JJ018, JJ008, JJ020, JJ009, JJ010, JJ022, JJ011, JJ023, JJ046, JJ052, JJ048, JJ054, JJ049, JJ055, JJ051, JJ057, JJ058 |
-| 01 | Text | JJ031, JJ038, JJ033, JJ040, JJ036, JJ043, JJ037, JJ044, JJ270 |
-| 02 | Methods, null and references | JJ059, JJ064, JJ060, JJ065, JJ063, JJ021, JJ070, JJ073, JJ071, JJ074, JJ068, JJ072, JJ075, JJ076 |
-| 03 | Classes, records and immutability | JJ077, JJ078, JJ092, JJ093, JJ079, JJ094, JJ080, JJ095, JJ084, JJ099, JJ085, JJ100, JJ086, JJ101, JJ107 |
-| 04 | Access levels, static and equality | JJ081, JJ096, JJ083, JJ098, JJ087, JJ102, JJ088, JJ103, JJ089, JJ104, JJ090, JJ105, JJ271 |
-| 05 | Interfaces and abstract classes | JJ108, JJ114, JJ113, JJ119, JJ109, JJ115, JJ110, JJ116, JJ111, JJ117, JJ120 |
-| 06 | Inheritance, composition and polymorphism | JJ121, JJ126, JJ122, JJ127, JJ123, JJ128, JJ125, JJ130, JJ268, JJ124, JJ129, JJ131 |
-| 07 | Generics and Optional as a return type | JJ132, JJ138, JJ133, JJ139, JJ136, JJ142, JJ137, JJ143, JJ144 |
-| 08 | Date-time types and enums | JJ252, JJ257, JJ255, JJ260, JJ245, JJ248, JJ246, JJ249, JJ247, JJ250, JJ251 |
-| 09 | Arrays, lists, sets and maps | JJ146, JJ163, JJ147, JJ148, JJ149, JJ150, JJ164, JJ165, JJ166, JJ167, JJ272 |
-| 10 | Collection contracts, hashing and map accumulation | JJ152, JJ169, JJ153, JJ170, JJ156, JJ173, JJ151, JJ168, JJ158, JJ175, JJ159, JJ176, JJ179 |
-| 11 | Throwing, catching and custom exceptions | JJ181, JJ183, JJ180, JJ190, JJ192, JJ189, JJ185, JJ194, JJ278 |
-| 12 | Resources, causes, swallowed failures and stack traces | JJ184, JJ193, JJ186, JJ195, JJ187, JJ196, JJ188, JJ197, JJ198 |
-| 13 | Functional interfaces and lambdas | JJ203, JJ199, JJ200, JJ201, JJ202, JJ213, JJ209, JJ210, JJ211, JJ212, JJ204, JJ214, JJ274 |
-| 14 | Ordering and Optional pipelines | JJ160, JJ177, JJ231, JJ243, JJ205, JJ215, JJ206, JJ207, JJ216, JJ217, JJ219 |
-| 15 | Streams: building pipelines | JJ221, JJ220, JJ233, JJ232, JJ222, JJ234, JJ223, JJ235, JJ230, JJ242, JJ275 |
-| 16 | Streams: aggregating, matching and collecting to maps | JJ224, JJ236, JJ225, JJ237, JJ226, JJ238, JJ229, JJ241, JJ244 |
+| 00 | Values, conversions and arithmetic | JJ001, JJ003, JJ002, JJ004, JJ012, JJ024, JJ006, JJ018, JJ008, JJ020, JJ009, JJ010, JJ022, JJ011, JJ023, JJ286 |
+| 01 | Control flow | JJ046, JJ052, JJ048, JJ054, JJ049, JJ055, JJ051, JJ057, JJ058 |
+| 02 | Text | JJ031, JJ038, JJ033, JJ040, JJ036, JJ043, JJ037, JJ044, JJ270 |
+| 03 | Methods, null and references | JJ059, JJ064, JJ060, JJ065, JJ063, JJ021, JJ070, JJ073, JJ071, JJ074, JJ068, JJ072, JJ075, JJ076 |
+| 04 | Classes, records and immutability | JJ077, JJ078, JJ092, JJ093, JJ079, JJ094, JJ080, JJ095, JJ084, JJ099, JJ085, JJ100, JJ086, JJ101, JJ107 |
+| 05 | Access levels, static and equality | JJ081, JJ096, JJ083, JJ098, JJ087, JJ102, JJ088, JJ103, JJ089, JJ104, JJ090, JJ105, JJ271 |
+| 06 | Interfaces and abstract classes | JJ108, JJ114, JJ113, JJ119, JJ109, JJ115, JJ110, JJ116, JJ111, JJ117, JJ120 |
+| 07 | Inheritance, composition and polymorphism | JJ121, JJ126, JJ122, JJ127, JJ123, JJ128, JJ125, JJ130, JJ268, JJ124, JJ129, JJ131 |
+| 08 | Generics and Optional as a return type | JJ132, JJ138, JJ133, JJ139, JJ136, JJ142, JJ137, JJ143, JJ144 |
+| 09 | Date-time types and enums | JJ252, JJ257, JJ255, JJ260, JJ245, JJ248, JJ246, JJ249, JJ247, JJ250, JJ251 |
+| 10 | Arrays, lists, sets and maps | JJ146, JJ163, JJ147, JJ148, JJ149, JJ150, JJ164, JJ165, JJ166, JJ167, JJ272 |
+| 11 | Collection contracts, hashing and map accumulation | JJ152, JJ169, JJ153, JJ170, JJ156, JJ173, JJ151, JJ168, JJ158, JJ175, JJ159, JJ176, JJ179 |
+| 12 | Throwing, catching and custom exceptions | JJ181, JJ183, JJ180, JJ190, JJ192, JJ189, JJ185, JJ194, JJ278 |
+| 13 | Resources, causes, swallowed failures and stack traces | JJ184, JJ193, JJ186, JJ195, JJ187, JJ196, JJ188, JJ197, JJ198 |
+| 14 | Functional interfaces and lambdas | JJ203, JJ199, JJ200, JJ201, JJ202, JJ213, JJ209, JJ210, JJ211, JJ212, JJ204, JJ214, JJ274 |
+| 15 | Ordering and Optional pipelines | JJ160, JJ177, JJ231, JJ243, JJ205, JJ215, JJ206, JJ207, JJ216, JJ217, JJ219 |
+| 16 | Streams: building pipelines | JJ221, JJ220, JJ233, JJ232, JJ222, JJ234, JJ223, JJ235, JJ230, JJ242, JJ275 |
+| 17 | Streams: aggregating, matching and collecting to maps | JJ224, JJ236, JJ225, JJ237, JJ226, JJ238, JJ229, JJ241, JJ244 |
 
 ## Reconciliation
 
@@ -717,3 +733,22 @@ minimum needs a whole-month value; and the combined problems `JJ276`, `JJ277` an
 concepts the stages already practise — the take-home shape is the timed simulations', which prove the
 minimum (`HORARIO.md` §1) — so `C111`, whose loop-or-stream choice the 2026-10-22 judgement placed in
 `JJ281`, leaves with them. `JJ278` stays, closing stage 11.
+
+2026-10-29 (`REC-409`, `REC-412`): reconciled to the notes plan of 2026-10-29, which added entry 18 —
+unit tests with JUnit 5, AssertJ and Mockito, seven coverage bullets demonstrated in `07-timetrack`
+Step 8 — and made entry 16 depend on 15; no other coverage bullet changed. The seven heads are
+`C133`–`C139`, excluded: their libraries are outside the JDK, and standard §H now excludes block 18
+beside block 17 (`REC-412`). Goal fit: a junior writes a plain JUnit and Mockito test of a service
+unaided, and that work is the spring-boot route's unit-test stage (`SB233`, `SB242`, `SB256`), which
+waits for `07-timetrack Step 8`; this route's minimum is unchanged in concepts, and its target stages are
+the 2026-10-24 judgement's. Stage 00 is split (`REC-409`): it listed 12 `first` rows, about 90 minutes of
+first-pass work. It is now values, conversions and arithmetic (00: 8 `first` rows closed by the new
+`JJ286`, about 65 minutes, above the 39 to 62 of every other stage, kept because its 8 `first` rows are
+§C's cap of 8 exercises and 48 minutes, so they fit one batch, and `JJ286` rides with stage 01's `first`
+rows in the next (`REC-408`); 7 of the 8 were already answered in 2026-10 batches 01–02) and control flow (01: 4 `first` rows
+closed by `JJ058`, about 42 minutes). Every later stage moves up one, so the stage numbers in the entries
+above are as of their date: the 2026-10-24 entries' 00 is now 00–01 and their NN is now NN+1, so the
+stages listed for what targets need are now 00–03; the 2026-10-22 entry numbers its superseded 22-stage
+route. `JJ286` is appended (block 01:
+`C005`, `C007`, `C008`); no published row was changed or retired, no attempt relabelled and no batch
+edited. 18 stages, 205 listed tasks, 93 essential concepts.

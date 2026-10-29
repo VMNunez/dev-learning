@@ -23,12 +23,12 @@ Simulations: no route — /simulation-plan LEVEL=junior
 ## java — junior
 
 Exercise plan: [Java junior](java/junior/PLANNING-junior.md)
-Active planned exercises: 285
-Essential route: 17 stages, 204 tasks
-Notes structure SHA-256: 7ce0128dc0f8cf59aca6b22f2663bef9f9dd785e4acef79d79b74d259424f5e2
+Active planned exercises: 286
+Essential route: 18 stages, 205 tasks
+Notes structure SHA-256: 0b0f1ad681245dba46a4c89849563c507b6ca24fe6cc98ccd3e6baa726b68793
 Notes plan: notes/java/coverage/notes-plan-junior.md
-Coverage SHA-256: bad12930637587f5cce0f4c3bad990572d29c6e9c4ea340a6e4a2627a188508a
-Derived: 2026-10-24
+Coverage SHA-256: 86fe1a439f519d1d6ffca447bd9ae8b9411729147a0aaa4ed84cefb542a4db38
+Derived: 2026-10-29
 
 | Block | Title | Note | Depends on | Bullets | In route |
 |---|---|---|---|---|---|
@@ -48,10 +48,11 @@ Derived: 2026-10-24
 | 13 | Streams, collectors, and ordering | `notes/java/junior/es/13-streams-colectores.md` | 10, 12 | 12 | yes |
 | 14 | Enums | `notes/java/junior/es/14-enums.md` | 03, 06 | 3 | yes |
 | 15 | Date, time, and API literacy | `notes/java/junior/es/15-fechas.md` | 01, 04, 06, 09, 11 | 5 | yes |
-| 16 | Annotations | `notes/java/junior/es/16-anotaciones.md` | 04, 07, 14 | 2 | yes |
+| 16 | Annotations | `notes/java/junior/es/16-anotaciones.md` | 04, 07, 14, 15 | 2 | yes |
 | 17 | Maven fundamentals | `notes/java/junior/es/17-maven.md` | 00, 04 | 7 | no — needs a Maven project, not a standalone file (standard §H) |
+| 18 | Unit tests with JUnit 5, AssertJ, and Mockito | `notes/java/junior/es/18-pruebas-unitarias.md` | 06, 11, 12, 16, 17 | 7 | no — needs JUnit, AssertJ and Mockito, libraries beyond the JDK (standard §H) |
 
-**In route: 17 blocks, 125 concepts.** Block 17 is excluded and its 7 bullets enter no denominator.
+**In route: 17 blocks, 125 concepts.** Blocks 17 and 18 are excluded and their 14 bullets enter no denominator.
 
 ## angular — junior
 
