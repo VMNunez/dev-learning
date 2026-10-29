@@ -1,37 +1,31 @@
 # Last run report — notes-plan-prompt
 
-Date: 2026-10-09
-Target: Spring Boot / junior / update
-Status: open
+Date: 2026-10-29
+Target: Java / junior / update
+Status: rejected
 
-- **Plan vs reality** — A reconciliation that turned into a route repair. Coverage moved by four
-  bullets (140 vs 136), but the 2026-08-28 plan also carried a numbering gap at 11 and 14 and two
-  handoffs saying so, which `Required plan format` forbids; the run renumbered three pairs, moved one
-  unassigned pair up to 16 and relocated a middle-owned pair it had left parked. Evidence is the cold
-  reviewer's whole-plan read, which outranks the orchestrator's mechanical check (140/140 verbatim and
-  assigned once, ordered, backward-only dependencies, entry number = file prefix, `audit` ⇔ file —
-  green before and after): ACCEPT-WITH-CORRECTIONS, 20 corrections, 7 blocking. All seven predate
-  this run and passed the 2026-08-28 deep review: two bullets taught before their prerequisites
-  (`CommandLineRunner` in 01, Open EntityManager in View after the chapter that needs it), three
-  undeclared previews, and an introduction missing four baselines. The corrected plan was not reviewed
-  again; the prompt asks for one review.
-- **Report discipline** — One reviewer, one round, complete acceptance proof (5 inputs read to EOF, 16
-  entries, intro, prerequisite-order and used-before-taught verdicts), persisted to its scratch path.
-  Nothing trimmed. Its heading-level claims (13's seed sections, 02's `UserRepository`, 10's Docker
-  sections) were checked on disk before applying.
+- **Plan vs reality** — Right-sized: coverage moved by one new section (+7 bullets, 139 vs 132, the
+  132 unchanged byte-for-byte, no refined lock broken), and one appended `create` entry absorbed it with
+  no renumber. Evidence is the cold reviewer's whole-plan read: ACCEPT-WITH-CORRECTIONS, 21
+  corrections, 13 blocking — every blocking one an uncommissioned bullet part in a `pending` entry
+  06–17 that predates this run and passed the 2026-09-16 review; entry 18, the one this run wrote,
+  walked 7/7 clean. Mechanical check green before and after (139/139 assigned once, entry = prefix,
+  backward-only `Depends on` = `Prerequisites`, `audit` ⇔ file).
+- **Report discipline** — One reviewer, one round, complete proof (5 inputs to EOF, 19 entries, 19
+  commissioning lines whose `B` match the plan). Nothing trimmed.
 - **Failures & retries** — Required dispatches: 1. Actual: 1. Re-dispatches: 0.
-- **Rule friction and rule breaches** — One deviation, `BRCH-0010`: the `Audit note` licence ("another
-  entry") does not cover sections leaving for another topic or cut to one placement; four such notes
-  were written at the reviewer's request. Routed to the open `REC-312`, whose source now cites it.
-  `BRCH-0005` reached and clean: 40 link targets rewritten, no label touched (word-diff checked); it is
-  `open`, not `fixed`, so nothing advances. Not reached: `BRCH-0007`/`0009` (no wrapped evidence clause
-  in this coverage). Friction, not routed: `MODE` has no default (took `update`); bare-filename prose
-  mentions of the renamed notes (00's diagram, two `**Forward reference:**` callouts) are not links,
-  so the run left them for `notes-audit`.
-- **Verdict** — change worth considering, already routed and not applied here: `REC-312` (the `Audit
-  note` field's job is narrower than the instructions plans need to carry). No edit drafted, so no cold
-  reviewer ran on the prompt. The prompt is 501 lines, at the smoke alarm; its largest section is
-  `Required plan format` (125 lines, 275–399).
+- **Rule friction and rule breaches** — One deviation, `BRCH-0011`: the run wrote defect (c) into
+  refined entry 00's `Audit note` — a prose gap in a frozen pair owed to Victor — and the field's
+  licence (moves, absorption, reduction, rebuild, expansion) names no such record; the 2026-09-16 plan
+  already used the field this way for (a) and (b). Friction, not routed: `MODE` still has no default
+  (took `update`). Guard 2 read population was zero (every note plan-owned), so no note was read end to
+  end. `BRCH-0005` not reached (no renumber). Correction C20 declined: a `Must answer` question on a
+  `refined` entry commissions nothing a pipeline may run; defect (b) already records it.
+- **Verdict** — change considered and rejected, condition 3: `BRCH-0011`'s silence changed no file a
+  pipeline consumes — `notes-audit` never acts on a `refined` entry, so the note only informs Victor.
+  First row on that step; it stays `open` for a second sighting. No edit drafted, so no cold reviewer
+  ran on the prompt. The prompt is 582 lines, over the smoke alarm; its largest section is `Required
+  plan format` (181 lines, 298–478).
   maps unaffected.
-  map: verified — `README.md` interface-index row and catalogue row for `/notes-plan`, `_system-map.md`
+  map: verified — `README.md` interface-index and catalogue rows for `/notes-plan`, `_system-map.md`
   §7 `notes-plan-{LEVEL}.md` row.
