@@ -12,12 +12,12 @@ Derived: 2026-10-29
 
 | Topic | Essential route | Open batch | Last closed batch |
 |---|---|---|---|
-| java — junior | next stage 00 of 17 (plan stale — replan) | — | 02-conversions-and-arithmetic, 2026-10-17 |
+| java — junior | next stage 00 of 18 | — | 02-conversions-and-arithmetic, 2026-10-17 |
 | angular — junior | next stage 01 of 15 | — | 01-book-catalog, 2026-10-21 (pilot) |
-| spring-boot — junior | next stage 01 of 14 — waits for java C006 (stage 00), java C028 (stage 02), java C032 (stage 02), java C036 (stage 03), java C044 (stage 03), java C062 (stage 07), java C070 (stage 09) | — | — |
+| spring-boot — junior | next stage 01 of 14 — waits for java C006 (stage 00), java C028 (stage 03), java C032 (stage 03), java C036 (stage 04), java C044 (stage 04), java C062 (stage 08), java C070 (stage 10) | — | — |
 | sql — junior | its own route | — | 02-execution-order-set-ops.sql, 2026-10-27 |
 
-Rotation: java → spring-boot → angular → sql; next: java — held: its notes plan is stale against coverage (owed `/notes-plan java junior`); spring-boot — held: stage 01 waits for java concepts (row above); so angular
+Rotation: java → spring-boot → angular → sql; next: java
 Simulations: no route — /simulation-plan LEVEL=junior
 
 ## java — junior
