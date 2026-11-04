@@ -75,7 +75,7 @@ in `02-execution-order-set-ops.sql` — a step's target is the sum of its files'
 | File | Step(s) | Written | Answered | Scored | First-pass target | Status |
 |------|---------|---------|----------|--------|-------------------|--------|
 | `01-basics.sql` | 0 | 40 *(20 review)* | 40 | **20** *(+20 review, uncounted)* | 20 | **closed** — all 40 answers graded correct on 2026-07-22 (40/40), of which the 20 first-pass ones are what the Scored column counts. Legacy schema (v1); no more exercises are added here |
-| `02-execution-order-set-ops.sql` | 0 | 10 | 10 | **10** | 10 | **closed** — graded 2026-10-27, 9/10 (90%); #1 `❌ Revisado` (its gap is in `MISTAKES.md`), the other nine `✅ Corregido` |
+| `02-execution-order-set-ops.sql` | 0 | 18 *(8 review)* | 18 | **10** *(+8 review, uncounted)* | 10 | **closed** — graded 2026-10-27, 9/10 (90%); #1 `❌ Revisado` (its gap is in `MISTAKES.md`), the other nine `✅ Corregido`. `[Repaso]` batch #11–#18 (`CASE WHEN` band boundaries) graded 2026-11-04, 8/8 `✅ Corregido` |
 | `03-joins.sql` | 1 | 0 | 0 | 0 | 22 | deleted 2026-07-22 — to regenerate |
 | `04-aggregates.sql` | 2 | 0 | 0 | 0 | 20 | to create |
 | `05-join-pitfalls.sql` | 3 | 0 | 0 | 0 | 12 | to create |
@@ -104,10 +104,11 @@ in `02-execution-order-set-ops.sql` — a step's target is the sum of its files'
 > mapping is this table, and the prompt's path table was updated to match.
 
 **First-pass total when the track is done: 216 exercises across 15 files.** Review batches add on top
-and are deliberately not budgeted. Track-wide today: **50 written** — 40 in `01-basics.sql` and 10 in
-`02-execution-order-set-ops.sql` — and all 50 answered and graded (`02-` on 2026-10-27), of which only
-the 20 first-pass exercises of `01-basics.sql` and the 10 of `02-` count: the route stands at **30
-first-pass scored of 216**, and the other 20 are `01-basics.sql`'s review batch. Every file from `03-` on
+and are deliberately not budgeted. Track-wide today: **58 written** — 40 in `01-basics.sql` and 18 in
+`02-execution-order-set-ops.sql` — and all 58 answered and graded (`02-` on 2026-10-27, its review batch
+on 2026-11-04), of which only the 20 first-pass exercises of `01-basics.sql` and the 10 of `02-` count:
+the route stands at **30 first-pass scored of 216**, and the other 28 are review batches (20 in
+`01-basics.sql`, 8 in `02-`). Every file from `03-` on
 is still to generate.
 
 **Two header formats exist on disk, and that is deliberate** — do not "fix" either one by hand.
@@ -990,7 +991,7 @@ without raising the count, and a row that reads `closed ✅` is never set back (
 | 13 | Report queries (capstone) | `15-report-queries.sql` | 0 / 8 | not started | — |
 
 **30 of 216 first-pass exercises scored** (Step 0's 20 in `01-basics.sql`, all correct, and its 10 in
-`02-execution-order-set-ops.sql`, 9 correct), plus a 20-exercise review batch that does not count. This table is the record of each step's status — the
+`02-execution-order-set-ops.sql`, 9 correct), plus 28 review exercises that do not count (20 in `01-basics.sql`, 8 in `02-`). This table is the record of each step's status — the
 one the readiness line below and the simulation track read — and `PROGRESS.md` → `### Exercise route`
 is its projection (doctrine invariant 15). Both are updated by the doctrine §4 ritual, in the same
 commit. Review batches never change a row here.
