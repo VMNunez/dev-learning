@@ -223,7 +223,6 @@ SELECT title, price,
     WHEN price < 15 THEN 'standard'
   ELSE 'premium'
 END AS price_band
-
 FROM books ORDER BY title ASC;
 
 -- Exercise 2 [Intro]: Every country, once ✅ Corregido 2026-10-27
@@ -365,7 +364,7 @@ ORDER BY customer_id, activity_at, activity;
 -- Extra practice: it does not count towards the step's first-pass target.
 -- ================================================================
 
--- Exercise 11 [Repaso]: Stock levels, edges included
+-- Exercise 11 [Repaso]: Stock levels, edges included ✅ Corregido 2026-11-04
 -- For every book, return id, title, stock and a column stock_level:
 -- 'out of stock' for 0, 'low' from 1 to 4, 'healthy' from 5 to 14, 'overstocked' from 15 up.
 -- A negative stock is a data error and must show 'check stock' — it must never land in a real band.
@@ -379,7 +378,7 @@ ORDER BY customer_id, activity_at, activity;
 -- stock = 15 expected overstocked
 SELECT id, title, stock,
 	CASE
-		WHEN stock < 0 then 'check stock'
+		WHEN stock < 0 THEN 'check stock'
 		WHEN stock = 0 THEN 'out of stock'
 		WHEN stock BETWEEN 1 AND 4 THEN 'low'
 		WHEN stock BETWEEN 5 AND 14 THEN 'healthy'
@@ -389,7 +388,7 @@ FROM books
 ORDER BY stock,id;
 
 
--- Exercise 12 [Repaso]: The order line worth exactly 15
+-- Exercise 12 [Repaso]: The order line worth exactly 15 ✅ Corregido 2026-11-04
 -- From order_items, return id, quantity, unit_price, quantity * unit_price AS line_total, and a column size:
 -- 'small' under 15, 'medium' from 15 up to (not including) 25, 'large' from 25 up.
 -- Before your query, answer in a comment: can the CASE use the alias line_total? Why or why not?
@@ -397,9 +396,19 @@ ORDER BY stock,id;
 -- Expected result shape: 22 rows — 3 of them 'medium'; the line worth exactly 15.00 must be one of them
 
 -- Your answer:
+-- no se puede usar el alias porque tanto el alias como el CASE WHEN pertenecen al SELECT y el alias solamente
+-- va a estar disponible cuando finalice todo el select(se puede usar en el order by y limit)
 
+SELECT id, quantity, unit_price, quantity * unit_price AS line_total,
+	CASE
+		WHEN quantity * unit_price < 15 THEN 'small'
+		WHEN quantity * unit_price >= 15 AND quantity * unit_price < 25 THEN 'medium'
+		WHEN quantity * unit_price >= 25 THEN 'large'
+	END AS size
+FROM order_items 
+ORDER BY line_total DESC, id;
 
--- Exercise 13 [Repaso]: Diagnose the broken price band
+-- Exercise 13 [Repaso]: Diagnose the broken price band ✅ Corregido 2026-11-04
 -- A colleague wrote this query for the price bands of Exercise 1:
 --   SELECT title, price,
 --     CASE
@@ -414,9 +423,20 @@ ORDER BY stock,id;
 -- Expected result shape: 18 rows — title, price, price_band
 
 -- Your answer:
+--'Animal Farm' (7.50) va a llevar 'standard' porque es < 15
+-- 'Song of Solomon' (no price) va a llevar premium porque al no llevar precio cae en el else
+--'A Manual for Cleaning Women' (16.00) va a llevar premium porque no es < 15 no es < 10 y cae en el else
 
+ SELECT title, price,
+   CASE
+   	 WHEN price IS NULL THEN 'unpriced'
+	 WHEN price < 10 THEN 'budget'
+     WHEN price < 15 THEN 'standard'
+  	 ELSE 'premium'
+   END AS price_band
+ FROM books ORDER BY title;
 
--- Exercise 14 [Repaso]: A CASE with no ELSE
+-- Exercise 14 [Repaso]: A CASE with no ELSE ✅ Corregido 2026-11-04
 -- From reviews, return id, book_id, rating and a column highlight:
 -- 'top' for rating 5, 'good' for rating 4 — and no ELSE branch at all.
 -- Before running it, write in a comment what highlight shows for a rating of 3, and why.
@@ -424,9 +444,18 @@ ORDER BY stock,id;
 -- Expected result shape: 12 rows — 5 'top', then 4 'good', then 3 rows with no highlight
 
 -- Your answer:
+-- Creo que para un rating de 3 me debe mostrar un null porque los casos que no estan contemplados en el
+-- CASE WHEN creo que se ponen como null directamente
+SELECT id, book_id, rating,
+	CASE 
+		WHEN rating = 5 THEN 'top'
+		WHEN rating = 4 THEN 'good'
+	END AS highlight
+FROM reviews
+ORDER BY highlight DESC NULLS LAST, id;
 
 
--- Exercise 15 [Repaso]: Every author in exactly one region
+-- Exercise 15 [Repaso]: Every author in exactly one region ✅ Corregido 2026-11-04
 -- Return name, country and a column region for every author:
 -- 'Europe' for UK, Spain or Italy; 'Americas' for Colombia, Chile or USA; 'Asia' for Japan;
 -- 'unknown' when the country is missing; 'other' for a known country that is on none of these lists.
@@ -436,9 +465,18 @@ ORDER BY stock,id;
 -- Expected result shape: 10 rows — name, country, region (Europe 4, Americas 3, Asia 1, unknown 2)
 
 -- Your answer:
+SELECT name, country,
+	CASE
+		WHEN country IS NULL THEN 'unknown'
+		WHEN country IN ('UK', 'Spain', 'Italy') THEN 'Europe'
+		WHEN country IN ('Colombia', 'Chile', 'USA') THEN 'Americas'
+		WHEN country = 'Japan' THEN 'Asia'
+		ELSE 'other'
+	END AS region
+FROM authors 
+ORDER BY region, name;
 
-
--- Exercise 16 [Repaso]: The same bands without CASE
+-- Exercise 16 [Repaso]: The same bands without CASE ✅ Corregido 2026-11-04
 -- Return id, line_total and size for every order item, with the bands of Exercise 12,
 -- but without CASE: write one SELECT per band and stack them with a set operation.
 -- Every order item must appear exactly once — a line in two bands, or in none, is the bug.
@@ -446,12 +484,24 @@ ORDER BY stock,id;
 -- Expected result shape: 22 rows — id, line_total, size; id 19 (exactly 15.00) appears once, as 'medium'
 
 -- Your answer:
-
+(SELECT id , quantity * unit_price AS line_total, 'small' AS size 
+FROM order_items WHERE quantity * unit_price < 15 )
+UNION ALL
+(SELECT id ,  quantity * unit_price AS line_total, 'medium' AS size 
+FROM order_items WHERE  quantity * unit_price >= 15 AND quantity * unit_price < 25 )
+UNION ALL
+(SELECT id ,  quantity * unit_price AS line_total, 'large' AS size 
+FROM order_items WHERE   quantity * unit_price >= 25 )
+ORDER BY line_total DESC, id;
 
 -- Why I chose this approach (one line — e.g. "LEFT JOIN keeps authors with zero books; INNER would drop them"):
+-- para poder usar union  tenemos que tener las mismas columnas, eso es lo primero que he hecho
+-- he establecido un valor a cada columna dependiendo de la condicion del where
+-- he usado union all en vez de union porque Union hace trabajo extra eliminando duplicados. en este
+-- caso no puede haber duplicados porque el id ya es unico y los tramos de precio 
+-- no se pueden solapar, por lo que ahorramos trabajo 
 
-
--- Exercise 17 [Repaso]: Which shelf? The first rule wins
+-- Exercise 17 [Repaso]: Which shelf? The first rule wins ✅ Corregido 2026-11-04
 -- The shop places every book on one shelf. The rules are listed in priority order, and a book that
 -- matches several takes the first one (the same first-match rule as a Java if / else if chain):
 --   1. stock is 0                    → 'sold out'
@@ -463,13 +513,22 @@ ORDER BY stock,id;
 -- Expected result shape: 18 rows — sold out 4, ask in store 3, bargain 3, bestseller shelf 1, standard shelf 7
 
 -- Your answer:
-
+SELECT id, title, price, stock,
+	CASE 
+		WHEN stock = 0 THEN 'sold out'
+		WHEN price IS NULL THEN 'ask in store'
+		WHEN price < 10 THEN 'bargain'
+		WHEN stock >= 10 THEN 'bestseller shelf'
+		ELSE 'standard shelf'
+	END AS shelf
+FROM books
+ORDER BY shelf, id;
 
 -- Why I chose this approach (one line — e.g. "LEFT JOIN keeps authors with zero books; INNER would drop them"):
 -- (also name one book whose shelf would change if rule 4 were checked before rule 3)
+-- El orden de los when es el de la regla porque es el comportamiento estándar del case when. Siempre se ejecuta el primer case when con el que hace match. el libro seria 1984 porque primero se ejecutaria que el stock es mayor de 10
 
-
--- Exercise 18 [Repaso]: Books that change band with VAT
+-- Exercise 18 [Repaso]: Books that change band with VAT ✅ Corregido 2026-11-04
 -- Using the bands of Exercise 1, return title, price, band_before (the band of price) and
 -- band_after (the band of price * 1.21), only for the books whose band changes once VAT is added.
 -- An unpriced book is 'unpriced' on both sides, so it never appears.
@@ -477,7 +536,36 @@ ORDER BY stock,id;
 -- Expected result shape: 11 rows — title, price, band_before, band_after
 
 -- Your answer:
-
+SELECT title, price,
+  CASE
+    WHEN price IS NULL THEN 'unpriced'
+    WHEN price < 10 THEN 'budget'
+    WHEN price < 15 THEN 'standard'
+    ELSE 'premium'
+  END AS band_before,
+  CASE
+    WHEN price IS NULL THEN 'unpriced'
+    WHEN price * 1.21 < 10 THEN 'budget'
+    WHEN price * 1.21 < 15 THEN 'standard'
+    ELSE 'premium'
+  END AS band_after
+FROM books
+WHERE
+(  CASE
+    WHEN price IS NULL THEN 'unpriced'
+    WHEN price < 10 THEN 'budget'
+    WHEN price < 15 THEN 'standard'
+    ELSE 'premium'
+  END)
+ <>
+(  CASE
+    WHEN price IS NULL THEN 'unpriced'
+    WHEN price * 1.21 < 10 THEN 'budget'
+    WHEN price * 1.21 < 15 THEN 'standard'
+    ELSE 'premium'
+  END)
+ORDER BY price, id;
 
 -- Why I chose this approach (one line — e.g. "LEFT JOIN keeps authors with zero books; INNER would drop them"):
+--El SELECT se ejecuta después del WHERE, por lo que el WHERE no puede usar los alias. Por eso repito los dos CASE en el WHERE y los comparo con <>: así me quedo solo con los libros cuyo tramo cambia al sumar el IVA.»
 
