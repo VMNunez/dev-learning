@@ -88,7 +88,7 @@ Framework-neutral concepts a junior or junior-mid developer must understand acro
 - Deterministic tests — control time, randomness, network, and mutable external data when they would make the same test alternate between pass and fail
 - Happy-path, boundary, invalid-input, and error-path tests — select representative cases that expose different failure modes rather than multiplying similar examples ✅ 07-timetrack — `LoginAttemptServiceTest` asserts four failures leave a key unblocked and the fifth blocks it
 - Regression test — preserve a previously failing scenario so the same defect cannot return unnoticed
-- Mock vs stub — use a stub to supply controlled responses and a mock when interaction verification is part of the behaviour contract
+- Mock vs stub — use a stub to supply controlled responses and a mock when interaction verification is part of the behaviour contract ✅ 07-timetrack — `ProjectServiceTest` stubs `findById` and `existsByNameIgnoreCase` for answers and verifies `saveAndFlush` is never called on each refusal
 - State-based vs interaction-based verification — prefer observable state or output unless the collaborator call itself is the required outcome ✅ 07-timetrack — `UserDetailsServiceImplTest` asserts the returned username, hash and `ROLE_EMPLOYEE` authority and never verifies the repository call
 - Flaky test — identify a test whose result changes without a relevant code change and fix the nondeterministic cause instead of normalising retries
 - False positive vs false negative — distinguish a test that passes despite a defect from one that fails despite correct behaviour
