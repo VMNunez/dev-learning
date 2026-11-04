@@ -78,4 +78,24 @@ class ProjectServiceTest {
 
         verify(projectRepository, never()).saveAndFlush(any(Project.class));
     }
+
+    @Test
+    void update_acceptsTheProjectsOwnNameInAnotherCase() {
+        Project project = new Project();
+        project.setName("Website redesign");
+
+        UpdateProjectRequest request = new UpdateProjectRequest();
+        request.setName("WEBSITE REDESIGN");
+        request.setDescription("Corporate site rebuild");
+
+        when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
+        when(projectRepository.saveAndFlush(any(Project.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+        lenient().when(projectRepository.existsByNameIgnoreCase("WEBSITE REDESIGN")).thenReturn(true);
+
+        ProjectResponse response = projectService.update(1L, request);
+
+        assertThat(response.getName()).isEqualTo("WEBSITE REDESIGN");
+        assertThat(response.getDescription()).isEqualTo("Corporate site rebuild");
+    }
 }
