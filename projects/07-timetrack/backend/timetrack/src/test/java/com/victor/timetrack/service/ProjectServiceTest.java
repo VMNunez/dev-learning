@@ -1,6 +1,7 @@
 package com.victor.timetrack.service;
 
 import com.victor.timetrack.dto.request.CreateProjectRequest;
+import com.victor.timetrack.dto.request.UpdateProjectRequest;
 import com.victor.timetrack.dto.response.ProjectResponse;
 import com.victor.timetrack.exception.DuplicateResourceException;
 import com.victor.timetrack.model.Project;
@@ -10,6 +11,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -55,6 +58,24 @@ class ProjectServiceTest {
                 .isInstanceOf(DuplicateResourceException.class)
                 .hasFieldOrPropertyWithValue("field", "name");
 
-        verify(projectRepository,never()).saveAndFlush(any(Project.class));
+        verify(projectRepository, never()).saveAndFlush(any(Project.class));
+    }
+
+    @Test
+    void update_throwsWhenTheNameBelongsToAnotherProject() {
+        Project project = new Project();
+        project.setName("Website redesign");
+
+        UpdateProjectRequest request = new UpdateProjectRequest();
+        request.setName("Mobile app");
+
+        when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
+        when(projectRepository.existsByNameIgnoreCase("Mobile app")).thenReturn(true);
+
+        assertThatThrownBy(() -> projectService.update(1L, request))
+                .isInstanceOf(DuplicateResourceException.class)
+                .hasFieldOrPropertyWithValue("field", "name");
+
+        verify(projectRepository, never()).saveAndFlush(any(Project.class));
     }
 }
