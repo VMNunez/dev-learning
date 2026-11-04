@@ -106,7 +106,7 @@ audits it together with the level-neutral doctrine (`practice/sql/PLANNING.md`).
 
 | Level | SQL plan | sql-plan-audit | Exercises |
 |---|---|---|---|
-| junior | 2026-10-08 — completed, second run — 14 steps · 15 files · 216 first-pass · 152/152 bullets; SHA bded1b85; cold review 17 findings, 13 applied; history gate passed | 2026-10-08 — completed, second run — `SCOPE = full`; 152/152 bullets, no new step; 4/4 specialists + 3 hand-over dispatches; history gate passed (`a75755e2`) | 1/14 steps closed — 2026-10-27 review: step 0 closed (`02-execution-order-set-ops.sql` graded 9/10); next Step 1, `03-joins.sql` |
+| junior | 2026-10-08 — completed, second run — 14 steps · 15 files · 216 first-pass · 152/152 bullets; SHA bded1b85; cold review 17 findings, 13 applied; history gate passed | 2026-10-08 — completed, second run — `SCOPE = full`; 152/152 bullets, no new step; 4/4 specialists + 3 hand-over dispatches; history gate passed (`a75755e2`) | 1/14 steps closed — 2026-11-04 reinforce: +8 `[Repaso]` on `02-execution-order-set-ops.sql` (uncounted); next Step 1, `03-joins.sql` |
 | middle | | | |
 | senior | | | |
 
@@ -213,5 +213,5 @@ since its grading door runs no close-out.
 | simulation-generator-prompt | | | pending | |
 | simulation-review-prompt | | | pending | |
 | simulator-prompt | | | pending | |
-| sql-exercises-prompt | 2026-10-02 | junior · `practice` · `basics` (Step 0) · `COUNT = 10` | completed | 10 first-pass exercises in new `practice/sql/junior/02-execution-order-set-ops.sql`; `PROGRESS.md` `Corrected` 40/50; route fingerprint stale, `/sql-plan junior` owed |
+| sql-exercises-prompt | 2026-11-04 | junior · `reinforce` · `basics` · `FILE = 02-execution-order-set-ops.sql` · `COUNT = 8` | completed | 8 `[Repaso]` #11–#18 on CASE WHEN bands (1 open MISTAKES row, junior:0); uncounted; `PROGRESS.md` `Corrected` 50/58 |
 | tracker-prompt | | | pending | |
