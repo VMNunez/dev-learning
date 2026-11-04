@@ -359,3 +359,125 @@ ORDER BY customer_id, activity_at, activity;
 -- Why I chose this approach (one line — e.g. "LEFT JOIN keeps authors with zero books; INNER would drop them"):
 -- UNION ALL stacks both queries without removing duplicates, so no order or review is lost (UNION would drop identical rows), and a CASE WHEN in each branch maps status and rating to the activity labels.
 
+-- ================================================================
+-- EXERCISES: basics — [Repaso] batch (MODE = reinforce, 2026-11-04)
+-- Focus: CASE WHEN band boundaries and what the ELSE is allowed to catch
+-- Extra practice: it does not count towards the step's first-pass target.
+-- ================================================================
+
+-- Exercise 11 [Repaso]: Stock levels, edges included
+-- For every book, return id, title, stock and a column stock_level:
+-- 'out of stock' for 0, 'low' from 1 to 4, 'healthy' from 5 to 14, 'overstocked' from 15 up.
+-- A negative stock is a data error and must show 'check stock' — it must never land in a real band.
+-- Before your query, write in a comment which label stock = 4, stock = 5 and stock = 15 must get.
+-- Order by stock, then id.
+-- Expected result shape: 18 rows — id, title, stock, stock_level; no row shows 'check stock' on this data
+
+-- Your answer:
+-- stock = 4 expected low
+-- stock = 5 expected healthy
+-- stock = 15 expected overstocked
+SELECT id, title, stock,
+	CASE
+		WHEN stock < 0 then 'check stock'
+		WHEN stock = 0 THEN 'out of stock'
+		WHEN stock BETWEEN 1 AND 4 THEN 'low'
+		WHEN stock BETWEEN 5 AND 14 THEN 'healthy'
+		WHEN stock >= 15 THEN 'overstocked'
+	END AS stock_level
+FROM books
+ORDER BY stock,id;
+
+
+-- Exercise 12 [Repaso]: The order line worth exactly 15
+-- From order_items, return id, quantity, unit_price, quantity * unit_price AS line_total, and a column size:
+-- 'small' under 15, 'medium' from 15 up to (not including) 25, 'large' from 25 up.
+-- Before your query, answer in a comment: can the CASE use the alias line_total? Why or why not?
+-- Order by line_total from highest to lowest, then id.
+-- Expected result shape: 22 rows — 3 of them 'medium'; the line worth exactly 15.00 must be one of them
+
+-- Your answer:
+
+
+-- Exercise 13 [Repaso]: Diagnose the broken price band
+-- A colleague wrote this query for the price bands of Exercise 1:
+--   SELECT title, price,
+--     CASE
+--       WHEN price < 15 THEN 'standard'
+--       WHEN price < 10 THEN 'budget'
+--       ELSE 'premium'
+--     END AS price_band
+--   FROM books ORDER BY title;
+-- In a comment, write the label it gives to 'Animal Farm' (7.50), 'Song of Solomon' (no price) and
+-- 'A Manual for Cleaning Women' (16.00), and why each one gets it.
+-- Then write the corrected query, with the bands of Exercise 1 ('unpriced' for a missing price).
+-- Expected result shape: 18 rows — title, price, price_band
+
+-- Your answer:
+
+
+-- Exercise 14 [Repaso]: A CASE with no ELSE
+-- From reviews, return id, book_id, rating and a column highlight:
+-- 'top' for rating 5, 'good' for rating 4 — and no ELSE branch at all.
+-- Before running it, write in a comment what highlight shows for a rating of 3, and why.
+-- Order by highlight from 'top' to 'good', with the rows that got no label at the very end, then by id.
+-- Expected result shape: 12 rows — 5 'top', then 4 'good', then 3 rows with no highlight
+
+-- Your answer:
+
+
+-- Exercise 15 [Repaso]: Every author in exactly one region
+-- Return name, country and a column region for every author:
+-- 'Europe' for UK, Spain or Italy; 'Americas' for Colombia, Chile or USA; 'Asia' for Japan;
+-- 'unknown' when the country is missing; 'other' for a known country that is on none of these lists.
+-- No author has an 'other' country today, but one added tomorrow from Portugal must get 'other',
+-- and an author with no country must never get it.
+-- Order by region, then name.
+-- Expected result shape: 10 rows — name, country, region (Europe 4, Americas 3, Asia 1, unknown 2)
+
+-- Your answer:
+
+
+-- Exercise 16 [Repaso]: The same bands without CASE
+-- Return id, line_total and size for every order item, with the bands of Exercise 12,
+-- but without CASE: write one SELECT per band and stack them with a set operation.
+-- Every order item must appear exactly once — a line in two bands, or in none, is the bug.
+-- Order the whole result by line_total from highest to lowest, then id.
+-- Expected result shape: 22 rows — id, line_total, size; id 19 (exactly 15.00) appears once, as 'medium'
+
+-- Your answer:
+
+
+-- Why I chose this approach (one line — e.g. "LEFT JOIN keeps authors with zero books; INNER would drop them"):
+
+
+-- Exercise 17 [Repaso]: Which shelf? The first rule wins
+-- The shop places every book on one shelf. The rules are listed in priority order, and a book that
+-- matches several takes the first one (the same first-match rule as a Java if / else if chain):
+--   1. stock is 0                    → 'sold out'
+--   2. price is missing              → 'ask in store'
+--   3. price under 10                → 'bargain'
+--   4. stock of 10 or more           → 'bestseller shelf'
+--   5. everything else               → 'standard shelf'
+-- Return id, title, price, stock and shelf. Order by shelf, then id.
+-- Expected result shape: 18 rows — sold out 4, ask in store 3, bargain 3, bestseller shelf 1, standard shelf 7
+
+-- Your answer:
+
+
+-- Why I chose this approach (one line — e.g. "LEFT JOIN keeps authors with zero books; INNER would drop them"):
+-- (also name one book whose shelf would change if rule 4 were checked before rule 3)
+
+
+-- Exercise 18 [Repaso]: Books that change band with VAT
+-- Using the bands of Exercise 1, return title, price, band_before (the band of price) and
+-- band_after (the band of price * 1.21), only for the books whose band changes once VAT is added.
+-- An unpriced book is 'unpriced' on both sides, so it never appears.
+-- No JOIN and no subquery. The order must be the same on every run: by price, then by whatever breaks the ties.
+-- Expected result shape: 11 rows — title, price, band_before, band_after
+
+-- Your answer:
+
+
+-- Why I chose this approach (one line — e.g. "LEFT JOIN keeps authors with zero books; INNER would drop them"):
+
