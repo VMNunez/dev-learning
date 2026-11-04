@@ -41,13 +41,13 @@ split — `## Open` drains itself as rows close, and `## Closed` holds one row p
 
 | Logged | Last seen | Times | Step | Coverage section | Concept | Sev | What went wrong | Exercises |
 |--------|-----------|-------|------|------------------|---------|-----|-----------------|-----------|
-| 2026-10-27 | 2026-10-27 | 1 | junior:0 | Querying basics | `CASE WHEN` in `SELECT` — límites de los tramos y el `ELSE` | ⚠️ | `WHEN price > 15` deja fuera el 15 exacto, que cae en `ELSE 'unpriced'`: «premium desde 15» es `>= 15`, y `'unpriced'` tiene que salir solo de `price IS NULL` (rama explícita primero), nunca de un `ELSE` que recoge también precios reales | `02-execution-order-set-ops.sql` #1 |
+| — | — | — | — | — | — | — | — | — |
 
 ## Closed — re-drilled and correct
 
 | Logged | Closed | Times | Step | Coverage section | Concept |
 |--------|--------|-------|------|------------------|---------|
-| — | — | — | — | — | — |
+| 2026-10-27 | 2026-11-04 | 1 | junior:0 | Querying basics | `CASE WHEN` in `SELECT` — límites de los tramos y el `ELSE` |
 
 ---
 
