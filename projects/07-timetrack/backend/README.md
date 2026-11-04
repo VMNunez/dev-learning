@@ -6,7 +6,7 @@ Security, Spring Data JPA. Project overview and live demo: [../README.md](../REA
 
 [API](#api-endpoints) · [Schema](#database-schema) · [Patterns and source](#key-patterns) · [Tradeoffs](#tradeoffs) · [Run](#how-to-run-alone) · [Tests](#tests)
 
-**Testing status:** DTO validation, `LoginAttemptService` and `UserDetailsServiceImpl` tests are implemented; the other service unit tests are planned.
+**Testing status:** DTO validation, `LoginAttemptService`, `UserDetailsServiceImpl` and `ProjectService` tests are implemented; the other service unit tests are planned.
 
 ---
 
@@ -403,7 +403,7 @@ The tests are plain JUnit 6 + AssertJ classes with no Spring context and no data
   maximum-only `@Size` names its maximum
 - `TimeEntryServiceTest` *(planned)* — the workflow's status guards on create/update/submit/reopen/approve/reject, and the project-existence and ownership `404`s
 - `UserServiceTest` *(planned)* — the promotion/demotion/deactivation transition guards, the self-target `409`, and the password change/reset rules
-- `ProjectServiceTest` *(planned)* — duplicate-name refusal and the case-insensitive rename that exempts a project's own current name
+- `ProjectServiceTest` — `create` saves a trimmed name, a duplicate name on `create` or a rename onto another project's name throws `DuplicateResourceException` on the `name` field with nothing saved, a rename to the project's own name in another letter case is saved, and an unknown id throws `ResourceNotFoundException` with its message
 - `AuthServiceTest` *(planned)* — login's success and failure paths, including the throttling keys and the reset on a successful login
 - `ReportServiceTest` *(planned)* — the summary's approved hours reconciling with the by-project total, and empty-month zeros
 - `LoginAttemptServiceTest` — four failures leave a key open and the fifth blocks it, a blocked key leaves another key open, `reset` unblocks at once, and an unknown key is never blocked
