@@ -245,7 +245,7 @@ exercise never counts toward the junior route, and a junior file never appears i
 
 | Level | Corrected | Route progress | Steps closed |
 |---|---|---|---|
-| **Junior** | 58/58 (100%) | 30/216 (14%) | 1/14 |
+| **Junior** | 58/69 (84%) | 30/216 (14%) | 1/14 |
 | **Middle** | — | — | — |
 | **Senior** | — | — | — |
 | **Total** | — | **30/216 (14%)** | **1/14** |
@@ -273,7 +273,7 @@ collapsed "12 files pending" row would hide exactly what is left to do. A row ap
 |---|---|---|---|---|
 | 0 | `01-basics.sql` | 40/40 | 20/20 | closed ✅ — graded 2026-07-22; 20 first-pass + 20 `[Repaso]`, only the first-pass ones move the route |
 | 0 | `02-execution-order-set-ops.sql` | 18/18 | 10/10 | closed ✅ — graded 2026-10-27, 9/10 (90%); `[Repaso]` batch #11–#18 graded 2026-11-04, 8/8 — uncounted, only the 10 first-pass ones move the route |
-| 1 | `03-joins.sql` | — | 0/22 | not started |
+| 1 | `03-joins.sql` | 0/11 | 0/22 | not started |
 | 2 | `04-aggregates.sql` | — | 0/20 | not started |
 | 3 | `05-join-pitfalls.sql` | — | 0/12 | not started |
 | 4 | `06-nulls.sql` | — | 0/12 | not started |
