@@ -4,6 +4,7 @@ import com.victor.timetrack.dto.request.CreateProjectRequest;
 import com.victor.timetrack.dto.request.UpdateProjectRequest;
 import com.victor.timetrack.dto.response.ProjectResponse;
 import com.victor.timetrack.exception.DuplicateResourceException;
+import com.victor.timetrack.exception.ResourceNotFoundException;
 import com.victor.timetrack.model.Project;
 import com.victor.timetrack.repository.ProjectRepository;
 import org.junit.jupiter.api.Test;
@@ -97,5 +98,19 @@ class ProjectServiceTest {
 
         assertThat(response.getName()).isEqualTo("WEBSITE REDESIGN");
         assertThat(response.getDescription()).isEqualTo("Corporate site rebuild");
+    }
+
+    @Test
+    void update_throwsWhenTheProjectDoesNotExist() {
+        UpdateProjectRequest request = new UpdateProjectRequest();
+        request.setName("Website redesign");
+
+        when(projectRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> projectService.update(99L, request))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessage("Project not found with id: 99");
+
+        verify(projectRepository, never()).saveAndFlush(any(Project.class));
     }
 }
