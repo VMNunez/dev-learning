@@ -276,7 +276,15 @@ ORDER BY g.name, b.title;
 -- Expected result shape: 5 rows — order id, order_date, customer name
 
 -- Your answer:
+SELECT o.id, o.order_date, c.name
+FROM orders o
+JOIN customers c ON o.customer_id = c.id
+WHERE o.status = 'completed'
+ORDER BY o.order_date DESC LIMIT 5;
 
+-- primero se ejecuta el JOIN y despues el WHERE. EL FROM  con el join crean una primera tabla que contiene
+-- las columnas de ambas tablas, por lo que cuando se ejecuta el where ya puede usar la columna de cualquiera
+-- de las tablas
 
 -- Exercise 6 [Standard]: What Ana García bought
 -- Return every book Ana García has ordered: the order date, the book title and the quantity.
