@@ -221,6 +221,10 @@ INSERT INTO reviews (book_id, customer_id, rating, comment, reviewed_at) VALUES
 -- Expected result shape: one row per book that has an author (18 rows) — title, author name
 
 -- Your answer:
+SELECT books.title, authors.name
+FROM books
+JOIN authors ON books.author_id = authors.id
+ORDER BY books.title;
 
 
 -- Exercise 2 [Intro]: Short names for long tables
