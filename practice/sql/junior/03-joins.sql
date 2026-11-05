@@ -235,6 +235,10 @@ ORDER BY books.title;
 -- Expected result shape: one row per book (19 rows) — title, publisher name
 
 -- Your answer:
+SELECT b.title, p.name
+FROM books b
+JOIN publishers p ON b.publisher_id = p.id
+ORDER BY p.name, b.title;
 
 
 -- Exercise 3 [Intro]: Every author, with or without books
@@ -244,7 +248,10 @@ ORDER BY books.title;
 -- Expected result shape: one row per (author, book) pair plus one row per author with no books (20 rows)
 
 -- Your answer:
-
+SELECT a.name, b.title
+FROM authors a
+LEFT JOIN books b ON a.id = b.author_id
+ORDER BY a.name, b.title;
 
 -- Exercise 4 [Standard]: Title, author and genre in one row
 -- For every book, return its title, its author's name in a column called author, and its genre's
@@ -254,7 +261,11 @@ ORDER BY books.title;
 -- Expected result shape: one row per book that has both an author and a genre (18 rows) — title, author, genre
 
 -- Your answer:
-
+SELECT  b.title, a.name AS author, g.name AS genre
+FROM books b
+JOIN authors a ON b.author_id = a.id
+JOIN genres g ON b.genre_id = g.id
+ORDER BY g.name, b.title;
 
 -- Exercise 5 [Standard]: Latest completed orders
 -- Return the five most recent completed orders: order id, order date and the name of the customer
