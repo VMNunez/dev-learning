@@ -311,7 +311,12 @@ ORDER BY o.order_date, b.title;
 -- Expected result shape: one row per order plus one row per customer with no orders (17 rows)
 
 -- Your answer:
+SELECT c.name, o.id, o.order_date
+FROM customers c
+LEFT JOIN orders o ON o.customer_id = c.id
+ORDER BY c.name, o.order_date;
 
+--si hago un inner join va a desaparecer "Hugo Molina"		,"Lucía Gómez"		, porque no cumple la condicion del join
 
 -- Exercise 8 [Standard]: Customers who never ordered
 -- Return the name and email of every customer who has never placed an order.
