@@ -340,7 +340,11 @@ ORDER BY c.name;
 -- Expected result shape: one row per book that has an author (18 rows) — title, price, author
 
 -- Your answer:
+SELECT b.title, b.price, a.name author
+FROM books b
+JOIN authors a ON a.id = b.author_id;
 
+-- el problema creo que al poner select * se trae todas las columnas, pudiendo existir columnas repetidas. ademas si agregamos una columna extra a la base de datos, esa columna la va a traer el select * cuando es innecesaria, ademas podria tener el mismo nombre que otra columna entrando en conflicto
 
 -- Exercise 10 [Challenge]: Books nobody has ordered
 -- Return every book that has never appeared in any order: its title, its price and its author's name.
