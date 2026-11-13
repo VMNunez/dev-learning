@@ -353,9 +353,15 @@ JOIN authors a ON a.id = b.author_id;
 -- Expected result shape: one row per never-ordered book (5 rows) — title, price, author
 
 -- Your answer:
-
+SELECT b.title, b.price, a.name author
+FROM books b
+LEFT JOIN order_items oi ON oi.book_id = b.id
+LEFT JOIN authors a ON b.author_id = a.id
+WHERE oi.id IS NULL
+ORDER BY b.title;
 
 -- Why I chose this approach (one line — e.g. "LEFT JOIN keeps authors with zero books; INNER would drop them"):
+-- LEFT JOIN a order_items para traer todos los libros: oi.id solo es NULL cuando el libro no aparece en ningún pedido, porque es su clave y nunca es nula; y LEFT JOIN a authors para que el libro sin autor siga saliendo
 
 
 -- Exercise 11 [Challenge]: Home-country editions
