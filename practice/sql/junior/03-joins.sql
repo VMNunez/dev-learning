@@ -325,7 +325,11 @@ ORDER BY c.name, o.order_date;
 -- Expected result shape: 2 rows — name, email
 
 -- Your answer:
-
+SELECT c.name, c.email
+FROM customers c
+LEFT JOIN orders o ON o.customer_id = c.id
+WHERE o.id IS NULL
+ORDER BY c.name;
 
 -- Exercise 9 [Standard]: Rewrite the SELECT *
 -- A colleague wrote this query for a "book card" in the app:
