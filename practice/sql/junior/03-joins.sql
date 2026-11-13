@@ -294,7 +294,13 @@ ORDER BY o.order_date DESC LIMIT 5;
 -- Expected result shape: one row per order line of hers (4 rows) — order_date, title, quantity
 
 -- Your answer:
-
+SELECT o.order_date, b.title, oi.quantity
+FROM customers c
+JOIN orders o ON c.id = o.customer_id
+JOIN order_items oi ON  oi.order_id = o.id
+JOIN books b ON oi.book_id = b.id
+WHERE c.name = 'Ana García'
+ORDER BY o.order_date, b.title;
 
 -- Exercise 7 [Standard]: Customers and their orders — nobody left out
 -- Return every customer's name with the id and date of each of their orders.
